@@ -1,0 +1,595 @@
+/** @file */
+
+#ifndef MATRIX_H
+#define MATRIX_H
+
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include "../service/debug.h"
+
+namespace ksi
+{
+
+   /** Template of a class implementing an essential matrix. 
+   * @author Krzysztof Siminski
+   */
+   template<class T>
+   class Matrix
+   {
+      std::vector<std::vector<T> > data;
+      int Rows, Cols;
+      
+      
+      
+   public:
+      /** constructor of empty matrix 
+         * @param rows number of rows
+         * @param cols number of columns
+         */
+      Matrix (int rows, int cols)
+      {
+         Rows = rows;
+         Cols = cols;
+         
+         data = std::vector<std::vector<T> > (rows);
+         int i;
+         for (i = 0; i < rows; i++)
+            data[i] = std::vector<T> (cols);         
+      }  
+   public:
+      /** constructor of empty matrix 
+         * @param rows number of rows
+         * @param cols number of columns
+         * @param initial initial value for data items 
+         */
+      Matrix (int rows, int cols, T initial)
+      {
+         Rows = rows;
+         Cols = cols;
+         
+         data = std::vector<std::vector<T> > (rows);
+         int i;
+         for (i = 0; i < rows; i++)
+            data[i] = std::vector<T> (cols, initial);         
+      }  
+
+   
+   public:
+      /** Default parameterless constructor creates a matrix with no rows and no columns. */   
+      Matrix (){} 
+      
+      public:
+      /** copy constructor **/   
+      Matrix (const Matrix & m)
+      {
+         Rows = m.Rows;
+         Cols = m.Cols;
+         data = m.data;
+      }
+
+      public:
+      /** move constructor **/   
+      Matrix (Matrix && m)
+      {
+         std::swap (Rows, m.Rows);
+         std::swap (Cols, m.Cols);
+         std::swap (data, m.data);
+      }
+      
+      Matrix & operator = (const Matrix & m)
+      {
+         if (this == & m)
+            return *this;
+         
+         Rows = m.Rows;
+         Cols = m.Cols;
+         data = m.data;
+         
+         return *this;
+      }
+      
+      Matrix & operator = (Matrix && m)
+      {
+         if (this == & m)
+            return *this;
+         
+         std::swap (Rows, m.Rows);
+         std::swap (Cols, m.Cols);
+         std::swap(data, m.data);
+         
+         return *this;
+      }
+      
+      public:
+      /** Constructor from a vector of vectors
+      * @exception std::string with a comment when number of items in rows differ **/   
+      Matrix (const std::vector<std::vector<T>> & t)
+      {
+         data = t;
+         Rows = t.size();
+         if (Rows == 0)
+            Cols = 0;
+         else
+            Cols = t[0].size();
+         
+         
+         // sprawdzenie, czy wszystkie wiersze maja tyle samo kolumn
+         for (typename std::vector<std::vector<T>>::iterator iter = data.begin(); 
+               iter != data.end(); iter++)
+         {
+               if (Cols != iter->size())
+               {
+                  std::stringstream ss;
+                  ss << __FILE__ << " (" << __LINE__ << "): not a rectangular matrix (various numbers of items in rows): ";
+                  throw ss.str();
+               }
+         }  
+      }
+      
+   public:
+      /** The method creates a column matrix from vector data.
+       * @param w vector of values
+       * @return column matrix (only one column)
+       * @date 2018-01-26
+       * @author Krzysztof Siminski
+       */
+      static Matrix ColumnMatrix (const std::vector<T> & w)
+      {
+         Matrix<double> res;
+         res.Rows = w.size();
+         res.Cols = 1;
+         
+         res.data = std::vector<std::vector<T>> (res.Rows);
+         for (std::size_t i = 0; i < res.Rows; i++)
+            res.data[i] = std::vector<T> {w[i]};
+         return res;
+      }
+      
+      
+   public:
+      /** The method creates a row matrix from vector data.
+       * @param w vector of values
+       * @return row matrix (only one row)
+       * @date 2018-01-26
+       * @author Krzysztof Siminski
+       */
+      static Matrix RowMatrix (const std::vector<T> & w)
+      {
+         Matrix<double> res;
+         res.Rows = 1;
+         res.Cols = w.size();
+         
+         res.data = std::vector<std::vector<T>> (1);
+         res.data[0] = w;
+         
+         return res;
+      }
+      
+      
+      
+      public:
+      /** @return number of columns in the matrix */
+      int getCols() const
+      {
+         return Cols;
+      }
+      
+      public:
+      /** @return number of rows in the matrix */   
+      int getRows() const
+      {
+         return Rows;
+      }
+      
+      public: 
+      /** Method return a row.
+         Rows indexed from 0 to nRows - 1.
+         @param w -- number of row to return
+         @throw string with message when row does not exist
+      */ 
+      Matrix<T> getRow(int w) const
+      {
+         if (w < 0 || w > Rows - 1)
+         {
+               std::stringstream ss;
+               ss << __FILE__ << " (" << __LINE__ << "): Matrix<T> getRow(int w) -- requested row: " << w <<", number of rows: " << Rows << " (rows indexed from zero to max - 1)" ;
+               throw ss.str();
+         }
+         
+         Matrix<T> res (1, Cols);
+         for (int i = 0; i < Cols; i++)
+            res.data[0][i] = data[w][i];
+
+         return res;
+      }
+      
+      public: 
+      /** Method return a column.
+         Colums indexed from 0 to nCols - 1.
+         @param k -- number of column to return
+         @throw string with message when column does not exist
+      */ 
+      Matrix<T> getCol(int c) const 
+      {
+         if (c < 0 || c > Cols - 1)
+         {
+               std::stringstream ss;
+               ss << __FILE__ << " (" << __LINE__ << "): Matrix<T> getRow(int c) -- requested column: " << c <<", number of colums: " << Cols << " (columns indexed from zero to max - 1)" ;
+               throw ss.str();
+         }
+         
+         Matrix<T> res (Rows, 1);
+         for (int i = 0; i < Rows; i++)
+            res.data[i][0] = data[i][c];
+
+         return res;
+      }
+      
+      
+      public:
+      /** access operator
+         * @param w index of a row (starting with 0)
+         * @param k index of a column (starting with 0)
+         * @return a reference to an item in the matrix 
+         * @throw std::string with a comment, when index of row or column invalid
+         */   
+      T & operator () (int w, int k) 
+      {
+         if (w < 0 || w >= Rows)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): incorrect row index: "
+               << w << " (range: 0 .. " << Rows - 1 << ")";
+            throw ss.str();
+         }
+         if (k < 0 || k >= Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): incorrect column index: "
+               << k << " (range: 0 .. " << Cols - 1 << ")";
+            throw ss.str();
+         }
+         return data[w][k];
+      }
+      
+      public:
+      /** Operator returns a product of a matrix and constant value. All matrix items 
+         * are multiplied by a constant value. The operator* for template type T must exist. Input matrix is not modified.
+         * @param d a contant to multiply by
+         * @return a multiplied matrix, input matrix is not modified  
+      */   
+      Matrix operator * (T d) const 
+      {
+         Matrix<T> res (*this);
+         for (int w = Rows - 1; w >= 0; w--)
+            for (int k = Cols - 1; k >= 0; k--)
+               res.data[w][k] = data[w][k] * d;
+               
+         
+         return res; 
+      }
+
+      public:
+      /** Operator returns a sum of a matrix and constant value. All matrix items 
+         * are summed with a constant value. The operator+ for template type T must exist. Input matrix is not modified.
+         * @param d a contant to sum with
+         * @return a summed matrix, input matrix is not modified  
+      */   
+      Matrix operator + (T d)
+      {
+         Matrix<T> res (*this);
+         for (int w = Rows - 1; w >= 0; w--)
+            for (int k = Cols - 1; k >= 0; k--)
+               res.data[w][k] = data[w][k] + d;
+               
+         
+         return res; 
+      }
+      public:
+      /** Operator returns a sum of two matrices. The operator+ for template type T must exist. Input matrix is not modified.
+         * @param m right operand of summation
+         * @return a summed matrix, input matrix is not modified  
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix operator + (const Matrix & m)
+      {
+         if (Rows != m.Rows || Cols != m.Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): different dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+      
+         
+         Matrix<T> res (Rows, Cols);
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+            {
+               res.data[w][k] = data[w][k] + m.data[w][k];
+               //res(w, k) = operator()(w, k) + m(w, k);
+            } 
+         }
+         return res;        
+      }
+      
+      /** Operator returns a difference of two matrices. The operator- for template type T must exist. Input matrix is not modified.
+         * @param m right operand of subtraction
+         * @return a difference of matrices
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix operator - (const Matrix & m)
+      {
+         if (Rows != m.Rows || Cols != m.Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): different dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+         
+         Matrix res (*this);
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+               res.data[w][k] = data[w][k] - m.data[w][k];
+         }
+         return res;        
+      }
+
+      /** Operator that subtracts matrix from a matrix. The operator-= for template type T must exist. The original matrix is modified
+         * @param m right operand of subtraction
+         * @return a difference of matrices
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix & operator -= (const Matrix & m)
+      {
+         if (Rows != m.Rows || Cols != m.Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): different dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+         
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+               data[w][k] -= m.data[w][k];
+         }
+         return *this;        
+      }
+
+      
+      
+      /** Operator returns a sum of two matrices. The operator+ and operator* for template type T must exist. Input matrix is not modified.
+         * @param m right operand of multiplication
+         * @return a product of matices, input matrix is not modified  
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix operator * (const Matrix & m)  
+      {
+         if (Cols != m.Rows)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): incompatible dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+               
+         Matrix res (Rows, m.Cols);
+         int w, k, i;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < m.Cols; k++)
+            {
+               res.data[w][k] = T();
+               for (i = 0; i < Cols; i++) 
+                  res.data[w][k] = res.data[w][k] + (data[w][i] * m.data[i][k]);
+            } 
+         }
+         return res;        
+      }
+      
+      /** A method returns a transposed matrix. Input matrix is not modified.
+         * @return a transposed matrix, input matrix is not modified  
+      */
+      Matrix transpose() const
+      {
+         Matrix res(Cols, Rows);
+         int w, k;
+         for (w = 0; w < Rows; w++)
+            for (k = 0; k < Cols; k++)
+               res.data[k][w] = data[w][k];
+         return res;
+      }
+
+      /** Operator returns a transposed matrix. Input matrix is not modified.
+         * @return a transposed matrix, input matrix is not modified  
+      */
+      Matrix operator! () const
+      {
+         return transpose();
+      }
+      
+      
+      public:
+      /** A method returs a inverted matrix with Gauss-Jordan elimination algorithm. 
+      * Original matrix in not modified.
+      * @param[out] result_status -- result status:<BR>
+            0    -- inversion possible<BR>
+            1    -- square matrix, intersion impossible<BR>
+            2    -- non-square matrix    
+      */
+      Matrix invert(int & result_status) const 
+      {
+         if (Cols != Rows)
+         {
+            result_status = 2; // non-square matrix
+            return *this;
+         }
+         Matrix m (Rows, 2 * Cols);
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+               m.data[w][k] = data[w][k];
+            for (k = Cols; k < 2 * Cols; k++)
+            {
+               if (w == k - Cols)
+                  m.data[w][k] = 1;
+               else 
+                  m.data[w][k] = 0;
+            }
+         }
+         // teraz wlasciwa eliminacja Gaussa-Jordana
+         for (w = 0; w < Rows; w++)
+         {  // dla kazdego wiersza
+            // dziele wartosci wiersza przez element na przekatnej:
+            double naPrzekatnej = m(w, w);
+            if (naPrzekatnej == 0)
+            {
+               // trzeba znalezc jakis wiersz z gory lub dolu i dodac do tego
+               int ww;
+               bool udalosie = false;
+               for (ww = 0; ww < Rows; ww++)
+               {
+                  if (m(ww, w) != 0) // znalezione niezero
+                  {
+                     // dodanie do wiersza tego znalezionego wiersza
+                     for (k = 0; k < 2 * Cols; k++)
+                        m.data[w][k] += m.data[ww][k];
+                     
+                     udalosie = true;
+                     ww += Rows; // koniec petli
+                  }
+               }
+               if (! udalosie)
+               {
+                  result_status = 1; // nie da sie odwrocic macierzy
+                  return m;
+               }
+            }
+            
+            for (k = 0; k < 2 * Cols; k++)
+               m.data[w][k] /= naPrzekatnej;
+               
+            // teraz trzeba odjac wartosci, jak zeby w kolumnie pod 
+            // przekatna uzyskac zera
+            int ww;
+            for (ww = w + 1; ww < Rows; ww++)
+            {
+               // wartosc pod przekatna w kolumnie o indeksie w(!)
+               double wartosc = m(ww, w);
+               if (wartosc != 0) // gdy nie zero
+               {
+                  for (k = w; k < 2 * Cols; k++)
+                  {
+                     m.data[ww][k] -= (wartosc * m.data[w][k]);
+                     //m(ww, k) -= (wartosc * m(w, k));
+                  }
+               } 
+            } 
+         }
+         
+         // jeszcze trzeba w druga strone -- wyzerowac nad przekatna
+         for (w = Rows - 1; w >= 0; w--)
+         {
+            // teraz trzeba odjac wartosci, jak zeby w kolumnie nad 
+            // przekatna uzyskac zera
+            int ww;
+            for (ww = w - 1; ww >= 0; ww--)
+            {
+               // wartosc pod przekatna w kolumnie o indeksie w(!)
+               double wartosc = m(ww, w);
+               if (wartosc != 0) // gdy nie zero
+               {
+                  for (k = w; k < 2 * Cols; k++)
+                  {
+                     m.data[ww][k] -= (wartosc * m.data[w][k]);
+                     //m(ww, k) -= (wartosc * m(w, k));
+                  }
+               } 
+            } 
+         }
+         
+         // jeszcze tylko ekstrakcja wartosci macierzy odwroconej
+         
+         Matrix res (Rows, Cols);
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+            {
+               res.data[w][k] = m.data[w][k + Cols];
+               //res(w, k) = m(w, k + Cols);
+            }
+         }
+         
+         result_status = 0; // OK
+         return res;
+      }
+      
+      /** Method extracts matrix values as a std::vector of std::vectors. 
+         * The original matrix is not modified
+         * @return a std::vector of std::vectors of values
+         */
+      
+      std::vector<std::vector<T>> to2DimVector() const
+      {
+         return data;
+      }
+      
+      
+      /** The method returns a Frobenius norm of a matrix. 
+       \f[ \| \mathbf{A} \|_F = \sum_{i, j} a_{ij}^2  \f]
+       Frobenius norm of a matrix is a sum of squares of all its elements.
+       */
+      T Frobenius_norm () const 
+      {
+         T suma {};
+         
+         for (auto & w : data)
+            for (auto & e : w)
+            {
+               auto e2 = e * e;
+               suma = suma + e2;
+            }
+            
+         return suma;
+      }
+      
+   
+      /** Method for printing a matrix. */
+      template<class U> 
+      friend std::ostream & operator<< (std::ostream & ss, const Matrix<U> & m);
+      
+   };
+
+
+
+//////////////////////////////
+   template<class T>
+   std::ostream & operator<< (std::ostream & ss, const  Matrix<T> & m)
+   {
+      int w, k;
+      for (w = 0; w < m.Rows; w++)
+      {
+         for (k = 0; k < m.Cols; k++)
+         {
+            T wartosc = m.data[w][k];
+            ss << wartosc << " ";
+         }
+         ss << std::endl;
+      }   
+      return ss;
+   }
+
+}
+
+#endif

@@ -1,0 +1,26 @@
+/** @file */ 
+
+#ifndef DATUM_COMPLETE_H
+#define DATUM_COMPLETE_H
+
+#include <vector>
+#include "datum.h"
+#include "number-complete.h"
+
+namespace ksi
+{
+   class datum_complete : public datum
+   {
+   
+   public:
+      virtual ~datum_complete();
+      
+      virtual datum * clone() const;
+      virtual std::size_t getNumberOfAttributes() const;
+      
+      virtual double & at (std::size_t attr) = 0;
+   };
+}
+
+#endif
+

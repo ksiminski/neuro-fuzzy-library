@@ -1,0 +1,409 @@
+/** @file */ 
+#include "CTuple.h"
+#include "debugger.h"
+
+#include <vector>
+#include <math.h>
+#include <stdlib.h>
+#include "functions.h"
+
+using namespace std;
+
+vector<double> CTuple::getAllData() const
+{
+    return data;
+}
+
+void CTuple::CutOffDecisionFromAttributes()
+{
+    data.pop_back(); // that's all folks :-)
+}
+
+CTuple CTuple::concatenate(const CTuple & t1, const CTuple & t2)
+{
+    int size1 = t1.Count();
+    int size2 = t2.Count();
+
+    vector<double> vector1, vector2;
+    vector1 = t1.getAllData();
+    vector2 = t2.getAllData();
+    vector1.insert(vector1.end(), vector2.begin(), vector2.end());
+    return  CTuple(vector1);
+}
+
+void CTuple::SetAllValues(double value)
+{
+    for (int i = data.size() - 1; i > -1; i--)
+        data[i] = value;
+}
+
+
+double CTuple::split_tuple()
+{
+    double   last = data.back();
+
+    data.pop_back();
+    return last;
+}
+
+
+void CTuple::add(double d)
+{
+    data.push_back(d);
+}
+
+
+CTuple CTuple::square_root()
+{
+    CTuple   wynik(*this);
+
+    for (int i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = sqrt(data[i]);
+    return wynik;
+}
+
+
+CTuple CTuple::square()
+{
+    CTuple   wynik(*this);
+
+    for (int i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = data[i] * data[i];
+    return wynik;
+}
+
+
+
+CTuple CTuple::power(double expo)
+{
+    CTuple   wynik(*this);
+
+    for (int i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = pow(data[i], expo);
+    return wynik;
+}
+
+
+
+CTuple CTuple::absvalue()
+{
+    CTuple   wynik(*this);
+
+    for (int i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = data[i] > 0 ? data[i] : -data[i];
+    return wynik;
+}
+
+CTuple::CTuple(int length, double value)
+{
+    int   i;
+    data = vector<double> (length);
+   
+    for (i = 0; i < length; i++)
+        data[i] = value;
+
+    decision = 0;
+    tuple_class = -1;
+}
+
+
+CTuple & CTuple::operator+=(const CTuple &d)
+{
+    int   i = 0;
+   
+    for (i = data.size() - 1; i > -1; i--)
+        data[i] += d.data[i];
+    return *this;
+}
+
+ostream & operator << (ostream & s, const CTuple & k)
+{
+    int i;
+    int nElements = k.data.size();
+    for (i = 0; i < nElements - 1; i++)
+        s << k.data[i] << "  ";
+    s << k.data[i];
+    return s;
+}
+
+ostream & operator << (ostream & s, CTuple & k)
+{
+    int len = k.Count();
+    int i;
+    for (i = 0; i < len - 1; i++)
+    {
+        s << k[i] << " ";
+    }
+    s << k[i];
+
+    return s;
+}
+
+bool CTuple::operator==(CTuple & prawa)
+{
+    for (int i = data.size() - 1; i >= 0; i--)
+        if (data[i] != prawa[i])
+            return false;
+    return true;
+}
+
+CTuple::CTuple()
+{
+    data = vector<double> (0);
+    tuple_class = -1;
+    decision = 0;
+}
+
+CTuple::CTuple(const vector<double> &dane)
+{
+    data = dane;
+    tuple_class = -1;
+    decision = 0;
+	
+}
+
+//CTuple::CTuple(const CTuple &wzor)
+//{
+//    data = wzor.data;
+//    tuple_class = wzor.tuple_class;
+//    renumerated_tuple_class = wzor.renumerated_tuple_class;
+//    decision = wzor.decision;
+//    additional = wzor.additional;
+//}
+CTuple CTuple:: operator*(const double m)
+{
+    CTuple   wynik(*this);
+    int      i = 0;
+
+    for (i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] *= m;
+    return wynik;
+}
+
+
+double CTuple::operator* (const CTuple & k)
+{
+    if (Count() != k.Count())
+    {
+        PSTART;
+        PVALUE(this->data.size()) << " ";
+        PVALUE(k.data.size());
+        PTHROW(std::range_error);
+    }
+
+    int i;
+    double suma = 0;
+    for (i = Count() - 1; i >= 0; i--)
+        suma += this->getItem(i) * k.getItem(i);
+
+    return suma;
+}
+
+CTuple CTuple:: operator/(const double d)
+{
+    CTuple   wynik(*this);
+    int      i = 0;
+    //----------------------
+
+    for (i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = data[i] / d;
+    return wynik;
+}
+
+
+CTuple CTuple::operator/ (const CTuple & krotka)
+{
+    if (Count() != krotka.Count())
+    {
+        PSTART;
+        PLINE;
+        PVALUE(Count()) << " | ";
+        PVALUE(krotka.Count()) << endl;
+        PTHROW(std::domain_error);
+    }
+
+    CTuple zwrot (krotka);
+    for (int i = Count() - 1; i >= 0; i--)
+    {
+        if (krotka.data[i] != 0.0)
+            zwrot.data[i] = this->data[i] / krotka.data[i];
+        else
+        {
+            PSTART;
+            PLINE;
+            PMESSAGE("Division by zero!");
+            PTHROW(std::domain_error);
+        }
+
+    }
+
+    return zwrot;
+
+}
+
+CTuple CTuple::operator-(const CTuple &d)
+{
+    CTuple   wynik(*this);
+    int      i = 0;
+ 
+    for (i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = data[i] - d.data[i];
+    return wynik;
+}
+
+
+CTuple CTuple::operator+(const CTuple &d)
+{
+    CTuple   wynik(*this);
+    int      i = 0;
+
+    for (i = wynik.data.size() - 1; i > -1; i--)
+        wynik.data[i] = data[i] + d.data[i];
+    return wynik;
+}
+
+
+double scalar_product(const CTuple &a, const CTuple &b)
+{
+    if (a.data.size() != b.data.size())
+    {
+        PSTART;
+        PLINE;
+        PVALUE(a.data.size()) << endl;
+        PVALUE(b.data.size()) << endl;
+        PTHROW(std::domain_error);
+    }
+    else
+    {
+        double   wynik = 0;
+        
+        for (int i = a.data.size() - 1; i > -1; i--)
+            wynik += (a.data[i] * b.data[i]);
+        return wynik;
+    }
+}
+
+void CTuple::randomize(int length, double min, double max)
+{
+    data = vector<double> (length);
+    for (int i = 0; i < length; i++)
+        data[i] = (max - min) * (double) rand() / RAND_MAX + min;
+}
+
+
+
+double & CTuple::operator[](int i) 
+{
+    if (i >= 0 && i < (int) data.size())
+        return data[i];
+    else  // errors 
+    {
+        PSTART;
+        PLINE;
+        if (i < 0)
+            PVALUE(i) << endl;
+        else 
+            PVALUE(data.size()) << ", ";
+        PVALUE(i) << endl;
+        PTHROW(std::out_of_range);
+    }
+}
+void CTuple::setAdditionalInfo(string & info)
+{
+    additional = info;
+}
+string CTuple::getAdditionalInfo()
+{
+    return additional;
+}
+void CTuple::setClass (int c)
+{
+    tuple_class = c;
+}
+void CTuple::setDecision(double d)
+{
+    this->decision = d;
+}
+void CTuple::setCensored(bool c)
+{
+	bCensored = c;
+}
+bool CTuple::getCensored() const
+{
+	return bCensored;
+}
+
+double CTuple::getSurvival() const
+{
+	return dbSurvival;
+}
+void CTuple::setSurvival(double sur)
+{
+	dbSurvival = sur;
+}
+
+void CTuple::setRenumeratedClass(int c)
+{
+    renumerated_tuple_class = c;
+}
+
+int CTuple::getRenumeratedClass() const 
+{
+    return renumerated_tuple_class;
+}
+void CTuple::setDecisionParameterValue(double d)
+{
+    decision = d;
+}
+void CTuple::setWeight(double w)
+{
+    weight = w;
+}
+double CTuple::getWeight()
+{
+    return weight;
+}
+int CTuple::getClass() const 
+{
+    return tuple_class;
+}
+double CTuple::getDecision() const 
+{
+    return decision;
+}
+
+double CTuple::getItem(int i) const
+{
+    if (i >= 0 && i < (int) data.size())
+        return data[i];
+    else  // errors 
+    {
+        PSTART;
+        PLINE;
+        if (i < 0)
+            PVALUE(i) << endl;
+        else PVALUE(data.size()) << ", ";
+        PVALUE(i) << endl;
+        PTHROW(std::out_of_range);
+    }
+}
+
+
+
+int CTuple::Count() const
+{
+    return data.size();
+}
+
+
+double CTuple::sum()
+{
+    double                     suma = 0;
+    vector<double>::iterator   iter;
+  
+    for (iter = data.begin(); iter != data.end(); ++iter)
+        suma += *iter;
+    return suma;
+}
+
+

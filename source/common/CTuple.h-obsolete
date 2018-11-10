@@ -1,0 +1,173 @@
+/** @file */ 
+#ifndef CTUPLE_H
+#define CTUPLE_H
+
+#include <vector>
+#include <iostream>
+using namespace std;
+
+class CTuple
+{
+
+#pragma region FIELDS
+	vector<double> data;
+	int tuple_class;          // class of the tuple
+	int renumerated_tuple_class; // number of class after renumeration
+	double decision;    // decision parameter value
+	string additional;
+	double weight;  // tuples weight
+	bool bCensored; // true if data censored
+	double dbSurvival; 
+#pragma endregion
+
+#pragma region ARITHMETICS
+
+public:
+
+	
+	CTuple square_root();
+
+	
+	CTuple square();
+
+	
+	CTuple power(double expo);
+
+	
+	CTuple absvalue();
+
+
+	
+	double sum();
+#pragma endregion
+
+#pragma region OPERATORS
+
+public:
+	
+	CTuple &operator+=(const CTuple &d);
+	bool operator==(CTuple & prawa);
+	friend ostream & operator << (ostream & s, const CTuple & k);
+	friend ostream & operator << (ostream & s, CTuple & k);
+
+	
+	CTuple operator*(const double m);
+
+	
+	double operator* (const CTuple & k);
+
+	
+	CTuple operator/(const double d);
+
+	
+	CTuple operator/ (const CTuple & krotka);
+
+	
+	CTuple operator-(const CTuple &d);
+	CTuple operator+(const CTuple &d);
+
+	
+	double & operator[](int i) ;
+
+	
+	friend double scalar_product(const CTuple &a, const CTuple &b);
+
+
+#pragma endregion
+
+#pragma region CONSTRUCTORS
+
+public:
+	
+	CTuple();
+
+	
+	CTuple(const vector<double> &dane);
+
+	
+	//CTuple(const CTuple &wzor);
+
+	
+	CTuple(int length, double value);
+
+#pragma endregion
+
+#pragma region GETTERS
+public:
+
+	double getSurvival() const;
+
+	bool getCensored() const;
+
+	
+	double getItem(int i) const;
+
+	
+	int getClass() const;
+
+	
+	int getRenumeratedClass() const;
+
+	
+	double getDecision() const;
+
+	string getAdditionalInfo();
+
+	
+	vector<double> getAllData() const;
+
+	
+	double getWeight();
+
+#pragma endregion
+
+#pragma region SETTERS
+public:
+
+	void setSurvival(double);
+	void setCensored(bool);
+
+	void setDecision(double);
+
+	void setAdditionalInfo(string & info);
+	
+	void setClass(int c);
+
+	void setRenumeratedClass(int c);
+	
+	void setDecisionParameterValue(double d);
+
+	
+	void setWeight(double);
+#pragma endregion
+
+#pragma region VARIOUS METHODS
+public:
+
+	
+	double split_tuple();
+
+	
+	void add(double d);
+
+	
+	int Count() const;
+
+	void randomize(int length, double min, double max);
+
+	
+	void SetAllValues(double value);
+
+	
+	static CTuple concatenate(const CTuple & t1, const CTuple & t2);
+
+	
+	void CutOffDecisionFromAttributes();
+
+#pragma endregion
+
+
+};
+
+#endif 
+

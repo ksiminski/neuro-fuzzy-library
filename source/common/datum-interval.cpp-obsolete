@@ -1,0 +1,8 @@
+/** @file */ 
+
+#include "datum-interval.h"
+
+
+ksi::datum_interval::~datum_interval()
+{
+}

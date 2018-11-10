@@ -1,0 +1,40 @@
+/** @file */  
+
+#ifndef CLUSTER_GAUSSIAN_H
+#define CLUSTER_GAUSSIAN_H
+
+
+#include <vector>
+#include "cluster.h"
+#include "../descriptors/descriptor.h"
+
+namespace ksi
+{
+   class cluster_gaussian : public cluster
+   {
+   protected: 
+      /** mean values of Gaussian function -- cores of fuzzy sets */
+      std::vector<double> _means;
+      /** standard deviations of Gaussian functions -- fuzzifications of fuzzy sets */
+      std::vector<double> _fuzzifications;
+   public:
+      cluster_gaussian (const std::vector<double> & mean, 
+                        const std::vector<double> & fuzzification);
+      
+      virtual ~cluster_gaussian();
+      
+      /** Method for cloning a cluster.
+         @return a pointer to a polymophic object 
+         @date   2017-12-27
+         @author Krzysztof Siminski 
+        */
+      virtual cluster * clone () const ;
+      virtual descriptor * makeDescriptor(int attribute);
+      
+      
+   };
+   
+}
+
+#endif
+

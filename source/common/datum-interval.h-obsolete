@@ -1,0 +1,22 @@
+/** @file */ 
+
+#ifndef DATUM_INCOMPLETE_H
+#define DATUM_INCOMPLETE_H
+
+#include <vector>
+#include "datum.h"
+#include "number-interval.h"
+
+namespace ksi
+{
+   class datum_interval : public datum
+   {
+   protected:
+      std::vector<number_interval> attributes;
+   public:
+      virtual ~datum_interval();
+   };
+}
+
+#endif
+

@@ -1,0 +1,47 @@
+/** @file */ 
+
+
+#include <sstream>
+#include <vector>
+
+#include "cluster.h"
+#include "cluster-gaussian.h"
+#include "../descriptors/descriptor.h"
+#include "../descriptors/descriptor-gaussian.h"
+#include "../service/debug.h"
+
+ksi::cluster_gaussian::cluster_gaussian(const std::vector<double> & means, 
+                                        const std::vector<double> & fuzzifications)
+{
+   _means = means;
+   _fuzzifications = fuzzifications;
+}
+
+
+ksi::cluster_gaussian::~cluster_gaussian()
+{
+}
+
+
+ksi::cluster * ksi::cluster_gaussian::clone() const
+{
+   return new ksi::cluster_gaussian (_means, _fuzzifications);
+}
+
+ksi::descriptor* ksi::cluster_gaussian::makeDescriptor(int attribute)
+{
+   try
+   {
+      if (attribute >= 0 and attribute < _means.size())
+         return new ksi::descriptor_gaussian (_means[attribute],
+                                             _fuzzifications[attribute]);
+      else
+      {  
+         std::stringstream ss;
+         ss << "Incorrect attribute number: " << attribute <<".";
+         ss << "Legal values from 0 to " << _means.size() << ".";
+         throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, ss.str());
+      }
+   }
+   CATCH;
+}

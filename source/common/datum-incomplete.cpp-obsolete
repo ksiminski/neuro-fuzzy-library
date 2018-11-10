@@ -1,0 +1,8 @@
+/** @file */ 
+
+#include "datum-incomplete.h"
+
+
+ksi::datum_incomplete::~datum_incomplete()
+{
+}

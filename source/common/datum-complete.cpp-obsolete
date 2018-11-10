@@ -1,0 +1,36 @@
+/** @file */ 
+
+#include <sstream>
+#include "datum-complete.h"
+#include "../service/debug.h"
+
+ksi::datum_complete::~datum_complete()
+{
+}
+
+ksi::datum* ksi::datum_complete::clone() const
+{
+   return ksi::datum_complete(*this);
+}
+
+std::size_t ksi::datum_complete::getNumberOfAttributes() const
+{
+   return attributes.size();
+}
+
+
+double & ksi::datum_complete::at (std::size_t attr)
+{
+   try 
+   {
+      if (attr < 0 and attributes.size () <= attr)
+      {
+         std::stringstream ss;
+         ss << "Incorrect index, attr == " << attr << "." << std::endl;
+         ss << "Valid values: 0, ... , " << attributes.size() - 1 << std::endl;
+         throw ss.str();
+      }
+   }
+   CATCH;
+}
+
