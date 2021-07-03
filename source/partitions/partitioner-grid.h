@@ -28,7 +28,10 @@ namespace ksi
        @param ds dataset to partition 
        @todo  */
       virtual partition doPartition(const ksi::dataset& ds);
-      virtual partitioner * clone ();
+      virtual partitioner * clone () const;
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };
 }
 

@@ -2,15 +2,25 @@
 
 
 #include "number.h"
+#include "../common/extensional-fuzzy-number-gaussian.h"
 
 #include <algorithm>
 #include <iostream>
 
-ksi::number::~number()
+ksi::number::number(const ksi::ext_fuzzy_number_gaussian & wzor)
 {
+    value = wzor.get_value();
+    _sigma = wzor.get_sigma();
+    
+   upper_value = value;
+   _isInterval = false;
+   _exists = true;   
    
 }
 
+ksi::number::~number()
+{
+}
 
 ksi::number* ksi::number::clone() const
 {
@@ -38,11 +48,23 @@ bool ksi::number::isInterval() const
    return _isInterval;
 }
 
+ksi::ext_fuzzy_number_gaussian ksi::number::getFuzzyNumber() const
+{
+   return ext_fuzzy_number_gaussian (value, _sigma);
+}
+
+void ksi::number::setSigma(double sigma)
+{
+   _sigma = sigma;
+}
+
+
 ksi::number::number()
 {
    value = upper_value = 0.0;
    _isInterval = false;
    _exists = false;
+   _sigma = 0.0;
 }
 
 
@@ -51,7 +73,8 @@ ksi::number::number(double lower, double upper)
    value = lower;
    upper_value = upper;
    _isInterval = true;
-   _exists = true;
+   _exists = true;   
+   _sigma = 0.0;
 }
 
 ksi::number::number(const ksi::number& wzor)
@@ -60,6 +83,7 @@ ksi::number::number(const ksi::number& wzor)
    upper_value = wzor.upper_value;
    _isInterval = wzor._isInterval;
    _exists = wzor._exists;
+   _sigma = wzor._sigma;
 }
 
 ksi::number::number(ksi::number&& wzor)
@@ -68,6 +92,7 @@ ksi::number::number(ksi::number&& wzor)
    std::swap(upper_value, wzor.upper_value);
    std::swap(_isInterval, wzor._isInterval);
    std::swap(_exists, wzor._exists);
+   std::swap(_sigma, wzor._sigma);
 }
 
 ksi::number::number(double d)
@@ -75,6 +100,7 @@ ksi::number::number(double d)
    value = upper_value = d;
    _isInterval = false;
    _exists = true;
+   _sigma = 0.0;
 }
 
 ksi::number& ksi::number::operator=(const ksi::number& wzor)
@@ -86,6 +112,7 @@ ksi::number& ksi::number::operator=(const ksi::number& wzor)
    upper_value = wzor.upper_value;
    _isInterval = wzor._isInterval;
    _exists = wzor._exists;
+   _sigma = wzor._sigma;
    
    return *this;
 }
@@ -99,6 +126,7 @@ ksi::number& ksi::number::operator=(ksi::number&& wzor)
    std::swap(upper_value, wzor.upper_value);
    std::swap(_isInterval, wzor._isInterval);
    std::swap(_exists, wzor._exists);
+   std::swap(_sigma, wzor._sigma);
    
    return *this;
 }
@@ -109,6 +137,7 @@ void ksi::number::setValue(double lower, double upper)
    upper_value = upper;
    _isInterval = true;
    _exists = true;
+   _sigma = 0.0;
 }
 
 void ksi::number::setValue(double d)
@@ -116,6 +145,7 @@ void ksi::number::setValue(double d)
    value = upper_value = d;
    _isInterval = false;
    _exists = true;
+   _sigma = 0.0;
 }
 
 void ksi::number::setValue(bool exists)
@@ -125,13 +155,13 @@ void ksi::number::setValue(bool exists)
 
 ksi::number ksi::number::operator+(const ksi::number& right)
 {
-   if (not _exists and not right._exists)
+   if      (not _exists and not right._exists)
       return ksi::number(false);
-   else if (_exists and not right._exists)
+   else if (    _exists and not right._exists)
       return *this;
-   else if (not _exists and right._exists)
+   else if (not _exists and     right._exists)
       return right;   
-   else if (this->_exists and right._exists)
+   else //if (_exists and right._exists)
    {
       ksi::number result (0.0);
   
@@ -139,19 +169,20 @@ ksi::number ksi::number::operator+(const ksi::number& right)
       result.upper_value = upper_value + right.upper_value;
       result._exists = true; 
       result._isInterval = _isInterval or right._isInterval;
+      result._sigma = std::max(_sigma, right._sigma);
       return result;
    }
 }
 
 ksi::number& ksi::number::operator+=(const ksi::number& right)
 {
-   if (not _exists and not right._exists)
+   if      (not _exists and not right._exists)
       return *this;
-   else if (_exists and not right._exists)
+   else if (    _exists and not right._exists)
       return *this;
-   else if (not _exists and right._exists)
+   else if (not _exists and     right._exists)
       return *this = right;   
-   else if (this->_exists and right._exists)
+   else //if (    _exists and     right._exists)
    {
       *this = *this + right;
       return *this;
@@ -171,7 +202,6 @@ ksi::number ksi::number::operator/(const double d)
    }
 }
 
-
 namespace ksi 
 {
    std::ostream & operator<< (std::ostream & ss, const ksi::number & d)
@@ -181,9 +211,11 @@ namespace ksi
       else
       {
          if (d.isInterval())
-            ss << "(" << d.value << ", " << d.upper_value << ")";
+            ss << "[" << d.value << ", " << d.upper_value << "]";
          else
             ss << d.value;
+         if (d._sigma > 0.0)
+            ss << " (" << d._sigma << ")";
       }
       return ss;
    }

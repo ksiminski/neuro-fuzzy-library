@@ -34,7 +34,12 @@ namespace ksi
         * @date 2018-04-07 
         */
       std::size_t elapsed_seconds();
- 
+
+      /** @return elapsed milliseconds 
+        * @date 2019-03-10 
+        */
+      std::size_t elapsed_milliseconds();
+
    };
 }
 

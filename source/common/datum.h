@@ -5,7 +5,9 @@
 
 #include <vector>
 #include <utility>
+
 #include "number.h"
+#include "../service/debug.h"
 
 namespace ksi
 {
@@ -14,10 +16,12 @@ namespace ksi
    protected:
       
       /** missing value symbol for printing */
-      const char MISSING_VALUE_SYMBOL = '?';
+      char MISSING_VALUE_SYMBOL = '?';
       
       /** attributes of a datum */
       std::vector<number *> attributes;
+      /** decision value */
+      number * pDecision = nullptr;
       /** weight of a datum item, default value 1.0 */
       double _weight = 1.0;
       /** typicality of data item */
@@ -43,12 +47,21 @@ namespace ksi
       void push_back (number * p);
       /** The method pushes back a copy of number (allocates memory!) */
       void push_back (const number & d);
+      /** The method sets decision. The previous decision is deleted and new set. The parameter is copied. 
+       @param p decision to set */
+      void setDecision (const number * p);
+      /** The method sets decision. The previous decision is deleted and new set. The parameter is copied. 
+       @param p decision to set */
+      void setDecision (const number & p);
+      /** The method get decision.
+       @return a constant pointer to decision */
+      const number * getDecision () const;
       
       virtual datum * clone() const;
       
       std::size_t getNumberOfAttributes() const ;
       
-      /** @return returns a reference to an attribute 
+      /** @return returns a pointer to an attribute 
           @exception ksi::exception is attr in not a valid index
           */
       number * at (std::size_t attr) const;   
@@ -98,6 +111,11 @@ namespace ksi
        * @param on true -- switches on; false -- switches off. 
        */
       void switchTypicality (bool on);
+      
+      
+      /** @return true, if typicality is on;
+                  false, if typicality is off*/
+      bool isTypicalityOn () const ;
      
       
       /** The method splits the datum into two data.
@@ -107,6 +125,15 @@ namespace ksi
        * @return a pair of data  
        */
       std::pair<datum, datum> splitDatum(std::size_t last_index) const ;
+      
+      
+      /** The method cuts off the last attribute.
+       * The first datum has attributes 0 .. number_of_attributes - 2.
+       * The second datum has attribute number_of_attributes - 1. The original datum is not modified.
+       * @return a pair of data: first with all but last attribute and second with the last attribute  
+       * @date 2019-07-18
+       */
+      std::pair<datum, datum> cutOffLastAttribute() const ;
       
       /** The method sets _id. */
       void setID (std::size_t id);

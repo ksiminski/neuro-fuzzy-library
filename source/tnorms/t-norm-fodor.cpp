@@ -21,6 +21,7 @@ ksi::t_norm * ksi::t_norm_fodor::clone() const
 std::ostream & ksi::t_norm_fodor::Print(std::ostream & ss) const
 {
    ss << "Fodor t-norm";
+   return ss;
 }
 
 ksi::t_norm_fodor::~t_norm_fodor()

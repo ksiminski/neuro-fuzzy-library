@@ -139,7 +139,7 @@ namespace ksi
       virtual partition doPartition(const ksi::dataset& ds);
       
       
-      virtual partitioner * clone ();
+      virtual partitioner * clone () const;
       
       /** The method calculates fuzzification of a gaussian cluster with formula:
        * \f[ 
@@ -170,6 +170,9 @@ namespace ksi
          const std::vector<std::vector<double>> & mB,
          const std::vector<std::vector<double>> & mX,
          const std::vector<double>              & wW);
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };
 }
 

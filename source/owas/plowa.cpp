@@ -2,22 +2,65 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include "plowa.h"
- 
-ksi::plowa::plowa(const ksi::plowa & wzor)
+
+bool ksi::plowa::are_parameters_valid() const
 {
-   _N = wzor._N;
+    return _N <= 0 or _pl > _pc or _pl < 0 or _pc < 0;
+}
+
+
+std::string ksi::plowa::print_owa_parameters() const
+{
+    std::stringstream ss;
+    ss << "PLOWA (_N == " << _N << ", _pc == " << _pc << ", _pl == " << _pl << ")";    
+    return ss.str();
+}
+
+ 
+ksi::plowa::plowa(const ksi::plowa & wzor) : owa (wzor)
+{
    _pc = wzor._pc;
    _pl = wzor._pl;
 }
 
 ksi::plowa::plowa(std::size_t N, double pc, double pl) 
-  : _N (N), _pc (pc), _pl (pl)
+  : owa (N), _pc (pc), _pl (pl)
 {
   
 }
 
+ksi::plowa::plowa(ksi::plowa && wzor) : owa (wzor)
+{
+   std::swap(_pc, wzor._pc);
+   std::swap(_pl, wzor._pl);
+}
+
+ksi::plowa & ksi::plowa::operator=(const ksi::plowa & wzor)
+{
+    if (this == & wzor)
+       return *this;
+    
+    ksi::owa::operator=(wzor);    
+   _pc = wzor._pc;
+   _pl = wzor._pl;
+    
+    return *this;
+}
+
+ksi::plowa & ksi::plowa::operator=(ksi::plowa && wzor)
+{
+    if (this == & wzor)
+       return *this;
+    
+    ksi::owa::operator=(wzor);    
+    std::swap(_pc, wzor._pc);
+    std::swap(_pl, wzor._pl);
+    
+    return *this;
+}
 
 ksi::plowa::~plowa()
 {

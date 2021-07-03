@@ -18,6 +18,12 @@ namespace ksi
     
    public:
       uowa ();
+      
+      uowa (const uowa & wzor);
+      uowa (uowa && wzor);
+      
+      uowa & operator= (const uowa & wzor);
+      uowa & operator= (uowa && wzor);
        
       /** @return always 1.0 */
       virtual double value (std::size_t n) const;
@@ -27,6 +33,11 @@ namespace ksi
       virtual ~uowa();
       
       virtual std::ostream & Print (std::ostream & ss) const;
+      
+      virtual std::string print_owa_parameters() const;
+      
+      /** @return false if parameters are not valid  */
+      virtual bool are_parameters_valid() const;
    };
 }
 

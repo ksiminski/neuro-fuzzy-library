@@ -30,7 +30,7 @@ namespace ksi
        * @return The method returs a vector of pointers to neighbours.
        * @date 2018-05-14 
        */
-      std::vector<datum *> getNeighbours(const ksi::dataset& ds, std::size_t r, const std::vector< std::size_t >& indices_of_missing_attr, int _k);
+      std::vector< const ksi::datum* > getNeighbours(const dataset& ds, std::size_t r, const std::vector< std::size_t >& indices_of_missing_attr, int _k);
  
    public:
       data_modifier_imputer_values_from_knn (); 
@@ -44,8 +44,8 @@ namespace ksi
       virtual ~data_modifier_imputer_values_from_knn();
       virtual data_modifier * clone() const;
  
-      /** The method first calls the modify method in the next data_modifier.
-       * The method removes from the dataset incomplete datums.
+      /** The method first removes from the dataset incomplete datums.
+       * Then calls the modify method in the next data_modifier. 
        * @param  ds dataset to modify
        * @throw ksi::exception if _k not set
        * @author Krzysztof Siminski 

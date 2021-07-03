@@ -19,6 +19,7 @@ ksi::t_norm * ksi::t_norm_drastic::clone() const
 std::ostream & ksi::t_norm_drastic::Print(std::ostream & ss) const
 {
    ss << "drastic t-norm";
+   return ss;
 }
 
 ksi::t_norm_drastic::~t_norm_drastic()

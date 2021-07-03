@@ -118,7 +118,7 @@ ksi::rule & ksi::rule::operator = (const ksi::rule & r)
    else
       pConsequence = nullptr;
    
-   
+   return *this;
 }
 
 ksi::rule::~rule()

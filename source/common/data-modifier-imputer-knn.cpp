@@ -7,7 +7,7 @@
 #include "data-modifier-imputer-knn.h"
 #include "dataset.h"
 #include "datum.h"
-#include "distance-euclidean-incomplete.h"
+#include "../metrics/metric-euclidean-incomplete.h"
 #include "../auxiliary/utility-math.h"
 #include "number.h"
 #include "../service/debug.h"
@@ -64,18 +64,18 @@ ksi::data_modifier_imputer_knn::data_modifier_imputer_knn (int k)
 
 
 
-std::vector<ksi::datum *> ksi::data_modifier_imputer_knn::getNeighbours(
+std::vector<const ksi::datum *> ksi::data_modifier_imputer_knn::getNeighbours(
    const dataset & ds, 
    std::size_t r, 
    std::size_t c, 
    int _k)
 {
-   ksi::distance_euclidean_incomplete distancer;
+   ksi::metric_euclidean_incomplete distancer;
    std::size_t size = ds.getNumberOfData();
    
    std::vector<ksi::distance_index> distances;
    
-   ksi::datum * pr = ds.getDatum(r);
+   const ksi::datum * pr = ds.getDatum(r);
    for (std::size_t i = 0; i < size; i++)
    {
       if (i != r and ds.exists(i, c)) // dla samego siebie nie bedziemy liczyc odleglosci
@@ -86,7 +86,7 @@ std::vector<ksi::datum *> ksi::data_modifier_imputer_knn::getNeighbours(
    }
    
    // OK, we have all distances, know we have to find _k neighbours:
-   std::vector<datum *> neighbours;
+   std::vector<const ksi::datum *> neighbours;
    for (int i = 0; i < _k ; i++)
    {
       auto dist_index = utility_math::k_th_element<distance_index>(

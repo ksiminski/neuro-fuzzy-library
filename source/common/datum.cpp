@@ -2,13 +2,23 @@
 
 #include <algorithm>
 #include <iomanip>
-#include "datum.h"
-#include "number.h"
+#include <sstream>
+
+#include "../common/datum.h"
+#include "../common/number.h"
 #include "../service/debug.h"
+#include "../service/exception.h"
+
+
+bool ksi::datum::isTypicalityOn() const
+{
+    return _typicalityON;
+}
+
 
 ksi::datum::datum()
 {
-   //debug(__FUNCTION__);
+   pDecision = nullptr;
 }
 
 
@@ -16,6 +26,8 @@ ksi::datum::~datum()
 {
    for (auto & p : attributes)
       delete p;
+   if (pDecision)
+       delete pDecision;
 }
 
 ksi::datum* ksi::datum::clone() const
@@ -26,45 +38,80 @@ ksi::datum* ksi::datum::clone() const
 
 ksi::datum::datum(const ksi::datum & d)
 {
-   for (auto & p : d.attributes)
-      attributes.push_back(p->clone());
-   _weight = d._weight;
-   _typicality = d._typicality;
-   _typicalityON = d._typicalityON;
-   _id = d._id;
-   _id_incomplete = d._id_incomplete;
+    try 
+    {
+        for (auto & p : d.attributes)
+        {
+            if (p)
+                    attributes.push_back(p->clone());
+            else 
+                throw std::string ("p == nullptr, empty desciptor");
+        }
+        if (d.pDecision)
+            pDecision = d.pDecision->clone();
+        else 
+            pDecision = nullptr;
+        
+        MISSING_VALUE_SYMBOL = d.MISSING_VALUE_SYMBOL;
+        _weight = d._weight;
+        _typicality = d._typicality;
+        _typicalityON = d._typicalityON;
+        _id = d._id;
+        _id_incomplete = d._id_incomplete;
+    }
+    CATCH;
 }
 
-ksi::datum::datum(ksi::datum && d)
+ksi::datum::datum(ksi::datum && d) : pDecision (nullptr)
 {
    std::swap (attributes, d.attributes);
+   std::swap (pDecision, d.pDecision);
+   std::swap (MISSING_VALUE_SYMBOL, d.MISSING_VALUE_SYMBOL);
    std::swap (_weight, d._weight);
+   
    std::swap (_typicality, d._typicality);
    std::swap (_typicalityON, d._typicalityON);   
    std::swap (_id, d._id);
    std::swap (_id_incomplete, d._id_incomplete);
 }
 
+
 ksi::datum& ksi::datum::operator=(const ksi::datum & d)
 {
-   if (this == & d)
-      return *this;
-   
-   for (auto & p : attributes)
-      delete p;
-   
-   attributes.clear();
-   
-   for (auto & p : d.attributes)
-      attributes.push_back(p->clone());  
-   
-   _weight = d._weight;
-   _typicality = d._typicality;
-   _typicalityON = d._typicalityON;
-   _id = d._id;
-   _id_incomplete = d._id_incomplete;
-   
-   return *this;
+    try 
+    {
+        if (this == & d)
+            return *this;
+        
+        for (auto & p : attributes)
+            delete p;
+        if (pDecision)
+            delete pDecision;
+        
+        attributes.clear();
+        
+        for (auto & p : d.attributes)
+        {
+            if (p)
+                attributes.push_back(p->clone());  
+            else 
+                throw std::string ("empty desciptor (null pointer)");
+        }
+        if (d.pDecision)
+            pDecision = d.pDecision->clone();
+        else
+            pDecision = nullptr;
+        
+        MISSING_VALUE_SYMBOL = d.MISSING_VALUE_SYMBOL;
+        _weight = d._weight;
+        _typicality = d._typicality;
+        _typicalityON = d._typicalityON;
+        _id = d._id;
+        _id_incomplete = d._id_incomplete;
+        
+        return *this;
+    }
+    CATCH;
 }
 
 
@@ -74,7 +121,10 @@ ksi::datum & ksi::datum::operator=(ksi::datum && d)
       return *this;
    
    std::swap (attributes, d.attributes);
+   std::swap (pDecision, d.pDecision);
+   std::swap (MISSING_VALUE_SYMBOL, d.MISSING_VALUE_SYMBOL);
    std::swap (_weight, d._weight);
+   
    std::swap (_typicality, d._typicality);
    std::swap (_typicalityON, d._typicalityON);
    std::swap (_id, d._id);
@@ -132,6 +182,13 @@ std::pair<ksi::datum, ksi::datum> ksi::datum::splitDatum(std::size_t last_index)
    
    return { left, right };
 }
+
+std::pair<ksi::datum, ksi::datum> ksi::datum::cutOffLastAttribute() const
+{
+   std::size_t nAttr = attributes.size();
+   return splitDatum(nAttr - 1); 
+}
+
 
 
 std::vector< double > ksi::datum::getVector() const
@@ -201,7 +258,7 @@ namespace ksi
       for (std::size_t k = 0; k < cols; k++)
       {
          if (d.at(k)->exists())
-            ss << std::setw(WIDTH) << d.at(k)->getValue();
+            ss << std::setw(WIDTH) << *(d.at(k));
          else
             ss << std::setw(WIDTH) << d.MISSING_VALUE_SYMBOL;
       }
@@ -210,6 +267,8 @@ namespace ksi
       {
          ss << " (typicality == " << d.getTypicality() << ")";
       }
+      if (d.pDecision)
+          ss <<" (decision == " << *d.pDecision << ")"; 
       
       //ss << " id == " << d.getID() << ", id_incomplete == " << d.getIDincomplete();
       
@@ -217,3 +276,27 @@ namespace ksi
       return ss;
    }
 }
+
+
+void ksi::datum::setDecision(const ksi::number& p)
+{
+    if (pDecision)
+        delete pDecision;
+    pDecision = p.clone();
+}
+
+void ksi::datum::setDecision(const ksi::number* p)
+{
+    if (pDecision)
+        delete pDecision;
+    if (p)
+        pDecision = p->clone();
+    else
+        pDecision = nullptr;
+}
+
+const ksi::number * ksi::datum::getDecision() const
+{
+    return pDecision;
+}
+

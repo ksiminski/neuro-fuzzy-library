@@ -28,7 +28,10 @@ namespace ksi
       /** The method clones a partitioner and return a pointer to a cloned 
        *  object. This method is implemented in derived classes.
        **/
-      virtual partitioner * clone () = 0;
+      virtual partitioner * clone () const = 0;
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };
 }
 

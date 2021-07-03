@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <sstream>
+
 #include "../common/dataset.h"
 #include "../descriptors/descriptor-gaussian.h"
 #include "../owas/owa.h"
@@ -14,17 +16,32 @@
 #include "partition.h"
 #include "fcom.h"
 #include "../service/debug.h"
+#include "../service/exception.h"
 
+std::string ksi::fcom::getAbbreviation() const
+{
+    return std::string ("fcom");   
+}
 
  
-ksi::partitioner * ksi::fcom::clone()
+ksi::partitioner * ksi::fcom::clone() const
 {
    auto p = new ksi::fcom(*this);
    
    return p;
 }
 
-ksi::fcom::fcom(const ksi::fcom& wzor) : fcm (wzor)
+ksi::fcom::fcom(const int number_of_clusters, double frobenius_epsilon, const ksi::dissimilarity& dis, const ksi::owa& owa)  
+{
+    _nClusters = number_of_clusters;
+//     debug(_nClusters);
+    _epsilon = frobenius_epsilon;
+    pDissimilarity = dis.clone();
+    pOwa = owa.clone();
+}
+
+
+ksi::fcom::fcom(const ksi::fcom& wzor) : /*fcm_T<double>(wzor),*/ fcm (wzor)
 {
    if (wzor.pDissimilarity)
       pDissimilarity = wzor.pDissimilarity->clone();
@@ -37,7 +54,7 @@ ksi::fcom::fcom(const ksi::fcom& wzor) : fcm (wzor)
       pOwa = nullptr; 
    
    this->betas = wzor.betas;
-   this->fs = wzor.fs; 
+   this->fs = wzor.fs;  
    
 }
 
@@ -46,7 +63,7 @@ ksi::fcom::fcom (ksi::fcom && wzor) : fcm (wzor)
    std::swap (pDissimilarity, wzor.pDissimilarity);
    std::swap (pOwa, wzor.pOwa);
    std::swap(this->betas, wzor.betas);
-   std::swap(this->fs, wzor.fs);
+   std::swap(this->fs, wzor.fs);  
 
 }
 
@@ -74,8 +91,7 @@ ksi::fcom & ksi::fcom::operator=(const ksi::fcom & wzor)
    
    
    this->betas = wzor.betas;
-   this->fs = wzor.fs;  
-
+   this->fs = wzor.fs;   
    
    return *this;
 }
@@ -90,7 +106,7 @@ ksi::fcom & ksi::fcom::operator=(ksi::fcom && wzor)
    std::swap (pDissimilarity, wzor.pDissimilarity);
    std::swap (pOwa, wzor.pOwa);
    std::swap(this->betas, wzor.betas);
-   std::swap(this->fs, wzor.fs);
+   std::swap(this->fs, wzor.fs);  
    
    return *this;
 }
@@ -99,7 +115,9 @@ ksi::fcom & ksi::fcom::operator=(ksi::fcom && wzor)
 ksi::fcom::fcom()
 {
    pDissimilarity = nullptr;
-   pOwa = nullptr;
+   pOwa = nullptr; 
+   _epsilon = -1;
+
 }
 
 ksi::fcom::~fcom()
@@ -114,7 +132,7 @@ ksi::fcom::~fcom()
 }
 
 
-ksi::fcom::fcom (const ksi::dissimilarity & dis, const ksi::owa & Owa)
+ksi::fcom::fcom (const ksi::dissimilarity & dis, const ksi::owa & Owa) : fcom ()
 {
    pDissimilarity = dis.clone();
    pOwa = Owa.clone();
@@ -197,19 +215,35 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
                   }
                );
                
+               /*
                // step 4: calculate alphas using (18) or (19) or uniform weighting:
                if (iter < NUMBER_OF_ITERATIONS_WITHOUT_WEIGHTING)
                   pOwa = & Uowa;
                else 
                   pOwa = pOriginalOwa;
-               
+               */
                // step 5: calculate alphas for all clusters:
                for (std::size_t x = 0; x < nX; x++)
-                  alphas[x] *= pOwa->value(residuals[x].post_sort_index + 1);
+               {
+                   alphas[x] *= pOwa->value(residuals[x].post_sort_index + 1);
+                   
+//                    if (pOwa == pOriginalOwa)
+//                    {
+//                       debug(pOwa->print_owa_parameters());
+//                       debug(alphas[x]);
+//                       debug(pOwa->value(residuals[x].post_sort_index + 1));
+//                    }
+                   
+                  // debug(residuals[x].post_sort_index + 1);
+                  // debug(pOwa->value(residuals[x].post_sort_index + 1));
+               }
             }
             // step 6: update the prototype for the ath attributes with (23):
             std::vector<double> licznik   (nAttr, 0.0),
                                 mianownik (nAttr, 0.0);
+
+            std::vector<bool> modifikowane (nAttr, false); ///@warning tymczasowo
+                                
             for (std::size_t x = 0; x < nX; x++)
             {
                auto um = pow (mU[c][x], _m);
@@ -221,21 +255,33 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
                {
                   auto h = pDissimilarity->dis(mX[x][a] - mV[c][a]);
                   auto alfa = alphas[x];
-                  
                   auto common = alfa * um * h;
+
                   licznik[a]   += (common * mX[x][a]);
-                  mianownik[a] += common;
+                  mianownik[a] +=  common;
                }
             }
-            for (int a = 0; a < nAttr; a++)
-               newCentre[a] = licznik[a] / mianownik[a];
             
+            
+            for (int a = 0; a < nAttr; a++)
+            {
+               if (mianownik[a] == 0)
+               {
+                   std::stringstream ss;
+                   ss << mianownik << std::endl;
+                   ss << modifikowane << std::endl;
+                   throw ksi::exception (ss.str());
+               }
+               newCentre[a] = licznik[a] / mianownik[a];
+            }
             frob = Frobenius_norm_of_difference(mV[c], newCentre);
             mV[c] = newCentre;
             
             iter++;
+            
          }
          while (frob > _epsilon and iter < 100);  /// @bug tymczasowo
+//          debug(iter);
 //          if (iter >= 100)
 //          {
 //             debug(iter);
@@ -244,6 +290,10 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
          
          betas[c] = alphas;
          
+         
+//         for (const auto & a : alphas)
+//             debug(a);
+
          // reset original pointer to OWA object
          pOwa = pOriginalOwa;
       }
@@ -275,7 +325,7 @@ std::vector<std::vector<double>> ksi::fcom::modifyPartitionMatrix(
       for (int x = 0; x < nX; x++)
       {
          double suma = 0.0;
-         std::vector<double> distances;
+         std::vector<double> distances (_nClusters);
          for (int k = 0; k < _nClusters; k++)
          {
             double distance = 0;
@@ -289,13 +339,15 @@ std::vector<std::vector<double>> ksi::fcom::modifyPartitionMatrix(
             // w srodku klastra, to jest problem numeryczny.
             if (fabs(distance) < EPSILON)
             {
-               distances.push_back(-1.0); // oznaczam, ze przyklad lezy w srodku klastra
-               suma = -1.0;  // suma nie bedzie potrzebna
+               //distances.push_back(-1.0); // oznaczam, ze przyklad lezy w srodku klastra
+                distances[k] = -1.0;
+                suma = -1.0;  // suma nie bedzie potrzebna
             }
             else if (suma != -1.0) // zaden z przykladow nie lezy w srodku klastra
             {         
                double potega = pow(distance, expo);
-               distances.push_back(potega);
+               //distances.push_back(potega);
+               distances[k] = potega;
                suma += (betas[k][x] * potega);
             }
          } 
@@ -319,6 +371,8 @@ std::vector<std::vector<double>> ksi::fcom::modifyPartitionMatrix(
             else 
             {
                mU[k][x] = fs[x] * distances[k] / suma;
+//                if (suma == 0.0)
+//                    throw ksi::exception ("suma == " + std::to_string(suma));
             }
          }
       }
@@ -344,7 +398,9 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
 {
    try
    {
-      //throw std::string ("The method is not implemented!");
+//       debug(_nClusters); 
+       
+      const int MAXITER = 100; 
       
       if (_nClusters < 1)
          throw std::string ("unknown number of clusters");
@@ -357,13 +413,21 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
       if (pOwa == nullptr)
          throw std::string ("no ordered weighted averaging object");
       
-      const auto pOriginalOwa = pOwa;
-      ksi::uowa uniformOWA;
+      if (not pOwa->are_parameters_valid())
+      {
+          std::stringstream ss;
+          ss << "invalid OWA parameters: " << pOwa->print_owa_parameters();
+          throw ksi::exception(ss.str());
+      }
       
       auto mX = ds.getMatrix();
       std::size_t nAttr = ds.getNumberOfAttributes();
       std::size_t nX    = ds.getNumberOfData();
       
+      pOwa->set_number_of_data_items(nX);
+      const auto pOriginalOwa = pOwa;
+      ksi::uowa uniformOWA;
+      uniformOWA.set_number_of_data_items(nX);
       
       
       std::vector<std::vector<double>> mV, mVnext;
@@ -398,7 +462,7 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
          
       // itinialize typicalities with 1
       for (std::size_t x = 0; x < nX; x++)
-         ds.getDatum(x)->setTypicality(1.0);
+         ds.getDatumNonConst(x)->setTypicality(1.0);
 
       //         set iteration index j = 1
       int iter = 0;
@@ -428,6 +492,7 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
                f = std::max(f, betas[c][x]);
             fs[x] = f;
          }
+         
       
          // step 5: if Frobenius norm ||V(j + 1) - V(j)|| > ksi, then j++ 
          //         and go to step 2 else stop
@@ -435,8 +500,15 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
          
          mV = mVnext;
          iter++; 
+//          debug(iter);
          
-      } while ( frob > _epsilon);
+      } while ( ( frob > _epsilon or iter < NUMBER_OF_ITERATIONS_WITHOUT_WEIGHTING)  and iter < MAXITER);
+//       debug(iter);
+//       debug(frob);
+//       debug(_epsilon);
+      
+      if (iter >= MAXITER)
+          debug("max iteration number reached");
       
       // The original pointer has to be reset:
       pOwa = pOriginalOwa;
@@ -444,14 +516,16 @@ ksi::partition ksi::fcom::doPartition(const ksi::dataset & ds)
       // trzeba jeszcze wpisac typowosci do danych:
       for (std::size_t x = 0; x < nX; x++)
       {
-         ds.getDatum(x)->setTypicality(fs[x]);
+         ds.getDatumNonConst(x)->setTypicality(fs[x]);
       }
       
       // przeksztalcenie do postaci zbiorow gaussowskich
       ksi::partition part;
       
       // wyznaczenie rozmycia klastra
-      auto mS = calculateClusterFuzzification(mU, mV, betas, mX);
+     // auto mS = calculateClusterFuzzification(mU, mV, betas, mX);
+      auto mS = calculateClusterFuzzification(mU, mV, fs, mX);
+      
       
       for (int c = 0; c < _nClusters; c++)
       {
@@ -493,12 +567,50 @@ std::vector< std::vector<double>> ksi::fcom::calculateClusterFuzzification(
             {
                double diff = mX[x][a] - mV[c][a];
                auto distance = (diff * diff * pDissimilarity->dis(diff));
-               sumUXV[a] += betaum * distance * distance;
+               sumUXV[a] += betaum * distance;
             }
          }
          
          for (std::size_t a = 0; a < nAttr; a++)
             mS[c][a] = sqrt (sumUXV[a] / sumBetaUm);
+      }
+      return mS;
+   }
+   return std::vector< std::vector<double>>();
+}
+
+
+std::vector<std::vector<double>> ksi::fcom::calculateClusterFuzzification(
+         const std::vector< std::vector<double>> & mU,
+         const std::vector< std::vector<double>> & mV, 
+         const std::vector< double> & typicalities,
+         const std::vector< std::vector<double>> & mX)
+{
+   auto mS (mV);
+   if (mX.size() > 0)
+   {
+      std::size_t nX = mX.size();
+      std::size_t nAttr = mX[0].size();
+      
+      for (int c = 0; c < _nClusters; c++)
+      {
+         double sumTypicalityUm = 0.0;
+         std::vector<double> sumUXV (nAttr, 0.0);
+         for (std::size_t x = 0; x < nX; x++)
+         {
+            double typicality_um = typicalities[x] * pow(mU[c][x], _m);
+            sumTypicalityUm += typicality_um;
+            
+            for (std::size_t a = 0; a < nAttr; a++)
+            {
+               double diff = mX[x][a] - mV[c][a];
+               auto distance = (diff * diff);
+               sumUXV[a] += typicality_um * distance;
+            }
+         }
+         
+         for (std::size_t a = 0; a < nAttr; a++)
+            mS[c][a] = sqrt (sumUXV[a] / sumTypicalityUm);
       }
       return mS;
    }

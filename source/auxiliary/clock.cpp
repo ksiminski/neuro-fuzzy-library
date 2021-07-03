@@ -14,7 +14,7 @@ std::chrono::high_resolution_clock::time_point ksi::clock::start()
 
 std::chrono::high_resolution_clock::time_point ksi::clock::stop()
 {
-   _stop = _zegar.now();
+   return _stop = _zegar.now();
 }
 
 std::size_t ksi::clock::elapsed_seconds()
@@ -22,4 +22,8 @@ std::size_t ksi::clock::elapsed_seconds()
    return (std::chrono::duration_cast<std::chrono::seconds>(_stop - _start)).count();
 }
 
+std::size_t ksi::clock::elapsed_milliseconds()
+{
+    return (std::chrono::duration_cast<std::chrono::milliseconds>(_stop - _start)).count();
+}
 

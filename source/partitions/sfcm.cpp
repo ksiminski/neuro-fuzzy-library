@@ -4,6 +4,7 @@
 #include <vector> 
 #include <algorithm>
 #include <numeric>
+ 
 
 #include "../common/dataset.h"
 #include "../descriptors/descriptor-gaussian.h"
@@ -14,15 +15,62 @@
 #include "sfcm.h"
 #include "../service/debug.h"
 
- 
- 
-ksi::partitioner * ksi::sfcm::clone() 
+ksi::sfcm::sfcm()
 {
-   ksi::sfcm * p = new ksi::sfcm();
-   p->setFuzzification(_m);
-   p->setNumberOfClusters(_nClusters);
-   p->setNumberOfIterations(_nIterations);
-   p->setWeigthExponent (_weight_exponent);
+}
+
+ksi::sfcm::sfcm(const int nClusters, const int nClusteringIterations) : /*fcm_T<double>(nClusters, nClusteringIterations),*/ fcm (nClusters, nClusteringIterations)  
+{
+}
+
+ksi::sfcm::sfcm(const ksi::sfcm& wzor) : /*fcm_T<double>(wzor),*/ fcm (wzor)
+{
+    _weight_exponent = wzor._weight_exponent;
+}
+
+
+ksi::sfcm::sfcm(ksi::sfcm && wzor) : /*fcm_T<double>(wzor),*/ fcm (wzor)
+{
+    std::swap (_weight_exponent, wzor._weight_exponent);
+}
+
+
+ksi::sfcm & ksi::sfcm::operator=(const ksi::sfcm& wzor)
+{
+    if (this == &wzor)
+        return *this;
+    
+    ksi::fcm::operator=(wzor);
+    ksi::fcm_T<double>::operator=(wzor);   
+    
+    _weight_exponent = wzor._weight_exponent;
+    
+    return *this;
+}
+
+ksi::sfcm & ksi::sfcm::operator=(ksi::sfcm && wzor)
+{
+    if (this == &wzor)
+        return *this;
+    
+    ksi::fcm::operator=(wzor);
+    ksi::fcm_T<double>::operator=(wzor);  
+    
+    std::swap (_weight_exponent, wzor._weight_exponent);
+    
+    return *this;
+}
+ 
+ 
+std::string ksi::sfcm::getAbbreviation() const
+{
+   return std::string ("sfcm");
+}
+
+ 
+ksi::partitioner * ksi::sfcm::clone()  const
+{
+   ksi::sfcm * p = new ksi::sfcm(*this);
    
    return p;
 }

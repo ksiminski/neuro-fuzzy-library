@@ -9,6 +9,11 @@
 #include "../descriptors/descriptor-semitriangular.h"
 #include "../common/dataset.h"
 
+std::string ksi::partitioner_grid::getAbbreviation() const
+{
+   return std::string ("partitioner_grid");
+}
+
 
 ksi::partitioner_grid::~partitioner_grid()
 {
@@ -25,7 +30,7 @@ ksi::partitioner_grid::partitioner_grid()
 }
 
 
-ksi::partitioner * ksi::partitioner_grid::clone()
+ksi::partitioner * ksi::partitioner_grid::clone() const
 {
    return new ksi::partitioner_grid (_number_of_intervals);
 }

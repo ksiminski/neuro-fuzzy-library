@@ -4,6 +4,7 @@
 #include <utility>
 #include <algorithm>
 #include <cmath>
+#include <sstream>
 
 #include "rulebase.h"
 #include "rule.h"

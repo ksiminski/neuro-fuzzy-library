@@ -39,8 +39,8 @@ namespace ksi
       virtual ~data_modifier_imputer_knn_average();
       virtual data_modifier * clone() const;
  
-      /** The method first calls the modify method in the next data_modifier.
-       * The method removes from the dataset incomplete datums.
+      /** The method first imputes data.
+       * Then calls the modify method in the next data_modifier. 
        * @param  ds dataset to modify
        * @throw ksi::exception if _k not set
        * @author Krzysztof Siminski

@@ -66,8 +66,19 @@ namespace ksi
       /** The method sets the weight expoment **/
       void setWeigthExponent (double WeightExponent);
       virtual partition doPartition(const ksi::dataset & ds);
-      virtual partitioner * clone ();
-      virtual ~sfcm ();      
+      virtual partitioner * clone () const;
+      virtual ~sfcm ();  
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
+      
+      sfcm ();
+      sfcm (const int nClusters, const int nClusteringIterations);
+      
+      sfcm (const sfcm & wzor);
+      sfcm (sfcm && wzor);
+      sfcm & operator = (const sfcm & wzor);
+      sfcm & operator = (sfcm && wzor);
    };
 
 }

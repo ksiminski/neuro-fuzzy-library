@@ -6,3 +6,8 @@
 ksi::partitioner::~partitioner()
 {
 }
+
+std::string ksi::partitioner::getAbbreviation() const
+{
+   return std::string ("partitioner");
+}

@@ -86,7 +86,7 @@ void ksi::exp_002::execute()
          auto number_of_items = DataSet.getNumberOfData();
          // In this clustering algorithm each data item can have its own weight.
          for (std::size_t i = 0; i < number_of_items; i++)
-            DataSet.getDatum(i)->setWeight(weights[i]);
+            DataSet.getDatumNonConst(i)->setWeight(weights[i]);
          
          ksi::fcm_conditional algorithm;
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);

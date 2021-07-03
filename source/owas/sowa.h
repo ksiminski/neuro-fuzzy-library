@@ -22,13 +22,18 @@ namespace ksi
        */
       double _pc;
       double _pa;
-      double _N;
    public:
       /** The constructor sets _N, _pc, and _pa. */
       sowa (std::size_t N, double pc, double pa);
+      sowa (double pc, double pa);
+      
       sowa (const sowa & wzor);
-       
-      /** @return value of PLOWA */
+      sowa (sowa && wzor);
+      
+      sowa & operator= (const sowa & wzor);
+      sowa & operator= (sowa && wzor);
+      
+      /** @return value of SOWA */
       virtual double value (std::size_t k) const;
       
       /** cloning method */
@@ -36,6 +41,11 @@ namespace ksi
       virtual ~sowa();
       
       virtual std::ostream & Print (std::ostream & ss) const;
+      
+      virtual std::string print_owa_parameters() const;
+      
+      /** @return false if parameters are not valid  */
+      virtual bool are_parameters_valid() const;
    };
 }
 

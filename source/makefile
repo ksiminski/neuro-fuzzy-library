@@ -37,7 +37,8 @@ $(exec) :
 
 # kompilacja pliku wykonywalnego:
 
-$(exec)/main : $(exec)/main.o              \
+$(exec)/main : $(exec)/main.o                      \
+               $(exec)/exception.o                 \
                $(exec)/number.o                    \
                $(exec)/datum.o                     \
                $(exec)/dataset.o                   \
@@ -52,9 +53,15 @@ $(exec)/main : $(exec)/main.o              \
                $(exec)/data-modifier-imputer-knn-average.o   \
                $(exec)/data-modifier-imputer-knn-median.o    \
                $(exec)/data-modifier-imputer-values-from-knn.o   \
+               $(exec)/extensional-fuzzy-number-gaussian.o       \
                $(exec)/error-calculator.o          \
                $(exec)/error-RMSE.o                \
                $(exec)/error-MAE.o                 \
+               $(exec)/metric.o 	                  \
+               $(exec)/metric-euclidean.o              \
+               $(exec)/metric-euclidean-incomplete.o   \
+               $(exec)/metric-minkowski.o              \
+               $(exec)/metric-minkowski-weighted.o     \
                $(exec)/distance.o 	                 \
                $(exec)/distance-euclidean.o              \
                $(exec)/distance-euclidean-incomplete.o   \
@@ -121,9 +128,12 @@ $(exec)/main : $(exec)/main.o              \
                $(exec)/partitioner.o               \
                $(exec)/partitioner-grid.o          \
                $(exec)/fcm.o                       \
+               $(exec)/fcm_generic.o               \
+               $(exec)/fcm-T.o                     \
                $(exec)/fcm-possibilistic.o         \
                $(exec)/fcm-conditional.o           \
                $(exec)/fcom.o                      \
+               $(exec)/fubi.o                      \
                $(exec)/sfcm.o                      \
                $(exec)/rfcm.o                      \
                $(exec)/rsfcm.o                     \
@@ -139,6 +149,10 @@ $(exec)/main : $(exec)/main.o              \
                $(exec)/simulated-annealing-gaussian.o  \
                $(exec)/tempus.o           \
                $(exec)/clock.o            \
+               $(exec)/colours.o          \
+               $(exec)/mathematics.o      \
+               $(exec)/vector-operators.o \
+               $(exec)/print.o            \
                $(exec)/roc.o              \
                $(exec)/confusion-matrix.o \
                $(exec)/least-error-squares-regression.o   \
@@ -179,6 +193,8 @@ $(exec)/bool_array.o : memory/nvwa/bool_array.cpp
 # debug:
 $(exec)/debug.o : service/debug.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/exception.o : service/exception.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
 	
 # common:
@@ -190,6 +206,8 @@ $(exec)/datum-interval.o : common/datum-interval.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/datum-incomplete.o : common/datum-incomplete.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/extensional-fuzzy-number-gaussian.o : common/extensional-fuzzy-number-gaussian.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
 $(exec)/dataset.o : common/dataset.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
@@ -218,6 +236,9 @@ $(exec)/data-modifier-imputer-knn-median.o : common/data-modifier-imputer-knn-me
 $(exec)/data-modifier-imputer-values-from-knn.o : common/data-modifier-imputer-values-from-knn.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 
+
+
+
 $(exec)/distance.o : common/distance.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/distance-euclidean.o : common/distance-euclidean.cpp
@@ -236,6 +257,17 @@ $(exec)/error-RMSE.o : common/error-RMSE.cpp
 $(exec)/error-MAE.o : common/error-MAE.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 
+# metrics 
+$(exec)/metric.o : metrics/metric.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/metric-euclidean.o : metrics/metric-euclidean.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/metric-euclidean-incomplete.o : metrics/metric-euclidean-incomplete.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/metric-minkowski.o : metrics/metric-minkowski.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/metric-minkowski-weighted.o : metrics/metric-minkowski-weighted.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
 
 # readers
@@ -388,11 +420,17 @@ $(exec)/partitioner-grid.o : partitions/partitioner-grid.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/fcm.o : partitions/fcm.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/fcm_generic.o : partitions/fcm_generic.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/fcm-T.o : partitions/fcm-T.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/fcm-possibilistic.o : partitions/fcm-possibilistic.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/fcm-conditional.o : partitions/fcm-conditional.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/fcom.o : partitions/fcom.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/fubi.o : partitions/fubi.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/sfcm.o : partitions/sfcm.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
@@ -406,6 +444,8 @@ $(exec)/rfcom.o : partitions/rfcom.cpp
 # auxiliary
 $(exec)/utility-string.o : auxiliary/utility-string.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/colours.o : auxiliary/colours.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/tempus.o : auxiliary/tempus.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/roc.o : auxiliary/roc.cpp
@@ -417,6 +457,12 @@ $(exec)/least-error-squares-regression.o : auxiliary/least-error-squares-regress
 $(exec)/confusion-matrix.o : auxiliary/confusion-matrix.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
 $(exec)/clock.o : auxiliary/clock.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
+$(exec)/mathematics.o : auxiliary/mathematics.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^
+$(exec)/vector-operators.o : auxiliary/vector-operators.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
+$(exec)/print.o : auxiliary/print.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
 
 

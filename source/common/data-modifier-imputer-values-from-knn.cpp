@@ -2,14 +2,15 @@
 
  
 
-#include "data-modifier.h"
-#include "data-modifier-imputer-knn.h"
-#include "data-modifier-imputer-values-from-knn.h"
-#include "dataset.h"
-#include "datum.h"
-#include "distance-euclidean-incomplete.h"
+#include "../common/data-modifier.h"
+#include "../common/data-modifier-imputer-knn.h"
+#include "../common/data-modifier-imputer-values-from-knn.h"
+#include "../common/dataset.h"
+#include "../common/datum.h"
+#include "../common/number.h"
+#include "../metrics/metric.h"
+#include "../metrics/metric-euclidean-incomplete.h"
 #include "../auxiliary/utility-math.h"
-#include "number.h"
 #include "../service/debug.h"
 
 
@@ -111,7 +112,7 @@ void ksi::data_modifier_imputer_values_from_knn::modify(ksi::dataset & ds)
          }
          else // incomplete data item 
          {
-            std::vector<datum *> neighbours = getNeighbours (ds, r, indices_of_missing_attr, _k);
+            std::vector<const ksi::datum *> neighbours = getNeighbours (ds, r, indices_of_missing_attr, _k);
             
             auto id = ds.getDatum(r)->getID();
             for (int k = 0; k < _k; k++)
@@ -151,18 +152,18 @@ void ksi::data_modifier_imputer_values_from_knn::modify(ksi::dataset & ds)
    CATCH;
 }
 
-std::vector< ksi::datum* >  ksi::data_modifier_imputer_values_from_knn::getNeighbours(
+std::vector< const ksi::datum* >  ksi::data_modifier_imputer_values_from_knn::getNeighbours(
    const ksi::dataset & ds, 
    std::size_t r, 
    const std::vector<std::size_t> & indices_of_missing_attr, 
    int _k)
 {
-   ksi::distance_euclidean_incomplete distancer;
+   ksi::metric_euclidean_incomplete distancer;
    std::size_t size = ds.getNumberOfData();
    std::size_t number_of_missing_attributes = indices_of_missing_attr.size();
    std::vector<ksi::distance_index> distances;
    
-   ksi::datum * pr = ds.getDatum(r);
+   const ksi::datum * pr = ds.getDatum(r);
    for (std::size_t i = 0; i < size; i++)
    {
       if (i != r) // dla samego siebie nie bedziemy liczyc odleglosci
@@ -184,7 +185,7 @@ std::vector< ksi::datum* >  ksi::data_modifier_imputer_values_from_knn::getNeigh
    }
    
    // OK, we have all distances, know we have to find _k neighbours:
-   std::vector<datum *> neighbours;
+   std::vector<const ksi::datum *> neighbours;
    for (int i = 0; i < _k ; i++)
    {
       auto dist_index = utility_math::k_th_element<distance_index>(

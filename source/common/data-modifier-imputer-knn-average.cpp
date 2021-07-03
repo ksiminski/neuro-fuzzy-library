@@ -7,7 +7,7 @@
 #include "data-modifier-imputer-knn-average.h"
 #include "dataset.h"
 #include "datum.h"
-#include "distance-euclidean-incomplete.h"
+#include "../metrics/metric-euclidean-incomplete.h"
 #include "../auxiliary/utility-math.h"
 #include "number.h"
 #include "../service/debug.h"
@@ -125,7 +125,7 @@ void ksi::data_modifier_imputer_knn_average::modify(ksi::dataset & ds)
                {
                   // nie ma wartosci dla atrybutu c
                   // trzeba znalezc odleglosci do wszystkich sasiadow
-                  std::vector<datum *> neighbours = getNeighbours (ds, r, c, _k);
+                  std::vector<const ksi::datum *> neighbours = getNeighbours (ds, r, c, _k);
                   double attrSum = 0.0;
                   for (auto & p : neighbours)
                      attrSum += p->at(c)->getValue();

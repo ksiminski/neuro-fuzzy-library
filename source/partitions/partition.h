@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include "cluster.h"
+#include "../common/extensional-fuzzy-number-gaussian.h"
 
 namespace ksi
 {
@@ -18,6 +19,11 @@ namespace ksi
    protected:
       std::vector<cluster *> clusters;
       
+      /** partition matrix */
+      std::vector<std::vector<double>> U;
+      /** cluster centres */
+      std::vector<std::vector<double>> V;
+      
    public:
       ~partition();
       partition ();
@@ -25,6 +31,11 @@ namespace ksi
       partition (partition &&);
       partition & operator= (const partition &);
       partition & operator= (partition &&);
+      
+      /** The operator merges two partitions. 
+       @date 2019-02-27
+       */
+      partition & operator += (const partition & right);
       
       /** Method adds a cluster to the partition. The method creates a new cluster (with new operator)
          @date   2017-12-28
@@ -47,7 +58,44 @@ namespace ksi
        */
       cluster * getCluster (std::size_t index);
       
+      /** @return number of clusters in partition 
+       *  @date 2018-12-16
+       */
+      std::size_t getNumberOfClusters () const ;
+            
+      /** @return partition matrix */
+      std::vector<std::vector<double>> getPartitionMatrix () const;
+      /** @return cluster centres 
+       *  @date 2018-12-16
+       */
+      std::vector<std::vector<double>> getClusterCentres () const; 
       
+ 
+      
+      /** The method sets partition matrix.
+       @param partition_matrix a matrix to set 
+       @date 2018-12-16
+       */
+      void setPartitionMatrix (const std::vector<std::vector<double>> & partition_matrix);
+
+      /** The method sets partition matrix.
+       @param partition_matrix a matrix to set, it is set with cores of gaussian extensional numbers
+       @date 2019-01-24o
+       */
+      void setPartitionMatrix (const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & partition_matrix);
+      
+      /** The method sets cluster centres.
+       @param cluster_centres a matrix to set 
+       @date 2018-12-16
+       */
+      void setClusterCentres (const std::vector<std::vector<double>> & cluster_centres);
+
+      /** The method sets cluster centres.
+       @param cluster_centres a matrix to set, it is set with cores of gaussian extensional numbers
+       @date 2019-01-24
+       */
+      void setClusterCentres (const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & cluster_centres);
+
       
       /** Output operator for partition class.
        @date 2018-01-02

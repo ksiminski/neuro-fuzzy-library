@@ -18,6 +18,7 @@ ksi::t_norm * ksi::t_norm_einstein::clone() const
 std::ostream & ksi::t_norm_einstein::Print (std::ostream & ss) const
 {
    ss << "Einstein t-norm";
+   return ss;
 }
 
 ksi::t_norm_einstein::~t_norm_einstein()

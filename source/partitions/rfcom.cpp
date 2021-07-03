@@ -17,7 +17,13 @@
 #include "rfcom.h"
 
 
-ksi::partitioner* ksi::rfcom::clone()
+std::string ksi::rfcom::getAbbreviation() const
+{
+   return std::string ("rfcom");
+}
+
+
+ksi::partitioner* ksi::rfcom::clone() const
 {
    return new ksi::rfcom(*this);
 }
@@ -96,6 +102,9 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
       ksi::dataset upperDataset (ds);   // imputed
       
       _pMarginaliser->modify(lowerDataset);
+      if (lowerDataset.getNumberOfData() == 0) // empty lower set 
+         return ksi::partition();
+      
       _pImputer->modify(upperDataset);
       
       std::size_t nAttr = ds.getNumberOfAttributes();
@@ -137,9 +146,9 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
       
       // itinialize typicalities in data items with 1
       for (std::size_t x = 0; x < nXLower; x++)
-         lowerDataset.getDatum(x)->setTypicality(1.0);
+         lowerDataset.getDatumNonConst(x)->setTypicality(1.0);
       for (std::size_t x = 0; x < nXUpper; x++)
-         upperDataset.getDatum(x)->setTypicality(1.0);
+         upperDataset.getDatumNonConst(x)->setTypicality(1.0);
       
       int iter = 0;
       double frob = 0;
@@ -199,9 +208,9 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
       
       // set elaborated typicalities into data set:
       for (std::size_t x = 0; x < nXLower; x++)
-         lowerDataset.getDatum(x)->setTypicality(globalTypicalitiesLower[x]);
+         lowerDataset.getDatumNonConst(x)->setTypicality(globalTypicalitiesLower[x]);
       for (std::size_t x = 0; x < nXUpper; x++)
-         upperDataset.getDatum(x)->setTypicality(globalTypicalitiesUpper[x]);
+         upperDataset.getDatumNonConst(x)->setTypicality(globalTypicalitiesUpper[x]);
       
       // elaborate descriptors of data partition:
       ksi::partition part;
@@ -225,7 +234,7 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
       auto nX = ds.getNumberOfData(); 
       for (std::size_t x = 0; x < nX; x++)
       {
-         ds.getDatum(x)->setTypicality(0.0);
+         ds.getDatumNonConst(x)->setTypicality(0.0);
       }
       
       for (std::size_t x = 0; x < nXLower; x++)
@@ -234,7 +243,7 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
          auto id         = lowerDataset.getDatum(x)->getID();
          
          auto ds_typicality = ds.getDatum(id)->getTypicality();
-         ds.getDatum(id)->setTypicality(std::max(typicality, ds_typicality));
+         ds.getDatumNonConst(id)->setTypicality(std::max(typicality, ds_typicality));
       }
       
       for (std::size_t x = 0; x < nXUpper; x++)
@@ -246,12 +255,12 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
          if (id_incomplete < 0)           
          {
             auto ds_typicality = ds.getDatum(id)->getTypicality();
-            ds.getDatum(id)->setTypicality(std::max(typicality, ds_typicality));
+            ds.getDatumNonConst(id)->setTypicality(std::max(typicality, ds_typicality));
          }
          else // imputed tuple, find parent (original tuple)
          {
             auto ds_typicality = ds.getDatum(id_incomplete)->getTypicality();
-            ds.getDatum(id_incomplete)->setTypicality(std::max(typicality, ds_typicality));
+            ds.getDatumNonConst(id_incomplete)->setTypicality(std::max(typicality, ds_typicality));
          }
       }
       return part;
