@@ -5,14 +5,16 @@
 
 #include <vector>
 #include <utility>
-#include "premise.h"
-#include "consequence.h"
-#include "rule.h"
 
+#include "../neuro-fuzzy/premise.h"
+#include "../neuro-fuzzy/consequence.h"
+#include "../neuro-fuzzy/rule.h"
+#include "../granules/granule.h"
+#include "../granules/set_of_cooperating_granules.h"
 
 namespace ksi
 {
-   class rulebase 
+   class rulebase : public set_of_cooperating_granules
    {
    protected:    
       /** rules of the rulebase */
@@ -79,7 +81,30 @@ namespace ksi
        */
       void print(std::ostream & ss);
       
+      /** The method validates the rule base. It checks if all rules are valid. 
+       @return true if all rules valid, otherwise false. */
+      virtual bool validate () const;
       
+      /** @return number of rules in the rulebase
+       @date 2019-09-18
+       */
+      virtual const std::size_t size() const override;
+      
+      virtual const ksi::granule * getGranule(int index) const override;
+      
+      virtual ksi::granule * getGranuleNonConst(int index) override;
+      
+      /** The method add a granule only if it represents a fuzzy rule.
+       */
+      void addGranule(const ksi::granule & g) override;
+      
+      /** The method add a granule only if it represents a fuzzy rule.
+       */
+      void addGranule(const ksi::granule * g) override;
+      
+      const ksi::number get_answer(const ksi::datum & d, ksi::granule * pg) override;
+      
+      virtual ksi::set_of_granules * clone_set_of_granules() const override;
        
    };
 }

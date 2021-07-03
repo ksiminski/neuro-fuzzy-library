@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include "descriptor.h"
+#include "../service/debug.h"
 
 std::string ksi::descriptor::toString() const
 {
@@ -56,5 +57,21 @@ double ksi::descriptor::getMembershipUpper(double x)
    return getMembership(x);
 }
 
- 
+ksi::ext_fuzzy_number_gaussian ksi::descriptor::getGranule() const
+{
+    try 
+    {
+        throw std::string ("not implemented!");
+    }
+    CATCH;
+}
 
+
+double ksi::descriptor::getFuzzification() const
+{
+    try 
+    {
+        throw std::string {"It is not possible to get fuzzification of the descriptor."};
+    }
+    CATCH;
+}

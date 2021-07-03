@@ -3,6 +3,7 @@
 #ifndef DESCRIPTOR_SEMITRIANGULAR_H
 #define DESCRIPTOR_SEMITRIANGULAR_H
 
+#include <random>
 #include "descriptor.h"
 
 namespace ksi
@@ -54,6 +55,9 @@ namespace ksi
       virtual double getCoreMean() const;
       
       void reset_parameters();
+      
+      /** @return The method returns a value  */
+      virtual double getRandomValue(std::default_random_engine & engine);
       
    };
 }

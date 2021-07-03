@@ -4,9 +4,10 @@
 #include <string>
 #include <sstream>
 #include <cmath>
+#include <random>
 
 #include "descriptor-gaussian.h"
-#include "../service/debug.h"
+#include "../service/debug.h" 
 
 #include <iostream>
 
@@ -32,6 +33,11 @@ double ksi::descriptor_gaussian::getCoreMean() const
    return _mean;
 }
 
+double ksi::descriptor_gaussian::getFuzzification() const
+{
+    return _stddev;
+}
+
 
 double ksi::descriptor_gaussian::getMembership (double x)
 {
@@ -39,7 +45,9 @@ double ksi::descriptor_gaussian::getMembership (double x)
    {
       if (_stddev <= 0.0)
       {
-         throw std::string("negative fuzzyfication of a gaussian set");
+          std::stringstream ss;
+          ss << "illegal value of fuzzyfication of a gaussian set: " << NAZWA(_stddev) << " == " << _stddev; 
+          throw ss.str();
       }
       double diff = x - _mean;
       return last_membership = std::exp ( - (diff * diff) / (2 * _stddev * _stddev) );
@@ -128,4 +136,19 @@ void ksi::descriptor_gaussian::reset_parameters()
 {
    _mean = _previous_mean;
    _stddev = _previous_stddev;   
+}
+
+ksi::ext_fuzzy_number_gaussian ksi::descriptor_gaussian::getGranule() const
+{
+    try 
+    {
+        return ksi::ext_fuzzy_number_gaussian (_mean, _stddev);
+    }
+    CATCH;
+}
+
+double ksi::descriptor_gaussian::getRandomValue(std::default_random_engine& engine)
+{
+    std::normal_distribution<double> distro (_mean, _stddev);
+    return distro(engine);
 }

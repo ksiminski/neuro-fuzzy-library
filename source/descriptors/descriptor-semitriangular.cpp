@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cmath>
+#include <random>
 
 #include "descriptor.h"
 #include "descriptor-semitriangular.h"
@@ -66,6 +67,22 @@ double ksi::descriptor_semitriangular::getMembership (double x)
       }
    }
 }
+
+double ksi::descriptor_semitriangular::getRandomValue(std::default_random_engine & engine)
+{
+    // lewy czy prawy?
+   if (_core < _support_extremum) // lewy
+   {
+       std::uniform_real_distribution<double> distro (_core - (_support_extremum - _core), _support_extremum);
+       return distro(engine);
+   }
+   else // prawy
+   {
+       std::uniform_real_distribution<double> distro (_support_extremum, _core + (_core - _support_extremum));
+       return distro(engine);
+   }
+}
+
 
 std::vector< double > ksi::descriptor_semitriangular::getMAconsequenceParameters() const
 {

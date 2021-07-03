@@ -1,5 +1,6 @@
 /** @file */ 
 
+#include <random>
 #include "descriptor-triangular.h"
 
 ksi::descriptor_triangular::~descriptor_triangular()
@@ -102,3 +103,9 @@ void ksi::descriptor_triangular::reset_parameters()
    _core        = _previous_core;
 }
 
+double ksi::descriptor_triangular::getRandomValue(std::default_random_engine& engine)
+{
+    std::uniform_real_distribution<double> distro (_support_min, _support_max);
+    
+    return distro(engine);
+}

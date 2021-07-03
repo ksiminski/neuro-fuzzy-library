@@ -5,19 +5,21 @@
 
 #include <utility>
 #include <vector>
+#include <chrono>
 
 #include "premise.h"
 #include "consequence.h"
 #include "../tnorms/t-norm.h"
+#include "../granules/granule.h"
 
 namespace ksi
 {
-   class rule 
+   class rule : public granule
    {
    protected:
-      premise * pPremise;
+      premise     * pPremise     = nullptr;
       consequence * pConsequence = nullptr;
-      t_norm * pTnorma = nullptr;
+      t_norm      * pTnorma      = nullptr;
       
       /** localisation of answer for the last data item */
       double last_localisation;
@@ -26,6 +28,7 @@ namespace ksi
       
    public:
       virtual ~rule();
+      rule ();
       rule (const rule &);
       rule (ksi::rule&& r);
       rule & operator = (const rule &);
@@ -57,7 +60,7 @@ namespace ksi
       void setPremise(const premise & P_L);
       /** The method allocates memory for a copy of C_L consequence. */
       void setConsequence(const consequence & C_L);
-      void getTnorm();
+     // void getTnorm();
       virtual rule * clone() const;
       
       /** The method sets all cummulated differentials to zero. */
@@ -70,9 +73,30 @@ namespace ksi
       
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
+      * @return the stream (ss -- parameter) the methods has printed into
       */
       virtual std::ostream & Print (std::ostream & ss) const;
+            
+      /** The method validates the rule. It checks if both premise and conclusion of the rule exist. 
+       @return true if both premise and conclusion exist, otherwise false. */
+      virtual bool validate () const;
       
+      //--------------------------------------------
+      // methods for granules
+      
+      virtual granule * clone_granule() const;
+       
+      /** The method elaborates quality of the granule. */
+      virtual void elaborate_quality ();
+       
+      /** @return The method returns a data_item represented by the data granule. */
+      virtual datum get_data_item ();
+       
+      /** @return The method returns a decision for a datum.
+          @param  d the datum to elaborated answer for .*/
+      virtual const number get_answer (const datum & d);
+      
+      virtual rule * get_rule () const;
    };
 }
 

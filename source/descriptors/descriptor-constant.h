@@ -50,6 +50,8 @@ namespace ksi
       
       void reset_parameters();
       
+      virtual double getRandomValue(std::default_random_engine & engine);
+      
    };
 }
 

@@ -10,6 +10,16 @@
 #include "rule.h"
 #include "../service/debug.h"
 
+bool ksi::rulebase::validate() const
+{
+    for (const auto & r : rules)
+        if (not r->validate())
+            return false;
+    
+    return true;
+}
+
+
 
 ksi::rulebase * ksi::rulebase::clone() const
 {
@@ -18,7 +28,11 @@ ksi::rulebase * ksi::rulebase::clone() const
 
 void ksi::rulebase::addRule(const ksi::rule & r)
 {
-   rules.push_back(r.clone());
+    try 
+    {
+        rules.push_back(r.clone());
+    }
+    CATCH;
 }
 
 double ksi::rulebase::answer(const std::vector<double> & X)
@@ -55,7 +69,7 @@ void ksi::rulebase::cummulate_differentials(const std::vector< double >& X,
    const double EPSILON = 1e-8;
    
    double odpowiedz = answer(X);
-   double roznica = odpowiedz - Yexpected;
+   double roznica = odpowiedz - Yexpected; // roznica odpowiedzi oczekiwanej od wypracowanej dla calego systemu
     
    double suma_wag = 0.0;
    for (auto & lw : last_rules_localisations_weights)
@@ -84,6 +98,7 @@ void ksi::rulebase::clear()
 {
    for (auto & p : rules)
       delete p;
+   rules.clear();
 }
 
 
@@ -159,6 +174,10 @@ ksi::rule & ksi::rulebase::operator[] (std::size_t index)
 {
    try
    {
+      if (rules.size() == 0)
+      {
+          throw std::string ("empty rule base (no rules present)");
+      }
       if (index < 0 or index >= rules.size())
       {
          std::stringstream ss;
@@ -187,5 +206,73 @@ void ksi::rulebase::print(std::ostream & ss)
    }
 }
 
+const std::size_t ksi::rulebase::size() const
+{
+    return rules.size();
+}
+
+const ksi::granule * ksi::rulebase::getGranule(int index) const
+{
+    if (index < 0 or index >= rules.size())
+        return nullptr;
+    
+    return rules[index];
+}
+
+ksi::granule * ksi::rulebase::getGranuleNonConst(int index)
+{
+    if (index < 0 or index >= rules.size())
+        return nullptr;
+    
+    return rules[index];
+}
 
  
+const ksi::number ksi::rulebase::get_answer(const ksi::datum & d, ksi::granule* pg)
+{
+    return this->answer(d.getVector());
+}
+
+void ksi::rulebase::addGranule(const ksi::granule & g)
+{
+    try 
+    {
+//         auto p = g.get_rule();
+//         if (p) // p points to a rule
+//             rules.push_back(p->clone());
+//         delete p;
+
+        auto p = g.get_rule();
+        if (p) // p points to a rule
+            rules.push_back(p);
+//         delete p;
+        
+    }
+    CATCH;
+}
+
+void ksi::rulebase::addGranule(const ksi::granule* g)
+{
+    try 
+    {
+        if (g)
+        {
+//             auto p = g->get_rule();
+//             if (p) // p points to a rule
+//                 rules.push_back(p->clone());
+//             delete p;
+
+            auto p = g->get_rule();
+            if (p) // p points to a rule
+                rules.push_back(p);
+        }
+    }
+    CATCH;
+}
+
+ksi::set_of_granules * ksi::rulebase::clone_set_of_granules() const
+{
+    return new ksi::rulebase(*this);
+}
+
+

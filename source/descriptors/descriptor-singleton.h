@@ -48,6 +48,8 @@ namespace ksi
       */
       virtual double getCoreMean() const;
       
+      virtual double getRandomValue(std::default_random_engine & engine);
+      
    };
 }
 

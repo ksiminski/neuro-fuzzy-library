@@ -13,6 +13,7 @@
 #include "../implications/implication.h"
 #include "../tnorms/t-norm.h"
 #include "../auxiliary/roc.h"
+ 
 
 namespace ksi
 {
@@ -53,8 +54,38 @@ namespace ksi
     */
    class subspace_annbfis : virtual public annbfis 
    {
+       
+   private: 
+       void init_name ();
       public:
       subspace_annbfis();
+      
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @date  2019-07-16
+       */
+      subspace_annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp);
+
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_type classification threshold type 
+       * @date  2019-12-22
+       */
+      subspace_annbfis (int nRules, int nClusteringIterations, int nTuningIterations,
+         double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, double positive_class, double negative_class, ksi::roc_threshold threshold_type);
+
       
       /** A constructor with implication.
        @param imp implication
@@ -73,9 +104,8 @@ namespace ksi
       virtual neuro_fuzzy_system * clone () const ;
       
 
-     
+   protected: 
       /** The method creates a fuzzy rulebase from the dataset.
-       * @param nRules number of rules
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
@@ -84,11 +114,14 @@ namespace ksi
        * @date  2018-02-24
        * @author Krzysztof Siminski 
        */
-      virtual void createFuzzyRulebase (int nRules, 
+      virtual void createFuzzyRulebase (
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
          const dataset & train); 
-        
+      
+       void set_name ();
+       virtual partition doPartition (const dataset & X);
+   public:     
    
       
    };

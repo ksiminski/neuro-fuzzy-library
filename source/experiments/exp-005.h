@@ -14,6 +14,7 @@ namespace ksi
     2. Takagi-Sugeno-Kang
     3. ANNBFIS
     4. subspace ANNBFIS
+    5. fuzzy biclustering subspace annbfis
     for classification and regression tasks.
     
     
@@ -22,9 +23,15 @@ namespace ksi
     */
    class exp_005 : virtual public experiment
    {
+      virtual void classification();
+      virtual void regression ();
+    
    public:
       /** The method executes an experiment. */
       virtual void execute ();
+      
+      exp_005 ();
+    
    };
 }
 

@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <string>
-#include "descriptor.h"
+#include "descriptor.h" 
 
 
 namespace ksi
@@ -29,11 +29,10 @@ namespace ksi
    public:
       /** @param mean mean :-)
           @param stddev standard deviation (also for upper standard deviation) */
-      descriptor_gaussian (double mean, double stddev);
+      descriptor_gaussian (double mean, double stddev); 
       descriptor_gaussian (const descriptor_gaussian & wzor);
       
-      virtual ~descriptor_gaussian();
-      
+      virtual ~descriptor_gaussian();   
       
       
       /** The method elaborates membership to the fuzzy set with formula
@@ -90,7 +89,18 @@ namespace ksi
       */
       virtual double getCoreMean() const;
       
+      /** The method return fuzzification of the descriptor.
+      */
+      virtual double getFuzzification () const;
+      
       void reset_parameters();
+      
+      /** @return The method returns a granule expressed with fuzzy gaussian extensional number
+       @date 2019-02-28 
+       */
+      virtual ksi::ext_fuzzy_number_gaussian getGranule() const;
+      
+      virtual double getRandomValue(std::default_random_engine & engine);
       
    };
 }

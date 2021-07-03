@@ -5,26 +5,44 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 
 #include "../common/dataset.h"
 #include "rulebase.h"
 #include "../implications/implication.h"
 #include "../tnorms/t-norm.h"
 #include "../auxiliary/roc.h"
+#include "../gan/discriminative_model.h"
+#include "../gan/generative_model.h"
+#include "../partitions/partitioner.h"
+#include "../common/result.h"
+#include "../common/data-modifier.h"
 
 namespace ksi
 {
-   class neuro_fuzzy_system  
+   class neuro_fuzzy_system  : public generative_model, public discriminative_model
    {
    protected:
       /** number of rules **/
-      int _nRules;
+      int _nRules = -1;
       
       /** number of clustering iterations */
-      int _nClusteringIterations;
+      int _nClusteringIterations = -1;
+      
+      /** epsilon for Frobenius norm in comparision of partition matrices */
+      double _dbFrobeniusEpsilon = -1;
+      
+      /** minimal typicality for the fcom systems */
+      double _minimal_typicality = -1;
       
       /** number of tuning iterations */
-      int _nTuningIterations;
+      int _nTuningIterations = -1;
+      
+      /** learning coefficient */
+      double _dbLearningCoefficient = -1.0;
+      
+      /** normalisation of data */
+      bool _bNormalisation;
       
       /** train dataset */
       dataset _TrainDataset;
@@ -38,16 +56,94 @@ namespace ksi
       /** t-norm */
       t_norm * _pTnorm = nullptr;
       
+      /** partitioner for identification of a fuzzy model */
+      partitioner * _pPartitioner = nullptr;
+      
       /** short name of a neuro-fuzzy system */
       std::string _name_of_neuro_fuzzy_system;
       /** short description of a neuro-fuzzy system showing its main features */
       std::string _description_of_neuro_fuzzy_system;
+      
+      std::string _train_data_file; ///< name of train data file
+      std::string _test_data_file;  ///< name of test data file
+      std::string _output_file;     ///< name of output file
+      
+      double _positive_class;  ///< label for positive class in classification
+      double _negative_class;  ///< label for negative class in classification
+      ksi::roc_threshold _threshold_type; ///< threshold type for classification
+      
+      
+      std::size_t _original_size_of_training_dataset = 0;
+      std::size_t _reduced_size_of_training_dataset = 0;
+      
+      std::shared_ptr<ksi::data_modifier> _pModyfikator { nullptr };
+       
+
+   protected:
+       virtual std::string extra_report ();
+       
+       
    public:
         
       virtual ~neuro_fuzzy_system();
       
       neuro_fuzzy_system ();
       
+      /** 
+       @param trainDataFile 
+       @param testDataFile,
+       @param resultsFile
+       @param p partitioner for clustering algorithm
+       @date 2020-04-27
+       */
+      neuro_fuzzy_system (const std::string & trainDataFile, 
+                          const std::string & testDataFile, 
+                          const std::string & resultsFile,
+                          const ksi::partitioner & p,
+                          const int nNumberOfRules,
+                          const int nNumberOfClusteringIterations,
+                          const int nNumberofTuningIterations,
+                          const double dbLearningCoefficient,
+                          const bool bNormalisation
+                         );
+
+
+      /** 
+       @param trainDataFile 
+       @param testDataFile,
+       @param resultsFile
+       @param p partitioner for clustering algorithm
+       @date 2020-04-27
+       */
+      neuro_fuzzy_system (const std::string & trainDataFile, 
+                          const std::string & testDataFile, 
+                          const std::string & resultsFile,
+                          const ksi::partitioner & p
+                         );
+
+      /** 
+       @param trainDataFile 
+       @param testDataFile,
+       @param resultsFile
+       @param p partitioner for clustering algorithm
+       @param modifier data modifier
+       @date 2021-01-08
+       */
+      neuro_fuzzy_system (const std::string & trainDataFile, 
+                          const std::string & testDataFile, 
+                          const std::string & resultsFile,
+                          const ksi::partitioner & p,
+                          const ksi::data_modifier & modifier
+                         );
+
+       /** 
+       @param modifier data modifier
+       @date 2021-01-08
+       */
+      neuro_fuzzy_system (const ksi::data_modifier & modifier);
+
+      
+       
       /** constructor
        @param nRules number of rules in a fuzzy rule base
        @param nClusteringIterations number of iterations in clustering
@@ -62,6 +158,32 @@ namespace ksi
                           const dataset & TrainDataset,
                           const t_norm * tnorma
                          );
+      
+      neuro_fuzzy_system (int nRules, 
+                          int nClusteringIterations,
+                          int nTuningIterations 
+                         );
+      
+      neuro_fuzzy_system (const int nRules, 
+                          const int nClusteringIterations,
+                          const int nTuningIterations,
+                          const double dbLearingCoefficient,
+                          const bool bNormalisation,
+                          const t_norm & tnorma
+                         );
+      
+      neuro_fuzzy_system (int nRules, 
+                          double _dbFrobeniusEpsilon,
+                          int nTuningIterations, 
+                          const double dbMinimalTypicality
+                         );
+      
+      neuro_fuzzy_system (const ksi::partitioner & p);
+      
+      neuro_fuzzy_system (const ksi::partitioner & p, 
+                          const ksi::data_modifier & d);
+      
+    
       
       
       neuro_fuzzy_system (const neuro_fuzzy_system & wzor);
@@ -79,7 +201,6 @@ namespace ksi
       
       
       /** The method creates a fuzzy rulebase from the dataset.
-       * @param nRules number of rules
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
@@ -87,12 +208,10 @@ namespace ksi
        * @date  2018-03-29
        * @author Krzysztof Siminski 
        */
-      virtual void createFuzzyRulebase (int nRules, 
-         int nClusteringIterations, int nTuningIterations,
-         double dbLearningCoefficient,
+      virtual void createFuzzyRulebase (int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient,
          const dataset & train) = 0; 
       
-      /** The method executes an experiment for regressions.
+      /** The method executes an experiment for regression.
         * @param trainDataFile name of file with train data
         * @param testDataFile  name of file with test data
         * @param outputfile    name of file to print results to
@@ -104,7 +223,7 @@ namespace ksi
         * @date  2018-02-14
         * @author Krzysztof Siminski
         */
-      virtual void experiment_regression (const std::string & trainDataFile,
+      virtual result experiment_regression (const std::string & trainDataFile,
                                   const std::string & testDataFile,
                                   const std::string & outputFile,
                                   const int nNumberOfRules,
@@ -112,8 +231,20 @@ namespace ksi
                                   const int nNumberofTuningIterations,
                                   const double dbLearningCoefficient, 
                                   const bool bNormalisation
-                                 ) = 0;
+                                 );
 
+      /** The method executes answers for the regression task.
+        * @param trainDataFile name of file with train data
+        * @param outputfile    name of file to print results to
+        * @param bNormalisation true, if normalisation of data, false -- otherwise
+        */
+      virtual void elaborate_answers_for_regression (
+          const std::string & trainDataFile,
+          const std::string & outputFile,
+          const bool bNormalisation
+      );
+                                 
+                                 
       /** The method executes an experiment for classification.
         * @param trainDataFile name of file with train data
         * @param testDataFile  name of file with test data
@@ -129,7 +260,7 @@ namespace ksi
         * @date  2018-02-04
         * @author Krzysztof Siminski
         */
-      virtual void experiment_classification (const std::string & trainDataFile,
+      virtual result experiment_classification (const std::string & trainDataFile,
                                   const std::string & testDataFile,
                                   const std::string & outputFile,
                                   const int nNumberOfRules,
@@ -140,24 +271,66 @@ namespace ksi
                                   const double dbPositiveClass,
                                   const double dbNegativeClass,
                                   ksi::roc_threshold threshold_type
-                                 ) = 0;
-                                 
+                                 );
+                       
+      /** Just run an experiment for classification. All parameters should be already set. */
+      virtual result experiment_classification ();
+ 
+      /** Just run an experiment for classification. All parameters should be already set. */
+      virtual result experiment_classification (const std::string & trainDataFile,
+                                      const std::string & testDataFile,
+                                      const std::string & outputFile);
+      
+      /** Just run an experiment for regression. All parameters should be already set. */
+      virtual result experiment_regression ();
+      /** Just run an experiment for regression. All parameters should be already set. */
+      virtual result experiment_regression (const std::string & trainDataFile,
+                                      const std::string & testDataFile,
+                                      const std::string & outputFile);
+ 
+      
       /** A method elaborates an answer of a datum (data item).
        * @param d datum to elaborate answer for 
        * @return an incomplete (non-existing) number
        */   
       virtual number elaborate_answer (const datum & d) const = 0;   
+            
+      virtual double elaborate_rmse_for_dataset (const dataset & ds) override;
       
       /** @return a short name of the neuro-fuzzy system */
-      std::string get_nfs_name () const;
+      virtual std::string get_nfs_name () const;
       /** @return a description of the neuro-fuzzy system */
-      std::string get_nfs_description () const;
+      virtual std::string get_nfs_description () const;
+      
+      /** The method sets a rule base for a fuzzy system.
+       @param rb rulebase to set */
+      void set_rulebase (const rulebase & rb);
       
       
       
    private:
       /** The method copies non pointer fields. */
       void copy_fields (const neuro_fuzzy_system & wzor);
+      
+   public:
+       /** 
+       @return rulebase's answer of a data item
+       @param item data item to elaborate answer for
+       */
+      virtual double answer (const datum & item) const = 0;
+      
+   public:
+       // implemented from generative_model:
+       
+       /** The method returns a random data item. */
+      virtual datum get_random_datum (std::default_random_engine & engine);
+      
+      /** The method trains the generative model. */
+      virtual void train_generative_model (const dataset & ds);
+      
+      
+      virtual std::string to_string ();
+      
       
    };
 }

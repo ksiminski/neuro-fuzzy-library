@@ -79,5 +79,15 @@ void ksi::descriptor_sigmoidal::reset_parameters()
 }
 
 
+double ksi::descriptor_sigmoidal::getRandomValue(std::default_random_engine& engine)
+{
+    const double K = 0.9;
+    const double COEFF = log ((1.0 - K) / K);
+    
+    double delta = (-1.0 / _slope) * COEFF;
+    
+    std::uniform_real_distribution<double> distro (_cross - delta, _cross + delta);
+    return distro(engine);
+}
 
  

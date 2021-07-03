@@ -1,18 +1,30 @@
 
  
+
+ 
 kompilator=g++
-standard=-std=c++14
-
-optymalizacja=-O3
-debug=
-
-#optymalizacja=
-#debug=-g
+standard=-std=c++20
+watki=-pthread
 
 #profilowanie=-pg
 profilowanie=
+
 pedantic=-pedantic-errors
-exec=exec
+memorydetector=valgrind
+memoryopt=--leak-check=yes
+
+#DEBUG ?= 1
+DEBUG ?= 0
+
+ifeq ($(DEBUG), 1)
+    optymalizacja=
+    debug=-g
+    exec=debug
+else
+    optymalizacja=-O3
+    debug=
+    exec=release
+endif
 
 
 #######
@@ -25,7 +37,10 @@ exec=exec
 
 __ : foldery $(exec)/main
 	./$(exec)/main  
-
+	
+ifeq ($(DEBUG), 1) 
+	$(memorydetector) $(memoryopt) ./$(exec)/main  
+endif	
 #============================================
 
 
@@ -41,6 +56,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/exception.o                 \
                $(exec)/number.o                    \
                $(exec)/datum.o                     \
+               $(exec)/result.o                    \
                $(exec)/dataset.o                   \
                $(exec)/data-modifier.o             \
                $(exec)/data-modifier-normaliser.o  \
@@ -62,6 +78,11 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/metric-euclidean-incomplete.o   \
                $(exec)/metric-minkowski.o              \
                $(exec)/metric-minkowski-weighted.o     \
+               $(exec)/granule.o                       \
+               $(exec)/set_of_cooperating_granules.o  \
+               $(exec)/set_of_granules.o              \
+               $(exec)/set_of_standalone_granules.o   \
+               $(exec)/data_item.o                    \
                $(exec)/distance.o 	                 \
                $(exec)/distance-euclidean.o              \
                $(exec)/distance-euclidean-incomplete.o   \
@@ -119,10 +140,16 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/neuro-fuzzy-system.o        \
                $(exec)/annbfis.o          \
                $(exec)/subspace-annbfis.o          \
+               $(exec)/fubi-annbfis.o              \
+               $(exec)/abstract-ma.o               \
+               $(exec)/abstract-tsk.o              \
+               $(exec)/abstract-annbfis.o          \
+               $(exec)/abstract_fcom.o             \
                $(exec)/tsk.o              \
                $(exec)/ma.o               \
-               $(exec)/random-neuro-fuzzy-system.o \
-               $(exec)/random-neuro-fuzzy-forest.o \
+               $(exec)/gan.o                       \
+               $(exec)/generative_model.o          \
+               $(exec)/discriminative_model.o      \
                $(exec)/partition.o                 \
                $(exec)/cluster.o                   \
                $(exec)/partitioner.o               \
@@ -139,6 +166,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/rsfcm.o                     \
                $(exec)/rfcom.o                     \
                $(exec)/debug.o            \
+               $(exec)/directory.o        \
                $(exec)/utility-string.o   \
                $(exec)/utility-math.o     \
                $(exec)/ridders.o          \
@@ -208,6 +236,8 @@ $(exec)/datum-incomplete.o : common/datum-incomplete.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/extensional-fuzzy-number-gaussian.o : common/extensional-fuzzy-number-gaussian.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/result.o : common/result.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
 $(exec)/dataset.o : common/dataset.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
@@ -269,6 +299,18 @@ $(exec)/metric-minkowski.o : metrics/metric-minkowski.cpp
 $(exec)/metric-minkowski-weighted.o : metrics/metric-minkowski-weighted.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
+# granule
+
+$(exec)/granule.o : granules/granule.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/data_item.o : granules/data_item.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/set_of_standalone_granules.o : granules/set_of_standalone_granules.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/set_of_granules.o : granules/set_of_granules.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/set_of_cooperating_granules.o : granules/set_of_cooperating_granules.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 
 # readers
 
@@ -365,18 +407,44 @@ $(exec)/subspace-rulebase.o : neuro-fuzzy/subspace-rulebase.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/neuro-fuzzy-system.o : neuro-fuzzy/neuro-fuzzy-system.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+$(exec)/abstract-annbfis.o : neuro-fuzzy/abstract-annbfis.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/annbfis.o : neuro-fuzzy/annbfis.cpp
-	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/fcom-annbfis.o : neuro-fuzzy/fcom-annbfis.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/subspace-annbfis.o : neuro-fuzzy/subspace-annbfis.cpp
-	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/fubi-annbfis.o : neuro-fuzzy/fubi-annbfis.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/abstract-tsk.o : neuro-fuzzy/abstract-tsk.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/tsk.o : neuro-fuzzy/tsk.cpp
-	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/fcom-tsk.o : neuro-fuzzy/fcom-tsk.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/abstract_fcom.o : neuro-fuzzy/abstract_fcom.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/abstract-ma.o : neuro-fuzzy/abstract-ma.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/fcom-ma.o : neuro-fuzzy/fcom-ma.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/ma.o : neuro-fuzzy/ma.cpp
-	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
 $(exec)/random-neuro-fuzzy-forest.o : neuro-fuzzy/random-neuro-fuzzy-forest.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
 $(exec)/random-neuro-fuzzy-system.o : neuro-fuzzy/random-neuro-fuzzy-system.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^ 
+
+# generative adversial networks
+$(exec)/gan.o : gan/gan.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/generative_model.o : gan/generative_model.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+$(exec)/discriminative_model.o : gan/discriminative_model.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^ 
+
+
 
 # dissimilarity measures
 $(exec)/dissimilarity.o : dissimilarities/dissimilarity.cpp
@@ -464,6 +532,8 @@ $(exec)/vector-operators.o : auxiliary/vector-operators.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
 $(exec)/print.o : auxiliary/print.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(pedantic) -c -o $@ $^
+$(exec)/directory.o : auxiliary/directory.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(profilowanie) $(pedantic) -c -o $@ $^
 
 
 # heuristics

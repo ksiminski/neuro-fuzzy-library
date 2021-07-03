@@ -92,10 +92,10 @@ int main ()
    {
       
 //      ksi::exp_001 experiment; 
-     ksi::exp_002 experiment;   
+//      ksi::exp_002 experiment;   
 //      ksi::exp_003 experiment;   
 //      ksi::exp_004 experiment; 
-//      ksi::exp_005 experiment; 
+      ksi::exp_005 experiment; 
 //      ksi::exp_006 experiment; 
 //      ksi::exp_007 experiment;
 //      ksi::exp_008 experiment;

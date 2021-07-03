@@ -46,7 +46,7 @@ namespace ksi
       
 //       descriptor_gaussian_subspace(double mean, std::pair<double, double> stddevLowerUpper, double weight);
       
-      /** The constructor constructs an interval gaussian descriptor and sets upperValid flag. 
+      /* The constructor constructs an interval gaussian descriptor and sets upperValid flag. 
        * @param mean mean of the gaussian sets
        * @param stddevLowerUpper a pair of standard deviations (lower and upper)
        * @param weight attribute weight

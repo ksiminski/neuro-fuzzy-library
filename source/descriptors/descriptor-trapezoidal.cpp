@@ -130,3 +130,9 @@ void ksi::descriptor_trapezoidal::reset_parameters()
    _core_min = _previous_core_min;
 }
  
+double ksi::descriptor_trapezoidal::getRandomValue(std::default_random_engine& engine)
+{
+    std::uniform_real_distribution<double> distro (_support_min, _support_max);
+    return distro (engine);
+}
+ 

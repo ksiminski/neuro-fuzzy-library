@@ -8,6 +8,7 @@
 
 #include "descriptor-gaussian.h"
 #include "descriptor-gaussian-subspace.h"
+#include "../service/debug.h"
  
 
 #include <iostream>
@@ -30,7 +31,7 @@ double ksi::descriptor_gaussian_subspace::getCoreMean() const
 }
 
 
-ksi::descriptor_gaussian_subspace::descriptor_gaussian_subspace(const ksi::descriptor_gaussian_subspace & wzor): descriptor_gaussian(wzor)
+ksi::descriptor_gaussian_subspace::descriptor_gaussian_subspace(const ksi::descriptor_gaussian_subspace & wzor): descriptor(wzor), descriptor_gaussian(wzor)
 {
    _weight = wzor._weight;
    _weight_expo = wzor._weight_expo;

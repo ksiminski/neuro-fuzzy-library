@@ -3,6 +3,7 @@
 #ifndef DESCRIPTOR_TRIANGULAR_H
 #define DESCRIPTOR_TRIANGULAR_H
 
+#include <random>
 #include "descriptor.h"
 
 namespace ksi
@@ -59,6 +60,8 @@ namespace ksi
       
       /** The method rests parameters to previous values.  */
       virtual void reset_parameters();
+      
+      virtual double getRandomValue(std::default_random_engine & engine);
       
    };
 }

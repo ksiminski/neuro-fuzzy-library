@@ -64,3 +64,7 @@ std::vector< double > ksi::descriptor_constant::getMAconsequenceParameters() con
    return { std::nan(""), std::nan(""), std::nan("") };
 }
 
+double ksi::descriptor_constant::getRandomValue(std::default_random_engine& engine)
+{
+    return _value;
+}

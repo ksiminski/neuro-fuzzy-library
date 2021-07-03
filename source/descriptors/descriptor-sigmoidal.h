@@ -54,6 +54,9 @@ namespace ksi
       
       void reset_parameters();
       
+      /** @return The method returns a value \f$x\f$ for which sigmoidal function \f$f(x) \in [k, 1 - k] \f$. Here \f$k = 0.9 \f$, thus \f$x \in \left[c -\frac{1}{s}\ln \frac{1 - k}{k},  c +\frac{1}{s}\ln \frac{1 - k}{k}\right]\f$, where \f$f(c) = 0.5\f$ */
+      virtual double getRandomValue(std::default_random_engine & engine);
+    
    };
 }
 

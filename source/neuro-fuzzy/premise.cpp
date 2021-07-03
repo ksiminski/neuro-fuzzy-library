@@ -1,10 +1,14 @@
 /** @file */ 
 
+#include <chrono>
+#include <random>
+#include <sstream>
 
-#include "premise.h"
+#include "../neuro-fuzzy/premise.h"
 #include "../descriptors/descriptor.h"
 #include "../tnorms/t-norm.h"
 #include "../service/debug.h"
+#include "../common/datum.h"
 
 ksi::premise::premise()
 {
@@ -28,7 +32,7 @@ ksi::premise* ksi::premise::clone() const
 
 void ksi::premise::addDescriptor (descriptor * p)
 {
-   descriptors.push_back(p);
+    descriptors.push_back(p);
 }
 
 ksi::t_norm * ksi::premise::getTnorm()
@@ -72,19 +76,27 @@ ksi::premise & ksi::premise::operator = (const ksi::premise & prawa)
 
 double ksi::premise::getFiringStrength(const std::vector<double> & X)
 {
-   if (not pTnorma)
-      return -1;
-   if (X.size() != descriptors.size())
-      return -1; 
-   
-   double result = 1;
-   std::size_t nAttr = X.size();
-   for (std::size_t a = 0; a < nAttr; a++)
+   try
    {
-      result = pTnorma->tnorm (result, descriptors[a]->getMembership(X[a]));
+      if (not pTnorma)
+         throw std::string ("no T-norm");
+      if (X.size() != descriptors.size())
+      {
+         std::stringstream ss;
+         ss << "Data vector size (" << X.size() << ") and number of descriptors (" << descriptors.size() << ") do not match!";
+         throw ss.str();
+      }
+      double result = 1;
+      std::size_t nAttr = X.size();
+      for (std::size_t a = 0; a < nAttr; a++)
+      {
+         result = pTnorma->tnorm (result, descriptors[a]->getMembership(X[a]));
+      }
+      last_firingStrength = result;
+     
+      return result;
    }
-   last_firingStrength = result;
-   return result;
+   CATCH;
 }
 
 ksi::premise::premise(const premise & wzor) 
@@ -138,3 +150,25 @@ std::ostream & ksi::premise::Print(std::ostream & ss) const
    return ss;
 }
 
+namespace ksi 
+{
+    std::ostream & operator << (std::ostream & ss, const premise & p)
+    {
+        p.Print (ss);
+        return ss;
+    }
+}
+
+ksi::datum ksi::premise::getRandomValue(std::default_random_engine & engine)
+{
+//    debug(descriptors.size());
+    ksi::datum dat;
+    for (auto & d : descriptors)
+        dat.push_back(ksi::number(d->getRandomValue(engine)));
+    return dat;
+}
+
+void ksi::premise::justified_granularity_principle(const std::vector<std::vector<double> >& X, const std::vector<double>& Y)
+{
+    return;
+}

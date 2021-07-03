@@ -61,3 +61,7 @@ std::vector< double > ksi::descriptor_singleton::getMAconsequenceParameters() co
    return { _core_max - EPSILON, _core_max, _core_max + EPSILON };
 }
 
+double ksi::descriptor_singleton::getRandomValue(std::default_random_engine& engine)
+{
+    return _core_min;
+}

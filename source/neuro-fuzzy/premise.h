@@ -4,8 +4,10 @@
 #define PREMISE_H
 
 #include <vector>
+#include <random>
 #include "../descriptors/descriptor.h"
 #include "../tnorms/t-norm.h"
+#include "../common/datum.h"
 
 namespace ksi
 {
@@ -13,7 +15,7 @@ namespace ksi
   {
   protected:
      std::vector<descriptor *> descriptors;
-     t_norm * pTnorma; 
+     t_norm * pTnorma = nullptr; 
      
      /** firing strength for the last data item */
      double last_firingStrength;
@@ -22,6 +24,9 @@ namespace ksi
      premise ();
      premise (const premise &);
      premise (const t_norm & tnorm);
+     virtual ~premise ();
+     
+     
      void setTnorm (const t_norm & tnorm);
      t_norm * getTnorm ();
      premise & operator= (const premise & prawa);
@@ -39,7 +44,6 @@ namespace ksi
       * where \f$F\f$ is activation of rule, \f$u_i\f$ is activation of the \f$i\f$-th descriptor of the rule, and \f$T\f$ is a T-norm.
       */
      virtual double getFiringStrength(const std::vector<double> & X);
-     virtual ~premise ();
      
      virtual premise * clone () const ;
      
@@ -50,11 +54,11 @@ namespace ksi
        @param partial_differential some differentials from other rules
        @date 2018-01-20
        */
-     virtual void cummulate_differentials(std::vector< double > X, 
+     virtual void cummulate_differentials(std::vector<double> X, 
                                   double partial_differential);
      
      /** The method sets all cummulated differentials to zero. */
-     void reset_differentials ();
+     virtual void reset_differentials ();
  
      /** The method actualises values of parameters of the fuzzy premise
        * @param eta learning coefficient
@@ -66,8 +70,18 @@ namespace ksi
       */
      virtual std::ostream & Print (std::ostream & ss) const;
      
-  
-      
+     friend std::ostream & operator << (std::ostream & ss, const premise & p);
+     
+     /** @return The method returns a random datum covered by a premise. */
+     virtual datum  getRandomValue (std::default_random_engine & engine); 
+     
+     
+     /** The method transforms a premise into a granule with justified granularity principle.
+      @date 2021-04-18
+      */
+     virtual void justified_granularity_principle (const std::vector<std::vector<double>> & X, const std::vector<double> & Y);
+     
   };
 }
 #endif
+
