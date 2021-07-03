@@ -91,7 +91,6 @@ ksi::tsk::tsk(int nRules,
                              ksi::fcm (nRules, nClusteringIterations)) 
 {
     set_name(); 
-    debug(_pPartitioner);
 }
 
 

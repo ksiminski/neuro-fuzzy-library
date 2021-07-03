@@ -78,8 +78,7 @@ namespace ksi
         virtual datum get_data_item () = 0;
         
         /** @return The method returns a decision for a datum.
-         *  @todo Czy ten opis jest poprawny? Czy na pewno ta metoda zwraca tak jak w opisie?
-            @param  d the datum to elaborated answer for .*/
+         *  @param  d the datum to elaborated answer for .*/
         virtual const number get_answer (const datum & d) = 0;
         
         /** @return  The method return a pointer to a copy of rule, a granule can be transformed into. If it is impossible, nullptr is returned.

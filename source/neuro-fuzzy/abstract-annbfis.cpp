@@ -306,7 +306,7 @@ double ksi::abstract_annbfis::discriminate(const ksi::datum& d)
     return answer(d);
 }
 
-/// @todo zaimplementowac
+ 
 void ksi::abstract_annbfis::train_discriminative_model(const ksi::dataset& ds)
 {
     throw std::string ("not implemented");
