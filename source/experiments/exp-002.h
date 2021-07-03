@@ -15,7 +15,7 @@ namespace ksi
     3. conditional FCM 
     4. subspace FCM (SFCM)
     5. fuzzy biclustering (FuBi) 
-    5. fuzzy C-ordered means (FCOM)
+    6. fuzzy C-ordered means (FCOM)
     
     @date 2018-07-28, 2021-07-03
     
