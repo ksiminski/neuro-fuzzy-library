@@ -14,13 +14,6 @@ namespace ksi
     
     @date 2018-07-31
     
-    @todo No i trzeba zebrać i zrobić eksperymenty dla RFCOM
-    1. wyniki w funkcji liczby danych nietypowych [done]
-    2. wyniki w funkcji funkcji straty [done]
-    3. wyniki w funkcji owa            [done]
-    4. Jak wyglądają typowości? [całkiem przyzwoicie]
-    5. wyniki w funkcji metody uzupełniania danych [done]
-    
     */
    class exp_006 : virtual public experiment
    {

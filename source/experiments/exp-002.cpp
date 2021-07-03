@@ -15,6 +15,7 @@
 #include "../partitions/fcm-conditional.h"
 #include "../partitions/fcm-possibilistic.h"
 #include "../partitions/sfcm.h" 
+#include "../partitions/fubi.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -122,6 +123,24 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
       
+      {
+         std::string dataDir ("data/exp-002");
+         const int NUMBER_OF_ITERATIONS { 100 };
+         const int NUMBER_OF_CLUSTERS   {   2 };
+         std::string data (dataDir + "/" + "sub-135-245");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::fubi algorithm (NUMBER_OF_CLUSTERS, NUMBER_OF_ITERATIONS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "fuzzy biclustering (FuBi)" << std::endl;
+         std::cout << "=========================" << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
       {
          const double PC = 0.5;
          const double PA = 0.2;

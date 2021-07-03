@@ -83,9 +83,7 @@
  
 #include "./service/debug.h"
 
-/**
- * @todo uzupełnienie środkami klastrów (imputation with cluster centres)
- * */
+ 
   
 
 int main ()
