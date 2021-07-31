@@ -14,7 +14,7 @@ namespace ksi
     2. Takagi-Sugeno-Kang
     3. ANNBFIS
     4. subspace ANNBFIS
-    5. fuzzy biclustering subspace annbfis
+    5. FuBiNFS: fuzzy biclustering subspace annbfis
     for classification and regression tasks.
     
     

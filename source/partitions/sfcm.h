@@ -17,10 +17,12 @@ namespace ksi
    /** The class implements Subspace Fuzzy C-means clustering algorithm. 
     Subspace fuzzy c-means algorithm is a clustering algorithm that assings each data items with its memberships to clusters and in each cluster it assings weight to each attributes. The algorithm has been described in detail in papers:
 
+
     Krzysztof Siminski, Clustering in Fuzzy Subspaces, [in] Theoretical and Applied Informatics, 2012, volume 24, number 4, pp. 313-326. doi: 10.2478/v10179-012-0019-y
     
     Krzysztof Siminski, Neuro-fuzzy system with weighted attributes, [in] Soft Computing, 2014, volume 18, number 2, pp. 285-297. doi: 10.1007/s00500-013-1057-z
 
+    * CITATION REQUEST
     If you use this algorithm, please cite the paper:
     <pre>
     ARTICLE{id:Siminski2014Neuro,

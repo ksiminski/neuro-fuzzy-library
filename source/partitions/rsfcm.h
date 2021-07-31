@@ -19,6 +19,7 @@ namespace ksi
    /** Partitioner for rough subspace fuzzy c-means clustering.
     * This implementation is an extention of the algorithm published in
     * 
+    * CITATION REQUEST
     * If you use this algorithm, please cite the paper:
     * Krzysztof Simiński, Rough fuzzy subspace clustering for data with missing values, Computing & Informatics, 2014, volume 33, number 1, pp. 131-153. 
     * <pre>

@@ -19,7 +19,7 @@ namespace ksi
 {
    /** Subspace neuro-fuzzy system with logical interpreations of fuzzy rules */
    /** subspace annbfis
-    * The subspace neuro-fuzzy system has been described in detain in the paper:
+    * CITATION REQUEST
     *  The algorithm has been described in detail in papers:
 
     Krzysztof Siminski, Neuro-fuzzy system with weighted attributes, [in] Soft Computing, 2014, volume 18, number 2, pp. 285-297. doi: 10.1007/s00500-013-1057-z
