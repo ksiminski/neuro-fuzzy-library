@@ -5,7 +5,6 @@
 #include <chrono>
 #include <algorithm>
  
-// #include "../auxiliary/definitions.h"
 #include "../service/debug.h"
 #include "partitioner.h"
 #include "partition.h"
@@ -201,7 +200,7 @@ ksi::partition ksi::rfcom::doPartition(const ksi::dataset & ds)
          iter++;
          
          
-      } while (frob > _epsilon and iter < 100); /// @bug (tymczasowo) W niektórych eksperymentach algorytm nie jest zbieżny!
+      } while (frob > _epsilon and iter < 100); 
 
       // The original pointer has to be reset:
       pOwa = pOriginalOwa;
@@ -512,7 +511,7 @@ std::vector<std::vector<double>> ksi::rfcom::calculateClusterCentres(
             iter++;
          }
          //while (frob > _epsilon);
-         while (frob > _epsilon and iter < 100); /// @bug (tymczasowo) W niektórych eksperymentach algorytm nie jest zbieżny!
+         while (frob > _epsilon and iter < 100); 
          
          betas[c] = alphas;
          

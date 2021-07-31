@@ -242,14 +242,14 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
             std::vector<double> licznik   (nAttr, 0.0),
                                 mianownik (nAttr, 0.0);
 
-            std::vector<bool> modifikowane (nAttr, false); ///@warning tymczasowo
+            std::vector<bool> modifikowane (nAttr, false);  
                                 
             for (std::size_t x = 0; x < nX; x++)
             {
                auto um = pow (mU[c][x], _m);
                
                if (std::isnan(mU[c][x]))
-                  debug(mU[c][x]);  /// @todo Co z tym zrobić?
+                  debug(mU[c][x]);   
                
                for (int a = 0; a < nAttr; a++)
                {
@@ -280,20 +280,10 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
             iter++;
             
          }
-         while (frob > _epsilon and iter < 100);  /// @bug tymczasowo
-//          debug(iter);
-//          if (iter >= 100)
-//          {
-//             debug(iter);
-//             debug(frob);
-//          }
+         while (frob > _epsilon and iter < 100); 
          
          betas[c] = alphas;
          
-         
-//         for (const auto & a : alphas)
-//             debug(a);
-
          // reset original pointer to OWA object
          pOwa = pOriginalOwa;
       }
@@ -360,7 +350,7 @@ std::vector<std::vector<double>> ksi::fcom::modifyPartitionMatrix(
          for (int k = 0; k < _nClusters; k++)
          {
             if (suma == 0.0)
-               mU[k][x] = 0.0; /// @todo Czy na pewno?
+               mU[k][x] = 0.0;  
             else if (suma == -1.0) // ktorys z przykladow lezy w srodku klastra
             {
                if (distances[k] == -1.0) // ... ten wlasnie!

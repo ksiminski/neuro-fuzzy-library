@@ -172,107 +172,8 @@ namespace ksi
 }
 
 
-////////// To musi byc w pliku cpp, bo to jest konkretna specjalizacja szablonu.
-//
-// template<>
-// ksi::dataset ksi::fcm_T<double>::elaborate_gaussian_prototypes (
-//    const int _nClusters, 
-//    const int nAttr,  
-//    const std::vector<std::vector<double>> & mV, 
-//    const std::vector<std::vector<double>> & mS)
-// {
-//    ksi::dataset ds;
-//    
-//    for (std::size_t c = 0; c < _nClusters; c++)
-//    {
-//       ksi::datum d;
-//       for (std::size_t a = 0; a < nAttr; a++)
-//       {
-//          ksi::ext_fuzzy_number_gaussian num (mV[c][a], mS[c][a]);
-//          d.push_back(ksi::number (num));
-//       }
-//       ds.addDatum(d);
-//    }
-//    return ds;
-// }
-// 
-// 
-// /// @todo To jest najkluczowsza funkcja w tym pliku -- trzeba ja dobrze przemyslec!
-// template<>
-// ksi::dataset ksi::fcm_T<ksi::ext_fuzzy_number_gaussian>::elaborate_gaussian_prototypes (
-//    const int _nClusters, 
-//    const int nAttr, 
-//    const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & mV, 
-//    const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & mS)
-// {
-//    ksi::dataset ds;
-//    
-//    for (std::size_t c = 0; c < _nClusters; c++)
-//    {
-//       ksi::datum d;
-//       for (std::size_t a = 0; a < nAttr; a++)
-//       {
-//          //             debug(mV[c][a].get_value());
-//          //             debug(mV[c][a].get_sigma());
-//          //             debug(mS[c][a].get_value());
-//          ksi::ext_fuzzy_number_gaussian num (mV[c][a].get_value(), std::max(mV[c][a].get_sigma(), mS[c][a].get_value()));
-//          d.push_back(ksi::number (num));
-//       }
-//       ds.addDatum(d);
-//    }
-//    return ds;
-// }
-// 
-// template <> 
-// ksi::partition ksi::fcm_T<double>::elaborate_gaussian_partition (
-//    const int _nClusters, 
-//    const int nAttr, 
-//    const std::vector<std::vector<double>> & mV, 
-//    const std::vector<std::vector<double>> & mS)
-// {
-//    // przeksztalcenie do postaci zbiorow gaussowskich
-//    ksi::partition part;
-//    for (int c = 0; c < _nClusters; c++)
-//    {
-//       ksi::cluster cl; 
-//       for (std::size_t a = 0; a < nAttr; a++)
-//       {
-//          ksi::descriptor_gaussian d (mV[c][a], mS[c][a]);
-//          cl.addDescriptor(d);
-//       }
-//       part.addCluster(cl);
-//    }
-//    
-//    part.setClusterCentres(mV);
-//    part.setPartitionMatrix(mU);
-//    
-//    return part;
-// }
-// 
-// template <>
-// ksi::partition ksi::fcm_T<ksi::ext_fuzzy_number_gaussian>::elaborate_gaussian_partition (
-//    const int _nClusters, const int nAttr, 
-//    const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & mV, 
-//    const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & mS)
-// {
-//    // przeksztalcenie do postaci zbiorow gaussowskich
-//    ksi::partition part;
-//    for (int c = 0; c < _nClusters; c++)
-//    {
-//       ksi::cluster cl; 
-//       for (std::size_t a = 0; a < nAttr; a++)
-//       {
-//          ksi::descriptor_gaussian d ((double) mV[c][a], (double) mS[c][a]);
-//          cl.addDescriptor(d);
-//       }
-//       part.addCluster(cl);
-//    }
-//    
-//    part.setClusterCentres(mV);
-//    part.setPartitionMatrix(mU);
-//    
-//    return part;
-// }
+ 
+ 
 
 
 template<class T>
@@ -294,9 +195,7 @@ template<class T>
 ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
 {
    _m = wzor._m;
-   _nClusters = wzor._nClusters;
-//     debug(wzor._nClusters);
-//     debug(_nClusters);
+   _nClusters = wzor._nClusters; 
    _nIterations = wzor._nIterations;
    _epsilon = wzor._epsilon;
 }
@@ -318,17 +217,13 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
 template<class T>
 ksi::fcm_T<T>::fcm_T()
 {
-//    debug(__func__);
+ 
 }
 
 template<class T>
 ksi::fcm_T<T>::fcm_T (const int nClusters, const int nClusteringIterations) : _nClusters(nClusters), _nIterations(nClusteringIterations)
 {
-//     _nClusters = nClusters;
-//     _nIterations = nClusteringIterations;
-    
-//     debug(_nClusters);
-//     debug(_nIterations);
+ 
 }
 
 template<class T>
@@ -375,7 +270,7 @@ std::vector<std::vector<T>> ksi::fcm_T<T>::calculateClusterCentres(
    CATCH;
 }
 
-///@todo Zaimplementować funkcję randomizującą dla poszczególnych typów
+ 
 template<class T>
 void ksi::fcm_T<T>::randomise(std::vector<std::vector<T>> & m)
 {
