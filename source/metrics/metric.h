@@ -31,8 +31,13 @@ namespace ksi
       virtual std::shared_ptr<metric> clone () const = 0;
       
       /** @return abbreviation of the metric 
-       @date 2021-02-01 */
+        * @date 2021-02-01 */
       virtual std::string getAbbreviation() const = 0;
+      
+      /** @return metric info
+        * @date   2021-08-13       
+       */
+      virtual std::string get_info() const;
    };
 }
 

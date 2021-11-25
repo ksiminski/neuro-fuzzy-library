@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <tuple>
 
  
 
@@ -24,7 +25,6 @@
 #include "../auxiliary/directory.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
-
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(int nRules, 
                                             double dbFrobeniusEpsilon, 
@@ -99,7 +99,6 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
          wYtrainExpected.push_back(XYtrain.second.get(i, 0));
          wYtrainElaborated.push_back(elaborate_answer(*(XYtrain.first.getDatum(i))).getValue());
       }
-     
          
       ksi::error_RMSE rmse; 
       double blad_rmse_train = rmse.getError(wYtrainElaborated, wYtrainExpected);
@@ -196,6 +195,18 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(const std::string & trainDataFile,
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(const std::string & trainDataFile, 
                                             const std::string & testDataFile, 
+                                            const std::string & resultsFile)
+{
+    _train_data_file = trainDataFile;
+    _test_data_file = testDataFile;
+    _output_file = resultsFile;
+    _pPartitioner = nullptr;
+    _pModyfikator = nullptr;
+}
+
+
+ksi::neuro_fuzzy_system::neuro_fuzzy_system(const std::string & trainDataFile, 
+                                            const std::string & testDataFile, 
                                             const std::string & resultsFile, 
                                             const ksi::partitioner & p, 
                                             const ksi::data_modifier & modifier)
@@ -246,7 +257,8 @@ std::string ksi::neuro_fuzzy_system::get_nfs_name() const
 
 void ksi::neuro_fuzzy_system::printRulebase(std::ostream & ss)
 {
-   _pRulebase->print(ss);
+    if (_pRulebase)
+        _pRulebase->print(ss);
 }
 
 ksi::neuro_fuzzy_system::~neuro_fuzzy_system()
@@ -368,6 +380,23 @@ void ksi::neuro_fuzzy_system::copy_fields(const ksi::neuro_fuzzy_system & wzor)
    _reduced_size_of_training_dataset = wzor._reduced_size_of_training_dataset;
 }
 
+ksi::result ksi::neuro_fuzzy_system::experiment_classification_core()
+{
+    return experiment_classification_core(_TrainDataset,
+                                          _TestDataset,
+                                          _train_data_file, 
+                                          _test_data_file,
+                                          _output_file,
+                                          _nRules,
+                                          _nClusteringIterations,
+                                          _nTuningIterations,
+                                          _dbLearningCoefficient,
+                                          _bNormalisation,
+                                          _positive_class,
+                                          _negative_class,
+                                          _threshold_type);
+}
+
 
 ksi::result ksi::neuro_fuzzy_system::experiment_classification()
 {
@@ -426,94 +455,104 @@ ksi::result ksi::neuro_fuzzy_system::experiment_regression(const std::string& tr
 }
 
 
-
-ksi::result ksi::neuro_fuzzy_system::experiment_classification (
-                                  const std::string & trainDataFile,
-                                  const std::string & testDataFile,
-                                  const std::string & outputFile,
-                                  const int nNumberOfRules,
-                                  const int nNumberOfClusteringIterations,
-                                  const int nNumberofTuningIterations,
-                                  const double dbLearningCoefficient,
-                                  const bool bNormalisation,
-                                  const double dbPositiveClass,
-                                  const double dbNegativeClass,
-                                  ksi::roc_threshold threshold_type
-                                 )
+double ksi::neuro_fuzzy_system::elaborate_threshold_value(
+    std::vector<double>& Expected, 
+    std::vector<double>& Elaborated, 
+    double positiveClassvalue, 
+    double negativeClassvalue, 
+    const ksi::roc_threshold & type)
 {
-   ksi::reader_complete czytacz;
-   auto zbiorTrain = czytacz.read(trainDataFile);
-   auto zbiorTest  = czytacz.read(testDataFile);
+    roc ROC;
+    auto progi = ROC.calculate_ROC_points(Expected, Elaborated, positiveClassvalue, negativeClassvalue);
+    
+    switch (type)
+    {
+      case ksi::roc_threshold::mean:
+         _threshold_value = (positiveClassvalue + negativeClassvalue) / 2.0;
+         break;
+      case ksi::roc_threshold::minimal_distance:
+         _threshold_value = progi.Minimal_distance_threshold;
+         break;
+      case ksi::roc_threshold::youden:
+         _threshold_value = progi.Youden_threshold;
+    }
+    
+    return _threshold_value;
+}
+
+
+std::pair<double, double> ksi::neuro_fuzzy_system::answer_classification(const ksi::datum& item) const
+{
+    auto numeric = answer(item);
+    auto Class   = numeric > _threshold_value ? _positive_class : _negative_class;
+
+    return {numeric, Class};
+}
+
+
+ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
+    const ksi::dataset& trainDataset, 
+    const ksi::dataset& testDataset, 
+    const std::string & trainDataFile,
+    const std::string & testDataFile,
+    const std::string& outputFile, 
+    const int nNumberOfRules, 
+    const int nNumberOfClusteringIterations, 
+    const int nNumberofTuningIterations, 
+    const double dbLearningCoefficient, 
+    const bool bNormalisation, 
+    const double dbPositiveClass, 
+    const double dbNegativeClass, 
+    ksi::roc_threshold threshold_type)
+{
+   _TrainDataset =  trainDataset;
+   _TestDataset  =  testDataset;
    
    ksi::result wynik;
    
-   
-   // Dla klasyfikacji trzeba sprawdzic, czy wartosci klas sa na tyle dokladne, 
-   // zeby niedokladnosci numeryczne nie spowodowaly zmiany klasy.
-   
-   ///////////////////////////////////////////
-   /*
-   std::size_t nAtr = zbiorTest.getNumberOfAttributes();
-   
-   auto size_train = zbiorTrain.getNumberOfData();
-   for (std::size_t i = 0; i < size_train; i++)
-   {
-       double klasa = zbiorTrain.getDatum(i)->at(nAtr - 1)->getValue();
-       if (klasa != dbPositiveClass and klasa != dbNegativeClass)
-       {
-           debug(klasa);
-           debug(dbPositiveClass);
-           debug(dbNegativeClass);
-       }
-   }
-   
-   return; 
-   */
-   //////////////////////////////////
-  
+   _train_data_file = trainDataFile;
+   _test_data_file  = testDataFile;
+   _nRules = nNumberOfRules;
    _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
 
-   if (bNormalisation)
+   if (_bNormalisation)
    {
       ksi::data_modifier_normaliser normaliser;
-      normaliser.modify(zbiorTrain);
-      normaliser.modify(zbiorTest);   
+      normaliser.modify(_TrainDataset);
+      normaliser.modify(_TestDataset);   
    }
    
    if (_pModyfikator)
-       _pModyfikator->modify(zbiorTrain);
+       _pModyfikator->modify(_TrainDataset);
    
    ksi::clock zegar;
    zegar.start();
    createFuzzyRulebase(nNumberOfClusteringIterations,
                        nNumberofTuningIterations, dbLearningCoefficient,
-                       zbiorTrain);
+                       _TrainDataset);
    zegar.stop();
 
-   if (not _pRulebase->validate())
-          throw std::string ("rule base not valid");   
+   if (_pRulebase)
+   {
+        if (not _pRulebase->validate())
+            throw std::string ("rule base not valid");   
+   }
+/*
+   auto XYtest  = _TestDataset.splitDataSetVertically(_TestDataset.getNumberOfAttributes() - 1);
+   auto XYtrain = _TrainDataset.splitDataSetVertically(_TrainDataset.getNumberOfAttributes() - 1);
+   std::size_t nXtest  = _TestDataset.getNumberOfData();
+   std::size_t nXtrain = _TrainDataset.getNumberOfData();
+   */
 
-   auto XYtest  = zbiorTest.splitDataSetVertically(zbiorTest.getNumberOfAttributes() - 1);
-   auto XYtrain = zbiorTrain.splitDataSetVertically(zbiorTrain.getNumberOfAttributes() - 1);
-   std::size_t nXtest  = zbiorTest.getNumberOfData();
-   std::size_t nXtrain = zbiorTrain.getNumberOfData();
-   std::vector<double> wYtestExpected,  wYtestElaborated,
-                       wYtrainExpected, wYtrainElaborated;
+   /*
    for (std::size_t i = 0; i < nXtest; i++)
    {
-      wYtestExpected.push_back(XYtest.second.get(i, 0));
-      wYtestElaborated.push_back(answer(*(XYtest.first.getDatum(i))));
+       wYtestExpected.push_back(XYtest.second.get(i, 0));
+       wYtestElaborated.push_back(answer(*(XYtest.first.getDatum(i))));
    }
+   */
    
-   for (std::size_t i = 0; i < nXtrain; i++)
-   {
-      wYtrainExpected.push_back(XYtrain.second.get(i, 0));
-      wYtrainElaborated.push_back(answer(*(XYtrain.first.getDatum(i))));
-   }
-   
-   //for (std::size_t i = 0; i < nXtrain; i++)
-   //   std::cout << wYtrainExpected[i] << "\t" << wYtrainElaborated[i] << std::endl;
-         
    ksi::directory::create_directory_for_file(outputFile);      
    std::ofstream model (outputFile);
    if (not model)
@@ -524,68 +563,115 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification (
        throw ss.str();
    }
    
-   model << "EXPERIMENT" << std::endl;
-   model << "==========" << std::endl;
-   model << getDateTimeNow() << std::endl;
-   model << std::endl;
-//    model << _description_of_neuro_fuzzy_system << std::endl;
-//    model << _name_of_neuro_fuzzy_system << std::endl;
-   model << get_nfs_description() << std::endl;
-   model << get_nfs_name() << std::endl;
+   std::vector<double> wYtestExpected,  wYtestElaboratedClass,  wYtestElaboratedNumeric,
+                       wYtrainExpected, wYtrainElaboratedClass, wYtrainElaboratedNumeric;
    
-   model << "number of rules:     " << nNumberOfRules << std::endl;
-   model << "number of clustering iterations: " << nNumberOfClusteringIterations << std::endl;
-   model << "number of tuning interations:    " << nNumberofTuningIterations << std::endl;
-   model << "learning coefficient: " << dbLearningCoefficient << std::endl;
-   model << "train data file: " << trainDataFile << std::endl;
-   model << "test  data file: " << testDataFile << std::endl;
-   model << "normalisation:   " << std::boolalpha << bNormalisation << std::endl;
-   if (_pModyfikator)
-       model << "train data set modifier(s): " << _pModyfikator->print() << std::endl;
+   get_answers_for_train_classification();
+   for (const auto answer : _answers_for_train)
+   {
+       double expected, el_numeric;
+       std::tie(expected, el_numeric, std::ignore) = answer;
+       wYtrainExpected.push_back(expected);
+       wYtrainElaboratedNumeric.push_back(el_numeric);       
+   }
    
-   auto report = extra_report ();
-      if (not report.empty())
-          model << report << std::endl;
+   model << classification_intro() << std::endl;
+   model << "classification threshold type: " << ksi::to_string(threshold_type) << std::endl;
+   _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, 
+                                         dbPositiveClass, dbNegativeClass,
+                                         threshold_type);
    
-   model << "classification threshold type: ";
-   roc ROC;
+/*   
    auto progi = ROC.calculate_ROC_points(wYtrainExpected, wYtrainElaborated, 
                                          dbPositiveClass, dbNegativeClass);
    
-   double prog;
+   
    switch (threshold_type)
    {
       case ksi::roc_threshold::mean:
-         prog = (dbPositiveClass + dbNegativeClass) / 2.0;
-         model << " mean of (+) and (-) labels";
+         _threshold_value = (dbPositiveClass + dbNegativeClass) / 2.0;
+//         model << " mean of (+) and (-) labels";
          break;
       case ksi::roc_threshold::minimal_distance:
-         prog = progi.Minimal_distance_threshold;
-         model << " minimal distance";
+         _threshold_value = progi.Minimal_distance_threshold;
+//          model << " minimal distance";
          break;
       case ksi::roc_threshold::youden:
-         prog = progi.Youden_threshold;
-         model << " Youden";
+         _threshold_value = progi.Youden_threshold;
+//          model << " Youden";
    }
    model << std::endl;
-   model << "threshold value: " << prog << std::endl;
+  */
+
+
    
-      model << "fuzzy rule base creation time: ";
-      if (zegar.elapsed_seconds() > 10)
-          model << zegar.elapsed_seconds() << " [s]";
-      else 
-          model << zegar.elapsed_milliseconds() << " [ms]";
-      model << std::endl;
+   wYtrainElaboratedClass.clear();
+   wYtrainElaboratedNumeric.clear();
+   wYtrainExpected.clear();
+   
+   get_answers_for_train_classification();
+   for (const auto answer : _answers_for_train)
+   {
+       double expected, el_numeric, el_class;
+       std::tie(expected, el_numeric, el_class) = answer;
+       wYtrainExpected.push_back(expected);
+       wYtrainElaboratedNumeric.push_back(el_numeric); 
+       wYtrainElaboratedClass.push_back(el_class);
+   }
+   
+   wYtestElaboratedClass.clear();
+   wYtestElaboratedNumeric.clear();
+   wYtestExpected.clear();
+   
+   get_answers_for_test_classification();
+   for (const auto answer : _answers_for_test)
+   {
+       double expected, el_numeric, el_class;
+       std::tie(expected, el_numeric, el_class) = answer;
+       wYtestExpected.push_back(expected);
+       wYtestElaboratedNumeric.push_back(el_numeric);       
+       wYtestElaboratedClass.push_back(el_class);
+   }
+    
+    
+    /*
+   for (std::size_t i = 0; i < nXtest; i++)
+   {
+       auto [ elaborated_numeric, elaborated_class ] = answer_classification(*(XYtest.first.getDatum(i)));
+       wYtestExpected.push_back(XYtest.second.get(i, 0));
+//        wYtestElaborated.push_back(answer(*(XYtest.first.getDatum(i))));
+       wYtestElaboratedClass.push_back(elaborated_class);
+       wYtestElaboratedNumeric.push_back (elaborated_numeric);
+   }
+   
+   for (std::size_t i = 0; i < nXtrain; i++)
+   {
+       auto [ elaborated_numeric, elaborated_class ] = answer_classification(*(XYtrain.first.getDatum(i)));
+       wYtrainExpected.push_back(XYtrain.second.get(i, 0));
+//        wYtestElaborated.push_back(answer(*(XYtest.first.getDatum(i))));
+       wYtrainElaboratedClass.push_back(elaborated_class);
+       wYtrainElaboratedNumeric.push_back (elaborated_numeric);
+   }
+   */
+
+   model << get_classification_threshold_value();
+   
+   model << "fuzzy rule base creation time: ";
+   if (zegar.elapsed_seconds() > 10)
+       model << zegar.elapsed_seconds() << " [s]";
+   else 
+       model << zegar.elapsed_milliseconds() << " [ms]";
+   model << std::endl;
 
    ///////////////// confusion matrices 
    confusion_matrix con_test;
-   int TP, TN, FP, FN;
+   int TP {0}, TN {0}, FP {0}, FN {0};
    
    model << std::endl;
    model << "confusion matrix for test data" << std::endl;
-   con_test.calculate_statistics(wYtestExpected, wYtestElaborated,
+   con_test.calculate_statistics(wYtestExpected, wYtestElaboratedClass,
                                  dbPositiveClass, dbNegativeClass,
-                                 TP, TN, FP, FN, prog);
+                                 TP, TN, FP, FN);
    
    wynik.TestPositive2Positive = TP;
    wynik.TestPositive2Negative = FN;
@@ -598,9 +684,9 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification (
    //----------------
    model << std::endl;
    model << "confusion matrix for train data" << std::endl;
-   con_test.calculate_statistics(wYtrainExpected, wYtrainElaborated,
+   con_test.calculate_statistics(wYtrainExpected, wYtrainElaboratedClass,
                                  dbPositiveClass, dbNegativeClass,
-                                 TP, TN, FP, FN, prog);
+                                 TP, TN, FP, FN);
    wynik.TrainPositive2Positive = TP;
    wynik.TrainPositive2Negative = FN;
    wynik.TrainNegative2Negative = TN;
@@ -619,23 +705,81 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification (
    
    model << std::endl << std::endl;      
    model << "answers for the train set" << std::endl;
-   model << "expected\telaborated" << std::endl;
+   model << "expected\telaborated_numeric\telaborated_class" << std::endl;
+   
+   for (const auto answer : _answers_for_train)
+   {
+       double expected, el_numeric, el_class;
+       std::tie(expected, el_numeric, el_class) = answer;
+       model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
+   }
+   
+   /*
    for (std::size_t i = 0; i < nXtest; i++)
-      model << wYtrainExpected[i] << "   " << wYtrainElaborated[i] <<  "  " << (wYtrainElaborated[i] > prog ? dbPositiveClass : dbNegativeClass) <<  std::endl;
+   {
+       double expected =  wYtrainExpected[i];
+       double elaborated_numeric = wYtrainElaboratedNumeric[i];
+       double elaborated_class   = wYtrainElaboratedClass[i];
+       model << expected << "   " << elaborated_numeric <<  "  " << elaborated_class <<  std::endl;
+       _answers_for_train.push_back({expected, elaborated_numeric, elaborated_class});
+       
+   }
+   */
    
    model << std::endl << std::endl;      
    model << "answers for the test set" << std::endl;
-   model << "expected\telaborated" << std::endl;
+   model << "expected\telaborated_numeric\telaborated_class" << std::endl;
+   
+   for (const auto answer : _answers_for_test)
+   {
+       double expected, el_numeric, el_class;
+       std::tie(expected, el_numeric, el_class) = answer;
+       model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
+   }
+   
+   /*
    for (std::size_t i = 0; i < nXtest; i++)
-      model << wYtestExpected[i] << "   " << wYtestElaborated[i] << "  " << (wYtestElaborated[i] > prog ? dbPositiveClass : dbNegativeClass) << std::endl;
-   
+   {
+       double expected =  wYtestExpected[i];
+       double elaborated_numeric = wYtestElaboratedNumeric[i];
+       double elaborated_class   = wYtestElaboratedClass[i];
+       model << expected << "   " << elaborated_numeric <<  "  " << elaborated_class <<  std::endl;
+       _answers_for_test.push_back({expected, elaborated_numeric, elaborated_class});
+       
+   }
+   */
    model.close();
-   
    return wynik;
+}
+
+
+ksi::result ksi::neuro_fuzzy_system::experiment_classification (
+                                  const std::string & trainDataFile,
+                                  const std::string & testDataFile,
+                                  const std::string & outputFile,
+                                  const int nNumberOfRules,
+                                  const int nNumberOfClusteringIterations,
+                                  const int nNumberofTuningIterations,
+                                  const double dbLearningCoefficient,
+                                  const bool bNormalisation,
+                                  const double dbPositiveClass,
+                                  const double dbNegativeClass,
+                                  ksi::roc_threshold threshold_type
+                                 )
+{
+    try 
+    {
+        ksi::reader_complete czytacz;
+        auto zbiorTrain = czytacz.read(trainDataFile);
+        auto zbiorTest  = czytacz.read(testDataFile);
+        
+        return experiment_classification_core(zbiorTrain, zbiorTest, trainDataFile, testDataFile, outputFile, nNumberOfRules, nNumberOfClusteringIterations, nNumberofTuningIterations, dbLearningCoefficient, bNormalisation, dbPositiveClass, dbNegativeClass, threshold_type);
+    }
+    CATCH;
 }
  
  
-std::string ksi::neuro_fuzzy_system::extra_report()
+std::string ksi::neuro_fuzzy_system::extra_report() const
 {
     return std::string();
 }
@@ -684,19 +828,27 @@ ksi::result ksi::neuro_fuzzy_system::experiment_regression(const std::string & t
       auto XYtrain = zbiorTrain.splitDataSetVertically(zbiorTrain.getNumberOfAttributes() - 1);
       std::size_t nXtest  = zbiorTest.getNumberOfData();
       std::size_t nXtrain = zbiorTrain.getNumberOfData();
-      std::vector<double> wYtestExpected,  wYtestElaborated,
-                        wYtrainExpected, wYtrainElaborated;
+      
+      ///////////////////////////
+		std::vector<double> wYtestExpected (nXtest),  wYtestElaborated (nXtest);
+      std::vector<double> wYtrainExpected(nXtrain), wYtrainElaborated(nXtrain);
+     
+	   #pragma omg parallel for
       for (std::size_t i = 0; i < nXtest; i++)
       {
-         wYtestExpected.push_back(XYtest.second.get(i, 0));
-         wYtestElaborated.push_back(answer(*(XYtest.first.getDatum(i))));
+         wYtestExpected[i] = XYtest.second.get(i, 0);
+         wYtestElaborated[i] = answer(*(XYtest.first.getDatum(i)));
       }
+      
+	   #pragma omg parallel for
       for (std::size_t i = 0; i < nXtrain; i++)
       {
-         wYtrainExpected.push_back(XYtrain.second.get(i, 0));
-         wYtrainElaborated.push_back(answer(*(XYtrain.first.getDatum(i))));
+         wYtrainExpected[i] = XYtrain.second.get(i, 0);
+         wYtrainElaborated[i] = answer(*(XYtrain.first.getDatum(i)));
       }
-      ksi::error_RMSE rmse; 
+      ///////////////////////////
+
+		ksi::error_RMSE rmse; 
       double blad_rmse_test  = rmse.getError(wYtestElaborated, wYtestExpected);
       double blad_rmse_train = rmse.getError(wYtrainElaborated, wYtrainExpected);
       ksi::error_MAE mae;
@@ -761,19 +913,43 @@ ksi::result ksi::neuro_fuzzy_system::experiment_regression(const std::string & t
       model << std::endl << std::endl;      
       model << "fuzzy rule base" << std::endl;       
       printRulebase (model);
+      
+      _answers_for_test.clear();
+      _answers_for_train.clear();
+      
       model << std::endl << std::endl << std::endl;      
       model << "train data" << std::endl;
       model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
-      for (std::size_t i = 0; i < nXtrain; i++)
-         model << wYtrainExpected[i] << '\t' << wYtrainElaborated[i] << std::endl;
-      
+      ////////////
+		_answers_for_train.resize(nXtrain);
+      #pragma omp parallel for 
+		for (std::size_t i = 0; i < nXtrain; i++)
+      {
+          double expected   =  wYtrainExpected[i];
+          double elaborated =  wYtrainElaborated[i];
+          model << expected << '\t' << elaborated << std::endl;
+         _answers_for_train[i] = {expected, elaborated, elaborated};
+      }
+      //////////////
       model << std::endl << std::endl;      
       model << "test data" << std::endl;
       model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
-      for (std::size_t i = 0; i < nXtest; i++)
-         model << wYtestExpected[i] << '\t' << wYtestElaborated[i] << std::endl;
+
+		////////////////////
+      _answers_for_test.resize(nXtest);
+      #pragma omp parallel for 
+		for (std::size_t i = 0; i < nXtest; i++)
+      {
+//           model << wYtestExpected[i] << '\t' << wYtestElaborated[i] << std::endl;
+          
+          double expected   =  wYtestExpected[i];
+          double elaborated =  wYtestElaborated[i];
+          model << expected << '\t' << elaborated << std::endl;
+          _answers_for_test[i] = {expected, elaborated, elaborated};
+      }
+		/////////////////
       
       model.close();
       return experiment_results;
@@ -799,9 +975,6 @@ void ksi::neuro_fuzzy_system::train_generative_model(const ksi::dataset& ds)
     CATCH;
 }
 
-
-
-
 std::string ksi::neuro_fuzzy_system::to_string()
 {
     std::stringstream ss;
@@ -815,17 +988,143 @@ double ksi::neuro_fuzzy_system::elaborate_rmse_for_dataset(const ksi::dataset& d
     auto split = ds.cufOffLastAttribute();
     auto train_data = split.first;
     auto train_decision = split.second;
-    auto size = train_data.getNumberOfData();
+    auto train_size = train_data.getNumberOfData();
     auto decision_matrix = train_decision.getMatrix();
     
-    std::vector<double> elaborated, expected;
-    for (std::size_t i = 0; i < size; i++)
+	 //////////////////
+	 std::vector<double> elaborated(train_size), expected(train_size);
+    #pragma omp parallel for 
+    for (std::size_t i = 0; i < train_size; i++)
     {
-        expected.push_back(decision_matrix[i][0]);
-        elaborated.push_back(answer(*(train_data.getDatum(i))));
+        expected[i] = decision_matrix[i][0];
+        elaborated[i] = answer(*(train_data.getDatum(i)));
     }
-    
+    //////////////////
     ksi::error_RMSE errator;
     
     return errator.getError(expected, elaborated);
+}
+
+
+void ksi::neuro_fuzzy_system::set_test_dataset(const ksi::dataset& ds)
+{
+    _TestDataset = ds;
+}
+
+void ksi::neuro_fuzzy_system::set_train_dataset(const ksi::dataset& ds)
+{
+    _TrainDataset = ds;
+}
+
+void ksi::neuro_fuzzy_system::createFuzzyRulebase(const ksi::dataset& train, const ksi::dataset& test)
+{
+    createFuzzyRulebase(_nClusteringIterations, _nTuningIterations, _dbLearningCoefficient, train);
+}
+
+std::vector<std::tuple<double, double, double> > ksi::neuro_fuzzy_system::get_answers_for_train_classification()
+{
+   _answers_for_train.clear();
+
+   auto XYtrain  = _TrainDataset.splitDataSetVertically(_TrainDataset.getNumberOfAttributes() - 1);
+   std::size_t nXtrain  = _TrainDataset.getNumberOfData();
+
+   _answers_for_train.resize(nXtrain);
+#pragma omp parallel for 
+   for (std::size_t i = 0; i < nXtrain; i++)
+   {
+       auto [ elaborated_numeric, elaborated_class ] = answer_classification(*(XYtrain.first.getDatum(i)));
+       auto expected = XYtrain.second.get(i, 0);
+
+//        _answers_for_train.push_back({expected, elaborated_numeric, elaborated_class});
+       _answers_for_train[i] = {expected, elaborated_numeric, elaborated_class}; 
+   }
+	
+   return _answers_for_train;
+}
+
+std::vector<std::tuple<double, double, double> > ksi::neuro_fuzzy_system::get_answers_for_test_classification() 
+{
+   _answers_for_test.clear(); 
+
+   auto XYtest  = _TestDataset.splitDataSetVertically(_TestDataset.getNumberOfAttributes() - 1);
+   std::size_t nXtest  = _TestDataset.getNumberOfData();
+
+   _answers_for_test.resize(nXtest);
+   #pragma omp parallel for 
+   for (std::size_t i = 0; i < nXtest; i++)
+   {
+       auto [ elaborated_numeric, elaborated_class ] = answer_classification(*(XYtest.first.getDatum(i)));
+       auto expected = XYtest.second.get(i, 0);
+
+       // _answers_for_test.push_back({expected, elaborated_numeric, elaborated_class});
+       _answers_for_test[i] = {expected, elaborated_numeric, elaborated_class}; 
+   }
+
+   return _answers_for_test;
+}
+
+double ksi::neuro_fuzzy_system::get_threshold_value() const
+{
+    return _threshold_value;
+}
+
+ksi::roc_threshold ksi::neuro_fuzzy_system::get_threshold_type() const
+{
+    return _threshold_type;
+}
+
+
+void ksi::neuro_fuzzy_system::set_train_data_file(const std::string& file)
+{
+    _train_data_file = file;
+}
+
+void ksi::neuro_fuzzy_system::set_test_data_file(const std::string& file)
+{
+    _test_data_file = file;
+}
+
+void ksi::neuro_fuzzy_system::set_output_file(const std::string& file)
+{
+    _output_file = file;
+}
+
+std::string ksi::neuro_fuzzy_system::get_classification_threshold_value() const
+{
+    std::stringstream ss;
+    ss << "threshold value: " << _threshold_value << std::endl;
+    return ss.str();
+}
+
+
+std::string ksi::neuro_fuzzy_system::classification_intro() const
+{
+    try 
+    {
+        std::stringstream model;
+        
+        model << "EXPERIMENT" << std::endl;
+        model << "==========" << std::endl;
+        model << getDateTimeNow() << std::endl;
+        model << std::endl;
+        model << get_nfs_description() << std::endl;
+        model << get_nfs_name() << std::endl;
+        
+        model << "number of rules:     " << _nRules << std::endl;
+        model << "number of clustering iterations: " << _nClusteringIterations << std::endl;
+        model << "number of tuning interations:    " << _nTuningIterations << std::endl;
+        model << "learning coefficient: " << _dbLearningCoefficient << std::endl;
+        model << "train data file: " << _train_data_file << std::endl;
+        model << "test  data file: " << _test_data_file << std::endl;
+        model << "normalisation:   " << std::boolalpha << _bNormalisation << std::endl;
+        if (_pModyfikator)
+            model << "train data set modifier(s): " << _pModyfikator->print() << std::endl;
+        
+        auto report = extra_report ();
+            if (not report.empty())
+                model << report << std::endl;
+            
+        return model.str();   
+    }
+    CATCH;
 }

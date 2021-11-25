@@ -19,8 +19,6 @@ bool ksi::rulebase::validate() const
     return true;
 }
 
-
-
 ksi::rulebase * ksi::rulebase::clone() const
 {
    return new ksi::rulebase (*this);
@@ -45,16 +43,32 @@ double ksi::rulebase::answer(const std::vector<double> & X)
       // zapamietuje wartosci odpowiedzi -- przyda sie w strojeniu
       last_rules_localisations_weights.clear();
    
-      for (auto & r : rules)
+//       for (auto & r : rules)
+//       {
+//          auto ans = r->getAnswerLocalisationWeight(X);
+//          if (not std::isfinite(ans.first) or not std::isfinite(ans.second))
+//             ans = {0, 0}; 
+//          
+//          last_rules_localisations_weights.push_back(ans);
+//          sumLocalisationWeight += (ans.first * ans.second);
+//          sumWeight += ans.second;
+//       }
+
+      ///////////////////////////
+      last_rules_localisations_weights.resize(rules.size());
+      #pragma omp parallel for reduction (+: sumLocalisationWeight, sumWeight)
+      for (std::size_t i = 0; i < rules.size(); i++)
       {
-         auto ans = r->getAnswerLocalisationWeight(X);
+         auto ans = rules[i]->getAnswerLocalisationWeight(X);
          if (not std::isfinite(ans.first) or not std::isfinite(ans.second))
             ans = {0, 0}; 
          
-         last_rules_localisations_weights.push_back(ans);
+         last_rules_localisations_weights[i] = ans;
          sumLocalisationWeight += (ans.first * ans.second);
          sumWeight += ans.second;
       }
+      //////////////////////////
+      
       if (sumWeight != 0.0)
          return last_answer = sumLocalisationWeight / sumWeight;
       else 
@@ -75,6 +89,7 @@ void ksi::rulebase::cummulate_differentials(const std::vector< double >& X,
    for (auto & lw : last_rules_localisations_weights)
       suma_wag += lw.second;
    
+   #pragma omp parallel for
    for (std::size_t i = 0; i < rules.size(); i++)
    {
       double rozniczka = 0;
@@ -100,7 +115,6 @@ void ksi::rulebase::clear()
       delete p;
    rules.clear();
 }
-
 
 ksi::rulebase::rulebase()
 {

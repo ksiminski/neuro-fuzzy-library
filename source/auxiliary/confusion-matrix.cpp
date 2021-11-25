@@ -5,7 +5,10 @@
 #include <sstream>
 #include <iomanip>
 
-#include "confusion-matrix.h"
+#include "../auxiliary/confusion-matrix.h"
+#include "../auxiliary/mathematics.h"
+#include "../service/debug.h"
+
 
 std::string ksi::confusion_matrix::ca(int n)
 {
@@ -24,11 +27,78 @@ std::string ksi::confusion_matrix::ul(double d)
    return ss.str();
 }
 
+bool ksi::confusion_matrix::equal(const double left, const double right)
+{
+    const double EPSILON = 0.0001;
+    return fabs(left - right) < EPSILON;
+}
+
+void ksi::confusion_matrix::calculate_statistics(
+    const std::vector<double>& expected_classes, 
+    const std::vector<double>& elaborated_classes, 
+    double PositiveClassLabel,
+    double NegativeClassLabel,
+    int& nTruePositives, 
+    int& nTrueNegatives, 
+    int& nFalsePositives, 
+    int& nFalseNegatives)
+{
+    try 
+    {
+        if (expected_classes.size() != elaborated_classes.size())
+        {
+            std::stringstream ss;
+            ss << "Size of vectors do not match: expected_classes.size() == " << expected_classes.size() << ", elaborated_classes.size() == " << elaborated_classes.size() << std::endl;
+            
+            throw ss.str();
+        }
+        
+        int nClassNegative = 0;
+        int nClassPositive = 0;
+        int nElaboratedPositive = 0;
+        int nElaboratedNegative = 0;
+        
+        nTrueNegatives = nTruePositives = nFalsePositives = nFalseNegatives = 0;
+        
+        auto size = expected_classes.size();
+        for (std::size_t i = 0; i < size; i++)
+        {
+            int ElaboratedClass = elaborated_classes[i];
+            int OriginalClass   = expected_classes[i];
+
+            if (equal(OriginalClass, PositiveClassLabel))
+                nClassPositive++;
+            else
+                nClassNegative++;
+
+            if (equal (ElaboratedClass, PositiveClassLabel))
+                nElaboratedPositive++;
+            else
+                nElaboratedNegative++;
+            
+            if (equal (OriginalClass, PositiveClassLabel)) // original
+            {
+                if (equal (ElaboratedClass, PositiveClassLabel))
+                    nTruePositives++;
+                else
+                    nFalseNegatives++;
+            }
+            else
+            {
+                if (equal (ElaboratedClass, PositiveClassLabel))
+                    nFalsePositives++;
+                else
+                    nTrueNegatives++;
+            }
+        }
+    }
+    CATCH;
+}
 
 
 void ksi::confusion_matrix::calculate_statistics (
-   std::vector<double> & original, 
-   std::vector<double> & answers,
+   const std::vector<double> & original, 
+   const std::vector<double> & answers,
    double PositiveClassLabel,
    double NegativeClassLabel,
    int & nTruePositives,
@@ -41,6 +111,8 @@ void ksi::confusion_matrix::calculate_statistics (
     int nClassPositive = 0;
     int nElaboratedPositive = 0;
     int nElaboratedNegative = 0;
+    
+    nTrueNegatives = nTruePositives = nFalsePositives = nFalseNegatives = 0;
 
     double dbProg;
     if (dbThreshold < -99)
@@ -56,28 +128,28 @@ void ksi::confusion_matrix::calculate_statistics (
     for (i = 0; i < size; i++)
     {
         int ElaboratedClass = answers[i] < dbProg ? NegativeClassLabel : PositiveClassLabel;
-        int OriginalClass   = original[i] < dbProg ? NegativeClassLabel : PositiveClassLabel;
+        int OriginalClass   = original[i];
 
-        if (OriginalClass == PositiveClassLabel)
+        if (equal(OriginalClass, PositiveClassLabel))
             nClassPositive++;
         else
             nClassNegative++;
 
-        if (ElaboratedClass == PositiveClassLabel)
+        if (equal (ElaboratedClass, PositiveClassLabel))
             nElaboratedPositive++;
         else
             nElaboratedNegative++;
         
-        if (OriginalClass == PositiveClassLabel) // original
+        if (equal (OriginalClass, PositiveClassLabel)) // original
         {
-            if (ElaboratedClass == PositiveClassLabel)
+            if (equal (ElaboratedClass, PositiveClassLabel))
                 nTruePositives++;
             else
                 nFalseNegatives++;
         }
         else
         {
-            if (ElaboratedClass == PositiveClassLabel)
+            if (equal (ElaboratedClass, PositiveClassLabel))
                 nFalsePositives++;
             else
                 nTrueNegatives++;
@@ -204,47 +276,5 @@ std::string ksi::confusion_matrix::print(
    ss << "F1 score = recall * precision / (recall + precision):                               " << ul(F1S) << std::endl;
 
    return ss.str();
-   
-   
-   /*
-   ss <<
-   "------------+----------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   " total      |     original   |     original       | prevalence =          | accuracy (ACC) =    |" << std::endl <<
-   " population |     positive   |     negative       |   original positive   |        TP + TN      |" << std::endl <<
-   "            |                |                    | = -----------------   | = ----------------  |" << std::endl <<
-   "            |                |                    |   total population    |   total population  |" << std::endl <<
-   " =          | =              | =                  | =                     | =                   |" << std::endl <<
-   "------------+----------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   " predicted  |  true positive |  false positive    | positive predictive   | false discovery     |" << std::endl <<
-   " positive   |  TP, power     |  FP, type I error  | value, PPV, precision | rate, FDR =         |" << std::endl <<
-   "            |                |                    |      TP               |      FP             |" << std::endl <<
-   "            |                |                    | = ---------           | = ---------         |" << std::endl <<
-   "            |                |                    |    TP + FP            |    TP + FP          |" << std::endl <<
-   " =          | =              | =                  | =                     | =                   |" << std::endl <<
-   "------------+----------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   " predicted  | false negative | true negative      | false omission rate   | negative predictive |" << std::endl <<
-   " negative   | FN             | TN                 | FOR                   | value, NPV          |" << std::endl <<
-   "            | type II error  |                    |      FN               |      TN             |" << std::endl <<
-   "            |                |                    | = ---------           | = ---------         |" << std::endl <<
-   "            |                |                    |    FN + TN            |    FN + TN          |" << std::endl <<
-   " =          | =              | =                  | =                     | =                   |" << std::endl <<
-   "------------+----------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   "            | true positive  | false positive     | positive likelihood   | diagnostic odds     |" << std::endl <<
-   "            | rate, TPR,     | rate, FPR, fall-out| ratio (LR+)           | ratio, DOR          |" << std::endl <<
-   "            | recall,        |                    |                       |                     |" << std::endl <<
-   "            | sensitivity    |                    |                       |                     |" << std::endl <<
-   "            |      TP        |      FP            |    TPR                |    LR+              |" << std::endl << 
-   "            | = ---------    | = ---------        | = -----               | = -----             |" << std::endl <<
-   "            |    TP + FN     |    TP + FN         |    FPR                |    LR-              |" << std::endl <<
-   "            | =              | =                  | =                     | =                   |" << std::endl <<
-   "            +----------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   "            | false negative | true negativee     | negative likelihood   | F1 score            |" << std::endl <<
-   "            | rate, FNR,     | rate, TNR,         | ratio (LR-)           |                     |" << std::endl <<
-   "            | miss rate      | specificity, SPC   |                       |                     |" << std::endl <<
-   "            |      FN        |      TN            |    FNR                |    TPR * PPV        |" << std::endl <<
-   "            | = ---------    | = ---------        | = -----               | = -----------       |" << std::endl <<
-   "            |    TP + FN     |    TP + FN         |    TNR                |    TPR + PPV        |" << std::endl <<
-   "            | =              | =                  | =                     | =                   |" << std::endl <<
-   "            +----------------+--------------------+-----------------------+---------------------+" << std::endl;
-*/
+  
 }

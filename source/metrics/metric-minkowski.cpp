@@ -13,6 +13,11 @@ std::string ksi::metric_minkowski::getAbbreviation() const
     return {"minkowski"};
 }
 
+std::string ksi::metric_minkowski::get_info() const
+{
+    return {"Minkowski metric: m = " + std::to_string(_m)};
+}
+
 
 ksi::metric_minkowski::~metric_minkowski()
 {

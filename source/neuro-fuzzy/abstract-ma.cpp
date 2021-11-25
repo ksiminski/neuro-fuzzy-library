@@ -96,6 +96,7 @@ void ksi::abstract_ma::createFuzzyRulebase
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
       
+#pragma omp parallel for 
       for (int c = 0; c < _nRules; c++)
       {
          premise przeslanka;      
@@ -110,6 +111,7 @@ void ksi::abstract_ma::createFuzzyRulebase
          regula.setPremise(przeslanka);
          consequence_MA konkluzja (scs[0], scs[1], scs[2]);
          regula.setConsequence(konkluzja);
+#pragma omp critical
          _pRulebase->addRule(regula);
       }
       

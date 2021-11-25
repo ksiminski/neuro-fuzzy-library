@@ -5,10 +5,21 @@
 #include <utility>   // std::pair
 #include <algorithm> // sort
 #include <cmath>
+#include <string>
 
 #include "roc.h" 
 
   
+std::string ksi::to_string (const ksi::roc_threshold & th)
+{
+    switch (th)
+    {
+        case ksi::roc_threshold::mean             : return "mean";
+        case ksi::roc_threshold::minimal_distance : return "minimal-distance";
+        case ksi::roc_threshold::youden           : return "youden";
+        default                                   : return "error";
+    }
+}
 
 double ksi::roc::trapezoidArea(double x1, double x2, double y1, double y2)
 {

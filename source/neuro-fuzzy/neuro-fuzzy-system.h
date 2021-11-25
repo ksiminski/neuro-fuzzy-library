@@ -6,9 +6,10 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <tuple>
 
 #include "../common/dataset.h"
-#include "rulebase.h"
+#include "../neuro-fuzzy/rulebase.h"
 #include "../implications/implication.h"
 #include "../tnorms/t-norm.h"
 #include "../auxiliary/roc.h"
@@ -71,17 +72,54 @@ namespace ksi
       double _positive_class;  ///< label for positive class in classification
       double _negative_class;  ///< label for negative class in classification
       ksi::roc_threshold _threshold_type; ///< threshold type for classification
+      double _threshold_value; ///< value of the threshold for classification
       
       
       std::size_t _original_size_of_training_dataset = 0;
       std::size_t _reduced_size_of_training_dataset = 0;
       
       std::shared_ptr<ksi::data_modifier> _pModyfikator { nullptr };
+      
+      std::vector<std::tuple<double, double, double>> _answers_for_train; ///< answers for the train set: expected elaborated_numeric elaborated_class
+      std::vector<std::tuple<double, double, double>> _answers_for_test; ///< answers for the test set: expected elaborated_numeric elaborated_class
+      
        
-
+   public:
+       /** @return threshold value elaborated for classification
+           @date   2021-09-16
+         */
+      double get_threshold_value () const;
+      
+       /** @return threshold type
+           @date   2021-09-22
+         */
+      ksi::roc_threshold get_threshold_type () const;
+      
+      
+      
+      /** @return expected class, elaborated_numeric answer, elaborated_class for the train dataset
+          @date   2021-09-16
+         */
+      std::vector<std::tuple<double, double, double>> get_answers_for_train_classification (); 
+      
+      /** @return expected class, elaborated_numeric answer, elaborated_class for the test dataset
+          @date   2021-09-16
+       */
+      std::vector<std::tuple<double, double, double>> get_answers_for_test_classification () ;  
+       
+      
    protected:
-       virtual std::string extra_report ();
+       virtual std::string extra_report () const;
        
+       /** @return The method returns an intro for a classification experiment.
+           @date 2021-09-23
+         */
+       virtual std::string classification_intro() const;
+       
+       /** @return The method returns classification threshold value.
+           @date   2021-09-28
+        */
+       virtual std::string get_classification_threshold_value () const;
        
    public:
         
@@ -120,6 +158,19 @@ namespace ksi
                           const std::string & resultsFile,
                           const ksi::partitioner & p
                          );
+      
+      /** 
+       @param trainDataFile 
+       @param testDataFile,
+       @param resultsFile
+       @date 2021-09-14
+       */
+      neuro_fuzzy_system (const std::string & trainDataFile, 
+                          const std::string & testDataFile, 
+                          const std::string & resultsFile
+                         );
+      
+      
 
       /** 
        @param trainDataFile 
@@ -197,7 +248,7 @@ namespace ksi
       
       /** The method prints rule base.
        * @param ss ostream to print to */
-      void printRulebase(std::ostream & ss);
+      virtual void printRulebase(std::ostream & ss);
       
       
       /** The method creates a fuzzy rulebase from the dataset.
@@ -208,8 +259,16 @@ namespace ksi
        * @date  2018-03-29
        * @author Krzysztof Siminski 
        */
-      virtual void createFuzzyRulebase (int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient,
-         const dataset & train) = 0; 
+      virtual void createFuzzyRulebase (int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const dataset & train) = 0; 
+      
+      
+      /** The method creates a fuzzy rulebase from the dataset.
+       * @param train train dataset 
+       * @param test  test  dataset 
+       * @date  2021-09-14
+       * @author Krzysztof Siminski 
+       */
+      virtual void createFuzzyRulebase (const dataset & train, const dataset & test);
       
       /** The method executes an experiment for regression.
         * @param trainDataFile name of file with train data
@@ -272,6 +331,26 @@ namespace ksi
                                   const double dbNegativeClass,
                                   ksi::roc_threshold threshold_type
                                  );
+      
+   public:
+       virtual result experiment_classification_core (
+                                  const ksi::dataset & trainDataset,
+                                  const ksi::dataset & testDataset, 
+                                  const std::string & trainDataFile,
+                                  const std::string & testDataFile,
+                                  const std::string & outputFile,
+                                  const int nNumberOfRules,
+                                  const int nNumberOfClusteringIterations,
+                                  const int nNumberofTuningIterations,
+                                  const double dbLearningCoefficient, 
+                                  const bool bNormalisation,
+                                  const double dbPositiveClass,
+                                  const double dbNegativeClass,
+                                  ksi::roc_threshold threshold_type
+                                 );
+       
+      virtual result experiment_classification_core ();
+   public:
                        
       /** Just run an experiment for classification. All parameters should be already set. */
       virtual result experiment_classification ();
@@ -306,11 +385,41 @@ namespace ksi
        @param rb rulebase to set */
       void set_rulebase (const rulebase & rb);
       
+      /** The method sets train data file.
+       @param file file name for train data
+       @date 2021-09-21*/
+      void set_train_data_file(const std::string & file);
       
+      /** The method sets test data file.
+       @param file file name for test data
+       @date 2021-09-21*/
+      void set_test_data_file(const std::string & file);
+      
+      
+      /** The method sets result file.
+       @param file file name for result
+       @date 2021-09-21*/
+      void set_output_file(const std::string & file);
       
    private:
       /** The method copies non pointer fields. */
       void copy_fields (const neuro_fuzzy_system & wzor);
+      
+   protected:
+       /** The method elaborates a classification threshold.
+        @param Expected vector of expected values
+        @param Elaborated vector of elaborated values
+        @param positiveClassvalue positive class value
+        @param negativeClassvalue negative class value
+        @param type threshold type
+        @return value of the classification threshold
+        
+        */
+       virtual double elaborate_threshold_value (std::vector<double> & Expected, 
+                                         std::vector<double> & Elaborated, 
+                                         double positiveClassvalue,
+                                         double negativeClassvalue,
+                                         const ksi::roc_threshold & type);
       
    public:
        /** 
@@ -318,6 +427,12 @@ namespace ksi
        @param item data item to elaborate answer for
        */
       virtual double answer (const datum & item) const = 0;
+      
+      /** The method elaborates answer for classification.
+       @return a pair: elaborated numeric, class
+       @date   2021-09-27
+       */
+      virtual std::pair<double, double> answer_classification (const datum & item) const;
       
    public:
        // implemented from generative_model:
@@ -331,6 +446,16 @@ namespace ksi
       
       virtual std::string to_string ();
       
+   public:
+      /** The method sets a train dataset.
+       @param ds a dataset to set 
+       @date  2021-09-14*/
+      void set_train_dataset (const ksi::dataset & ds);
+            
+      /** The method sets a test dataset.
+       @param ds a dataset to set 
+       @date  2021-09-14*/
+      void set_test_dataset  (const ksi::dataset & ds);
       
    };
 }

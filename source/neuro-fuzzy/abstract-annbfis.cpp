@@ -38,7 +38,6 @@
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
 
-
 ksi::abstract_annbfis::abstract_annbfis(const ksi::implication& imp, 
                                         const ksi::partitioner& Partitioner) :
                                         ksi::abstract_annbfis::abstract_annbfis ()
@@ -51,6 +50,8 @@ ksi::abstract_annbfis::abstract_annbfis(const ksi::implication& imp,
         delete _pPartitioner;
     _pPartitioner = Partitioner.clone();
 }
+
+
  
 void ksi::abstract_annbfis::createFuzzyRulebase
 (
@@ -93,21 +94,12 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       
       auto podzial = doPartition(trainX);
       _nRules = podzial.getNumberOfClusters();
-//       debug(trainX);
       _original_size_of_training_dataset = trainX.getNumberOfData();
-//       debug(_minimal_typicality);
+
       auto typical_items = trainX.get_if_data_typical(_minimal_typicality);
       trainX.remove_untypical_data(typical_items);
       trainY.remove_untypical_data(typical_items);
-     
-//       debug(trainX);
-//        debug(typical_items);
-//        debug(_original_size_of_training_dataset);
        _reduced_size_of_training_dataset = trainX.getNumberOfData();
-//        debug(_reduced_size_of_training_dataset);
-      
-//        throw ksi::exception(std::to_string(__LINE__));
-      
       
       std::size_t nX = trainX.getNumberOfData();
       
@@ -119,6 +111,7 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
       
+#pragma omp parallel for 
       for (int c = 0; c < _nRules; c++)
       {
          premise przeslanka;      
@@ -131,6 +124,8 @@ void ksi::abstract_annbfis::createFuzzyRulebase
          regula.setPremise(przeslanka);
          consequence_CL konkluzja (std::vector<double>(nAttr_1 + 1, 1.0), INITIAL_W);
          regula.setConsequence(konkluzja);
+
+         #pragma omp critical
          _pRulebase->addRule(regula);
       }
       
@@ -150,7 +145,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
             {
                // Uruchomienie strojenia gradiendowego.
                double odpowiedz = _pRulebase->answer(wTrainX[x]);
-//                debug(odpowiedz);
                // dla wyznaczania konkluzji:
                auto localisation_weight = _pRulebase->get_last_rules_localisations_weights();
                std::vector<double> Gs;
@@ -162,7 +156,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
                _pRulebase->cummulate_differentials(wTrainX[x], wY[x]);
             }         
             _pRulebase->actualise_parameters(eta);
-//             debug(G_przyklad_regula);
          }
          
          else
@@ -175,7 +168,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
             {
                auto G_suma = std::accumulate(G_przyklad_regula[x].begin(),
                   G_przyklad_regula[x].end(), 0.0);
-//                debug(G_suma);
                
                std::vector<double> linia((nAttr_1 + 1) * _nRules);
                int index = 0;
@@ -189,8 +181,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
                lser.read_data_item(linia, wY[x]);
             }
             auto p = lser.get_regression_coefficients();
-            
-//             debug(p);
 
             // teraz zapis do regul:
             for (int r = 0; r < _nRules; r++)
@@ -239,16 +229,10 @@ ksi::number ksi::abstract_annbfis::elaborate_answer(const ksi::datum& d) const
    CATCH;
 }
 
-
 ksi::abstract_annbfis::abstract_annbfis() : neuro_fuzzy_system()
 {
-//     debug(__LINE__);
    _pImplication = nullptr;
    _pTnorm = nullptr;
-   
-//    _name_of_neuro_fuzzy_system = std::string ("ANNBFIS");
-//    _description_of_neuro_fuzzy_system = std::string("ANNBFIS, neuro-fuzzy system with logical interpretation of fuzzy rules");
-   
 }
 
 ksi::abstract_annbfis::~abstract_annbfis()
@@ -306,7 +290,7 @@ double ksi::abstract_annbfis::discriminate(const ksi::datum& d)
     return answer(d);
 }
 
- 
+/// @todo zaimplementowac
 void ksi::abstract_annbfis::train_discriminative_model(const ksi::dataset& ds)
 {
     throw std::string ("not implemented");
@@ -334,8 +318,6 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
         _pPartitioner = par.clone();
     if (not _pImplication)
         _pImplication = imp.clone();
-    //_pImplication = nullptr;
-    //_pPartitioner = nullptr;
 
 }
 
@@ -361,12 +343,7 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
         _pPartitioner = par.clone();
     if (not _pImplication)
         _pImplication = imp.clone();
-
-    //_pImplication = nullptr;
-    //_pPartitioner = nullptr;
-   
 }
-
 
 ksi::abstract_annbfis::abstract_annbfis(int nRules, 
               int nClusteringIterations, 
@@ -429,6 +406,3 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
     _threshold_type = threshold_type;
     _minimal_typicality = dbMinimalTypicality;
 }
-
-
-

@@ -32,8 +32,6 @@
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
  
- 
- 
 void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations, 
                                      int nTuningIterations, 
                                      double dbLearningCoefficient, 
@@ -86,6 +84,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
       
+#pragma omp parallel for 
       for (int c = 0; c < _nRules; c++)
       {
          premise przeslanka;      
@@ -99,6 +98,8 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
          regula.setPremise(przeslanka);
          consequence_TSK konkluzja (std::vector<double>(nAttr_1 + 1, 0.0));
          regula.setConsequence(konkluzja);
+         
+#pragma omp critical
          _pRulebase->addRule(regula);
       }
       

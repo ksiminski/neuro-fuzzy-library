@@ -20,13 +20,17 @@
 #include "../neuro-fuzzy/annbfis.h"
 #include "../neuro-fuzzy/subspace-annbfis.h"
 #include "../neuro-fuzzy/fubi-annbfis.h"
+#include "../neuro-fuzzy/tsk_prototype.h"
+#include "../neuro-fuzzy/annbfis_prototype.h"
+#include "../neuro-fuzzy/fac_prototype_minkowski_regression.h"
+
 #include "../auxiliary/roc.h"
 #include "../auxiliary/tempus.h"
 #include "../auxiliary/utility-math.h"
 
 #include "../experiments/exp-005.h"
 
-
+ 
 
 
 ksi::exp_005::exp_005()
@@ -220,7 +224,6 @@ void ksi::exp_005::regression()
     const std::string DATA_DIRECTORY       ("data/" + EXPERIMENT + "/" + TYPE);
     const std::string RESULTS_DIRECTORY    ("results/" + EXPERIMENT + "/" + TYPE);
 
-    
     const int NUMBER_OF_RULES = 5;
     const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
     const int NUMBER_OF_TUNING_ITERATIONS = 100;
@@ -238,7 +241,7 @@ void ksi::exp_005::regression()
     std::string TRAIN   (dataset + "/" + dataset_name + ".train");
     std::string TEST    (dataset + "/" + dataset_name + ".test");
     std::string RESULTS (results_dir + "/results-" + dataset_name);
-        
+    
     // MA
     {
         ksi::ma system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm);
@@ -282,6 +285,30 @@ void ksi::exp_005::regression()
     // FUBI_ANNBFIS
     {
         ksi::fubi_annbfis system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication);
+        std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+        std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+        system.experiment_regression(TRAIN, TEST, result_file);
+        std::cout << "\tResults saved to file " << result_file << std::endl;
+        std::cout << std::endl;
+    }
+
+    // PROTO_TSK
+    {
+        const double minkowski_coefficient { 2.0 };
+        ksi::fac_prototype_minkowski_regression factory (minkowski_coefficient);
+        ksi::tsk_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory);
+        std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+        std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+        system.experiment_regression(TRAIN, TEST, result_file);
+        std::cout << "\tResults saved to file " << result_file << std::endl;
+        std::cout << std::endl;
+    }
+
+    // PROTO_ANNBFIS
+    {
+        const double minkowski_coefficient { 2.0 };
+        ksi::fac_prototype_minkowski_regression factory (minkowski_coefficient);
+        ksi::annbfis_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, ksi::imp_reichenbach(), factory);
         std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
         std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
         system.experiment_regression(TRAIN, TEST, result_file);

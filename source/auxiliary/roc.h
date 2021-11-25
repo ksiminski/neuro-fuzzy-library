@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <utility> // pair
+#include <string>
 
 
 namespace ksi
@@ -16,6 +17,9 @@ namespace ksi
       youden,           ///< Youden criterion
       minimal_distance  ///< minimal distance of ROC to point (0, 1) 
    };
+   
+   /** @return the name of the threshold */
+   std::string to_string (const roc_threshold & th);
    
    struct results
    {
