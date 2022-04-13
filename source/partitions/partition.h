@@ -5,8 +5,10 @@
 
 #include <vector>
 #include <iostream>
-#include "cluster.h"
+#include <string>
+#include "../partitions/cluster.h"
 #include "../common/extensional-fuzzy-number-gaussian.h"
+#include "../common/dataset.h"
 
 namespace ksi
 {
@@ -101,6 +103,20 @@ namespace ksi
        @date 2018-01-02
        */
       friend std::ostream & operator << (std::ostream& ss, const ksi::partition& part);
+      
+      /** The method prints to a string the membership matrix. 
+       Each row represents a cluster. Each column represents 
+       a data item. 
+       @return string with membership matrix 
+       @date 2022-04-13 
+       */
+      std::string print_partition_matrix ();
+      
+      /** The method prints to a string each data item with the cluster number, the data items has the highest membeship to.
+       @return string with data items and cluster number
+       @date 2022-04-13 
+       */
+      std::string print_crisp_membership_for_data(const ksi::dataset & ds);
       
    };   
 }

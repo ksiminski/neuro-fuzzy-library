@@ -187,23 +187,24 @@ void ksi::exp_002::execute()
       }   
       
       {
-         const double epsilon = 1.5;
+         const double epsilon = 5;    // 1.5
          const double minPts = 10;
          ksi::metric_euclidean metric;
          
          std::string dataDir ("data/exp-002");
          std::string data (dataDir + "/" + "dbscan.data");
          ksi::reader_complete input;
-         auto DataSet = input.read(data);
-//          auto number_of_items = DataSet.getNumberOfData();
+         auto DataSet = input.read(data); 
          
          ksi::dbscan algorithm(epsilon, minPts, metric);
          auto Partition = algorithm.doPartition(DataSet);
          
          std::cout << "DBSCAN" << std::endl;
          std::cout << "======" << std::endl;
-         std::cout << Partition << std::endl;
-         std::cout << std::endl;
+         std::cout << Partition.print_crisp_membership_for_data(DataSet) << std::endl;
+//          std::cout << std::endl;
+//          std::cout << "++++++++++++++++++++++++++" << std::endl;
+//          std::cout << Partition.print_partition_matrix() << std::endl;
          
       } 
    }

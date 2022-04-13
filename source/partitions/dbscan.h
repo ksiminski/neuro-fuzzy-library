@@ -27,6 +27,13 @@ namespace ksi
 
       std::shared_ptr<metric> _metric_object;
 
+      /** The method finds density-based neighbors of a data point
+       * @param datum datum to find neighbors for
+       * @param ds dataset
+       * @return vector of pairs: pointer to a neighbour, index of a neighbor
+       */
+      std::vector<std::pair<const datum *, std::size_t>> findNeighbors(const datum *datum, const dataset &ds);
+
    public:
       dbscan();
 
@@ -38,12 +45,6 @@ namespace ksi
        */
       partition doPartition(const dataset &ds);
 
-      /** The method finds density-based neighbors of a data point
-       * @param datum datum to find neighbors for
-       * @param ds dataset
-       * @return vector of pairs: pointer to a neighbour, index of a neighbor
-       */
-      std::vector<std::pair<const datum *, std::size_t>> findNeighbors(const datum *datum, const dataset &ds);
 
       virtual partitioner *clone() const;
       virtual ~dbscan();
