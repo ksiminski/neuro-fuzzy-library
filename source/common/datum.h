@@ -148,6 +148,10 @@ namespace ksi
       long int getIDincomplete () const ;
       
       
+      /** The method returns a string with values of all attributes of a datum.
+       @date 2022-04-13*/
+      std::string to_string() const;
+      
       /** Output stream operator
         @date 2018-05-13
         */

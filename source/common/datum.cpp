@@ -277,6 +277,27 @@ namespace ksi
    }
 }
 
+std::string ksi::datum::to_string() const
+{
+    try 
+    {
+        std::stringstream ss;
+        const int WIDTH = 10;
+        auto cols = getNumberOfAttributes();
+        
+        for (std::size_t k = 0; k < cols; k++)
+        {
+            if (at(k)->exists())
+                ss << std::setw(WIDTH) << *(at(k));
+            else
+                ss << std::setw(WIDTH) << MISSING_VALUE_SYMBOL;
+        }
+        
+        return ss.str();
+    }
+    CATCH;
+}
+
 
 void ksi::datum::setDecision(const ksi::number& p)
 {
