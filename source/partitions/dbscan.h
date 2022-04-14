@@ -12,6 +12,11 @@
 
 namespace ksi
 {
+    enum DatumState
+    {
+        UNDEFINED, NOISE, CLUSTER_MEMBER
+    };
+
    /** The class implements DBSCAN clustering algorithm.
     * @author Dawid Suchy
     * @date 2021-07-27

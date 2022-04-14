@@ -33,37 +33,45 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
       // partition matrix
       std::vector<std::vector<double>> mU;
 
-      std::vector<bool> processed(dsSize, false);
+      std::vector<DatumState> datumStates(dsSize, UNDEFINED);
 
       for (std::size_t i = 0; i < dsSize; ++i)
       {
-         if (processed[i])
+         if (datumStates[i] != UNDEFINED)
             continue;
 
          const ksi::datum *datum = ds.getDatum(i);
-         processed[i] = true;
 
          auto neighbors = findNeighbors(datum, ds);
          auto neighborsSize = neighbors.size();
 
          if (neighborsSize < this->_minPoints)
-            continue; // noise
+         {
+            datumStates[i] = NOISE;
+            continue;
+         }
 
          ++C;
          mU.push_back(std::vector<double>(dsSize, 0.0));
          // cluster membership
          mU[C][i] = 1.0;
+         datumStates[i] = CLUSTER_MEMBER;
 
          for (std::size_t j = 0; j < neighborsSize; ++j)
          {
             auto neighbor = neighbors[j].first;
             auto neighborIndex = neighbors[j].second;
 
-            if (neighbor == datum || processed[neighborIndex])
-               continue;
+            if (datumStates[neighborIndex] == NOISE)
+            {
+                mU[C][neighborIndex] = 1.0;
+                datumStates[neighborIndex] = CLUSTER_MEMBER;
+            }
+            if (datumStates[neighborIndex] != UNDEFINED)
+                continue;
 
             mU[C][neighborIndex] = 1.0;
-            processed[neighborIndex] = true;
+            datumStates[neighborIndex] = CLUSTER_MEMBER;
 
             auto neighbors_ = findNeighbors(neighbor, ds);
             auto neighbors_Size = neighbors_.size();
