@@ -1,5 +1,4 @@
 /** @file */ 
-#include <algorithm>
 #include <iostream>
 
 #include "s-norm-einstein.h"
