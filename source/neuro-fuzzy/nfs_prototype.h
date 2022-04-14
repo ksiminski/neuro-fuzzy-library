@@ -14,6 +14,24 @@
 
 namespace ksi
 {
+    
+   /**
+    * CITATION REQUEST    
+    <pre>
+    @article{id:Siminski2022Prototype,
+	author = "Krzysztof Siminski",
+	doi = "10.1016/j.fss.2022.03.001",
+	issn = "0165-0114",
+	journal = "Fuzzy Sets and Systems",
+	keywords = "Prototype; Granular computing; Neuro-fuzzy system; Regression",
+	title = "Prototype based granular neuro-fuzzy system for regression task",
+	url = "https://www.sciencedirect.com/science/article/pii/S0165011422000963",
+	year = "2022"
+    }
+    </pre>
+    *
+    */ 
+    
    class nfs_prototype : public neuro_fuzzy_system
    {
    protected:

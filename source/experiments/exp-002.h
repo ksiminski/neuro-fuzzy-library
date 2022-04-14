@@ -16,8 +16,9 @@ namespace ksi
     4. subspace FCM (SFCM)
     5. fuzzy biclustering (FuBi) 
     6. fuzzy C-ordered means (FCOM)
+    7. dbscan
     
-    @date 2018-07-28, 2021-07-03
+    @date 2018-07-28, 2021-07-03, 2022-04-11
     
     */
    class exp_002 : virtual public experiment

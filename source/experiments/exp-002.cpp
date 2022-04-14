@@ -16,6 +16,7 @@
 #include "../partitions/fcm-possibilistic.h"
 #include "../partitions/sfcm.h" 
 #include "../partitions/fubi.h"
+#include "../partitions/dbscan.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -25,6 +26,7 @@
 #include "../owas/plowa.h"
 #include "../owas/uowa.h"
 #include "../service/debug.h"
+#include "../metrics/metric-euclidean.h"
 
 #include "../experiments/exp-002.h"
 
@@ -182,7 +184,29 @@ void ksi::exp_002::execute()
          
          std::cout << "data items with typicalities" << std::endl;
          std::cout << DataSet << std::endl;
-      }      
+      }   
+      
+      {
+         const double epsilon = 5;    // 1.5
+         const double minPts = 10;
+         ksi::metric_euclidean metric;
+         
+         std::string dataDir ("data/exp-002");
+         std::string data (dataDir + "/" + "dbscan.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data); 
+         
+         ksi::dbscan algorithm(epsilon, minPts, metric);
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "DBSCAN" << std::endl;
+         std::cout << "======" << std::endl;
+         std::cout << Partition.print_crisp_membership_for_data(DataSet) << std::endl;
+//          std::cout << std::endl;
+//          std::cout << "++++++++++++++++++++++++++" << std::endl;
+//          std::cout << Partition.print_partition_matrix() << std::endl;
+         
+      } 
    }
    CATCH;
 

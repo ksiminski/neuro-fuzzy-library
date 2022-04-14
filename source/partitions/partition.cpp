@@ -1,10 +1,15 @@
-/** @file */  
+/** @file */ 
+
 #include <algorithm>
 #include <vector>
-#include "partition.h"
+#include <sstream>
+#include <string>
+
+#include "../partitions/partition.h"
 #include "../service/debug.h"
 #include "../common/extensional-fuzzy-number-gaussian.h"
-
+#include "../common/datum.h"
+#include "../common/dataset.h"
 
 
 
@@ -148,4 +153,49 @@ void ksi::partition::setPartitionMatrix(const std::vector<std::vector<ksi::ext_f
     U = ksi::ext_fuzzy_number_gaussian::matrix_of_extensional_fuzzy_number_2_double(partition_matrix);
 }
 
+std::string ksi::partition::print_partition_matrix()
+{
+    std::stringstream ss;
+    for (const auto & cluster : U)
+    {
+        for (const auto & item : cluster)
+            ss << item << '\t';
+        ss << std::endl;
+    }
+    
+    return ss.str();
+}
 
+
+std::string ksi::partition::print_crisp_membership_for_data(const ksi::dataset& ds)
+{
+    try 
+    {
+        std::stringstream ss; 
+        std::size_t nItems = U[0].size();
+        std::size_t nCluster = U.size();
+        if (nItems != ds.getNumberOfData())
+        {
+            std::stringstream errors;
+            errors << "Number of data items (" << ds.getNumberOfData() << ") and number of column in membership matrix (" << nItems << ") do not match!";
+            throw errors.str();
+        }
+        
+        for (std::size_t i = 0; i < nItems; i++)
+        {
+            ss << ds.getDatum(i)->to_string() << "\t";
+            
+            std::size_t max_cluster_number = 0;
+            for (std::size_t c = 1; c < nCluster; c++)
+            {
+                if (U[max_cluster_number][i] < U[c][i])
+                {
+                    max_cluster_number = c;
+                }
+            }
+            ss << max_cluster_number << std::endl;
+        }
+        return ss.str();
+    }
+    CATCH;
+}

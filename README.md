@@ -15,4 +15,59 @@ Run `make 1` to run the 1st example, `make 2` – the 2nd example, and finally `
 
 Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for the project.
 
+## Examples
+
+### make 1   
+This example presents modifiers of data:
+1. normalisation
+2. standardisation
+3. marginalisation of incomplete data items
+4. imputation of missing data with a constant
+5. imputation of missing data with averages of the attributes
+6. imputation of missing data with medians of the attributes
+5. imputation of missing data with averages of 3 nearest neighbours
+6. imputation of missing data with medians of 3 nearest neighbours
+7. imputation of missing data with values from 3 nearest neighbours and then the imputed data set standardized
+8. a series of data modifiers: imputer with values from knn (k == 3) + standardiser, imputer with constant value, normaliser, standardiser, average imputer, imputer with constant value + normaliser, average imputer + standardiser
+9. imputer with constant value + normaliser + average imputer + standardiser
+
+
+### make 2
+This example presents clustering algorithms:
+1. fcm
+1. possibilistic fcm
+1. conditional fcm
+1. subspace fcm
+1. fubi (fuzzy biclustering)
+1. fcom
+1. dbscan
+
+
+### make 3
+This example presents clustering algorithms for incomplete datasets:
+1. rfcm
+2. rfcom
+3. rsfcm
+
+### make 4
+This example presents a fuzzy system. 
+
+### make 5
+This example presents neuro-fuzzy systems for
+1. classification 
+	1. MA
+	2. TSK
+	3. ANNBFIS
+	4. subspace ANNBFIS
+	5. FuBi ANNBFIS
+1. regression:
+	1. MA
+	2. TSK
+	3. ANNBFIS
+	4. subspace ANNBFIS
+	5. FuBi ANNBFIS
+	6. prototype TSK
+	7. prototype ANNBFIS
  
+ 
+

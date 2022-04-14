@@ -8,8 +8,11 @@
 #include "../metrics/metric.h"
 #include "../metrics/metric-euclidean.h"
 
+#include "../service/debug.h"
+
+
 ksi::dbscan::dbscan()
-	: _metric_object(ksi::metric_euclidean().clone())
+	: _metric_object(ksi::metric_euclidean().clone())  
 {
 }
 
@@ -93,17 +96,21 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
 
 std::vector<std::pair<const ksi::datum *, std::size_t>> ksi::dbscan::findNeighbors(const ksi::datum *datum, const ksi::dataset &ds)
 {
-	std::vector<std::pair<const ksi::datum *, std::size_t>> neighbors;
-	std::size_t dsSize = ds.getNumberOfData();
-
-	for (std::size_t i = 0; i < dsSize; i++)
+	try 
 	{
-		auto datum_ = ds.getDatum(i);
+        std::vector<std::pair<const ksi::datum *, std::size_t>> neighbors;
+		std::size_t dsSize = ds.getNumberOfData();
 
-		if (this->_metric_object->calculateDistance(*datum, *datum_) <= this->_epsilon)
-			neighbors.emplace_back(datum_, i);
-	}
-	return neighbors;
+		for (std::size_t i = 0; i < dsSize; i++)
+		{
+			auto datum_ = ds.getDatum(i);
+
+			if (this->_metric_object->calculateDistance(*datum, *datum_) <= this->_epsilon)
+				neighbors.emplace_back(datum_, i);
+		}
+        return neighbors;
+    }
+	CATCH;
 }
 
 ksi::partitioner *ksi::dbscan::clone() const

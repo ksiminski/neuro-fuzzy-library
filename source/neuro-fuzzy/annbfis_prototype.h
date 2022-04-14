@@ -20,6 +20,20 @@ namespace ksi
     /** The ANNBFIS prototype neuro-fuzzy system.
     This is a neuro-fuzzy systems (in the ANNBFIS architecture) based on prototypes in premises.
     
+    * CITATION REQUEST    
+    <pre>
+    @article{id:Siminski2022Prototype,
+	author = "Krzysztof Siminski",
+	doi = "10.1016/j.fss.2022.03.001",
+	issn = "0165-0114",
+	journal = "Fuzzy Sets and Systems",
+	keywords = "Prototype; Granular computing; Neuro-fuzzy system; Regression",
+	title = "Prototype based granular neuro-fuzzy system for regression task",
+	url = "https://www.sciencedirect.com/science/article/pii/S0165011422000963",
+	year = "2022"
+    }
+    </pre>
+    
     @author Krzysztof Siminski
     */  
    class annbfis_prototype : public nfs_prototype
