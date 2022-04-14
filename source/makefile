@@ -113,6 +113,13 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/t-norm-fodor.o              \
                $(exec)/t-norm-drastic.o            \
                $(exec)/t-norm-einstein.o           \
+               $(exec)/s-norm.o                    \
+               $(exec)/s-norm-sum.o                \
+               $(exec)/s-norm-max.o                \
+               $(exec)/s-norm-lukasiewicz.o        \
+               $(exec)/s-norm-fodor.o              \
+               $(exec)/s-norm-drastic.o            \
+               $(exec)/s-norm-einstein.o           \
                $(exec)/descriptor.o                \
                $(exec)/descriptor-triangular.o     \
                $(exec)/descriptor-semitriangular.o \
@@ -360,6 +367,23 @@ $(exec)/t-norm-fodor.o : tnorms/t-norm-fodor.cpp
 $(exec)/t-norm-drastic.o : tnorms/t-norm-drastic.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/t-norm-einstein.o : tnorms/t-norm-einstein.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+
+# snorms
+
+$(exec)/s-norm.o : snorms/s-norm.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-sum.o : snorms/s-norm-sum.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-max.o : snorms/s-norm-max.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-lukasiewicz.o : snorms/s-norm-lukasiewicz.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-fodor.o : snorms/s-norm-fodor.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-drastic.o : snorms/s-norm-drastic.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/s-norm-einstein.o : snorms/s-norm-einstein.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 
 # implications
