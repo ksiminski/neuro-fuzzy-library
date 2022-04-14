@@ -9,6 +9,10 @@
 
 namespace ksi
 {
+   /**
+    * @author Dawid Suchy
+    * @date 2022-03-15
+    */
    struct s_norm_drastic : public s_norm
    {
     
