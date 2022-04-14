@@ -8,6 +8,10 @@
 
 namespace ksi
 {
+   /**
+    * @author Dawid Suchy
+    * @date 2022-03-15
+    */
    struct s_norm_fodor : public s_norm
    {
       /** value of S-norm: \f$ S(a, b) = \max(a, b)\f$ for \f$ a + b < 1 \f$

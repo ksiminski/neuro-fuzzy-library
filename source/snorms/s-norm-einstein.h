@@ -9,6 +9,10 @@
 
 namespace ksi
 {
+   /**
+    * @author Dawid Suchy
+    * @date 2022-03-15
+    */
    struct s_norm_einstein : public s_norm
    {
       /** value of S-norm: \f$ S(a, b) =  \frac{a + b}{1 + ab}\f$ */
