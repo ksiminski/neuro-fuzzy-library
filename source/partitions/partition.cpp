@@ -193,7 +193,10 @@ std::string ksi::partition::print_crisp_membership_for_data(const ksi::dataset& 
                     max_cluster_number = c;
                 }
             }
-            ss << max_cluster_number << std::endl;
+            if (U[max_cluster_number][i] == 0)
+               ss << "NOISE" << std::endl;
+            else
+               ss << max_cluster_number << std::endl;
         }
         return ss.str();
     }
