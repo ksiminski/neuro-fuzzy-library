@@ -46,11 +46,11 @@ namespace ksi
 		partition doPartition(const dataset &ds);
 
 		/** The method finds density-based neighbors of a data point
-		 * @param datum datum to find neighbors for
+		 * @param index index of a datum to find neighbors for
 		 * @param ds dataset
-		 * @return vector of pairs: pointer to a neighbour, index of a neighbor
+		 * @return vector of indices of neighbors
 		 */
-		std::vector<std::pair<const datum *, std::size_t>> findNeighbors(const datum *datum, const dataset &ds);
+		std::vector<std::size_t> findNeighborsIndices(const std::size_t index, const dataset &ds);
 
 		virtual partitioner *clone() const;
 		virtual ~dbscan();

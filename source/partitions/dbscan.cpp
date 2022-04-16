@@ -42,10 +42,8 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
 			if (datumStates[i] != UNDEFINED)
 				continue;
 
-			const ksi::datum *datum = ds.getDatum(i);
-
-			auto neighbors = findNeighbors(datum, ds);
-			auto neighborsSize = neighbors.size();
+			auto neighborsIndices = findNeighborsIndices(i, ds);
+			auto neighborsSize = neighborsIndices.size();
 
 			if (neighborsSize < this->_minPoints)
 			{
@@ -61,8 +59,7 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
 
 			for (std::size_t j = 0; j < neighborsSize; ++j)
 			{
-				auto neighbor = neighbors[j].first;
-				auto neighborIndex = neighbors[j].second;
+				auto neighborIndex = neighborsIndices[j];
 
 				if (datumStates[neighborIndex] == NOISE)
 				{
@@ -75,14 +72,17 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
 				mU[C][neighborIndex] = 1.0;
 				datumStates[neighborIndex] = CLUSTER_MEMBER;
 
-				auto neighbors_ = findNeighbors(neighbor, ds);
-				auto neighbors_Size = neighbors_.size();
+				auto expandedNeighborsIndices = findNeighborsIndices(neighborIndex, ds);
+				auto expandedNeighborsSize = expandedNeighborsIndices.size();
 
-				if (neighbors_Size >= this->_minPoints)
+				if (expandedNeighborsSize >= this->_minPoints)
 				{
 					// concatenate
-					neighbors.insert(neighbors.end(), neighbors_.begin(), neighbors_.end());
-					neighborsSize += neighbors_Size;
+					neighborsIndices.insert(
+						neighborsIndices.end(),
+						expandedNeighborsIndices.begin(),
+						expandedNeighborsIndices.end());
+					neighborsSize += expandedNeighborsSize;
 				}
 			}
 		}
@@ -94,19 +94,20 @@ ksi::partition ksi::dbscan::doPartition(const ksi::dataset &ds)
 	CATCH
 }
 
-std::vector<std::pair<const ksi::datum *, std::size_t>> ksi::dbscan::findNeighbors(const ksi::datum *datum, const ksi::dataset &ds)
+std::vector<std::size_t> ksi::dbscan::findNeighborsIndices(const std::size_t index, const ksi::dataset &ds)
 {
 	try 
 	{
-        std::vector<std::pair<const ksi::datum *, std::size_t>> neighbors;
+        std::vector<std::size_t> neighbors;
 		std::size_t dsSize = ds.getNumberOfData();
+		const ksi::datum *datum = ds.getDatum(index);
 
 		for (std::size_t i = 0; i < dsSize; i++)
 		{
 			auto datum_ = ds.getDatum(i);
 
 			if (this->_metric_object->calculateDistance(*datum, *datum_) <= this->_epsilon)
-				neighbors.emplace_back(datum_, i);
+				neighbors.push_back(i);
 		}
         return neighbors;
     }
