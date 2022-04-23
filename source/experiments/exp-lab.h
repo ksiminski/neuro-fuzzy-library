@@ -8,7 +8,7 @@
 
 namespace ksi
 {
-   /** LABORAORY EXPERIMENT  <br/>
+   /** LABORATORY EXPERIMENT  <br/>
     */
    class exp_lab : virtual public experiment
    {
