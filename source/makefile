@@ -174,15 +174,15 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/abstract_fcom.o             \
                $(exec)/tsk.o                       \
                $(exec)/ma.o                        \
-				   $(exec)/annbfis_prototype.o         \
-				   $(exec)/tsk_prototype.o             \
-				   $(exec)/fac_prototype.o             \
-				   $(exec)/prototype.o                 \
-				   $(exec)/prototype_minkowski.o       \
-				   $(exec)/prototype_minkowski_regression.o     \
-				   $(exec)/nfs_prototype.o             \
-				   $(exec)/fac_prototype_minkowski.o   \
-				   $(exec)/fac_prototype_minkowski_regression.o \
+               $(exec)/annbfis_prototype.o         \
+               $(exec)/tsk_prototype.o             \
+               $(exec)/fac_prototype.o             \
+               $(exec)/prototype.o                 \
+               $(exec)/prototype_minkowski.o       \
+               $(exec)/prototype_minkowski_regression.o     \
+               $(exec)/nfs_prototype.o             \
+               $(exec)/fac_prototype_minkowski.o   \
+               $(exec)/fac_prototype_minkowski_regression.o \
                $(exec)/gan.o                       \
                $(exec)/generative_model.o          \
                $(exec)/discriminative_model.o      \
@@ -237,17 +237,6 @@ $(exec)/main : $(exec)/main.o                      \
 	            
 $(exec)/main.o : main.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-
-# memory leaks:
-$(exec)/static_mem_pool.o : memory/nvwa/static_mem_pool.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/mem_pool_base.o : memory/nvwa/mem_pool_base.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/debug_new.o : memory/nvwa/debug_new.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/bool_array.o : memory/nvwa/bool_array.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
- 
 	
 # debug:
 $(exec)/debug.o : service/debug.cpp
