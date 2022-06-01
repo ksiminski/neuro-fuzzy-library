@@ -39,17 +39,17 @@ This example presents clustering algorithms:
 1. fcm
 1. possibilistic fcm
 1. conditional fcm
-1. subspace fcm   (__Citation request__ If you use this library please cite [^subspace])
-1. fubi (fuzzy biclustering)  (__Citation request__ If you use this library please cite [^fubi])
+1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace])
+1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi])
 1. fcom
 1. dbscan
 
 
 ### make 3
 This example presents clustering algorithms for incomplete datasets:
-1. rfcm   (__Citation request__ If you use this library please cite [^rfcm])   
-2. rfcom  (__Citation request__ If you use this library please cite [^rfcom])
-3. rsfcm  (__Citation request__ If you use this library please cite [^rsfcm])
+1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm])   
+2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom])
+3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm])
 
 ### make 4
 This example presents a fuzzy system. 
@@ -60,36 +60,22 @@ This example presents neuro-fuzzy systems for
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this library please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this library please cite [^fubi])
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
 1. regression:
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this library please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this library please cite [^fubi])
-	6. prototype TSK      (__Citation request__ If you use this library please cite [^prototype])
-	7. prototype ANNBFIS  (__Citation request__ If you use this library please cite [^prototype]) 
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
+	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype])
+	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype]) 
  
 ------------
 
 [^nfl]: Krzysztof Siminski, NFL -- Free Library for Fuzzy and Neuro-Fuzzy Systems, [in] Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis (Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, Daniel Kostrzewa, eds.), Springer International Publishing, 2019, pp. 139-150. 
 
 
-```
-@inproceedings{id:Siminski2019NFL,
-	address = "Cham",
-	author = "Krzysztof Siminski",
-	booktitle = "Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis",
-	doi = "10.1007/978-3-030-19093-4_11",
-	editor = "Stanisław Kozielski and Dariusz Mrozek and Paweł Kasprowski and Bożena Małysiak-Mrozek and Daniel Kostrzewa",
-	isbn = "978-3-030-19093-4",
-	pages = "139–150",
-	publisher = "Springer International Publishing",
-	title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
-	year = "2019"
-}
-```
  
 [^rfcm]: Krzysztof Simiński, Clustering with missing values, [in] Fundamenta Informaticae, 2013, volume 123, number 3, pp. 331-350.
 ```
@@ -174,4 +160,18 @@ ARTICLE{id:Siminski2014Neuro,
 }
 ```
 
-
+-----------------
+```
+@inproceedings{id:Siminski2019NFL,
+	address = "Cham",
+	author = "Krzysztof Siminski",
+	booktitle = "Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis",
+	doi = "10.1007/978-3-030-19093-4_11",
+	editor = "Stanisław Kozielski and Dariusz Mrozek and Paweł Kasprowski and Bożena Małysiak-Mrozek and Daniel Kostrzewa",
+	isbn = "978-3-030-19093-4",
+	pages = "139–150",
+	publisher = "Springer International Publishing",
+	title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
+	year = "2019"
+}
+```
