@@ -72,7 +72,11 @@ This example presents neuro-fuzzy systems for
 	7. prototype ANNBFIS
  
 ------------
-[^nfl]: bibtex citation
+
+[^nfl]: Krzysztof Siminski, NFL -- Free Library for Fuzzy and Neuro-Fuzzy Systems, [in] Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis (Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, Daniel Kostrzewa, eds.), Springer International Publishing, 2019, pp. 139-150. 
+
+bibtex citation
+
 ```
 @inproceedings{id:Siminski2019NFL,
 	address = "Cham",
