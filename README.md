@@ -73,6 +73,7 @@ This example presents neuro-fuzzy systems for
  
 ------------
 [^nfl]: 
+```
 @inproceedings{id:Siminski2019NFL,
 	address = "Cham",
 	author = "Krzysztof Siminski",
@@ -85,6 +86,6 @@ This example presents neuro-fuzzy systems for
 	title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
 	year = "2019"
 }
-
+```
  
 
