@@ -72,7 +72,7 @@ This example presents neuro-fuzzy systems for
 	7. prototype ANNBFIS
  
 ------------
-[^nfl]: 
+[^nfl]: bibtex citation
 ```
 @inproceedings{id:Siminski2019NFL,
 	address = "Cham",
