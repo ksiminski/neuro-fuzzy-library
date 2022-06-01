@@ -76,6 +76,20 @@ This example presents neuro-fuzzy systems for
 [^nfl]: Krzysztof Siminski, NFL -- Free Library for Fuzzy and Neuro-Fuzzy Systems, [in] Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis (Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, Daniel Kostrzewa, eds.), Springer International Publishing, 2019, pp. 139-150. 
 
 
+	```
+	@inproceedings{id:Siminski2019NFL,
+		address = "Cham",
+		author = "Krzysztof Siminski",
+		booktitle = "Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis",
+		doi = "10.1007/978-3-030-19093-4_11",
+		editor = "Stanisław Kozielski and Dariusz Mrozek and Paweł Kasprowski and Bożena Małysiak-Mrozek and Daniel Kostrzewa",
+		isbn = "978-3-030-19093-4",
+		pages = "139–150",
+		publisher = "Springer International Publishing",
+		title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
+		year = "2019"
+	}
+	```
  
 [^rfcm]: Krzysztof Simiński, Clustering with missing values, [in] Fundamenta Informaticae, 2013, volume 123, number 3, pp. 331-350.
 ```
@@ -160,18 +174,4 @@ ARTICLE{id:Siminski2014Neuro,
 }
 ```
 
------------------
-```
-@inproceedings{id:Siminski2019NFL,
-	address = "Cham",
-	author = "Krzysztof Siminski",
-	booktitle = "Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis",
-	doi = "10.1007/978-3-030-19093-4_11",
-	editor = "Stanisław Kozielski and Dariusz Mrozek and Paweł Kasprowski and Bożena Małysiak-Mrozek and Daniel Kostrzewa",
-	isbn = "978-3-030-19093-4",
-	pages = "139–150",
-	publisher = "Springer International Publishing",
-	title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
-	year = "2019"
-}
-```
+
