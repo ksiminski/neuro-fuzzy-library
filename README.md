@@ -15,6 +15,8 @@ Run `make 1` to run the 1st example, `make 2` – the 2nd example, and finally `
 
 Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for the project.
 
+__Citation request__ If you use this library please cite [^nfl]
+
 ## Examples
 
 ### make 1   
@@ -69,5 +71,20 @@ This example presents neuro-fuzzy systems for
 	6. prototype TSK
 	7. prototype ANNBFIS
  
+------------
+[^nfl]: 
+@inproceedings{id:Siminski2019NFL,
+	address = "Cham",
+	author = "Krzysztof Siminski",
+	booktitle = "Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis",
+	doi = "10.1007/978-3-030-19093-4_11",
+	editor = "Stanisław Kozielski and Dariusz Mrozek and Paweł Kasprowski and Bożena Małysiak-Mrozek and Daniel Kostrzewa",
+	isbn = "978-3-030-19093-4",
+	pages = "139–150",
+	publisher = "Springer International Publishing",
+	title = "{NFL} – Free Library for Fuzzy and Neuro-Fuzzy Systems",
+	year = "2019"
+}
+
  
 
