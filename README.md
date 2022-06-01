@@ -156,7 +156,7 @@ This example presents neuro-fuzzy systems for
 	}
 	```
 
-[^protoTSK]: Krzysztof Siminski, Prototype based granular neuro-fuzzy system for regression task, [in] Fuzzy Sets and Systems, 2022.
+[^prototype]: Krzysztof Siminski, Prototype based granular neuro-fuzzy system for regression task, [in] Fuzzy Sets and Systems, 2022.
 	```
 	@article{id:Siminski2022Prototype,
 		author = "Krzysztof Siminski",
