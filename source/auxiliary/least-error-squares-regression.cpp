@@ -5,9 +5,10 @@
 #include "matrix.h"
 #include "least-error-squares-regression.h"
 #include "../service/debug.h"
+ 
 
 
-const double ksi::least_square_error_regression::BIG_NUMBER = 1000000;
+const double ksi::least_square_error_regression::BIG_NUMBER = 1'000'000'000;
 
 
 std::vector<std::vector<double>> ksi::least_square_error_regression::matrix_multiplication (
@@ -55,16 +56,13 @@ std::vector<std::vector<double>> ksi::least_square_error_regression::matrix_mult
    return res;
 }
 
-
-
-
 std::vector<double> ksi::least_square_error_regression::recursive_weighted_linear_regression (
          const std::vector<std::vector<double>> & X, 
          const std::vector<double> & Y,
          const std::vector<double> & W
       )
 {
-   const double BIG_NUMBER = 1000000;
+   //const double BIG_NUMBER = 1'000'000'000;
    Matrix<double> mX (X);
 
    int nAttr = mX.getCols();
@@ -82,11 +80,11 @@ std::vector<double> ksi::least_square_error_regression::recursive_weighted_linea
       auto x  = !xT;          // column matrix
       
       auto waga = W[i];
-      auto wspolczynnik = (1.0 / (waga + (xT * R * x) (0, 0)));
+      auto wspolczynnik = (1.0 / (1.0 + (xT * R * x) (0, 0) * waga));
       // actualisation of theta:
-      theta = theta + R * x * (waga * waga * wspolczynnik) * (Y[i] - (xT * theta)(0, 0));
+      theta = theta + R * x * (waga * wspolczynnik) * (Y[i] - (xT * theta)(0, 0));
       // actualisation of R: 
-      R = R - R * x * xT * R * wspolczynnik;
+      R = R - R * x * xT * R * waga * wspolczynnik;
       
       // wszystko :-)
    }
@@ -118,48 +116,49 @@ ksi::least_square_error_regression::least_square_error_regression (std::size_t n
 }
 
 void ksi::least_square_error_regression::read_data_item (
-   const std::vector<double> X, double Y)
+   const std::vector<double> & X, const double Y)
 {
-    
+   //read_data_item(X, Y, 1.0); // waga = 1
+   
    {
-      std::size_t A = X.size();
-      std::vector<double> Rx (A, 0.0);
-      for (std::size_t a = 0; a < A; a++)
+      std::size_t nAttr = X.size();
+      std::vector<double> Rx (nAttr, 0.0);
+      for (std::size_t a = 0; a < nAttr; a++)
       {
-         for (std::size_t k = 0; k < A; k++)
+         for (std::size_t k = 0; k < nAttr; k++)
             Rx[a] += wR[a][k] * X[k];
       }
 
       double xTRx = 0.0;
-      for (std::size_t a = 0; a < A; a++)
+      for (std::size_t a = 0; a < nAttr; a++)
          xTRx += X[a] * Rx[a];
       
       auto wspolczynnik = (1.0 / (1 + xTRx));
       
       double xTTheta = 0.0;
-      for (std::size_t a = 0; a < A; a++)
+      for (std::size_t a = 0; a < nAttr; a++)
          xTTheta += X[a] * wTheta[a];
       
-      for (std::size_t a = 0; a < A; a++)
+      for (std::size_t a = 0; a < nAttr; a++)
          wTheta[a] += (Rx[a] * wspolczynnik * (Y - xTTheta));
       
       auto RxxT = wR;
-      for (std::size_t w = 0; w < A; w++)
+      for (std::size_t w = 0; w < nAttr; w++)
       {
-         for (std::size_t k = 0; k < A; k++)
+         for (std::size_t k = 0; k < nAttr; k++)
          {
             RxxT[w][k] = Rx[w] * X[k];
          }
       }
       
       auto RxxTR = matrix_multiplication(RxxT, wR);
-      for (std::size_t w = 0; w < A; w++)
+      for (std::size_t w = 0; w < nAttr; w++)
       {
-         for (std::size_t k = 0; k < A; k++)
+         for (std::size_t k = 0; k < nAttr; k++)
             wR[w][k] -= (RxxTR[w][k] * wspolczynnik);
       }
    }
-   
+    
    /*
    Matrix<double> xT = Matrix<double>::RowMatrix (X); // row matrix
    Matrix<double> x  = Matrix<double>::ColumnMatrix(X); // 
@@ -174,17 +173,54 @@ void ksi::least_square_error_regression::read_data_item (
    */
 }
 
+void ksi::least_square_error_regression::read_data_item (
+   const std::vector<double> & X, const double Y, const double W)
+{
+    
+   {
+      std::size_t nAttr = X.size();
+      std::vector<double> Rx (nAttr, 0.0);
+      for (std::size_t a = 0; a < nAttr; a++)
+      {
+         for (std::size_t k = 0; k < nAttr; k++)
+            Rx[a] += wR[a][k] * X[k];
+      }
+
+      double xTRx = 0.0;
+      for (std::size_t a = 0; a < nAttr; a++)
+         xTRx += X[a] * Rx[a];
+      
+      auto wspolczynnik = (1.0 / (1.0 + W * xTRx));
+      
+      double xTTheta = 0.0;
+      for (std::size_t a = 0; a < nAttr; a++)
+         xTTheta += X[a] * wTheta[a];
+      
+      for (std::size_t a = 0; a < nAttr; a++)
+         wTheta[a] += (W * Rx[a] * wspolczynnik * (Y - xTTheta));
+      
+      auto RxxT = wR;
+      for (std::size_t w = 0; w < nAttr; w++)
+      {
+         for (std::size_t k = 0; k < nAttr; k++)
+         {
+            RxxT[w][k] = Rx[w] * X[k];
+         }
+      }
+      
+      auto RxxTR = matrix_multiplication(RxxT, wR);
+      for (std::size_t w = 0; w < nAttr; w++)
+      {
+         for (std::size_t k = 0; k < nAttr; k++)
+            wR[w][k] -= (W * RxxTR[w][k] * wspolczynnik);
+      }
+   }
+}
+
+
+
 std::vector<double> ksi::least_square_error_regression::get_regression_coefficients()
 {
-   /*
-   std::vector<double> wynik (theta.getRows());
-
-   for (int i = 0 ; i < theta.getRows(); i++)
-      wynik[i] = theta(i, 0);
-   
-   return wynik;
-   */
-   
    return wTheta;
 }
 
@@ -211,7 +247,7 @@ std::vector<double> ksi::least_square_error_regression::recursive_linear_regress
       auto xT = mX.getRow(i); // row matrix
       auto x  = !xT;          // column matrix
       
-      auto wspolczynnik = (1.0 / (1 + (xT * R * x) (0, 0)));
+      auto wspolczynnik = (1.0 / (1 + (xT * R * x) (0, 0))); // liczba
       // actualisation of theta:
       theta = theta + R * x * wspolczynnik * (Y[i] - (xT * theta)(0, 0));
       // actualisation of R: 
@@ -232,26 +268,33 @@ std::vector<double> ksi::least_square_error_regression::recursive_linear_regress
 
 std::vector<double> ksi::least_square_error_regression::linear_regression (const std::vector<std::vector<double>> & X, const std::vector<double> & Y)
 {
-    Matrix<double> mX (X);
-    Matrix<double> mY (Y.size(), 1);
+    try 
+    {
+        Matrix<double> mX (X);
+        Matrix<double> mY (Y.size(), 1);
 
-    for (size_t i = 0; i < Y.size(); i++)
-        mY(i, 0) = Y[i];
-    // mam macierze juz utworzone, teraz trzeba wyznaczyc regresje liniowa
+        for (size_t i = 0; i < Y.size(); i++)
+            mY(i, 0) = Y[i];
+        // mam macierze juz utworzone, teraz trzeba wyznaczyc regresje liniowa
 
-    Matrix<double> mXT = !mX;
-    Matrix<double> mXTX = mXT * mX;
+        Matrix<double> mXT = !mX;
+        Matrix<double> mXTX = mXT * mX;
 
-    int blad;
-    Matrix<double> A = mXTX.invert(blad) * mXT * mY;
+        int blad;
+        Matrix<double> A = mXTX.invert(blad) * mXT * mY;
+        
+        std::vector<double> wynik (A.getRows());
 
-    std::vector<double> wynik (A.getRows());
+        for (int i = 0 ; i < A.getRows(); i++)
+            wynik[i] = A(i, 0);
 
-    for (int i = 0 ; i < A.getRows(); i++)
-        wynik[i] = A(i, 0);
-
-    return wynik;
-
+        return wynik;
+    }
+    catch (const std::string & s)
+    {
+        std::cout << s << std::endl;
+    }
+    return {};
 } 
 
 
@@ -272,10 +315,10 @@ std::vector<double> ksi::least_square_error_regression::weighted_linear_regressi
     // mam macierze juz utworzone, teraz trzeba wyznaczyc regresje liniowa
 
     Matrix<double> mXT = !mX;
-    Matrix<double> mXWTX = mXT * mW * mX;
+    Matrix<double> mXTWX = mXT * mW * mX;
 
     int blad;
-    Matrix<double> A = mXWTX.invert(blad) * mXT * mW * mY;
+    Matrix<double> A = mXTWX.invert(blad) * mXT * mW * mY;
 
     std::vector<double> wynik (A.getRows());
 
