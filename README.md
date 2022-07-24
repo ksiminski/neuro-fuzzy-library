@@ -62,6 +62,7 @@ This example presents neuro-fuzzy systems for
 	3. ANNBFIS
 	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
 	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
+	6. three way decision neuro-fuzzy system
 1. regression:
 	1. MA
 	2. TSK

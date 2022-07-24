@@ -40,13 +40,24 @@ namespace ksi
        */
       double answer (const std::vector<double> & X);
       
-      /** The method cummulates the differentials for an X data item.
+//       /** The method cummulates the differentials for an X data item.
+//        * @param X data item to cummulate differentials for
+//        * @param Y expected value
+//        * @date 2018-01-20
+//        * @author Krzysztof Siminski
+//        */
+//       void cummulate_differentials (const std::vector< double >& X, const double Yexpected);
+
+      /** The method cummulates the differentials for an X data item with
+       * a weight.
        * @param X data item to cummulate differentials for
        * @param Y expected value
-       * @date 2018-01-20
+       * @param w data item's weight 
+       * @date 2022-05-05
        * @author Krzysztof Siminski
        */
-      void cummulate_differentials (const std::vector< double >& X, double Yexpected);
+      void cummulate_differentials (const std::vector< double >& X, const double Yexpected, const double weight = 1.0);
+
       
       /** The method sets all cummulated differentials to zero. */
       void reset_differentials ();

@@ -165,6 +165,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/logicalrule.o      \
                $(exec)/rulebase.o         \
                $(exec)/neuro-fuzzy-system.o        \
+               $(exec)/three_way_decision_nfs.o    \
                $(exec)/annbfis.o                   \
                $(exec)/subspace-annbfis.o          \
                $(exec)/fubi-annbfis.o              \
@@ -490,6 +491,8 @@ $(exec)/fac_prototype_minkowski.o : neuro-fuzzy/fac_prototype_minkowski.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski_regression.o : neuro-fuzzy/fac_prototype_minkowski_regression.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/three_way_decision_nfs.o : neuro-fuzzy/three_way_decision_nfs.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
 
 
 

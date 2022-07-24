@@ -84,6 +84,25 @@ namespace ksi
       std::vector<std::tuple<double, double, double>> _answers_for_test; ///< answers for the test set: expected elaborated_numeric elaborated_class
       
        
+   public: 
+       /** @return The method return the value of the positive class. 
+        @date 2021-12-27 */
+       double get_positive_class() const;
+       /** @return The method return the value of the negitive class. 
+        @date 2021-12-27 */
+       double get_negative_class() const;
+       
+       /** The method sets the positive class.
+        @param p positive value to set 
+        @date 2021-12-27 */
+       void set_positive_class (const double p);
+       /** The method sets the negative class.
+        @param n negative value to set 
+        @date 2021-12-27 */
+       void set_negative_class (const double n);
+       
+       
+       
    public:
        /** @return threshold value elaborated for classification
            @date   2021-09-16
@@ -95,6 +114,10 @@ namespace ksi
          */
       ksi::roc_threshold get_threshold_type () const;
       
+      /** The method sets the threshold type for a classifier.
+       @param th threshold type to set 
+       @date 2021-12-27 */
+      void set_threshold_type (const ksi::roc_threshold & th);     
       
       
       /** @return expected class, elaborated_numeric answer, elaborated_class for the train dataset
@@ -161,13 +184,24 @@ namespace ksi
       
       /** 
        @param trainDataFile 
-       @param testDataFile,
+       @param testDataFile
        @param resultsFile
        @date 2021-09-14
        */
       neuro_fuzzy_system (const std::string & trainDataFile, 
                           const std::string & testDataFile, 
                           const std::string & resultsFile
+                         );
+      
+      /** 
+       @param trainData     train dataset 
+       @param testData      test  dataset
+       @param resultsFile   name of the result file
+       @date 2022-02-02
+       */
+      neuro_fuzzy_system (const ksi::dataset & trainData, 
+                          const ksi::dataset & testData, 
+                          const std::string  & resultsFile
                          );
       
       
@@ -291,6 +325,19 @@ namespace ksi
                                   const double dbLearningCoefficient, 
                                   const bool bNormalisation
                                  );
+      
+      
+      virtual result experiment_regression(const ksi::dataset & trainData, 
+                                         const ksi::dataset & testData, 
+                                         const std::string & trainDataFile,
+                                         const std::string & testDataFile,
+                                         const std::string & outputFile, 
+                                         const int nNumberOfRules, 
+                                         const int nNumberOfClusteringIterations, 
+                                         const int nNumberofTuningIterations, 
+                                         const double dbLearningCoefficient,  
+                                         const bool bNormalisation
+                                        );
 
       /** The method executes answers for the regression task.
         * @param trainDataFile name of file with train data
@@ -331,6 +378,35 @@ namespace ksi
                                   const double dbNegativeClass,
                                   ksi::roc_threshold threshold_type
                                  );
+
+      /** The method executes an experiment for classification.
+        * @param trainData train data set
+        * @param testData  test data set 
+        * @param outputfile    name of file to print results to
+        * @param nNumberOfRules                number of rules 
+        * @param nNumberOfClusteringIterations number of clustering iterations
+        * @param nNumberofTuningIterations     number of tuning iterations
+        * @param dbLearingCoefficient  learning coefficient for gradient method 
+        * @param bNormalisation true, if normalisation of data, false -- otherwise
+        * @param dbPositiveClass label of a positive class
+        * @param dbNegativeClass label of a negative class
+        * @param threshold_type classification threshold type 
+        * @date  2022-01-30
+        * @author Krzysztof Siminski
+        */
+      virtual result experiment_classification (const ksi::dataset & trainData,
+                                  const ksi::dataset & testData,
+                                  const std::string & outputFile,
+                                  const int nNumberOfRules,
+                                  const int nNumberOfClusteringIterations,
+                                  const int nNumberofTuningIterations,
+                                  const double dbLearningCoefficient, 
+                                  const bool bNormalisation,
+                                  const double dbPositiveClass,
+                                  const double dbNegativeClass,
+                                  ksi::roc_threshold threshold_type
+                                 );
+
       
    public:
        virtual result experiment_classification_core (
@@ -359,6 +435,15 @@ namespace ksi
       virtual result experiment_classification (const std::string & trainDataFile,
                                       const std::string & testDataFile,
                                       const std::string & outputFile);
+
+      /** Just run an experiment for classification. All parameters should be already set.
+       @date 2022-02-02*/
+      virtual result experiment_classification (
+          const ksi::dataset & trainDataSet,
+          const ksi::dataset & testDataSet,
+          const std::string & outputFile);
+
+
       
       /** Just run an experiment for regression. All parameters should be already set. */
       virtual result experiment_regression ();
@@ -366,6 +451,8 @@ namespace ksi
       virtual result experiment_regression (const std::string & trainDataFile,
                                       const std::string & testDataFile,
                                       const std::string & outputFile);
+      
+
  
       
       /** A method elaborates an answer of a datum (data item).

@@ -14,7 +14,6 @@
 
 namespace ksi
 {
-    
    /**
     * CITATION REQUEST    
     <pre>
@@ -31,7 +30,6 @@ namespace ksi
     </pre>
     *
     */ 
-    
    class nfs_prototype : public neuro_fuzzy_system
    {
    protected:
