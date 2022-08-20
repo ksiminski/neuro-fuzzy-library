@@ -188,7 +188,7 @@ std::string ksi::confusion_matrix::print(
    int FN = nFalseNegatives;
 
   
-   double PRE, PPV, FDR, FOR, NPV, LRP, TPR, FPR, ACC, FNR, TNR, DOR, LRN, F1S;
+   double PRE, PPV, FDR, FOR, NPV, LRP, TPR, FPR, ACC, FNR, TNR, DOR, LRN, F1S, BA, TS, NA, FM, dP, BM, MCC, PT;
 
    PRE = (double) CP / To;
    PPV = (double) nTruePositives / OP;
@@ -205,10 +205,18 @@ std::string ksi::confusion_matrix::print(
    LRP = TPR / FPR;
    LRN = FNR / TNR;
    DOR = LRP / LRN;
+   
+   TS  = TP / (TP + FN + FP);
+   BA  = (TPR + TNR) / 2.0;
+   FM  = sqrt(PPV * TPR);
+   dP  = PPV + NPV - 1;
+   BM  = TPR + TNR - 1;
+   MCC = (TP * TN - FP * FN) / (sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)));
+   PT  = (sqrt(TPR * FPR) - FPR) / (TPR - FPR);
 
    ss <<
    "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
-   "| total            |      original    |     original       | prevalence =          | accuracy (ACC) =    |" << std::endl <<
+   "| total            |      original    |     original       | prevalence =          | accuracy, ACC =     |" << std::endl <<
    "| population       |      positive    |     negative       |   original positive   |        TP + TN      |" << std::endl <<
    "|                  |                  |                    | = -----------------   | = ----------------  |" << std::endl <<
    "|                  |                  |                    |   total population    |   total population  |" << std::endl <<
@@ -229,7 +237,7 @@ std::string ksi::confusion_matrix::print(
    "| = "<< ca(ON)<< " | = "<< ca(FN)<< " | =   "<< ca(TN)<< " | = "<< ul(FOR)<<"      | = "<< ul(NPV)<<"    |" << std::endl <<
    "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
    "                   | true positive    | false positive     | positive likelihood   | diagnostic odds     |" << std::endl <<
-   "                   | rate, TPR,       | rate, FPR, fall-out| ratio (LR+)           | ratio, DOR          |" << std::endl <<
+   "                   | rate, TPR,       | rate, FPR, fall-out| ratio, LR+            | ratio, DOR          |" << std::endl <<
    "                   | recall,          |                    |                       |                     |" << std::endl <<
    "                   | sensitivity      |                    |                       |                     |" << std::endl <<
    "                   |      TP          |      FP            |    TPR                |    LR+              |" << std::endl << 
@@ -238,14 +246,31 @@ std::string ksi::confusion_matrix::print(
    "                   | = "<< ul(TPR)<<" | = "<< ul(FPR)<<"   | = "<< ul(LRP)<<"      | = "<< ul(DOR)<<"    |" << std::endl <<
    "                   +------------------+--------------------+-----------------------+---------------------+" << std::endl <<
    "                   | false negative   | true negative      | negative likelihood   | F1 score            |" << std::endl <<
-   "                   | rate, FNR,       | rate, TNR,         | ratio (LR-)           |                     |" << std::endl <<
+   "                   | rate, FNR,       | rate, TNR,         | ratio, LR-            |                     |" << std::endl <<
    "                   | miss rate        | specificity, SPC   |                       |                     |" << std::endl <<
    "                   |      FN          |      TN            |    FNR                |    2 * TPR * PPV    |" << std::endl <<
    "                   | = ---------      | = ---------        | = -----               | = ---------------   |" << std::endl <<
    "                   |    TP + FN       |    TN + FP         |    TNR                |      TPR + PPV      |" << std::endl <<
    "                   | = "<< ul(FNR)<<" | = "<< ul(TNR)<<"   | = "<< ul(LRN)<<"      | = "<< ul(F1S)<<"    |" << std::endl <<
-   "                   +------------------+--------------------+-----------------------+---------------------+" << std::endl;
+   "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
+   "| threat score TS, | balanced         | Fowlkes-Mallows    | markedness, deltaP    | informedness,       |" << std::endl <<
+   "| critical success | accuracy, BA,    | index, FM          |                       | bookmaker           |" << std::endl <<
+   "| index CSI,       |                  |                    |                       | informedness (BM)   |" << std::endl <<
+   "| Jaccard index    |                  |                    |                       |                     |" << std::endl <<
+   "|        TP        |   TPR + TNR      |                    |                       |                     |" << std::endl << 
+   "| = ------------   | = ---------      | = sqrt(PPV * TPR)  | = PPV + NPV - 1       | = TPR + TNR - 1     |" << std::endl <<
+   "|   TP + FN + FP   |       2          |                    |                       |                     |" << std::endl <<
+   "| = "<< ul(TS)<< " | = "<< ul(BA)<< " | = "<< ul(FM)<< "   | = "<< ul(dP)<< "      | = "<< ul(BM)<< "    |" << std::endl <<
+   "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
+   "                   | Matthews correlation coefficient, MCC | prevalence threshold, PT                    |" << std::endl <<
+   "                   |                                       |                                             |" << std::endl <<
+   "                   |             TP * TN - FP * FN         |   sqrt(TPR * FPR) - FPR                     |" << std::endl << 
+   "                   | = ----------------------------------  | = ---------------------                     |" << std::endl <<
+   "                   |   sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))  |        TPR - FPR                            |" << std::endl <<
+   "                   | = "<< ul(MCC)<<"                      | = "<< ul(PT)<< "                            |" << std::endl <<
+   "                   +---------------------------------------+---------------------------------------------+" << std::endl;
 
+   ss << std::endl << std::endl;
    
    ss << "Total Population:                                               " << ca(To) << std::endl;
    ss << "True Positive (power):                                          " << ca(nTruePositives)  << std::endl;
@@ -274,6 +299,17 @@ std::string ksi::confusion_matrix::print(
    ss << "Negative likelihood ratio (LR−) = FNR / TNR:                                        " << ul(LRN) << std::endl;
    ss << "Diagnostic odds ratio (DOR) = LR+ / LR−:                                            " << ul(DOR) << std::endl;
    ss << "F1 score = recall * precision / (recall + precision):                               " << ul(F1S) << std::endl;
+   ss << "Threat score (TS, critical success index CSI, Jaccard index) = TP / (TP + FN + FP): " << ul(TS)  << std::endl;
+   ss << "Balanced accuracy (BA) = (TPR + TNR) / 2 :                                          " << ul(BA)  << std::endl;
+   ss << "Fowlkes–Mallows index (FM) = sqrt(PPV * TPR):                                       " << ul(FM)  << std::endl;
+   ss << "markedness (MK, deltaP) = PPV + NPV - 1:                                            " << ul(dP)  << std::endl;
+   ss << "informedness, bookmaker informedness (BM)  = TPR + TNR - 1:                         " << ul(BM)  << std::endl;
+   ss << "prevalence threshold (PT)  = (sqrt(TPR * FPR) - FPR) / (TPR - FPR):                 " << ul(PT)  << std::endl;
+   ss << "                                                          (TP * TN - FP * FN)                   " << std::endl;
+   ss << "Matthews correlation coefficient (MCC) = -----------------------------------------------------: " << ul(MCC) << std::endl;
+   ss << "                                         (sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)))  " << std::endl;
+   
+   
 
    return ss.str();
   
