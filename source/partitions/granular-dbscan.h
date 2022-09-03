@@ -54,9 +54,9 @@ namespace ksi
             const s_norm &snorm,
             const t_norm &tnorm);
 
-        granular_dbscan (const granular_dbscan &obj); 
-    
-        granular_dbscan & operator = (const granular_dbscan & obj);
+        granular_dbscan(const granular_dbscan &obj);
+
+        granular_dbscan &operator=(const granular_dbscan &obj);
 
         partition doPartition(const dataset &ds);
 

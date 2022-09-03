@@ -49,9 +49,9 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
       return *this;
 
    this->_fuzzyficationAlgorihm = obj._fuzzyficationAlgorihm;
-   this->_tnorm = std::shared_ptr<t_norm>(obj._tnorm->clone()); 
-   this->_snorm = std::shared_ptr<s_norm>(obj._snorm->clone()); 
-   
+   this->_tnorm = std::shared_ptr<t_norm>(obj._tnorm->clone());
+   this->_snorm = std::shared_ptr<s_norm>(obj._snorm->clone());
+
    this->_epsilon = obj._epsilon;
    this->_minPoints = obj._minPoints;
    this->_xi = obj._xi;
