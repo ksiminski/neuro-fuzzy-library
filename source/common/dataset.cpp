@@ -194,8 +194,14 @@ void ksi::dataset::setMaximalNumericalLabel(std::size_t id)
 
 std::size_t ksi::dataset::getNumberOfData() const
 {
-   return data.size();
+   return size();
 }
+
+std::size_t ksi::dataset::size() const
+{
+    return data.size();
+}
+
 
 std::size_t ksi::dataset::getNumberOfAttributes() const
 {
@@ -434,11 +440,16 @@ ksi::dataset ksi::dataset::subdataset(const std::size_t start_index, const std::
     return result;
 }
 
+bool ksi::dataset::empty() const
+{
+    return getNumberOfData() == 0;
+}
+
 ksi::dataset & ksi::dataset::operator += (const ksi::dataset& ds)
 {
     try 
     {
-        if (getNumberOfAttributes() != ds.getNumberOfAttributes())
+        if (not empty () and  getNumberOfAttributes() != ds.getNumberOfAttributes())
         {
             std::stringstream ss;
             ss << "Numbers of attributes in both data sets do not match!" << std::endl;

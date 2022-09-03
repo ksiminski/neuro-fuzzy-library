@@ -77,8 +77,36 @@ double ksi::rulebase::answer(const std::vector<double> & X)
    CATCH;
 }
 
+// void ksi::rulebase::cummulate_differentials(const std::vector< double >& X, 
+//                                             const double Yexpected)
+// {
+//    const double EPSILON = 1e-8;
+//    
+//    double odpowiedz = answer(X);
+//    double roznica = odpowiedz - Yexpected; // roznica odpowiedzi oczekiwanej od wypracowanej dla calego systemu
+//     
+//    double suma_wag = 0.0;
+//    for (auto & lw : last_rules_localisations_weights)
+//       suma_wag += lw.second;
+//    
+//    #pragma omp parallel for
+//    for (std::size_t i = 0; i < rules.size(); i++)
+//    {
+//       double rozniczka = 0;
+//       double rozniczkaMA = 0;
+//       if (std::fabs(suma_wag) > EPSILON)
+//       {
+//          rozniczka = roznica * (last_rules_localisations_weights[i].first - odpowiedz) / suma_wag;
+//          rozniczkaMA = last_rules_localisations_weights[i].second / suma_wag;
+//       }
+//       rules[i]->cummulate_differentials(X, rozniczka, rozniczkaMA);
+//    }
+// }
+
 void ksi::rulebase::cummulate_differentials(const std::vector< double >& X, 
-                                            double Yexpected)
+                                            const double Yexpected,
+                                            const double weight
+                                           )
 {
    const double EPSILON = 1e-8;
    
@@ -96,8 +124,8 @@ void ksi::rulebase::cummulate_differentials(const std::vector< double >& X,
       double rozniczkaMA = 0;
       if (std::fabs(suma_wag) > EPSILON)
       {
-         rozniczka = roznica * (last_rules_localisations_weights[i].first - odpowiedz) / suma_wag;
-         rozniczkaMA = last_rules_localisations_weights[i].second / suma_wag;
+         rozniczka = weight * roznica * (last_rules_localisations_weights[i].first - odpowiedz) / suma_wag;
+         rozniczkaMA = weight * last_rules_localisations_weights[i].second / suma_wag;
       }
       rules[i]->cummulate_differentials(X, rozniczka, rozniczkaMA);
    }

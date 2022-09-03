@@ -1,5 +1,8 @@
 /** @file */
 
+#ifndef LEAST_ERROR_SQUARES_REGRESSION_H
+#define LEAST_ERROR_SQUARES_REGRESSION_H
+
 #include <vector>
 #include "matrix.h"
 
@@ -37,7 +40,17 @@ namespace ksi
        * @date 2018-01-26
        * @author Krzysztof Siminski
        */
-      void read_data_item (const std::vector<double> X, double Y);
+      void read_data_item (const std::vector<double> & X, const double Y);
+
+   public:
+      /** The method reads one data item for recursive regression algorithm.
+       * @param X data item
+       * @param Y corresponding expected output
+       * @param W data item's weight
+       * @date 2022-05-05
+       * @author Krzysztof Siminski
+       */
+      void read_data_item (const std::vector<double> & X, const double Y, const double W);
       
    public:
       /** The method returns regression coefficients.
@@ -128,3 +141,5 @@ namespace ksi
       
    };
 }
+
+#endif

@@ -17,6 +17,7 @@ std::string ksi::to_string (const ksi::roc_threshold & th)
         case ksi::roc_threshold::mean             : return "mean";
         case ksi::roc_threshold::minimal_distance : return "minimal-distance";
         case ksi::roc_threshold::youden           : return "youden";
+        case ksi::roc_threshold::none             : return "none";
         default                                   : return "error";
     }
 }

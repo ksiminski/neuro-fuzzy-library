@@ -112,7 +112,7 @@ namespace ksi
       
  
       
-   protected:     
+   public:     
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
@@ -126,6 +126,8 @@ namespace ksi
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
          const dataset & train); 
+      
+
    public:   
       /** 
        @return rulebase's answer of a data item

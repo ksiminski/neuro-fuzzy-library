@@ -29,6 +29,10 @@ namespace ksi
       dataset (const dataset & ds);
       dataset (dataset && ds);
       
+      /** @return true if the dataset is empty
+       @date 2022-02-02 */
+      bool empty() const;
+      
       /** Constructor that creates a dataset from a matrix of numbers.
        @date 2019-02-28
        */
@@ -42,7 +46,7 @@ namespace ksi
       dataset & operator = (const dataset & ds);
       dataset & operator = (dataset && ds);
       
-      /** The method adds data items from the right operand.
+      /** The method adds data items from the right operand. If the left operand is empty, all data from the right one are copied to the left one.
        * The left operand is modified. 
        * The right operand is not modified.
        @throw ksi::exception If the numbers of attributes in both datasets do not match. */
@@ -55,6 +59,10 @@ namespace ksi
       
       /** @return returns number of data items in the dataset */
       std::size_t getNumberOfData() const;
+      
+      /** @return returns number of data items in the dataset */
+      std::size_t size() const;
+      
       /** @return returns number of attributes in a datum */
       std::size_t getNumberOfAttributes() const;
       

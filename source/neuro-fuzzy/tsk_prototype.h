@@ -19,7 +19,7 @@ namespace ksi
     
    /** The TSK prototype neuro-fuzzy system.
     This is a neuro-fuzzy systems (in the Takagi-Sugeno-Kang architecture) based on prototypes in premises.
-      
+    
     * CITATION REQUEST    
     <pre>
     @article{id:Siminski2022Prototype,
@@ -33,7 +33,7 @@ namespace ksi
 	year = "2022"
     }
     </pre>
-    
+
     @author Krzysztof Siminski
     */ 
    class tsk_prototype : public nfs_prototype

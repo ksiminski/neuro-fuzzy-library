@@ -53,6 +53,9 @@ __ : directories $(exec)/main
 5 :  directories $(exec)/main
 	./$(exec)/main  5
 
+lab : directories $(exec)/main
+	./$(exec)/main  0
+
 #----------------------------------------------
 	
 ifeq ($(DEBUG), 1) 
@@ -162,6 +165,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/logicalrule.o      \
                $(exec)/rulebase.o         \
                $(exec)/neuro-fuzzy-system.o        \
+               $(exec)/three_way_decision_nfs.o    \
                $(exec)/annbfis.o                   \
                $(exec)/subspace-annbfis.o          \
                $(exec)/fubi-annbfis.o              \
@@ -171,15 +175,15 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/abstract_fcom.o             \
                $(exec)/tsk.o                       \
                $(exec)/ma.o                        \
-				   $(exec)/annbfis_prototype.o         \
-				   $(exec)/tsk_prototype.o             \
-				   $(exec)/fac_prototype.o             \
-				   $(exec)/prototype.o                 \
-				   $(exec)/prototype_minkowski.o       \
-				   $(exec)/prototype_minkowski_regression.o     \
-				   $(exec)/nfs_prototype.o             \
-				   $(exec)/fac_prototype_minkowski.o   \
-				   $(exec)/fac_prototype_minkowski_regression.o \
+               $(exec)/annbfis_prototype.o         \
+               $(exec)/tsk_prototype.o             \
+               $(exec)/fac_prototype.o             \
+               $(exec)/prototype.o                 \
+               $(exec)/prototype_minkowski.o       \
+               $(exec)/prototype_minkowski_regression.o     \
+               $(exec)/nfs_prototype.o             \
+               $(exec)/fac_prototype_minkowski.o   \
+               $(exec)/fac_prototype_minkowski_regression.o \
                $(exec)/gan.o                       \
                $(exec)/generative_model.o          \
                $(exec)/discriminative_model.o      \
@@ -225,10 +229,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/exp-003.o          \
                $(exec)/exp-004.o          \
                $(exec)/exp-005.o          \
-               $(exec)/static_mem_pool.o  \
-               $(exec)/mem_pool_base.o    \
-               $(exec)/debug_new.o        \
-               $(exec)/bool_array.o       
+               $(exec)/exp-lab.o          
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -o $@ $^ 
 	
 	
@@ -237,17 +238,6 @@ $(exec)/main : $(exec)/main.o                      \
 	            
 $(exec)/main.o : main.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-
-# memory leaks:
-$(exec)/static_mem_pool.o : memory/nvwa/static_mem_pool.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/mem_pool_base.o : memory/nvwa/mem_pool_base.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/debug_new.o : memory/nvwa/debug_new.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/bool_array.o : memory/nvwa/bool_array.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
- 
 	
 # debug:
 $(exec)/debug.o : service/debug.cpp
@@ -501,6 +491,8 @@ $(exec)/fac_prototype_minkowski.o : neuro-fuzzy/fac_prototype_minkowski.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski_regression.o : neuro-fuzzy/fac_prototype_minkowski_regression.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/three_way_decision_nfs.o : neuro-fuzzy/three_way_decision_nfs.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
 
 
 
@@ -638,6 +630,8 @@ $(exec)/exp-003.o : experiments/exp-003.cpp
 $(exec)/exp-004.o : experiments/exp-004.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
 $(exec)/exp-005.o : experiments/exp-005.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+$(exec)/exp-lab.o : experiments/exp-lab.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
 	
 #profil : main.cpp 
