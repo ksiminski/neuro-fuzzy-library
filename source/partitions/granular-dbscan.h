@@ -27,10 +27,10 @@ namespace ksi
         double _minPoints = -1;
 
         /** Maximum aggregated membership value allowed to consider the point as being a new core point */
-        double _mi1 = -1;
+        double _xi = -1;
 
         /** Minimum membership value required to consider the point as being core point's neighbour */
-        double _mi2 = -1;
+        double _psi = -1;
 
         /** Fuzzy clustering algorithm implementation */
         std::shared_ptr<partitioner> _fuzzyficationAlgorihm;

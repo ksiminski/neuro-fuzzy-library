@@ -16,8 +16,8 @@
 ksi::granular_dbscan::granular_dbscan(
     const double epsilon,
     const double minPoints,
-    const double mi1,
-    const double mi2,
+    const double xi,
+    const double psi,
     const ksi::partitioner &fuzzyficationAlgorihm,
     const ksi::s_norm &snorm,
     const ksi::t_norm &tnorm)
@@ -27,8 +27,8 @@ ksi::granular_dbscan::granular_dbscan(
 {
    this->_epsilon = epsilon;
    this->_minPoints = minPoints;
-   this->_mi1 = mi1;
-   this->_mi2 = mi2;
+   this->_xi = xi;
+   this->_psi = psi;
 }
 
 ksi::granular_dbscan::granular_dbscan(const granular_dbscan &obj)
@@ -39,8 +39,8 @@ ksi::granular_dbscan::granular_dbscan(const granular_dbscan &obj)
 {
    this->_epsilon = obj._epsilon;
    this->_minPoints = obj._minPoints;
-   this->_mi1 = obj._mi1;
-   this->_mi2 = obj._mi2;
+   this->_xi = obj._xi;
+   this->_psi = obj._psi;
 }
 
 ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan &obj)
@@ -54,8 +54,8 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    
    this->_epsilon = obj._epsilon;
    this->_minPoints = obj._minPoints;
-   this->_mi1 = obj._mi1;
-   this->_mi2 = obj._mi2;
+   this->_xi = obj._xi;
+   this->_psi = obj._psi;
 
    return *this;
 }
@@ -117,7 +117,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
          processed[minIndex] = true;
 
          std::vector<std::shared_ptr<ksi::descriptor>> neighbourGranule{};
-         std::size_t maxMembIndex = findMaxMembIndex(datasetSize, neighboursMemberships, this->_mi2, processed);
+         std::size_t maxMembIndex = findMaxMembIndex(datasetSize, neighboursMemberships, this->_psi, processed);
 
          if (maxMembIndex != std::numeric_limits<std::size_t>::max())
          {
@@ -134,7 +134,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
             }
             processed[maxMembIndex] = true;
 
-            maxMembIndex = findMaxMembIndex(datasetSize, neighboursMemberships, this->_mi2, processed);
+            maxMembIndex = findMaxMembIndex(datasetSize, neighboursMemberships, this->_psi, processed);
             if (maxMembIndex != std::numeric_limits<std::size_t>::max())
             {
                neighbourGranule = fuzzyDs[maxMembIndex];
@@ -165,7 +165,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
          for (std::size_t i = 0; i < datasetSize; ++i)
          {
             auto mi = aggregated[i];
-            if (mi < minValue && mi < this->_mi1 && coreProcessed[i] == false)
+            if (mi < minValue && mi < this->_xi && coreProcessed[i] == false)
             {
                minValue = mi;
                minIndex = i;
@@ -203,7 +203,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
    CATCH
 }
 
-std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize, const std::vector<double> &memberships, const double mi2, const std::vector<bool> &processed)
+std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize, const std::vector<double> &memberships, const double psi, const std::vector<bool> &processed)
 {
    double maxValue = 0;
    std::size_t maxIndex = std::numeric_limits<std::size_t>::max();
@@ -211,7 +211,7 @@ std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize
    for (std::size_t i = 0; i < datasetSize; ++i)
    {
       auto mi = memberships[i];
-      if (mi > maxValue && mi > mi2 && processed[i] == false)
+      if (mi > maxValue && mi > psi && processed[i] == false)
       {
          maxValue = mi;
          maxIndex = i;
