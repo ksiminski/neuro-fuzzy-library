@@ -15,7 +15,8 @@
 namespace ksi
 {
 
-    /** The class implements fuzzy DBSCAN clustering algorithm.
+    /** The class implements GrDBSCAN clustering algorithm.
+        @author Dawid Suchy
         @date 2022-03-11*/
     class granular_dbscan : virtual public partitioner
     {
