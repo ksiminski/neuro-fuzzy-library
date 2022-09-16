@@ -192,6 +192,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/partitioner.o               \
                $(exec)/partitioner-grid.o          \
                $(exec)/dbscan.o                    \
+               $(exec)/granular-dbscan.o           \
                $(exec)/fcm.o                       \
                $(exec)/fcm_generic.o               \
                $(exec)/fcm-T.o                     \
@@ -548,6 +549,8 @@ $(exec)/partitioner.o : partitions/partitioner.cpp
 $(exec)/partitioner-grid.o : partitions/partitioner-grid.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/dbscan.o : partitions/dbscan.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/granular-dbscan.o : partitions/granular-dbscan.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/fcm.o : partitions/fcm.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 

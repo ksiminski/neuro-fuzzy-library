@@ -54,6 +54,11 @@ ksi::cluster& ksi::cluster::operator=(ksi::cluster&& cl)
    return *this;
 }
 
+const std::size_t ksi::cluster::getNumberOfDescriptors() const
+{
+   return descriptors.size();
+}
+
 ksi::descriptor* ksi::cluster::getDescriptor(int attribute)
 {
    try
