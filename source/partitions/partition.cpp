@@ -177,13 +177,13 @@ std::string ksi::partition::print_crisp_membership_for_data(const ksi::dataset& 
         if (nItems != ds.getNumberOfData())
         {
             std::stringstream errors;
-            errors << "Number of data items (" << ds.getNumberOfData() << ") and number of column in membership matrix (" << nItems << ") do not match!";
+            errors << "Number of data items (" << ds.getNumberOfData() << ") and number of columns in membership matrix (" << nItems << ") do not match!";
             throw errors.str();
         }
         
         for (std::size_t i = 0; i < nItems; i++)
         {
-            ss << ds.getDatum(i)->to_string() << "\t";
+            ss << ds.getDatum(i)->to_string() << "\t|\t";
             
             std::size_t max_cluster_number = 0;
             for (std::size_t c = 1; c < nCluster; c++)
@@ -197,6 +197,35 @@ std::string ksi::partition::print_crisp_membership_for_data(const ksi::dataset& 
                ss << "NOISE" << std::endl;
             else
                ss << max_cluster_number << std::endl;
+        }
+        return ss.str();
+    }
+    CATCH;
+}
+
+std::string ksi::partition::print_dataitems_with_memberships_to_clusters(const ksi::dataset& ds)
+{
+    try 
+    {
+        std::stringstream ss; 
+        std::size_t nItems = U[0].size();
+        std::size_t nCluster = U.size();
+        if (nItems != ds.getNumberOfData())
+        {
+            std::stringstream errors;
+            errors << "Number of data items (" << ds.getNumberOfData() << ") and number of columns in membership matrix (" << nItems << ") do not match!";
+            throw errors.str();
+        }
+        
+        for (std::size_t i = 0; i < nItems; i++)
+        {
+            ss << ds.getDatum(i)->to_string() << "\t|\t";
+            
+            for (std::size_t c = 0; c < nCluster; c++)
+            {
+                ss << U[c][i] << '\t';
+            }
+            ss << std::endl;
         }
         return ss.str();
     }

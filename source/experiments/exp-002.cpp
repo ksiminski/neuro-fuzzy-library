@@ -204,10 +204,13 @@ void ksi::exp_002::execute()
          
          std::cout << "DBSCAN" << std::endl;
          std::cout << "======" << std::endl;
-         std::cout << Partition.print_crisp_membership_for_data(DataSet) << std::endl;
+         std::cout << "data item\t|\tmembership to clusters" << std::endl;
+         std::cout << std::endl;
+         
+         std::cout << Partition.print_dataitems_with_memberships_to_clusters(DataSet) << std::endl;
 //          std::cout << std::endl;
 //          std::cout << "++++++++++++++++++++++++++" << std::endl;
-//          std::cout << Partition.print_partition_matrix() << std::endl;
+//          std::cout << Partition.print_crisp_membership_for_data(DataSet) << std::endl;
          
       } 
 
@@ -226,17 +229,19 @@ void ksi::exp_002::execute()
          const double EPSILON = 6;
          const double MIN_POINTS = 3;
          const double MAX_MEMB_NEW_CORE = 0.3;
-         const double MIN_MEMB_NEIGHBOR = 0.8;
+         const double MIN_MEMB_NEIGHBOUR = 0.8;
          const ksi::s_norm_sum snorm;
          const ksi::t_norm_product tnorm;
 
-         ksi::granular_dbscan granularDBSCAN(EPSILON, MIN_POINTS, MAX_MEMB_NEW_CORE, MIN_MEMB_NEIGHBOR, fuzzyficationAlgorihm, snorm, tnorm);
+         ksi::granular_dbscan granularDBSCAN(EPSILON, MIN_POINTS, MAX_MEMB_NEW_CORE, MIN_MEMB_NEIGHBOUR, fuzzyficationAlgorihm, snorm, tnorm);
 
          auto Partition = granularDBSCAN.doPartition(DataSet);
          
          std::cout << "GrDBSCAN" << std::endl;
-         std::cout << "===" << std::endl;
-         std::cout << Partition.print_partition_matrix() << std::endl;
+         std::cout << "========" << std::endl;
+         std::cout << "data item\t|\tmembership to clusters" << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition.print_dataitems_with_memberships_to_clusters(DataSet) << std::endl;
          std::cout << std::endl;
       }
    }

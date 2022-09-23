@@ -18,10 +18,10 @@ ksi::granular_dbscan::granular_dbscan(
     const double minPoints,
     const double xi,
     const double psi,
-    const ksi::partitioner &fuzzyficationAlgorihm,
+    const ksi::partitioner &fuzzyficationAlgorithm,
     const ksi::s_norm &snorm,
     const ksi::t_norm &tnorm)
-    : _fuzzyficationAlgorihm(fuzzyficationAlgorihm.clone()),
+    : _fuzzyficationAlgorithm(fuzzyficationAlgorithm.clone()),
       _snorm(snorm.clone()),
       _tnorm(tnorm.clone())
 {
@@ -33,7 +33,7 @@ ksi::granular_dbscan::granular_dbscan(
 
 ksi::granular_dbscan::granular_dbscan(const granular_dbscan &obj)
     : partitioner(obj),
-      _fuzzyficationAlgorihm(std::shared_ptr<partitioner>(obj._fuzzyficationAlgorihm->clone())),
+      _fuzzyficationAlgorithm(std::shared_ptr<partitioner>(obj._fuzzyficationAlgorithm->clone())),
       _snorm(std::shared_ptr<s_norm>(obj._snorm->clone())),
       _tnorm(std::shared_ptr<t_norm>(obj._tnorm->clone()))
 {
@@ -48,7 +48,7 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    if (this == &obj)
       return *this;
 
-   this->_fuzzyficationAlgorihm = obj._fuzzyficationAlgorihm;
+   this->_fuzzyficationAlgorithm = obj._fuzzyficationAlgorithm;
    this->_tnorm = std::shared_ptr<t_norm>(obj._tnorm->clone());
    this->_snorm = std::shared_ptr<s_norm>(obj._snorm->clone());
 
@@ -93,15 +93,15 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 {
    try
    {
-      const auto fuzzyDs = prepareFuzzyData(ds, this->_fuzzyficationAlgorihm);
+      const auto fuzzyDs = prepareFuzzyData(ds, this->_fuzzyficationAlgorithm);
 
-      std::vector<std::vector<double>> partition_matrix;
+      std::vector<std::vector<double>> partition_matrix; // each row represents a cluster, each column -- a granule
 
       const std::size_t datasetSize = fuzzyDs.size();
       std::vector<bool> coreProcessed(datasetSize, false);
 
       // cluster
-      int C = 0;
+      int C = 0; 
 
       std::size_t minIndex = 0;
       std::vector<std::shared_ptr<ksi::descriptor>> coreGranule = fuzzyDs[minIndex];
@@ -109,7 +109,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 
       while (!coreGranule.empty())
       {
-         ++C;
+         ++C;  // cluster number 
 
          std::vector<double> neighboursMemberships = findNeighboursMemberships(fuzzyDs, coreGranule);
 
@@ -181,11 +181,11 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 
       std::vector<std::vector<double>> mU;
 
-      for (std::size_t r = 0; r < C; ++r) // rows
+      for (std::size_t r = 0; r < C; ++r) // clusters
       {
          double sum = 0;
 
-         for (std::size_t c = 0; c < datasetSize; ++c) // columns
+         for (std::size_t c = 0; c < datasetSize; ++c) // granules
          {
             sum += partition_matrix[r][c];
          }
@@ -196,12 +196,97 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
          }
       }
 
+      
+      ////////////////////////////
+      // TODO Ekstrakcja metody!
+      // KS: mU: partition matrix for granules
+      // KS: 
+      
+      auto mClusterDatum = getClusterDatumMatrix(ds, fuzzyDs, mU);
+       
+     /////////////
+      
       ksi::partition part;
-      part.setPartitionMatrix(mU);
+      // part.setPartitionMatrix(mU);
+      
+      part.setPartitionMatrix(mClusterDatum);
       return part;
    }
    CATCH
 }
+
+std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(const ksi::dataset& input_dataset, const std::vector<std::vector<std::shared_ptr<descriptor>>>& granules, const std::vector<std::vector<double>>& mClusterGranule)
+{
+   try 
+   {
+      const auto ds_size = input_dataset.size();    // number of input data 
+      const auto gr_size = granules.size();         // number of granules 
+      const auto cl_size = mClusterGranule.size();  // number of clusters
+      std::vector<std::vector<double>> mGranuleDatum (gr_size, std::vector<double> (ds_size));
+    
+      // We have to calculate membership of each data item to each granule. 
+      
+      for (std::size_t i = 0; i < ds_size; i++)
+      {
+         auto d = input_dataset.getDatum(i);
+         for (std::size_t g = 0; g < gr_size; g++)
+         {
+             auto memb = getMembershipToGranule(*d, granules[g], _tnorm);
+             mGranuleDatum[g][i] = memb;
+         }
+      }
+      
+      // We have just calculated memberships of all data items to granules.
+      // We already have memberships of granules to clusters.
+      // Now we are elaborating memberships of all data items to clusters.
+      
+      std::vector<std::vector<double>> mClusterDatum (cl_size, std::vector<double> (ds_size)); 
+      
+      for (std::size_t c = 0; c < cl_size; c++)
+      {
+         for (std::size_t d = 0; d < ds_size; d++)
+         {
+            double v { 0 };
+            for (std::size_t g = 0; g < gr_size; g++)
+               v = std::max(v, mClusterGranule[c][g] * mGranuleDatum[g][d]);
+            mClusterDatum[c][d] = v;
+         }
+      }
+      
+      return mClusterDatum;
+ 
+   }
+   CATCH;
+}
+
+
+double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum& d, const std::vector<std::shared_ptr<ksi::descriptor>>& gs, const std::shared_ptr<t_norm> pt)
+{
+   try 
+   {
+      if (d.getNumberOfAttributes() != gs.size())
+      {
+         std::stringstream ss; 
+         ss << "Number of attributes (" << d.getNumberOfAttributes() << ") and number of descriptors of a granules (" << gs.size() << ") do not match!";
+         
+         ksi::exception ex (ss.str());
+         throw ex;
+         
+      }
+      
+      double memb = 1.0;
+      const auto nAttr = d.getNumberOfAttributes();
+      
+      for (std::size_t a = 0; a < nAttr; a++)
+      {
+          double m = gs[a]->getMembership(d.at(a)->getValue());   
+          memb = pt->tnorm(memb, m);
+      }
+      return memb;
+   }
+   CATCH;
+}
+
 
 std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize, const std::vector<double> &memberships, const double psi, const std::vector<bool> &processed)
 {
