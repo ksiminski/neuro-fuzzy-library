@@ -43,6 +43,7 @@ This example presents clustering algorithms:
 1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi])
 1. fcom
 1. dbscan
+1. grdbscan (granular dbscan)
 
 
 ### make 3
