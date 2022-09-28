@@ -302,11 +302,11 @@ $(exec)/distance-euclidean-incomplete.o : common/distance-euclidean-incomplete.c
 $(exec)/missingdata.o : common/missingdata.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 
-$(exec)/error-calculator.o : common/error-calculator.cpp
+$(exec)/error-calculator.o : auxiliary/error-calculator.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/error-RMSE.o : common/error-RMSE.cpp
+$(exec)/error-RMSE.o : auxiliary/error-RMSE.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/error-MAE.o : common/error-MAE.cpp
+$(exec)/error-MAE.o : auxiliary/error-MAE.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 
 # metrics 
