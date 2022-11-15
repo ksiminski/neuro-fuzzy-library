@@ -179,11 +179,11 @@ This example presents neuro-fuzzy systems for
 [^three]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2022
 	```
 	@article{id:Siminski20223WDNFS,
-	  author   = {Krzysztof Siminski},
-	  title    = {{3WDNFS} – Three-way decision neuro-fuzzy system for classification},
-	  journal  = {Fuzzy Sets and Systems},
-	  year     = {2022},
-	  doi      = {10.1016/j.fss.2014.12.007},
+		author   = {Krzysztof Siminski},
+		title    = {{3WDNFS} – Three-way decision neuro-fuzzy system for classification},
+		journal  = {Fuzzy Sets and Systems},
+		year     = {2022},
+		doi      = {10.1016/j.fss.2014.12.007},
 	}
 	```
 	
