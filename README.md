@@ -63,7 +63,7 @@ This example presents neuro-fuzzy systems for
 	3. ANNBFIS
 	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
 	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
-	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^3WDNFS] and [^nfl])
+	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^three] and [^nfl])
 1. regression:
 	1. MA
 	2. TSK
@@ -176,7 +176,7 @@ This example presents neuro-fuzzy systems for
 	}
 	```
 
-[^3WDNFS]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2022
+[^three]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2022
 	```
 	@article{id:Siminski20223WDNFS,
 	  author   = {Krzysztof Siminski},
