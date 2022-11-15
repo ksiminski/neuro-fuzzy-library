@@ -39,8 +39,8 @@ This example presents clustering algorithms:
 1. fcm
 1. possibilistic fcm
 1. conditional fcm
-1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace])
-1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi])
+1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
 1. fcom
 1. dbscan
 1. grdbscan (granular dbscan)
@@ -48,9 +48,9 @@ This example presents clustering algorithms:
 
 ### make 3
 This example presents clustering algorithms for incomplete datasets:
-1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm])   
-2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom])
-3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm])
+1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm] and [^nfl])   
+2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom] and [^nfl])
+3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm] and [^nfl])
 
 ### make 4
 This example presents a fuzzy system. 
@@ -61,17 +61,17 @@ This example presents neuro-fuzzy systems for
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
-	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^3WDNFS])
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
+	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^3WDNFS] and [^nfl])
 1. regression:
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
-	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype])
-	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype]) 
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
+	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl])
+	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl]) 
  
 ------------
 
