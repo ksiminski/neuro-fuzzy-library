@@ -43,14 +43,14 @@ void ksi::exp_lab::execute()
 		// [PL] system rozmyty 
 		// [EN] fuzzy system
 		fuzzy_system();
-		
+
 		// [PL] system neuronowo-rozmyty 
 		//  Proszę sprawdzić, jaki wygląda model wypracowany przez system neuronowo-rozmyty dla danych z zadania Z1. W tym celu należy odkomentować ponizsza linie. Zostaną utworozne dwa pliki results-neuro-fuzzy-MA i results-neuro-fuzzy-TSK.
-		
+
 		// [EN] neuro-fuzzy system
 		// Uncomment the commented line below. Now two neuro-fuzzy systems (MA and TSK) are run for the data set. Compare your results with the results elaborated by the neuro-fuzzy systems. Try to interpret fuzzy rule bases produced by the systems.
-		
-		neuro_fuzzy_system();
+
+		// neuro_fuzzy_system();
 	}    
 	CATCH;
 }
@@ -64,14 +64,15 @@ void ksi::exp_lab::fuzzy_system()
 		// Pewien system ma dwa wejścia i jedno wyjście. Wartości wejść mają wartości z zakresu od ok. 0 do ok. 10. Wartości wyjścia są od ok. 0 do ok. 10. Od eksperta dziedzinowego wiemy, że wyjście systemu powinno być niskie, jeżeli wartości obu atrybutów są albo jednocześnie duże, albo jednocześnie małe. Gdy jeden z atrybutów ma wartość dużą, a drugi małą, to wyjście systemu powinno być wysokie. 
 		// 		
 		// 	Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by wartości błędu RMSE dla danych treningowych były jak najmniejsze. W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
-	
+
 		// [EN] DAACI
+		// 
 		// A system has two inputs and one output. Approximate range of input values is 0-10. Output values from approx. 0 to approx. 10. An expert says the output of the system is low, if both inputs are simultaneously low or high. The output is high, if one input is low and the other high. 
 		// 
 		// Construct a fuzzy rule base for a MA fuzzy system to reduce the output root mean square error (RMSE) for the train set. The system produces the result file results-fuzzy-MA in the directory data/exp-lab.
-	
+
 		////////////////////////////////////////////////////////////////////////////////////
-		
+
 		// [PL] deskryptory
 		// [EN] descriptors
 		//         ksi::descriptor_gaussian
@@ -79,7 +80,7 @@ void ksi::exp_lab::fuzzy_system()
 		//         ksi::descriptor_sigmoidal
 		//         ksi::descriptor_triangular
 		//         ksi::descriptor_trapezoidal
-					
+
 
 
 		// [PL] T-normy
@@ -108,7 +109,7 @@ void ksi::exp_lab::fuzzy_system()
 		//          R1.setConsequence(C1);         
 
 		// [PL] dodanie reguł do bazy reguł      
-      // [EN] add a rule to a fuzzy rule base
+		// [EN] add a rule to a fuzzy rule base
 		//          ksi::rulebase Rulebase;         
 		//          Rulebase.addRule(R1);
 
@@ -135,7 +136,7 @@ void ksi::exp_lab::fuzzy_system()
 		{
 			p->elaborate_answers_for_regression(TRAIN, RESULTS + "-" + p->get_nfs_name(), NORMALISATION);
 		}
-		
+
 		std::cout << "done" << std::endl;
 	}
 	CATCH;
@@ -147,7 +148,7 @@ void ksi::exp_lab::neuro_fuzzy_system()
 	{
 		// regression 
 
-		
+
 		const std::string DIRECTORY ("data/exp-lab");
 		const std::string TRAIN   (DIRECTORY + "/train"); 
 		const std::string TEST    (DIRECTORY + "/test");
@@ -160,16 +161,16 @@ void ksi::exp_lab::neuro_fuzzy_system()
 		const ksi::t_norm_product TNORM;
 
 		ksi::ma MA (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, TNORM);
-        ksi::tsk TSK (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, TNORM);
+		ksi::tsk TSK (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, TNORM);
 
 		std::vector<ksi::neuro_fuzzy_system *> systems { & MA,  & TSK };
 
-		
+
 		for (auto p : systems)
 		{
 			p->experiment_regression(TRAIN, TEST, RESULTS + "-" + p->get_nfs_name());
 		}
-		
+
 		std::cout << "done" << std::endl;
 	}
 	CATCH;
