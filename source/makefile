@@ -1,6 +1,7 @@
 
- 
-
+#########################
+#  project compilation  # 
+#########################
  
 compiler=g++
 standard=-std=c++20
