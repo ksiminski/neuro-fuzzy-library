@@ -72,6 +72,25 @@ void ksi::exp_lab::fuzzy_system()
 		// Construct a fuzzy rule base for a MA fuzzy system to reduce the output root mean square error (RMSE) for the train set. The system produces the result file results-fuzzy-MA in the directory data/exp-lab.
 
 		////////////////////////////////////////////////////////////////////////////////////
+		
+		// [PL] Proszę zapisać reguły zidentyfikowane w opisie eksperta.
+		// [EN] Please write down the rules indentified in the expert's description.
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// [PL] Jakie zmienne lingwistyczne występują w regułach?
+		// [EN] What linguistic variables can you find in the rules?
+		
+		
+		
+		// [PL] Proszę zamodelować zmienne lingwistyczne przy użyciu poniższych deskryptorów (zbiorów rozmytych).
+		// [EN] Please model the linguistic variables with the descriptors (fuzzy sets) below.
 
 		// [PL] deskryptory
 		// [EN] descriptors
