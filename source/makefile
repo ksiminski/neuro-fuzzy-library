@@ -613,6 +613,10 @@ $(exec)/least-error-squares-regression.o : auxiliary/least-error-squares-regress
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/confusion-matrix.o : auxiliary/confusion-matrix.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
+$(exec)/multiclass_confusion_matrix.o : auxiliary/multiclass_confusion_matrix.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
+$(exec)/confusion_matrix.o : auxiliary/confusion-matrix.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/clock.o : auxiliary/clock.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/mathematics.o : auxiliary/mathematics.cpp
