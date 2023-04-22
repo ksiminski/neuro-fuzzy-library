@@ -11,6 +11,7 @@
 #include "../common/data-modifier-marginaliser.h"
 #include "../common/data-modifier-standardiser.h"
 #include "../common/data-modifier-normaliser.h"
+#include "../common/data-modifier-filter.h"
 #include "../common/data-modifier-imputer.h"
 #include "../common/data-modifier-imputer-average.h"
 #include "../common/data-modifier-imputer-median.h"
@@ -18,6 +19,7 @@
 #include "../common/data-modifier-imputer-knn-average.h"
 #include "../common/data-modifier-imputer-knn-median.h"
 #include "../common/data-modifier-imputer-values-from-knn.h"
+#include "../common/data-modifier-outlier-remove-sigma.h"
 
 
 #include "../experiments/exp-001.h"
@@ -39,7 +41,7 @@ void ksi::exp_001::execute()
          std::cout << "original data" << std::endl;
          std::cout << dane << std::endl;
          std::cout << std::endl;
-         
+
          {
             auto data = dane;
             ksi::data_modifier_normaliser normaliser;
@@ -57,6 +59,63 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
+         
+         {
+            auto data = dane;
+            auto filtering_function = [] (double value) -> bool 
+            {
+                return value > 5;
+            };
+            std::size_t attribute {4};  
+            ksi::data_modifier_filter filter (attribute, filtering_function);
+            filter.modify(data);
+            std::cout << "filtered data" << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
+      }
+      
+      // outliers
+      {
+         std::string OutlierDataset ("/outliers");
+         ksi::reader_complete DataReader;
+         auto dane = DataReader.read(Directory + OutlierDataset);
+         std::cout << "original data" << std::endl;
+         std::cout << dane << std::endl;
+         std::cout << std::endl;
+         
+
+         {
+            const double n { 1 }; 
+            auto data = dane;
+            ksi::data_modifier_outlier_remove_sigma remover (n);
+            remover.modify(data);
+            std::cout << "outliers removed (" << n << " * sigma)" << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
+
+
+         {
+            const double n { 3 }; 
+            auto data = dane;
+            ksi::data_modifier_outlier_remove_sigma remover (n);
+            remover.modify(data);
+            std::cout << "outliers removed (" << n << " * sigma)" << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
+
+         {
+            const double n { 6 }; 
+            auto data = dane;
+            ksi::data_modifier_outlier_remove_sigma remover (n);
+            remover.modify(data);
+            std::cout << "outliers removed (" << n << " * sigma)" << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
+
       }
       
       

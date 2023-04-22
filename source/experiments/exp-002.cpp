@@ -8,6 +8,7 @@
  
 
 #include "../readers/reader-complete.h" 
+#include "../readers/weighted_reader_complete.h"
 #include "../common/dataset.h" 
 #include "../partitions/partitioner.h" 
 #include "../partitions/fcm.h"
@@ -18,6 +19,8 @@
 #include "../partitions/fubi.h"
 #include "../partitions/dbscan.h"
 #include "../partitions/granular-dbscan.h"
+#include "../metrics/metric-minkowski.h"
+#include "../metrics/metric-euclidean.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -84,15 +87,10 @@ void ksi::exp_002::execute()
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
          std::string data (dataDir + "/" + "pedrycz");
-          std::vector<double> weights {0.96, 0.84, 0.70, 0.82, 0.21,
-         0.12, 0.18, 0.96, 0.84, 0.70, 0.82, 0.21, 0.12, 0.18}; 
          
-         ksi::reader_complete input;
+         ksi::weighted_reader_complete input;
          auto DataSet = input.read(data);
          auto number_of_items = DataSet.getNumberOfData();
-         // In this clustering algorithm each data item can have its own weight.
-         for (std::size_t i = 0; i < number_of_items; i++)
-            DataSet.getDatumNonConst(i)->setWeight(weights[i]);
          
          ksi::fcm_conditional algorithm;
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
@@ -187,8 +185,8 @@ void ksi::exp_002::execute()
          
          std::cout << "data items with typicalities" << std::endl;
          std::cout << DataSet << std::endl;
-      }   
-      
+      }      
+
       {
          const double epsilon = 5;    // 1.5
          const double minPts = 10;
@@ -197,7 +195,8 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          std::string data (dataDir + "/" + "dbscan.data");
          ksi::reader_complete input;
-         auto DataSet = input.read(data); 
+         auto DataSet = input.read(data);
+//          auto number_of_items = DataSet.getNumberOfData();
          
          ksi::dbscan algorithm(epsilon, minPts, metric);
          auto Partition = algorithm.doPartition(DataSet);

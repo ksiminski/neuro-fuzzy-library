@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <string>
 #include <memory>
-
-
+ 
+ 
 #include "../service/debug.h"
 #include "../implications/imp-reichenbach.h"
 #include "../tnorms/t-norm-product.h"

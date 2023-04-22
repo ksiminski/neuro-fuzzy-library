@@ -83,6 +83,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/data-modifier.o             \
                $(exec)/data-modifier-normaliser.o  \
                $(exec)/data-modifier-standardiser.o      \
+               $(exec)/data-modifier-filter.o            \
                $(exec)/data-modifier-marginaliser.o      \
                $(exec)/data-modifier-imputer.o           \
                $(exec)/data-modifier-imputer-average.o   \
@@ -91,6 +92,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/data-modifier-imputer-knn-average.o   \
                $(exec)/data-modifier-imputer-knn-median.o    \
                $(exec)/data-modifier-imputer-values-from-knn.o   \
+               $(exec)/data-modifier-outlier-remove-sigma.o      \
                $(exec)/extensional-fuzzy-number-gaussian.o       \
                $(exec)/error-calculator.o          \
                $(exec)/error-RMSE.o                \
@@ -109,8 +111,12 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/distance-euclidean.o              \
                $(exec)/distance-euclidean-incomplete.o   \
                $(exec)/reader-complete.o           \
+               $(exec)/multilabel_reader_complete.o           \
+               $(exec)/weighted_reader_complete.o           \
+               $(exec)/reader-complete-by-parts.o  \
                $(exec)/reader-incomplete.o         \
                $(exec)/reader.o                    \
+               $(exec)/cross_validation_reader.o   \
                $(exec)/t-norm.o                    \
                $(exec)/t-norm-product.o            \
                $(exec)/t-norm-min.o                \
@@ -270,6 +276,7 @@ $(exec)/extensional-fuzzy-number-gaussian.o : common/extensional-fuzzy-number-ga
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/result.o : common/result.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+	
 
 $(exec)/dataset.o : common/dataset.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
@@ -299,8 +306,8 @@ $(exec)/data-modifier-imputer-knn-median.o : common/data-modifier-imputer-knn-me
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-values-from-knn.o : common/data-modifier-imputer-values-from-knn.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-
-
+$(exec)/data-modifier-outlier-remove-sigma.o : common/data-modifier-outlier-remove-sigma.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 $(exec)/distance.o : common/distance.cpp
@@ -352,7 +359,15 @@ $(exec)/reader.o : readers/reader.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/reader-complete.o : readers/reader-complete.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/multilabel_reader_complete.o : readers/multilabel_reader_complete.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/weighted_reader_complete.o : readers/weighted_reader_complete.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/reader-complete-by-parts.o : readers/reader-complete-by-parts.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/reader-incomplete.o : readers/reader-incomplete.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/cross_validation_reader.o : readers/cross_validation_reader.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 	
 # tnorms

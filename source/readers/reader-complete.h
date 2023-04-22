@@ -4,6 +4,7 @@
 #define READER_COMPLETE_H
 
 #include <string>
+#include <memory>
 #include "reader.h"
 #include "../common/dataset.h"
 
@@ -13,6 +14,9 @@ namespace ksi
    {
    public:
       virtual dataset read(const std::string& filename);
+      
+      /** The prototype design pattern. */
+      virtual std::shared_ptr<reader> clone() const; 
       
    };
 }

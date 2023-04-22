@@ -1,6 +1,6 @@
 /** @file */ 
 
-
+#include <memory>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -20,6 +20,11 @@ ksi::reader_incomplete::reader_incomplete(const char missing_value_symbol) : MIS
 ksi::reader_incomplete::reader_incomplete()
 {
 
+}
+
+std::shared_ptr<ksi::reader> ksi::reader_incomplete::clone() const
+{
+    return std::shared_ptr<ksi::reader>(new ksi::reader_incomplete(*this));
 }
 
 
