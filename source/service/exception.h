@@ -16,7 +16,7 @@ namespace ksi
    {
       std::string _note;
    public:
-	   virtual const char * what () const noexcept;
+      virtual const char * what () const noexcept;
       exception();
       exception(const std::string & note);
       exception(const char * FILE, 

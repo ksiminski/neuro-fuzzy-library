@@ -59,7 +59,8 @@ catch (...)                                                  \
 
 
 
-#define debug(x) std::cerr << __FILE__ << " (" << __LINE__ << ") " << #x << " == " << (x) << std::endl;
+#define drukuj(x) std::cerr << __FILE__ << " (" << __LINE__ << ") " << #x << " == " << (x) << std::endl;
+#define debug(x)  drukuj(x)
 
 #define NAZWA(x)  #x 
 
