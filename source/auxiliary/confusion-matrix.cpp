@@ -275,7 +275,7 @@ std::string ksi::confusion_matrix::print(
    "                   |              4 * TP * TN              |                                             |" << std::endl << 
    "                   | = ----------------------------------  |                                             |" << std::endl << 
    "                   |   4 * TP * TN  + (TP + TN)*(FP + FN)  |                                             |" << std::endl <<    
-   "                   | = "<< ul(P4)<<"                       |                                             |" << std::endl << 
+   "                   | = "<< ul(P4)<< "                      |                                             |" << std::endl << 
    "                   +---------------------------------------+---------------------------------------------+" << std::endl;
 
    ss << std::endl << std::endl;

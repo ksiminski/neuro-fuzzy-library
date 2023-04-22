@@ -23,6 +23,7 @@
 #include "../neuro-fuzzy/tsk_prototype.h"
 #include "../neuro-fuzzy/annbfis_prototype.h"
 #include "../neuro-fuzzy/fac_prototype_minkowski_regression.h"
+#include "../neuro-fuzzy/fac_prototype_minkowski_classification.h"
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 
 #include "../auxiliary/roc.h"
@@ -209,7 +210,72 @@ void ksi::exp_005::classification()
 			std::cout << std::endl;
 		}
 	}
+	
+	// PROTO_TSK NEURO-FUZZY CLASSIFIER
+	{
+		const double POSITIVE { 1 };
+        const double NEGATIVE { 0 };
+       
+		for (auto th : thresholds)  // for all thresholds
+		{
+			double minkowski_coefficient = 2.0;
+			ksi::fac_prototype_minkowski_classification factory (minkowski_coefficient, POSITIVE, NEGATIVE);
+			
+			ksi::tsk_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory, POSITIVE,  NEGATIVE, th);
+			
+		 
+			std::string threshold_name;
+			switch(th)
+			{
+				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
+				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
+				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
+				default                                   : threshold_name = "something-wrong-has-happened"; break;
+			}
 
+
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+			std::cout << "\tthreshold: " << threshold_name    << std::endl;
+			system.experiment_classification(TRAIN, TEST, result_file);    
+			std::cout << "\tResults saved to file " << result_file << std::endl;
+			std::cout << std::endl;
+		}
+	}
+	
+	// PROTO_ANNBFIS NEURO-FUZZY CLASSIFIER
+	{
+		const double POSITIVE { 1 };
+        const double NEGATIVE { 0 };
+		const ksi::imp_reichenbach IMPLICATION;
+		
+		for (auto th : thresholds)  // for all thresholds
+		{
+			double minkowski_coefficient = 2.0;
+			ksi::fac_prototype_minkowski_classification factory (minkowski_coefficient, POSITIVE, NEGATIVE);
+			
+			ksi::annbfis_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, IMPLICATION, factory, POSITIVE,  NEGATIVE, th);
+			
+		 
+			std::string threshold_name;
+			switch(th)
+			{
+				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
+				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
+				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
+				default                                   : threshold_name = "something-wrong-has-happened"; break;
+			}
+
+
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+			std::cout << "\tthreshold: " << threshold_name    << std::endl;
+			system.experiment_classification(TRAIN, TEST, result_file);    
+			std::cout << "\tResults saved to file " << result_file << std::endl;
+			std::cout << std::endl;
+		}
+	}
+	
 	// THREE-WAY DECISION NEURO-FUZZY CLASSIFIER
 	{
 		double noncommitment_value = 0.1; // half of width of the noncommitment interval
