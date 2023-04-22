@@ -621,6 +621,8 @@ $(exec)/clock.o : auxiliary/clock.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/mathematics.o : auxiliary/mathematics.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
+$(exec)/numeric_function.o : auxiliary/numeric_function.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/vector-operators.o : auxiliary/vector-operators.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/print.o : auxiliary/print.cpp
