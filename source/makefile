@@ -170,13 +170,13 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/uowa.o                      \
                $(exec)/premise.o                   \
                $(exec)/subspace-premise.o          \
-               $(exec)/consequence.o      \
-               $(exec)/consequence-MA.o   \
-               $(exec)/consequence-TSK.o  \
-               $(exec)/consequence-CL.o   \
-               $(exec)/rule.o             \
-               $(exec)/logicalrule.o      \
-               $(exec)/rulebase.o         \
+               $(exec)/consequence.o               \
+               $(exec)/consequence-MA.o            \
+               $(exec)/consequence-TSK.o           \
+               $(exec)/consequence-CL.o            \
+               $(exec)/rule.o                      \
+               $(exec)/logicalrule.o               \
+               $(exec)/rulebase.o                  \
                $(exec)/neuro-fuzzy-system.o        \
                $(exec)/three_way_decision_nfs.o    \
                $(exec)/tsk.o                       \
@@ -191,14 +191,16 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/fcom-tsk.o                  \
                $(exec)/fcom-ma.o                   \
                $(exec)/fcom-annbfis.o              \
+               $(exec)/nfs_prototype.o             \
                $(exec)/annbfis_prototype.o         \
                $(exec)/tsk_prototype.o             \
-               $(exec)/fac_prototype.o             \
                $(exec)/prototype.o                 \
                $(exec)/prototype_minkowski.o       \
                $(exec)/prototype_minkowski_regression.o     \
-               $(exec)/nfs_prototype.o             \
+               $(exec)/prototype_minkowski_classification.o       \
+               $(exec)/fac_prototype.o             \
                $(exec)/fac_prototype_minkowski.o   \
+               $(exec)/fac_prototype_minkowski_classification.o   \
                $(exec)/fac_prototype_minkowski_regression.o \
                $(exec)/granular_nfs.o              \
                $(exec)/granular_nfs_regression.o   \
@@ -481,6 +483,8 @@ $(exec)/descriptor-constant.o : descriptors/descriptor-constant.cpp
 # neuro-fuzzy
 $(exec)/premise.o : neuro-fuzzy/premise.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+
+	
 $(exec)/subspace-premise.o : neuro-fuzzy/subspace-premise.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/consequence.o : neuro-fuzzy/consequence.cpp
@@ -552,28 +556,33 @@ $(exec)/granular_subspace_annbfis_regression.o : neuro-fuzzy/granular_subspace_a
 $(exec)/granular_subspace_annbfis_classification.o : neuro-fuzzy/granular_subspace_annbfis_classification.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
-$(exec)/annbfis_prototype.o : neuro-fuzzy/annbfis_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/tsk_prototype.o : neuro-fuzzy/tsk_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/fac_prototype.o : neuro-fuzzy/fac_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+# prototype neuro-fuzzy systems
 $(exec)/prototype.o : neuro-fuzzy/prototype.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/prototype_minkowski.o : neuro-fuzzy/prototype_minkowski.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/prototype_minkowski_regression.o : neuro-fuzzy/prototype_minkowski_regression.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/prototype_minkowski_classification.o : neuro-fuzzy/prototype_minkowski_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/three_way_decision_nfs.o : neuro-fuzzy/three_way_decision_nfs.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
+
 $(exec)/nfs_prototype.o : neuro-fuzzy/nfs_prototype.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/tsk_prototype.o : neuro-fuzzy/tsk_prototype.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/annbfis_prototype.o : neuro-fuzzy/annbfis_prototype.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+
+$(exec)/fac_prototype.o : neuro-fuzzy/fac_prototype.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski.o : neuro-fuzzy/fac_prototype_minkowski.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski_regression.o : neuro-fuzzy/fac_prototype_minkowski_regression.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/three_way_decision_nfs.o : neuro-fuzzy/three_way_decision_nfs.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
-
-
+$(exec)/fac_prototype_minkowski_classification.o : neuro-fuzzy/fac_prototype_minkowski_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 # generative adversial networks
