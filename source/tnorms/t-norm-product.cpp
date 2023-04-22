@@ -17,8 +17,7 @@ ksi::t_norm * ksi::t_norm_product::clone() const
 
 std::ostream & ksi::t_norm_product::Print (std::ostream & ss) const
 {
-   ss << "product t-norm";
-   return ss;
+   return ss << "product t-norm";
 }
 
 ksi::t_norm_product::~t_norm_product()

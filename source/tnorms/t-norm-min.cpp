@@ -18,8 +18,7 @@ ksi::t_norm * ksi::t_norm_min::clone() const
 
 std::ostream & ksi::t_norm_min::Print(std::ostream & ss) const
 {
-   ss << "minimum t-norm";
-   return ss;
+   return ss << "minimum t-norm";
 }
 
 ksi::t_norm_min::~t_norm_min()

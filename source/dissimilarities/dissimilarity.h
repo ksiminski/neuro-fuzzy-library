@@ -22,7 +22,7 @@ namespace ksi
       
       virtual std::ostream & Print (std::ostream & ss) const = 0;
       
-      /** @return name of modifiers in chain */
+      /** @return name of dissimilarity measure */
       virtual std::string print () const ;
    };
 }

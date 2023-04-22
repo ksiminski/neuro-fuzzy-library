@@ -117,6 +117,14 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/t-norm-fodor.o              \
                $(exec)/t-norm-drastic.o            \
                $(exec)/t-norm-einstein.o           \
+               $(exec)/t-norm-parametrized.o       \
+               $(exec)/t-norm-frank.o              \
+               $(exec)/t-norm-dombi.o              \
+               $(exec)/t-norm-yager.o              \
+               $(exec)/t-norm-dubois-prade.o       \
+               $(exec)/t-norm-hamacher.o           \
+               $(exec)/t-norm-schweizer-sklar.o    \
+               $(exec)/t-norm-sugeno-weber.o             \
                $(exec)/s-norm.o                    \
                $(exec)/s-norm-sum.o                \
                $(exec)/s-norm-max.o                \
@@ -152,11 +160,11 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/dis-linear.o                \
                $(exec)/dis-sigmoidal.o             \
                $(exec)/dis-sigmoidal-linear.o      \
-               $(exec)/owa.o                     \
-               $(exec)/plowa.o                   \
-               $(exec)/sowa.o                    \
-               $(exec)/uowa.o                    \
-               $(exec)/premise.o          \
+               $(exec)/owa.o                       \
+               $(exec)/plowa.o                     \
+               $(exec)/sowa.o                      \
+               $(exec)/uowa.o                      \
+               $(exec)/premise.o                   \
                $(exec)/subspace-premise.o          \
                $(exec)/consequence.o      \
                $(exec)/consequence-MA.o   \
@@ -232,411 +240,425 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/exp-004.o          \
                $(exec)/exp-005.o          \
                $(exec)/exp-lab.o          
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -o $@ $^ 
 	
 	
 	
 # compilation of files
 	            
 $(exec)/main.o : main.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 	
 # debug:
 $(exec)/debug.o : service/debug.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/exception.o : service/exception.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 	
 # common:
 $(exec)/number.o : common/number.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/datum.o : common/datum.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/datum-interval.o : common/datum-interval.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/datum-incomplete.o : common/datum-incomplete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/extensional-fuzzy-number-gaussian.o : common/extensional-fuzzy-number-gaussian.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/result.o : common/result.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 $(exec)/dataset.o : common/dataset.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 $(exec)/data-modifier.o : common/data-modifier.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-normaliser.o : common/data-modifier-normaliser.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-marginaliser.o : common/data-modifier-marginaliser.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer.o : common/data-modifier-imputer.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-average.o : common/data-modifier-imputer-average.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-median.o : common/data-modifier-imputer-median.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-knn.o : common/data-modifier-imputer-knn.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-knn-average.o : common/data-modifier-imputer-knn-average.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-knn-median.o : common/data-modifier-imputer-knn-median.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer-values-from-knn.o : common/data-modifier-imputer-values-from-knn.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 
 
 $(exec)/distance.o : common/distance.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/distance-euclidean.o : common/distance-euclidean.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/distance-euclidean-incomplete.o : common/distance-euclidean-incomplete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 $(exec)/missingdata.o : common/missingdata.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 $(exec)/error-calculator.o : auxiliary/error-calculator.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/error-RMSE.o : auxiliary/error-RMSE.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/error-MAE.o : auxiliary/error-MAE.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # metrics 
 $(exec)/metric.o : metrics/metric.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/metric-euclidean.o : metrics/metric-euclidean.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/metric-euclidean-incomplete.o : metrics/metric-euclidean-incomplete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/metric-minkowski.o : metrics/metric-minkowski.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/metric-minkowski-weighted.o : metrics/metric-minkowski-weighted.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # granule
 
 $(exec)/granule.o : granules/granule.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data_item.o : granules/data_item.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/set_of_standalone_granules.o : granules/set_of_standalone_granules.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/set_of_granules.o : granules/set_of_granules.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/set_of_cooperating_granules.o : granules/set_of_cooperating_granules.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # readers
 
 $(exec)/reader.o : readers/reader.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/reader-complete.o : readers/reader-complete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/reader-incomplete.o : readers/reader-incomplete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 	
 # tnorms
 
 $(exec)/t-norm.o : tnorms/t-norm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-product.o : tnorms/t-norm-product.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-min.o : tnorms/t-norm-min.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-lukasiewicz.o : tnorms/t-norm-lukasiewicz.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-fodor.o : tnorms/t-norm-fodor.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-drastic.o : tnorms/t-norm-drastic.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/t-norm-einstein.o : tnorms/t-norm-einstein.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-parametrized.o : tnorms/t-norm-parametrized.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-frank.o : tnorms/t-norm-frank.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-yager.o : tnorms/t-norm-yager.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-dombi.o : tnorms/t-norm-dombi.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-dubois-prade.o : tnorms/t-norm-dubois-prade.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-hamacher.o : tnorms/t-norm-hamacher.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-schweizer-sklar.o : tnorms/t-norm-schweizer-sklar.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/t-norm-sugeno-weber.o : tnorms/t-norm-sugeno-weber.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # snorms
 
 $(exec)/s-norm.o : snorms/s-norm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-sum.o : snorms/s-norm-sum.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-max.o : snorms/s-norm-max.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-lukasiewicz.o : snorms/s-norm-lukasiewicz.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-fodor.o : snorms/s-norm-fodor.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-drastic.o : snorms/s-norm-drastic.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/s-norm-einstein.o : snorms/s-norm-einstein.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # implications
 $(exec)/implication.o : implications/implication.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-lukasiewicz.o : implications/imp-lukasiewicz.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-rescher.o : implications/imp-rescher.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-goedel.o : implications/imp-goedel.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-goguen.o : implications/imp-goguen.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-zadeh.o : implications/imp-zadeh.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-kleene-dienes.o : implications/imp-kleene-dienes.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-reichenbach.o : implications/imp-reichenbach.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/imp-fodor.o : implications/imp-fodor.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 # descriptors
 $(exec)/descriptor.o : descriptors/descriptor.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-triangular.o : descriptors/descriptor-triangular.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-semitriangular.o : descriptors/descriptor-semitriangular.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-trapezoidal.o : descriptors/descriptor-trapezoidal.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-singleton.o : descriptors/descriptor-singleton.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-gaussian.o : descriptors/descriptor-gaussian.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-interval-gaussian.o : descriptors/descriptor-interval-gaussian.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-gaussian-subspace.o : descriptors/descriptor-gaussian-subspace.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-interval-gaussian-subspace.o : descriptors/descriptor-interval-gaussian-subspace.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-sigmoidal.o : descriptors/descriptor-sigmoidal.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/descriptor-constant.o : descriptors/descriptor-constant.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
-	
 	
 # neuro-fuzzy
 $(exec)/premise.o : neuro-fuzzy/premise.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/subspace-premise.o : neuro-fuzzy/subspace-premise.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/consequence.o : neuro-fuzzy/consequence.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/consequence-MA.o : neuro-fuzzy/consequence-MA.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/consequence-TSK.o : neuro-fuzzy/consequence-TSK.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/consequence-CL.o : neuro-fuzzy/consequence-CL.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rule.o : neuro-fuzzy/rule.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/logicalrule.o : neuro-fuzzy/logicalrule.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rulebase.o : neuro-fuzzy/rulebase.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/subspace-rulebase.o : neuro-fuzzy/subspace-rulebase.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/neuro-fuzzy-system.o : neuro-fuzzy/neuro-fuzzy-system.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/abstract-annbfis.o : neuro-fuzzy/abstract-annbfis.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/annbfis.o : neuro-fuzzy/annbfis.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcom-annbfis.o : neuro-fuzzy/fcom-annbfis.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/subspace-annbfis.o : neuro-fuzzy/subspace-annbfis.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fubi-annbfis.o : neuro-fuzzy/fubi-annbfis.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/abstract-tsk.o : neuro-fuzzy/abstract-tsk.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/tsk.o : neuro-fuzzy/tsk.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcom-tsk.o : neuro-fuzzy/fcom-tsk.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/abstract_fcom.o : neuro-fuzzy/abstract_fcom.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/abstract-ma.o : neuro-fuzzy/abstract-ma.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcom-ma.o : neuro-fuzzy/fcom-ma.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/ma.o : neuro-fuzzy/ma.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/random-neuro-fuzzy-forest.o : neuro-fuzzy/random-neuro-fuzzy-forest.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/random-neuro-fuzzy-system.o : neuro-fuzzy/random-neuro-fuzzy-system.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/annbfis_prototype.o : neuro-fuzzy/annbfis_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/tsk_prototype.o : neuro-fuzzy/tsk_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fac_prototype.o : neuro-fuzzy/fac_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/prototype.o : neuro-fuzzy/prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/prototype_minkowski.o : neuro-fuzzy/prototype_minkowski.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/prototype_minkowski_regression.o : neuro-fuzzy/prototype_minkowski_regression.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/nfs_prototype.o : neuro-fuzzy/nfs_prototype.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski.o : neuro-fuzzy/fac_prototype_minkowski.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fac_prototype_minkowski_regression.o : neuro-fuzzy/fac_prototype_minkowski_regression.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/three_way_decision_nfs.o : neuro-fuzzy/three_way_decision_nfs.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 
 
 
 
 # generative adversial networks
 $(exec)/gan.o : gan/gan.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/generative_model.o : gan/generative_model.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/discriminative_model.o : gan/discriminative_model.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 # dissimilarity measures
 $(exec)/dissimilarity.o : dissimilarities/dissimilarity.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-huber.o : dissimilarities/dis-huber.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-log.o : dissimilarities/dis-log.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-log-linear.o : dissimilarities/dis-log-linear.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-linear.o : dissimilarities/dis-linear.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-sigmoidal.o : dissimilarities/dis-sigmoidal.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-sigmoidal-linear.o : dissimilarities/dis-sigmoidal-linear.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dis-square.o : dissimilarities/dis-square.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 	
 
 # ordered-weighted averaging	
 $(exec)/owa.o : owas/owa.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/uowa.o : owas/uowa.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/plowa.o : owas/plowa.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/sowa.o : owas/sowa.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 	
 	
 # partitions
 $(exec)/partition.o : partitions/partition.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/cluster.o : partitions/cluster.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 $(exec)/partitioner.o : partitions/partitioner.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/partitioner-grid.o : partitions/partitioner-grid.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dbscan.o : partitions/dbscan.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/granular-dbscan.o : partitions/granular-dbscan.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm.o : partitions/fcm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm_generic.o : partitions/fcm_generic.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm-T.o : partitions/fcm-T.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm-possibilistic.o : partitions/fcm-possibilistic.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm-conditional.o : partitions/fcm-conditional.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcom.o : partitions/fcom.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fubi.o : partitions/fubi.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/sfcm.o : partitions/sfcm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rfcm.o : partitions/rfcm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rsfcm.o : partitions/rsfcm.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rfcom.o : partitions/rfcom.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
  
 # auxiliary
 $(exec)/utility-string.o : auxiliary/utility-string.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/colours.o : auxiliary/colours.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/tempus.o : auxiliary/tempus.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/roc.o : auxiliary/roc.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/utility-math.o : auxiliary/utility-math.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/least-error-squares-regression.o : auxiliary/least-error-squares-regression.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/confusion-matrix.o : auxiliary/confusion-matrix.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/clock.o : auxiliary/clock.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/mathematics.o : auxiliary/mathematics.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/vector-operators.o : auxiliary/vector-operators.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/print.o : auxiliary/print.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/directory.o : auxiliary/directory.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 
 
 # heuristics
 $(exec)/ridders.o : heuristics/ridders.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/ridders-test.o : heuristics/ridders-test.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/ridders-gaussian-m.o : heuristics/ridders-gaussian-m.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/ridders-gaussian-s.o : heuristics/ridders-gaussian-s.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/simulated-annealing.o : heuristics/simulated-annealing.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/simulated-annealing-gaussian.o : heuristics/simulated-annealing-gaussian.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 	
 	
 # experiments
 $(exec)/experiment.o : experiments/experiment.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-000.o : experiments/exp-000.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-001.o : experiments/exp-001.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-002.o : experiments/exp-002.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-003.o : experiments/exp-003.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-004.o : experiments/exp-004.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-005.o : experiments/exp-005.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 $(exec)/exp-lab.o : experiments/exp-lab.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^
 	
 #profil : main.cpp 
 #	if [ -f main ]; then rm main ; fi ;
