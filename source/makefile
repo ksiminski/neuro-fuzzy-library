@@ -188,6 +188,9 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/abstract-tsk.o              \
                $(exec)/abstract-annbfis.o          \
                $(exec)/abstract_fcom.o             \
+               $(exec)/fcom-tsk.o                  \
+               $(exec)/fcom-ma.o                   \
+               $(exec)/fcom-annbfis.o              \
                $(exec)/annbfis_prototype.o         \
                $(exec)/tsk_prototype.o             \
                $(exec)/fac_prototype.o             \
