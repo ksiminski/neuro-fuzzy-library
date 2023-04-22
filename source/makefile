@@ -79,6 +79,11 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/number.o                    \
                $(exec)/datum.o                     \
                $(exec)/result.o                    \
+               $(exec)/data_item.o                 \
+               $(exec)/granule.o                   \
+               $(exec)/set_of_cooperating_granules.o  \
+               $(exec)/set_of_granules.o           \
+               $(exec)/set_of_standalone_granules.o   \
                $(exec)/dataset.o                   \
                $(exec)/data-modifier.o             \
                $(exec)/data-modifier-normaliser.o  \
@@ -102,11 +107,6 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/metric-euclidean-incomplete.o   \
                $(exec)/metric-minkowski.o              \
                $(exec)/metric-minkowski-weighted.o \
-               $(exec)/granule.o                       \
-               $(exec)/set_of_cooperating_granules.o  \
-               $(exec)/set_of_granules.o              \
-               $(exec)/set_of_standalone_granules.o   \
-               $(exec)/data_item.o                    \
                $(exec)/reader-complete.o           \
                $(exec)/multilabel_reader_complete.o           \
                $(exec)/weighted_reader_complete.o           \
@@ -179,6 +179,8 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/rulebase.o         \
                $(exec)/neuro-fuzzy-system.o        \
                $(exec)/three_way_decision_nfs.o    \
+               $(exec)/tsk.o                       \
+               $(exec)/ma.o                        \
                $(exec)/annbfis.o                   \
                $(exec)/subspace-annbfis.o          \
                $(exec)/fubi-annbfis.o              \
@@ -186,8 +188,6 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/abstract-tsk.o              \
                $(exec)/abstract-annbfis.o          \
                $(exec)/abstract_fcom.o             \
-               $(exec)/tsk.o                       \
-               $(exec)/ma.o                        \
                $(exec)/annbfis_prototype.o         \
                $(exec)/tsk_prototype.o             \
                $(exec)/fac_prototype.o             \
@@ -197,6 +197,17 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/nfs_prototype.o             \
                $(exec)/fac_prototype_minkowski.o   \
                $(exec)/fac_prototype_minkowski_regression.o \
+               $(exec)/granular_nfs.o              \
+               $(exec)/granular_nfs_regression.o   \
+               $(exec)/granular_nfs_classification.o   \
+               $(exec)/granular_tsk_regression.o   \
+               $(exec)/granular_tsk_classification.o   \
+               $(exec)/granular_ma_regression.o   \
+               $(exec)/granular_ma_classification.o   \
+               $(exec)/granular_annbfis_regression.o   \
+               $(exec)/granular_annbfis_classification.o   \
+               $(exec)/granular_subspace_annbfis_regression.o   \
+               $(exec)/granular_subspace_annbfis_classification.o   \
                $(exec)/gan.o                       \
                $(exec)/generative_model.o          \
                $(exec)/discriminative_model.o      \
@@ -217,8 +228,11 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/rfcm.o                      \
                $(exec)/rsfcm.o                     \
                $(exec)/rfcom.o                     \
+               $(exec)/grfcm.o                     \
                $(exec)/debug.o            \
+               $(exec)/vector-operators.o \
                $(exec)/directory.o        \
+               $(exec)/mathematics.o      \
                $(exec)/utility-string.o   \
                $(exec)/utility-math.o     \
                $(exec)/ridders.o          \
@@ -230,11 +244,10 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/tempus.o           \
                $(exec)/clock.o            \
                $(exec)/colours.o          \
-               $(exec)/mathematics.o      \
-               $(exec)/vector-operators.o \
                $(exec)/print.o            \
                $(exec)/roc.o              \
                $(exec)/confusion-matrix.o \
+               $(exec)/multiclass_confusion_matrix.o \
                $(exec)/least-error-squares-regression.o   \
                $(exec)/experiment.o       \
                $(exec)/exp-000.o          \
@@ -513,6 +526,29 @@ $(exec)/random-neuro-fuzzy-forest.o : neuro-fuzzy/random-neuro-fuzzy-forest.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/random-neuro-fuzzy-system.o : neuro-fuzzy/random-neuro-fuzzy-system.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_nfs.o : neuro-fuzzy/granular_nfs.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_nfs_regression.o : neuro-fuzzy/granular_nfs_regression.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_nfs_classification.o : neuro-fuzzy/granular_nfs_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_ma_regression.o : neuro-fuzzy/granular_ma_regression.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_ma_classification.o : neuro-fuzzy/granular_ma_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_tsk_regression.o : neuro-fuzzy/granular_tsk_regression.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_tsk_classification.o : neuro-fuzzy/granular_tsk_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_annbfis_regression.o : neuro-fuzzy/granular_annbfis_regression.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_annbfis_classification.o : neuro-fuzzy/granular_annbfis_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_subspace_annbfis_regression.o : neuro-fuzzy/granular_subspace_annbfis_regression.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular_subspace_annbfis_classification.o : neuro-fuzzy/granular_subspace_annbfis_classification.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+
 $(exec)/annbfis_prototype.o : neuro-fuzzy/annbfis_prototype.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/tsk_prototype.o : neuro-fuzzy/tsk_prototype.cpp
@@ -586,10 +622,6 @@ $(exec)/partitioner.o : partitions/partitioner.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/partitioner-grid.o : partitions/partitioner-grid.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/dbscan.o : partitions/dbscan.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/granular-dbscan.o : partitions/granular-dbscan.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm.o : partitions/fcm.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/fcm_generic.o : partitions/fcm_generic.cpp
@@ -612,13 +644,19 @@ $(exec)/rsfcm.o : partitions/rsfcm.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/rfcom.o : partitions/rfcom.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/grfcm.o : partitions/grfcm.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/dbscan.o : partitions/dbscan.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/granular-dbscan.o : partitions/granular-dbscan.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
  
 # auxiliary
 $(exec)/utility-string.o : auxiliary/utility-string.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/colours.o : auxiliary/colours.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/tempus.o : auxiliary/tempus.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/colours.o : auxiliary/colours.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/roc.o : auxiliary/roc.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
