@@ -16,7 +16,6 @@ namespace ksi
     *  @date 2020-08-16
     *  @author Krzysztof Siminski 
     
-    
      * CITATION REQUEST
     *  The algorithm has been described in detail in papers:
 
@@ -193,8 +192,6 @@ namespace ksi
       /** The method clones a partitioner and return a pointer to a cloned 
        *  object. This method is implemented in derived classes.
        **/
-      
-      
       
       virtual partitioner * clone () const;
       

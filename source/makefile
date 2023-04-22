@@ -281,6 +281,8 @@ $(exec)/data-modifier-normaliser.o : common/data-modifier-normaliser.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/data-modifier-filter.o : common/data-modifier-filter.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-marginaliser.o : common/data-modifier-marginaliser.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/data-modifier-imputer.o : common/data-modifier-imputer.cpp

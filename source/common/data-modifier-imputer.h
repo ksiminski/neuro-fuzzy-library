@@ -35,7 +35,7 @@ namespace ksi
       virtual ~data_modifier_imputer();
       virtual data_modifier * clone() const;
  
-      /** The method first calls the modify method in the next data_modifier.
+      /** The method first imputes, then calls the modify method in the next data_modifier. 
        * @param  ds dataset to modify
        * @author Krzysztof Siminski
        * @date   2017-12-31

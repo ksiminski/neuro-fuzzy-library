@@ -25,10 +25,8 @@ namespace ksi
       virtual ~data_modifier_normaliser();
       virtual data_modifier * clone() const;
  
-      /** The method first calls the modify method in the next data_modifier. 
-       * Then it normalises values of each attribute to the range [0, 1]
-       * (each attribute separatedly). If all values of an attribute are the same, 
-       * the attribute will be normalised to value 0.5.
+      /** The method first normalises values of each attribute to the range [0, 1] (each attribute separatedly). If all values of an attribute are the same, the attribute will be normalised to value 0.5.
+       * Then calls the modify method in the next data_modifier. 
        * @param  ds dataset to modify
        * @author Krzysztof Siminski
        * @date   2017-12-29

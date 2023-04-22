@@ -194,6 +194,15 @@ namespace ksi
        */
       std::vector<bool> get_if_data_typical (const double minimal_typicality);
       
+      /** The method extract weights of all data items in the dataset.
+        @param dataitems data items whose weights are extracted 
+        @return vector of weights of data items 
+        @date  2022-05-18
+        @author Krzysztof Siminski 
+       */
+      std::vector<double> extract_weights();
+      
+      
       
       friend std::ostream & operator << (std::ostream & s, const dataset & d);
    };
