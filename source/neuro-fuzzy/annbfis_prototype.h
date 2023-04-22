@@ -19,7 +19,7 @@ namespace ksi
 {
     /** The ANNBFIS prototype neuro-fuzzy system.
     This is a neuro-fuzzy systems (in the ANNBFIS architecture) based on prototypes in premises.
-    
+
     * CITATION REQUEST    
     <pre>
     @article{id:Siminski2022Prototype,

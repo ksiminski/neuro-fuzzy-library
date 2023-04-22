@@ -13,6 +13,8 @@ namespace ksi
    class consequence_TSK : virtual public consequence 
    {
    protected:
+      /** Linear coefficient in the consequence. 
+          The last item is a free parameter. */ 
       std::vector<double> _params;
    public:
       consequence_TSK();
