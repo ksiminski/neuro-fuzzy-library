@@ -67,12 +67,21 @@ namespace ksi
        * @throw ksi::exception if number of clusters or number of iterations not set
        */
       virtual partition doPartition(const ksi::dataset & ds);
-      virtual partitioner * clone ();
+      virtual partitioner * clone () const;
       virtual ~fcm_conditional();
       
       fcm_conditional();
       fcm_conditional(const fcm& wzor);
       fcm_conditional & operator = (const fcm& wzor);
+      
+      /** @param nClusters number of clusters
+          @param nClusteringIterations number of clustering iterations
+          @date 2022-05-16
+          @author Krzysztof Siminski */
+      fcm_conditional(const int nClusters, const int nClusteringIterations);
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
       
    };
 

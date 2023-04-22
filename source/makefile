@@ -101,15 +101,12 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/metric-euclidean.o              \
                $(exec)/metric-euclidean-incomplete.o   \
                $(exec)/metric-minkowski.o              \
-               $(exec)/metric-minkowski-weighted.o     \
+               $(exec)/metric-minkowski-weighted.o \
                $(exec)/granule.o                       \
                $(exec)/set_of_cooperating_granules.o  \
                $(exec)/set_of_granules.o              \
                $(exec)/set_of_standalone_granules.o   \
                $(exec)/data_item.o                    \
-               $(exec)/distance.o 	                 \
-               $(exec)/distance-euclidean.o              \
-               $(exec)/distance-euclidean-incomplete.o   \
                $(exec)/reader-complete.o           \
                $(exec)/multilabel_reader_complete.o           \
                $(exec)/weighted_reader_complete.o           \
@@ -310,12 +307,12 @@ $(exec)/data-modifier-outlier-remove-sigma.o : common/data-modifier-outlier-remo
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
-$(exec)/distance.o : common/distance.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/distance-euclidean.o : common/distance-euclidean.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
-$(exec)/distance-euclidean-incomplete.o : common/distance-euclidean-incomplete.cpp
-	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+#$(exec)/distance.o : common/distance.cpp
+#	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+#$(exec)/distance-euclidean.o : common/distance-euclidean.cpp
+#	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+#$(exec)/distance-euclidean-incomplete.o : common/distance-euclidean-incomplete.cpp
+#	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 
 
 $(exec)/missingdata.o : common/missingdata.cpp

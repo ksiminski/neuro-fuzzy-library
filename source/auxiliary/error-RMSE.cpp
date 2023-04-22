@@ -4,8 +4,8 @@
 #include <sstream>
 #include <cmath>
 
-#include "error-calculator.h"
-#include "error-RMSE.h"
+#include "../auxiliary/error-calculator.h"
+#include "../auxiliary/error-RMSE.h"
 #include "../service/debug.h"
 #include "../common/number.h"
 
@@ -13,7 +13,7 @@ ksi::error_calculator * ksi::error_RMSE::clone() const
 {
    return new error_RMSE();
 }
- 
+
 ksi::error_RMSE::~error_RMSE()
 {
 
@@ -39,6 +39,7 @@ double ksi::error_RMSE::getError(const std::vector< double >& expected,
          double roznica = 0.0;
          double suma = 0.0;
          
+         #pragma omp parallel for reduction (+ : suma) 
          for (std::size_t i = 0; i < size; i++)
          {
             roznica = expected[i] - elaborated[i];
@@ -73,6 +74,7 @@ double ksi::error_RMSE::getError(
          double suma = 0.0;
          std::size_t counter = 0;
          
+         #pragma omp parallel for reduction (+ : suma, counter) 
          for (std::size_t i = 0; i < size; i++)
          {
             if (elaborated[i].exists())

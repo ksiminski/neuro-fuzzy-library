@@ -116,29 +116,26 @@ namespace ksi
               differentials with regard to weights of attributes.
       @param Y decision attributes
       @param similarities similarities of data examples to the prototype
-      @param dysrednia_da differentials of average of decision attribute with regard to attributes (centres)
-      @param dysrednia_dz differentials of average of decision attribute with regard to weights of attributes
+      @param dyaverage_da differentials of average of decision attribute with regard to attributes (centres)
+      @param dyaverage_dz differentials of average of decision attribute with regard to weights of attributes
       @param dsim_da differentials of similarities with regard to attributes (centres)
       @param dsim_za differentials of similarities with regard to weights of attributes
-      @param srednia_y average of decision attribute
-      @param kardynalnosc cardinality of the prototype
+      @param average_y average of decision attribute
+      @param cardinality cardinality of the prototype
       @date 2021-04-27
       */
      std::pair<std::vector<double>, std::vector<double>> cardinality_variance_differentials (
          const std::vector<double> & Y, 
          const std::vector<double> & similarities,
-         const std::vector<double> & dysrednia_da,
-         const std::vector<double> & dysrednia_dz,
+         const std::vector<double> & dyaverage_da,
+         const std::vector<double> & dyaverage_dz,
          const ksi::Matrix<double> & dsim_da, 
          const ksi::Matrix<double> & dsim_dz, 
-         const double & srednia_y, 
-         const double & kardynalnosc);
-     
+         const double & average_y, 
+         const double & cardinality);
      
      virtual double debug_criterion_function(const std::vector<std::vector<double>>& X,
-                                     const std::vector<double> & Y) const;
-     
-     
+                                     const std::vector<double> & Y) const;     
    };
 }
 

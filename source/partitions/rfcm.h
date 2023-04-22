@@ -17,10 +17,10 @@
 namespace ksi
 {
    /** Partitioner for rough fuzzy c-means clustering for incomplete data.
-   
-   * CITATION REQUEST
     * This implementation is an extention of the algorithm published in
     * Krzysztof Simiński, Clustering with missing values, [in] Fundamenta Informaticae, 2013, volume 123, number 3, pp. 331-350.
+    
+    * CITATION REQUEST
     * If you use this algorithm, please cite the paper:
     * <pre>
     @ARTICLE{id:Siminski2013Clustering,
@@ -86,7 +86,7 @@ namespace ksi
       
       /** @throw ksi::exception if _pImputer or _pMarginaliser not set */
       virtual partition doPartition(const ksi::dataset& ds);
-      virtual partitioner * clone ();
+      virtual partitioner * clone () const;
       
       /** The method sets bLowersetBasedLocalisation flag.
        * The cluster centres will be calculated with marginalised (lower) data.
@@ -104,6 +104,9 @@ namespace ksi
        *                (upper) data set 
        */
       bool areClustersCalculatedWithMarginalisedData() const ;
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };
 }
 

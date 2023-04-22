@@ -55,7 +55,6 @@ void ksi::abstract_ma::createFuzzyRulebase
          delete _pRulebase;
       _pRulebase = new rulebase();
       
-      
       std::size_t nX = train.getNumberOfData();
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
@@ -74,6 +73,7 @@ void ksi::abstract_ma::createFuzzyRulebase
       _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
+    
       _nRules = podzial.getNumberOfClusters();
       auto typical_items = trainX.get_if_data_typical(_minimal_typicality);
       trainX.remove_untypical_data(typical_items);

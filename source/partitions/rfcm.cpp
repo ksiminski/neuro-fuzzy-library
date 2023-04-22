@@ -10,7 +10,13 @@
 #include "../service/debug.h"
 #include "rfcm.h"
 
-ksi::partitioner* ksi::rfcm::clone()
+std::string ksi::rfcm::getAbbreviation() const
+{
+   return std::string ("rfcm");
+}
+
+
+ksi::partitioner* ksi::rfcm::clone() const
 {
    return new ksi::rfcm(*this);
 }

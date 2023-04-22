@@ -12,7 +12,13 @@
 #include "rfcm.h"
 #include "sfcm.h"
 
-ksi::partitioner * ksi::rsfcm::clone()
+std::string ksi::rsfcm::getAbbreviation() const
+{
+   return std::string ("rsfcm");   
+}
+
+
+ksi::partitioner * ksi::rsfcm::clone() const
 {
    return new ksi::rsfcm(*this);
 }

@@ -130,7 +130,7 @@ namespace ksi
       virtual generative_model * clone_generator () const;
       
       void set_name ();
-      virtual partition doPartition (const dataset & X);
+      //virtual partition doPartition (const dataset & X) ;
       
     
       

@@ -34,9 +34,6 @@
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
 
- 
-
- 
 ksi::partition ksi::tsk::doPartition(const ksi::dataset& X)
 {
     //ksi::fcm clusterer;

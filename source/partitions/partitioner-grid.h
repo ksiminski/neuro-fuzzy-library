@@ -26,7 +26,7 @@ namespace ksi
       
       /** The method for grid partition of the dataset ds.
        @param ds dataset to partition 
-      */
+       @todo  */
       virtual partition doPartition(const ksi::dataset& ds);
       virtual partitioner * clone () const;
       

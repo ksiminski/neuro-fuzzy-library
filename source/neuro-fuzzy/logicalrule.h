@@ -10,6 +10,8 @@
 #include "consequence.h"
 #include "../tnorms/t-norm.h"
 #include "../implications/implication.h"
+#include "../granules/granule.h"
+
 #include "rule.h"
 
 namespace ksi
@@ -17,7 +19,7 @@ namespace ksi
    class logicalrule : virtual public rule 
    {
    protected:
-      implication * pImplication;
+      implication * pImplication = nullptr;
       
    public:
       virtual ~logicalrule();
@@ -52,6 +54,8 @@ namespace ksi
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss) const;
+      
+      virtual rule * get_rule ()  const;
    };
 }
 

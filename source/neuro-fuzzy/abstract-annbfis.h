@@ -151,7 +151,7 @@ namespace ksi
        /** Function that partitions the data set.
        @param X dataset to partition
        @date 2019-12-24 */
-      virtual partition doPartition (const dataset & X) = 0;
+      virtual partition doPartition (const dataset & X);
        
    };
 }

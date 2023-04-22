@@ -171,11 +171,6 @@ namespace ksi
    };
 }
 
-
- 
- 
-
-
 template<class T>
 std::string ksi::fcm_T<T>::getAbbreviation() const
 {
@@ -195,7 +190,7 @@ template<class T>
 ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
 {
    _m = wzor._m;
-   _nClusters = wzor._nClusters; 
+   _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;
    _epsilon = wzor._epsilon;
 }
@@ -217,13 +212,11 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
 template<class T>
 ksi::fcm_T<T>::fcm_T()
 {
- 
 }
 
 template<class T>
 ksi::fcm_T<T>::fcm_T (const int nClusters, const int nClusteringIterations) : _nClusters(nClusters), _nIterations(nClusteringIterations)
 {
- 
 }
 
 template<class T>
@@ -270,7 +263,7 @@ std::vector<std::vector<T>> ksi::fcm_T<T>::calculateClusterCentres(
    CATCH;
 }
 
- 
+///@todo Zaimplementować funkcję randomizującą dla poszczególnych typów
 template<class T>
 void ksi::fcm_T<T>::randomise(std::vector<std::vector<T>> & m)
 {
@@ -481,7 +474,6 @@ ksi::partition ksi::fcm_T<T>::doPartition(const ksi::dataset & ds)
 {
    try
    {
-//       debug(_nClusters);
       if (_nClusters < 1)
          throw std::string ("unknown number of clusters");
       if (_nIterations < 1 and _epsilon < 0)

@@ -65,7 +65,7 @@ namespace ksi
       /** @throw ksi::exception if _pImputer or _pMarginaliser not set
        */
       virtual partition doPartition(const ksi::dataset & ds);
-      virtual partitioner * clone ();
+      virtual partitioner * clone () const;
       
       
       /** The method elaborates partition matrix.
@@ -81,6 +81,9 @@ namespace ksi
          const std::vector<std::vector<double>> & mX, 
          const std::vector<std::vector<double>> & mZ, 
          const std::vector< double >& wW);
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };   
 }
 

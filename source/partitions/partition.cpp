@@ -32,7 +32,7 @@ ksi::partition::partition()
 ksi::partition::~partition()
 {
    for (auto & p : clusters)
-       delete p;
+      delete p;
 }
 
 ksi::partition::partition(const ksi::partition & part)
@@ -125,7 +125,20 @@ std::vector<std::vector<double>> ksi::partition::getClusterCentres() const
    return V;
 }
 
- 
+std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> ksi::partition::getGranules() const
+{
+    try 
+    {
+        std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> result;
+        
+        for (const auto p : clusters)
+            result.push_back(p->getGranule());
+        
+        return result;
+    }
+    CATCH;
+//     return std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>>{};
+}
 
 std::vector<std::vector<double>> ksi::partition::getPartitionMatrix() const
 {

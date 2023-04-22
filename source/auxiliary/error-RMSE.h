@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <utility>
-#include "error-calculator.h"
+#include "../auxiliary/error-calculator.h"
 #include "../common/number.h"
 
 namespace ksi
