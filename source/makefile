@@ -20,13 +20,14 @@ DEBUG ?= 0
 ifeq ($(DEBUG), 1)
     optimisation=
     debug=-g
-    exec=debug
+    exec=_debug
 else
     optimisation=-O3
     debug=
-    exec=release
+    exec=_release
 endif
 
+ 
 
 #######
 
@@ -668,13 +669,13 @@ $(exec)/exp-lab.o : experiments/exp-lab.cpp
 	
 #profil : main.cpp 
 #	if [ -f main ]; then rm main ; fi ;
-#	$(compiler) $(standard) -o main main.cpp 
+#	$(compiler) $(standard) $(profile) -o main main.cpp 
 #	./main
 #	gprof main > profil.txt
 	
 	
 clean : 
-	rm $(exec)/*
+	[ -d $(exec)    ] && rm $(exec)/*
 
 
 doxygen : 
