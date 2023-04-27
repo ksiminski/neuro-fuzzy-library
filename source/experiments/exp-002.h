@@ -17,6 +17,7 @@ namespace ksi
     5. fuzzy biclustering (FuBi) 
     6. fuzzy C-ordered means (FCOM)
     7. dbscan
+    8. grdbscan
     
     @date 2018-07-28, 2021-07-03, 2022-04-11
     

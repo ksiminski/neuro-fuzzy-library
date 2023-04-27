@@ -31,6 +31,12 @@ namespace ksi
       void addDescriptor (descriptor * p);
       virtual ~cluster();      
       
+      /** @return number of clusters in partition
+       *  @date 2022-03-12
+       *  @author Dawid Suchy
+       */
+      const std::size_t getNumberOfDescriptors() const;
+
       /** @return a copy of a descriptor (allocates memory)
          @date   2018-01-01
          @author Krzysztof Siminski 

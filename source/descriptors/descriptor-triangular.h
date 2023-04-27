@@ -53,6 +53,8 @@ namespace ksi
        */
       virtual std::vector<double> getMAconsequenceParameters () const;
       
+      double getSupportMin() const;
+      double getSupportMax() const;
       /**
       @return the mean value of descriptor's core, for this desctribute it is just the descriptor's core
       */

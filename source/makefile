@@ -1,6 +1,7 @@
 
- 
-
+#########################
+#  project compilation  # 
+#########################
  
 compiler=g++
 standard=-std=c++20
@@ -192,6 +193,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/partitioner.o               \
                $(exec)/partitioner-grid.o          \
                $(exec)/dbscan.o                    \
+               $(exec)/granular-dbscan.o           \
                $(exec)/fcm.o                       \
                $(exec)/fcm_generic.o               \
                $(exec)/fcm-T.o                     \
@@ -301,11 +303,11 @@ $(exec)/distance-euclidean-incomplete.o : common/distance-euclidean-incomplete.c
 $(exec)/missingdata.o : common/missingdata.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 
-$(exec)/error-calculator.o : common/error-calculator.cpp
+$(exec)/error-calculator.o : auxiliary/error-calculator.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/error-RMSE.o : common/error-RMSE.cpp
+$(exec)/error-RMSE.o : auxiliary/error-RMSE.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
-$(exec)/error-MAE.o : common/error-MAE.cpp
+$(exec)/error-MAE.o : auxiliary/error-MAE.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 
 # metrics 
@@ -548,6 +550,8 @@ $(exec)/partitioner.o : partitions/partitioner.cpp
 $(exec)/partitioner-grid.o : partitions/partitioner-grid.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/dbscan.o : partitions/dbscan.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
+$(exec)/granular-dbscan.o : partitions/granular-dbscan.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 
 $(exec)/fcm.o : partitions/fcm.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(pedantic) -c -o $@ $^ 

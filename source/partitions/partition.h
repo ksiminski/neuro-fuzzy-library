@@ -118,6 +118,9 @@ namespace ksi
        */
       std::string print_crisp_membership_for_data(const ksi::dataset & ds);
       
+      
+      std::string print_dataitems_with_memberships_to_clusters(const ksi::dataset & ds);
+      
    };   
 }
 

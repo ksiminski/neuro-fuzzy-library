@@ -33,6 +33,15 @@ ksi::descriptor_triangular::descriptor_triangular(const ksi::descriptor_triangul
    
 }
 
+double ksi::descriptor_triangular::getSupportMin() const
+{
+   return this->_support_min;
+}
+
+double ksi::descriptor_triangular::getSupportMax() const
+{
+   return this->_support_max;
+}
 
 double ksi::descriptor_triangular::getCoreMean() const
 {

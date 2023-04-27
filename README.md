@@ -39,17 +39,18 @@ This example presents clustering algorithms:
 1. fcm
 1. possibilistic fcm
 1. conditional fcm
-1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace])
-1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi])
+1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
 1. fcom
 1. dbscan
+1. grdbscan (granular dbscan)
 
 
 ### make 3
 This example presents clustering algorithms for incomplete datasets:
-1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm])   
-2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom])
-3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm])
+1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm] and [^nfl])   
+2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom] and [^nfl])
+3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm] and [^nfl])
 
 ### make 4
 This example presents a fuzzy system. 
@@ -60,17 +61,17 @@ This example presents neuro-fuzzy systems for
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
-	6. three way decision neuro-fuzzy system
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
+	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^three] and [^nfl])
 1. regression:
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi])
-	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype])
-	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype]) 
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
+	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl])
+	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl]) 
  
 ------------
 
@@ -145,30 +146,46 @@ This example presents neuro-fuzzy systems for
 
 [^fubi]: Krzysztof Siminski, FuBiNFS – fuzzy biclustering neuro-fuzzy system, [in] Fuzzy Sets and Systems, 2022, volume 438, pp. 84–106
 	```
-	@article{id:Siminski2021FuBiNFS,
+	@article{id:Siminski2022FuBiNFS,
 		author = "Krzysztof Siminski",
 		doi = "10.1016/j.fss.2021.07.009",
 		issn = "0165-0114",
 		journal = "Fuzzy Sets and Systems",
 		keywords = "Neuro-fuzzy system; Biclustering; Subspace clustering; Subspace neuro-fuzzy system; Attribute weights",
-		title = "{FuBiNFS} – fuzzy biclustering neuro-fuzzy system",
+		pages = "84–106",
+		title = "FuBiNFS – fuzzy biclustering neuro-fuzzy system",
 		url = "https://www.sciencedirect.com/science/article/pii/S0165011421002499",
-		year = "2021"
-	}
-	```
-
-[^prototype]: Krzysztof Siminski, Prototype based granular neuro-fuzzy system for regression task, [in] Fuzzy Sets and Systems, 2022.
-	```
-	@article{id:Siminski2022Prototype,
-		author = "Krzysztof Siminski",
-		doi = "10.1016/j.fss.2022.03.001",
-		issn = "0165-0114",
-		journal = "Fuzzy Sets and Systems",
-		keywords = "Prototype; Granular computing; Neuro-fuzzy system; Regression",
-		title = "Prototype based granular neuro-fuzzy system for regression task",
-		url = "https://www.sciencedirect.com/science/article/pii/S0165011422000963",
+		volume = "438",
 		year = "2022"
 	}
 	```
 
+[^prototype]: Krzysztof Siminski, Prototype based granular neuro-fuzzy system for regression task, [in] Fuzzy Sets and Systems, 2022, volume 449, pp. 56-78.
+	```
+	@article{id:Siminski2022Prototype,
+		title = {Prototype based granular neuro-fuzzy system for regression task},
+		journal = {Fuzzy Sets and Systems},
+		volume = {449},
+		pages = {56-78},
+		year = {2022}, 
+		issn = {0165-0114},
+		doi = {10.1016/j.fss.2022.03.001},
+		author = {Krzysztof Siminski},
+		url = {https://www.sciencedirect.com/science/article/pii/S0165011422000963},
+		keywords = {Prototype, Granular computing, Neuro-fuzzy system, Regression},
+	}
+	```
+
+[^three]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2022
+	```
+	@article{id:Siminski20223WDNFS,
+		author   = {Krzysztof Siminski},
+		title    = {{3WDNFS} – Three-way decision neuro-fuzzy system for classification},
+		journal  = {Fuzzy Sets and Systems},
+		year     = {2022},
+		doi      = {10.1016/j.fss.2014.12.007},
+	}
+	```
+	
+	
 
