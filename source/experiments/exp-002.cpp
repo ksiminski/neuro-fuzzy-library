@@ -58,6 +58,8 @@ void ksi::exp_002::execute()
          
          std::cout << "FCM" << std::endl;
          std::cout << "===" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
@@ -78,6 +80,8 @@ void ksi::exp_002::execute()
          
          std::cout << "possibilistic FCM" << std::endl;
          std::cout << "=================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
@@ -100,6 +104,8 @@ void ksi::exp_002::execute()
          
          std::cout << "conditional FCM" << std::endl;
          std::cout << "===============" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
          
@@ -122,6 +128,8 @@ void ksi::exp_002::execute()
          
          std::cout << "subspace FCM" << std::endl;
          std::cout << "============" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
@@ -140,6 +148,8 @@ void ksi::exp_002::execute()
          
          std::cout << "fuzzy biclustering (FuBi)" << std::endl;
          std::cout << "=========================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
@@ -180,6 +190,8 @@ void ksi::exp_002::execute()
          
          std::cout << "FCOM" << std::endl;
          std::cout << "====" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
          
@@ -203,6 +215,8 @@ void ksi::exp_002::execute()
          
          std::cout << "DBSCAN" << std::endl;
          std::cout << "======" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << "data item\t|\tmembership to clusters" << std::endl;
          std::cout << std::endl;
          
@@ -238,6 +252,8 @@ void ksi::exp_002::execute()
          
          std::cout << "GrDBSCAN" << std::endl;
          std::cout << "========" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << "data item\t|\tmembership to clusters" << std::endl;
          std::cout << std::endl;
          std::cout << Partition.print_dataitems_with_memberships_to_clusters(DataSet) << std::endl;
