@@ -50,6 +50,8 @@ void ksi::exp_003::execute()
          
          std::cout << "RFCM" << std::endl;
          std::cout << "====" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
@@ -98,6 +100,8 @@ void ksi::exp_003::execute()
          
          std::cout << "RFCOM" << std::endl;
          std::cout << "=====" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
          
@@ -112,7 +116,7 @@ void ksi::exp_003::execute()
          std::string dataDir ("data/exp-003");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 3;
-         std::string data (dataDir + "/" + "sub-135-245-m10");
+         std::string data (dataDir + "/" + "sub-135-245-m10.data");
          ksi::reader_incomplete input;
          auto DataSet = input.read(data);
          auto number_of_items = DataSet.getNumberOfData();
@@ -130,6 +134,8 @@ void ksi::exp_003::execute()
          
          std::cout << "RSFCM" << std::endl;
          std::cout << "=====" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
          

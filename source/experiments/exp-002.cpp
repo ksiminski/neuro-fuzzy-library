@@ -46,7 +46,7 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic");
+         std::string data (dataDir + "/" + "possibilistic.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -68,7 +68,7 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic");
+         std::string data (dataDir + "/" + "possibilistic.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -90,7 +90,7 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "pedrycz");
+         std::string data (dataDir + "/" + "pedrycz.data");
          
          ksi::weighted_reader_complete input;
          auto DataSet = input.read(data);
@@ -116,7 +116,7 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "sub-135-245");
+         std::string data (dataDir + "/" + "sub-135-245.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -138,7 +138,7 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          const int NUMBER_OF_ITERATIONS { 100 };
          const int NUMBER_OF_CLUSTERS   {   2 };
-         std::string data (dataDir + "/" + "sub-135-245");
+         std::string data (dataDir + "/" + "sub-135-245.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          

@@ -35,7 +35,7 @@ void ksi::exp_001::execute()
       
       // complete data
       {
-         std::string CompleteDataset ("/complete");
+         std::string CompleteDataset ("/complete.data");
          ksi::reader_complete DataReader;
          auto dane = DataReader.read(Directory + CompleteDataset);
          std::cout << "original data" << std::endl;
@@ -77,7 +77,7 @@ void ksi::exp_001::execute()
       
       // outliers
       {
-         std::string OutlierDataset ("/outliers");
+         std::string OutlierDataset ("/outliers.data");
          ksi::reader_complete DataReader;
          auto dane = DataReader.read(Directory + OutlierDataset);
          std::cout << "original data" << std::endl;
@@ -121,7 +121,7 @@ void ksi::exp_001::execute()
       
       // incomplete data
       {
-         std::string IncompleteDataset ("/incomplete");
+         std::string IncompleteDataset ("/incomplete.data");
       
          ksi::reader_incomplete DataReader;
          auto dane = DataReader.read(Directory + IncompleteDataset);
