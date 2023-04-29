@@ -7,7 +7,7 @@ Neuro-fuzzy is an implementation of fuzzy tools for data analysis:
 * fuzzy systems, 
 * neuro-fuzzy systems.
 
-The project is implemented in the C++ language (at least C++11 standard).
+The project is implemented in the C++ language.
  
 There are 5 examples of usage of the library.
 
@@ -19,7 +19,9 @@ __Citation request__ If you use this library please cite [^nfl]
 
 ## Examples
 
-### make 1   
+### make 1  
+Run `make 1` for this example.
+ 
 This example presents modifiers of data:
 1. normalisation
 2. standardisation
@@ -35,44 +37,52 @@ This example presents modifiers of data:
 
 
 ### make 2
+Run `make 2` for this example.
+ 
 This example presents clustering algorithms:
 1. fcm
 1. possibilistic fcm
 1. conditional fcm
 1. Gustafson-Kessel
-1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
-1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
+1. subspace fcm   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
+1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
 1. fcom
 1. dbscan
 1. grdbscan (granular dbscan)
 
 
 ### make 3
+Run `make 3` for this example.
+ 
 This example presents clustering algorithms for incomplete datasets:
-1. rfcm   (__Citation request__ If you use this algorithm please cite [^rfcm] and [^nfl])   
-2. rfcom  (__Citation request__ If you use this algorithm please cite [^rfcom] and [^nfl])
-3. rsfcm  (__Citation request__ If you use this algorithm please cite [^rsfcm] and [^nfl])
+1. rfcm   (__Citation request__ If you use this algorithm, please cite [^rfcm] and [^nfl])   
+2. rfcom  (__Citation request__ If you use this algorithm, please cite [^rfcom] and [^nfl])
+3. rsfcm  (__Citation request__ If you use this algorithm, please cite [^rsfcm] and [^nfl])
 
 ### make 4
+Run `make 4` for this example.
+ 
 This example presents a fuzzy system. 
 
 ### make 5
+Run `make 5` for this example.
+ 
 This example presents neuro-fuzzy systems for
 1. classification 
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
-	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm please cite [^three] and [^nfl])
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
+	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm, please cite [^three] and [^nfl])
 1. regression:
 	1. MA
 	2. TSK
 	3. ANNBFIS
-	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
-	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
-	6. prototype TSK      (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl])
-	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm please cite [^prototype] and [^nfl]) 
+	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
+	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
+	6. prototype TSK      (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl])
+	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl]) 
  
 ------------
 
