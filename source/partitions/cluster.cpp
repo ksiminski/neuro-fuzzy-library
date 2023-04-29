@@ -7,6 +7,7 @@
 #include "../descriptors/descriptor.h"
 #include "../granules/granule.h"
 #include "../service/debug.h"
+#include "../auxiliary/matrix.h"
 
 
 std::size_t ksi::cluster::get_number_of_desciptors() const
@@ -129,6 +130,12 @@ namespace ksi
          ss << "descriptor " << attr++ << ": " << std::endl;
          ss << d->toString() << std::endl;
       }
+      
+      if (not cl._A.empty())
+      {
+         ss << "Mahalanobis distance matrix:" << std::endl;
+         ss << cl._A << std::endl;
+      }
       return ss;
    }
 }
@@ -178,5 +185,15 @@ void ksi::cluster::elaborate_quality()
         throw std::string ("not implemented yet");
     }
     CATCH;
+}
+
+ksi::Matrix<double> ksi::cluster::get_A_matrix() const
+{
+   return _A;
+}
+
+void ksi::cluster::set_A_matrix(const ksi::Matrix<double>& A)
+{
+   _A = A;
 }
 

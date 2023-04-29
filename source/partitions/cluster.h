@@ -9,6 +9,7 @@
 #include "../granules/granule.h"
 #include "../descriptors/descriptor.h"
 #include "../common/extensional-fuzzy-number-gaussian.h"
+#include "../auxiliary/matrix.h"
 
 
 namespace ksi
@@ -20,6 +21,10 @@ namespace ksi
    protected: 
       /** Descriptors for attributes **/
       std::vector<descriptor *> descriptors;
+      
+      /** matrix for non-orthogonal clusters */
+      ksi::Matrix<double> _A;
+      
    public:
       cluster ();
       cluster (const cluster & cl);
@@ -83,6 +88,15 @@ namespace ksi
             @todo Jaka powinna być odpowiedź dla klastra?
             */
         virtual const number get_answer (const datum & d);
+        
+      /** @return the A matrix for non-orthogonal clusters
+       @date 2023-04-27 */
+      ksi::Matrix<double> get_A_matrix() const;  
+      
+      /** The method sets the A matrix for non-orthogonal clusters 
+       * @param A  the A matrix for non-orthogonal clusters
+       @date 2023-04-27 */
+      void set_A_matrix(const ksi::Matrix<double> & A);
 
    };
    

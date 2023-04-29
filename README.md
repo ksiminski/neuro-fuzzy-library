@@ -39,6 +39,7 @@ This example presents clustering algorithms:
 1. fcm
 1. possibilistic fcm
 1. conditional fcm
+1. Gustafson-Kessel
 1. subspace fcm   (__Citation request__ If you use this algorithm please cite [^subspace] and [^nfl])
 1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm please cite [^fubi] and [^nfl])
 1. fcom

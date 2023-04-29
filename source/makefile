@@ -102,13 +102,14 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/error-calculator.o          \
                $(exec)/error-RMSE.o                \
                $(exec)/error-MAE.o                 \
-               $(exec)/metric.o 	                  \
-               $(exec)/metric-euclidean.o              \
-               $(exec)/metric-euclidean-incomplete.o   \
-               $(exec)/metric-minkowski.o              \
-               $(exec)/metric-minkowski-weighted.o \
-               $(exec)/reader-complete.o           \
-               $(exec)/multilabel_reader_complete.o           \
+               $(exec)/metric.o                                  \
+               $(exec)/metric-euclidean.o                        \
+               $(exec)/metric-euclidean-incomplete.o             \
+               $(exec)/metric_mahalanobis.o                      \
+               $(exec)/metric-minkowski.o                        \
+               $(exec)/metric-minkowski-weighted.o               \
+               $(exec)/reader-complete.o                         \
+               $(exec)/multilabel_reader_complete.o         \
                $(exec)/weighted_reader_complete.o           \
                $(exec)/reader-complete-by-parts.o  \
                $(exec)/reader-incomplete.o         \
@@ -234,6 +235,7 @@ $(exec)/main : $(exec)/main.o                      \
                $(exec)/rsfcm.o                     \
                $(exec)/rfcom.o                     \
                $(exec)/grfcm.o                     \
+               $(exec)/gk.o                        \
                $(exec)/debug.o            \
                $(exec)/vector-operators.o \
                $(exec)/directory.o        \
@@ -354,6 +356,9 @@ $(exec)/metric-minkowski.o : metrics/metric-minkowski.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/metric-minkowski-weighted.o : metrics/metric-minkowski-weighted.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/metric_mahalanobis.o : metrics/metric_mahalanobis.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+
 
 # granule
 
@@ -657,6 +662,8 @@ $(exec)/rsfcm.o : partitions/rsfcm.cpp
 $(exec)/rfcom.o : partitions/rfcom.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/grfcm.o : partitions/grfcm.cpp
+	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
+$(exec)/gk.o : partitions/gk.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 
 $(exec)/dbscan.o : partitions/dbscan.cpp
 	$(compiler) $(standard) $(debug) $(optimisation) $(profile) $(pedantic) $(parallel) -c -o $@ $^ 

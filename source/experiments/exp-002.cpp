@@ -17,6 +17,7 @@
 #include "../partitions/fcm-possibilistic.h"
 #include "../partitions/sfcm.h" 
 #include "../partitions/fubi.h"
+#include "../partitions/gk.h"
 #include "../partitions/dbscan.h"
 #include "../partitions/granular-dbscan.h"
 #include "../metrics/metric-minkowski.h"
@@ -36,17 +37,20 @@
 
 #include "../experiments/exp-002.h"
 
-#include <fstream>
 
 void ksi::exp_002::execute()
 {
    try
    {  
-      {
+      {  // FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
          std::string data (dataDir + "/" + "possibilistic.data");
+         // std::string data (dataDir + "/" + "two-spherical.data");
+         // std::string data (dataDir + "/" + "two-crossed.data");
+         // std::string data (dataDir + "/" + "two-parallel.data");
+         
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -64,7 +68,7 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
-      {
+      {  // possibilistic FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
@@ -86,7 +90,7 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
-      {
+      {  // conditional FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
@@ -94,7 +98,6 @@ void ksi::exp_002::execute()
          
          ksi::weighted_reader_complete input;
          auto DataSet = input.read(data);
-         auto number_of_items = DataSet.getNumberOfData();
          
          ksi::fcm_conditional algorithm;
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
@@ -108,11 +111,35 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
+      }
+
+      {  // Gustafson-Kessel
+         std::string dataDir ("data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         // std::string data (dataDir + "/" + "possibilistic.data");
+         // std::string data (dataDir + "/" + "two-crossed.data");
+         // std::string data (dataDir + "/" + "two-parallel.data");
+         // std::string data (dataDir + "/" + "two-crossed-oblique.data");
+         std::string data (dataDir + "/" + "two-parallel-oblique.data");
          
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::gk algorithm;
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "Gustafson-Kessel" << std::endl;
+         std::cout << "================" << std::endl;
+         std::cout << "data file: " << data << std::endl; 
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
       }
       
-      
-      {
+      {  // subspace FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
@@ -134,7 +161,7 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
       
-      {
+      {  // fuzzy biclustering (FuBi)
          std::string dataDir ("data/exp-002");
          const int NUMBER_OF_ITERATIONS { 100 };
          const int NUMBER_OF_CLUSTERS   {   2 };
@@ -154,7 +181,7 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
-      {
+      {  // FCOM
          const double PC = 0.5;
          const double PA = 0.2;
          const double PL = 0.2;
@@ -199,7 +226,7 @@ void ksi::exp_002::execute()
          std::cout << DataSet << std::endl;
       }      
 
-      {
+      {  // DBSCAN
          const double epsilon = 5;    // 1.5
          const double minPts = 10;
          ksi::metric_euclidean metric;
@@ -227,7 +254,7 @@ void ksi::exp_002::execute()
          
       } 
 
-      {
+      {  // GrDBSCAN
          std::string dataDir ("data/exp-002");
          const int ITERATIONS = 100;
          const int FCM_NUMBER_OF_CLUSTERS = 30;

@@ -482,7 +482,7 @@ ksi::partition ksi::fcm_T<T>::doPartition(const ksi::dataset & ds)
       if (_nIterations > 0 and _epsilon > 0)
          throw std::string ("Both number of iterations and minimal epsilon set -- you should set either number of iterations or minimal epsilon.");
       
-      T dummy;
+      T dummy {};
       auto mX = ds.getMatrix(dummy);
       std::size_t nAttr = ds.getNumberOfAttributes();
       std::size_t nX    = ds.getNumberOfData();

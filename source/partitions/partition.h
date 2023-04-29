@@ -104,6 +104,11 @@ namespace ksi
       void setClusterCentres (const std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> & cluster_centres);
 
       
+      /** The method sets matrices for the Mahalanobis distance.
+       @param A_matrices A vector of matrices to set.
+       @date 2023-04-27 */
+      void set_A_Matrices (const std::vector<ksi::Matrix<double>> & A_matrices);
+      
       /** Output operator for partition class.
        @date 2018-01-02
        */

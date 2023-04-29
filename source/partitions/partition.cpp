@@ -244,3 +244,25 @@ std::string ksi::partition::print_dataitems_with_memberships_to_clusters(const k
     }
     CATCH;
 }
+
+void ksi::partition::set_A_Matrices(const std::vector<ksi::Matrix<double>>& A_matrices)
+{
+   try 
+   {
+      if (clusters.size() != A_matrices.size())
+      {
+         std::stringstream ss;
+         ss << "The number of clusters (" << clusters.size() << ") and the number of matrices (" << A_matrices.size() << ") do not match!";
+         
+         throw ss.str();
+      }
+      
+      for (std::size_t i = 0; i < clusters.size(); i++)
+      {
+         clusters[i]->set_A_matrix(A_matrices[i]);
+      }
+      
+   }
+   CATCH;
+}
+
