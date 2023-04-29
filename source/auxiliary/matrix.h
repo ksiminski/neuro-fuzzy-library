@@ -26,7 +26,7 @@ namespace ksi
       
       
    public:
-      /** constructor of empty matrix 
+      /** constructor of an empty matrix 
          * @param rows number of rows
          * @param cols number of columns
          */
@@ -41,7 +41,7 @@ namespace ksi
             data[i] = std::vector<T> (cols);         
       }  
    public:
-      /** constructor of empty matrix 
+      /** constructor of an initialised matrix 
          * @param rows number of rows
          * @param cols number of columns
          * @param initial initial value for data items 
@@ -150,24 +150,6 @@ namespace ksi
          return res;
       }
       
-   public:
-       /** The method shuffles the rows of the matrix 
-        @date 2020-08-07 
-        */
-       void random_shuffle_rows()
-       {
-           std::random_shuffle(data.begin(), data.end());
-       }
-       
-       /** The method shuffles the columns of the matrix 
-        @date 2020-08-07 
-        */
-       void random_shuffle_columns()
-       {
-           auto mtr = !*this;
-           mtr.random_shuffle_rows();
-           data = (!mtr).data;
-       }
       
       
    public:
@@ -189,7 +171,55 @@ namespace ksi
          return res;
       }
       
+   public:
+      /** The method creates a diagonal matrix.
+       * @param w vector of values to put in the main diagonal.
+       * @return diagonal square matrix
+       * @date 2023-04-28
+       * @author Krzysztof Siminski
+       */
+      static Matrix DiagonalMatrix (const std::vector<T> & w)
+      {
+         auto size = w.size();
+         Matrix<double> res(size, size, 0.0);
+         for (std::size_t i = 0 ; i < size; i++)
+            res.data[i][i] = w[i];
+         return res;
+      }
       
+   public:
+      /** The method creates an identity matrix.
+       * @param size size of an identity matrix
+       * @return identity matrix
+       * @date 2023-04-28
+       * @author Krzysztof Siminski
+       */
+      static Matrix IdentityMatrix (const std::size_t size)
+      {
+         Matrix<double> res(size, size, 0.0);
+         for (std::size_t i = 0 ; i < size; i++)
+            res.data[i][i] = 1.0;
+         return res;
+      }
+      
+   public:
+       /** The method shuffles the rows of the matrix 
+        @date 2020-08-07 
+        */
+       void random_shuffle_rows()
+       {
+           std::random_shuffle(data.begin(), data.end());
+       }
+       
+       /** The method shuffles the columns of the matrix 
+        @date 2020-08-07 
+        */
+       void random_shuffle_columns()
+       {
+           auto mtr = !*this;
+           mtr.random_shuffle_rows();
+           data = (!mtr).data;
+       }
       
       public:
       /** @return number of columns in the matrix */
@@ -260,6 +290,14 @@ namespace ksi
       }
       
    public:
+      /** @return true if the matrix is empty.
+          @date 2023-04-27 */
+      bool empty() const 
+      {
+         return data.size() == 0;
+      }
+      
+   public:
       /**
        * @param w index of a row (starting with 0)
        * @param f function that operates on two values and return a value
@@ -318,6 +356,8 @@ namespace ksi
       }
       
    public:
+       /** @return sum of squared values in column c
+        @param c column index */
        T sum_of_squared_values_in_column (const int c) const
        {
            auto lambda = [](const double a, const double b){return a * a + b;};
@@ -560,13 +600,44 @@ namespace ksi
          }
          return res;        
       }
+
+      public:
+      /** Operator adds a right-hand matrix to a left-hand one. The operator+= for template type T must exist.            
+         * @param m right operand of summation
+         * @return a summed matrix, input matrix is modified  
+         * @throw std::string with a comment, when dimensions of matrices do not match
+         * @date 2024-04-25
+      */
+      Matrix & operator += (const Matrix & m)
+      {
+         if (Rows != m.Rows || Cols != m.Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): different dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+      
+         
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+            {
+               data[w][k] += m.data[w][k];
+               //res(w, k) = operator()(w, k) + m(w, k);
+            } 
+         }
+         return *this;        
+      }
+      
       
       /** Operator returns a difference of two matrices. The operator- for template type T must exist. Input matrix is not modified.
          * @param m right operand of subtraction
          * @return a difference of matrices
          * @throw std::string with a comment, when dimensions of matrices do not match
       */
-      Matrix operator - (const Matrix & m)
+      Matrix operator- (const Matrix & m)
       {
          if (Rows != m.Rows || Cols != m.Cols)
          {
@@ -612,7 +683,7 @@ namespace ksi
 
       
       
-      /** Operator returns a sum of two matrices. The operator+ and operator* for template type T must exist. Input matrix is not modified.
+      /** Operator returns a product of two matrices. The operator+ and operator* for template type T must exist. Input matrix is not modified.
          * @param m right operand of multiplication
          * @return a product of matices, input matrix is not modified  
          * @throw std::string with a comment, when dimensions of matrices do not match
@@ -641,6 +712,48 @@ namespace ksi
          return res;        
       }
       
+      /** Operator scales a matrix by a factor (double value). The operator* for template type T must exist. Input matrix is not modified.
+         * @param m right operand of multiplication
+         * @return a product of matices, input matrix is not modified  
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix operator * (const double factor)  
+      {
+               
+         Matrix res (*this);
+         int w, k;
+         for (w = 0; w < res.Rows; w++)
+         {
+            for (k = 0; k < res.Cols; k++)
+            {
+               res.data[w][k] *= factor;
+            } 
+         }
+         return res;        
+      }
+      
+      /** Operator scales a matrix by a factor (double value). The operator/ for template type T must exist. Input matrix is not modified.
+         * @param m right operand of multiplication
+         * @return a product of matices, input matrix is not modified  
+         * @throw std::string with a comment, when dimensions of matrices do not match
+      */
+      Matrix operator / (const double factor)  
+      {
+               
+         Matrix res (*this);
+         int w, k;
+         for (w = 0; w < res.Rows; w++)
+         {
+            for (k = 0; k < res.Cols; k++)
+            {
+               res.data[w][k] /= factor;
+            } 
+         }
+         return res;        
+      }
+
+ 
+      
       /** A method returns a transposed matrix. Input matrix is not modified.
          * @return a transposed matrix, input matrix is not modified  
       */
@@ -664,9 +777,9 @@ namespace ksi
       
       
       public:
-      /** A method returs a inverted matrix with Gauss-Jordan elimination algorithm. 
-      * Original matrix in not modified.
-      * @param[out] result_status -- result status:<BR>
+      /** The method inverts a matrix with the Gauss-Jordan elimination algorithm. Original matrix in not modified.
+       * @return inverted matrix 
+       * @param[out] result_status -- result status:<BR>
             0    -- inversion possible<BR>
             1    -- square matrix, intersion impossible<BR>
             2    -- non-square matrix    
@@ -702,7 +815,7 @@ namespace ksi
                // trzeba znalezc jakis wiersz z gory lub dolu i dodac do tego
                int ww;
                bool udalosie = false;
-               for (ww = 0; ww < Rows; ww++)
+               for (ww = w; ww < Rows; ww++)
                {
                   if (m(ww, w) != 0) // znalezione niezero
                   {
@@ -712,6 +825,7 @@ namespace ksi
                      
                      udalosie = true;
                      ww += Rows; // koniec petli
+                     naPrzekatnej = m.data[w][w];
                   }
                }
                if (! udalosie)
@@ -777,6 +891,97 @@ namespace ksi
          
          result_status = 0; // OK
          return res;
+      }
+      
+      
+      public:
+      /** The method elaborates a determinant of a matrix with the Gauss-Jordan elimination algorithm. Original matrix in not modified.
+       * @return determinant 
+       * @param[out] result_status -- result status:<BR>
+            0    -- determinant calculated<BR>
+            1    -- non-square matrix    
+      */
+      T determinant(int & result_status) const 
+      {
+         if (Cols != Rows)
+         {
+            result_status = 1; // non-square matrix
+            return T{};
+         }
+         Matrix m (*this);
+         
+         int w, k;
+         
+         T wyznacznik {1.0};
+         // teraz wlasciwa eliminacja Gaussa-Jordana
+         for (w = 0; w < Rows; w++)
+         {  // dla kazdego wiersza
+            // dziele wartosci wiersza przez element na przekatnej:
+            double naPrzekatnej = m(w, w);
+            
+            if (naPrzekatnej == 0)
+            {
+               // trzeba znalezc jakis wiersz z gory lub dolu i dodac do tego
+               int ww;
+               bool udalosie = false;
+               for (ww = w; ww < Rows; ww++)
+               {
+                  if (m(ww, w) != 0) // znalezione niezero
+                  {
+                     // dodanie do wiersza tego znalezionego wiersza
+                     for (k = 0; k < Cols; k++)
+                        m.data[w][k] += m.data[ww][k];
+                     
+                     udalosie = true;
+                     ww += Rows; // koniec petli
+                     naPrzekatnej = m.data[w][w];
+                  }
+               }
+               if (! udalosie)
+               {
+                  return T{};  // Wartosc wyznacznika wyniki zero.
+               }
+            }
+            
+            for (k = 0; k < Cols; k++)
+               m.data[w][k] /= naPrzekatnej;
+            
+            // Dzielę wszystkie wartości w wierszu, zatem zmienia się wartość wyznacznika. 
+            // Trzeba zatem to uwzględnić.
+            wyznacznik *= naPrzekatnej;
+            
+            // teraz trzeba odjac wartosci, jak zeby w kolumnie pod 
+            // przekatna uzyskac zera
+            int ww;
+            for (ww = w + 1; ww < Rows; ww++)
+            {
+               // wartosc pod przekatna w kolumnie o indeksie w(!)
+               double wartosc = m(ww, w);
+               if (wartosc != 0) // gdy nie zero
+               {
+                  for (k = w; k < Cols; k++)
+                  {
+                     m.data[ww][k] -= (wartosc * m.data[w][k]);
+                     //m(ww, k) -= (wartosc * m(w, k));
+                  }
+               } 
+            } 
+         }
+         
+         // Mamy macierz trójkątną. Teraz wystarczy wymnożyć wartości na przekątnej.
+         // {
+         //    std::stringstream ss;
+         //    ss << m;
+         //    debug(ss.str());
+         // }
+         
+         for (w = 0; w < Rows; w++)
+         {
+            wyznacznik *= m.data[w][w];
+         }
+            
+         result_status = 0; // OK
+         return wyznacznik;
       }
       
       /** Method extracts matrix values as a std::vector of std::vectors. 
