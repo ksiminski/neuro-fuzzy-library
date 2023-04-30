@@ -10,7 +10,7 @@
 
 namespace ksi
 {
-   /** Filter for data sets.
+   /** Filter for data sets. The class needs a predicate (function) to tell which data item should be filtered out from the dataset.
     * The class implements a decorator design pattern.
     * @author Krzysztof Siminski
     * @date   2021-04-14
