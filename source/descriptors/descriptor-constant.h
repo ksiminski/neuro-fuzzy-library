@@ -7,6 +7,7 @@
 
 namespace ksi
 {
+   /** The descriptor has a constant value for all arguments. */
    class descriptor_constant : virtual public descriptor
    {
       double _value;
