@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <utility>
+#include <string>
 
 #include "number.h"
 #include "../service/debug.h"
@@ -22,6 +23,8 @@ namespace ksi
       std::vector<number *> attributes;
       /** decision value */
       number * pDecision = nullptr;
+      /** labels of a datum */
+      std::vector<std::string> _labels;
       /** weight of a datum item, default value 1.0 */
       double _weight = 1.0;
       /** typicality of data item */
@@ -30,9 +33,7 @@ namespace ksi
       bool _typicalityON = false;
       /** data ID, each datum has its own id in a dataset */
       long int _id = -1;
-      /** ID of an incomplete data item this item imputes. If a data
-       item imputes no other datum _id_incomplete == -1, otherwise
-       it imputes the datum with ID == _id_incomplete. */
+      /** ID of an incomplete data item this item imputes. If a data item imputes no other datum _id_incomplete == -1, otherwise it imputes the datum with ID == _id_incomplete. */
       long int _id_incomplete = -1;
       
    public:
@@ -42,6 +43,12 @@ namespace ksi
       datum (datum && d);
       datum & operator = (const datum & d);
       datum & operator = (datum && d);
+      
+      /** The method creates a datum from a vector of values of attributes.
+       @param attributes vector of values of attributes 
+       @date  2022-05-16
+       @author Krzysztof Siminski */
+      datum (const std::vector<double> & attributes);
       
       /** The method pushes back a number without allocation of memory.*/
       void push_back (number * p);
@@ -116,6 +123,10 @@ namespace ksi
       /** @return true, if typicality is on;
                   false, if typicality is off*/
       bool isTypicalityOn () const ;
+      
+      /** The method removes all numbers from a datum.
+       @date 2022-05-08*/
+      void clear_number();
      
       
       /** The method splits the datum into two data.
@@ -151,6 +162,45 @@ namespace ksi
       /** The method returns a string with values of all attributes of a datum.
        @date 2022-04-13*/
       std::string to_string() const;
+      
+      /** The method sets new labels for a datum.
+       @param labels new labels to set
+       @date 2022-05-14
+       @author Krzysztof Siminski */
+      void setLabels(const std::vector<std::string> & labels);
+      
+      /** The method gets labels of a datum.
+       @return labels of a datum
+       @date 2022-05-14
+       @author Krzysztof Siminski */
+      std::vector<std::string> getLabels() const;
+      
+      /** The method adds a new label to the labels of a datum.
+       @param label new label to add
+       @date 2022-05-14
+       @author Krzysztof Siminski */
+      void addLabel(const std::string & label);
+      
+      /** The method reads a label of a datum.
+       @param index index of a label to read
+       @throw ksi::exception if an index is illegal
+       @date 2022-05-14
+       @author Krzysztof Siminski */
+      std::string getLabel(const std::size_t index) const;
+      
+      /** The method sets a new label for a datum.
+       @param index index of a label to read
+       @param label new label to be set
+       @throw ksi::exception if an index is illegal
+       @date 2022-05-14
+       @author Krzysztof Siminski */
+      void setLabel (const std::size_t index, const std::string & label);
+      
+      /** The method return the number of labels of a datum.
+       @return number of labels
+       @date 2022-05-15
+       @author Krzysztof Siminski */
+      std::size_t getNumberOfLabels () const;
       
       /** Output stream operator
         @date 2018-05-13

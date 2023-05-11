@@ -32,7 +32,7 @@ ksi::partition::partition()
 ksi::partition::~partition()
 {
    for (auto & p : clusters)
-       delete p;
+      delete p;
 }
 
 ksi::partition::partition(const ksi::partition & part)
@@ -125,7 +125,20 @@ std::vector<std::vector<double>> ksi::partition::getClusterCentres() const
    return V;
 }
 
- 
+std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> ksi::partition::getGranules() const
+{
+    try 
+    {
+        std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>> result;
+        
+        for (const auto p : clusters)
+            result.push_back(p->getGranule());
+        
+        return result;
+    }
+    CATCH;
+//     return std::vector<std::vector<ksi::ext_fuzzy_number_gaussian>>{};
+}
 
 std::vector<std::vector<double>> ksi::partition::getPartitionMatrix() const
 {
@@ -231,3 +244,25 @@ std::string ksi::partition::print_dataitems_with_memberships_to_clusters(const k
     }
     CATCH;
 }
+
+void ksi::partition::set_A_Matrices(const std::vector<ksi::Matrix<double>>& A_matrices)
+{
+   try 
+   {
+      if (clusters.size() != A_matrices.size())
+      {
+         std::stringstream ss;
+         ss << "The number of clusters (" << clusters.size() << ") and the number of matrices (" << A_matrices.size() << ") do not match!";
+         
+         throw ss.str();
+      }
+      
+      for (std::size_t i = 0; i < clusters.size(); i++)
+      {
+         clusters[i]->set_A_matrix(A_matrices[i]);
+      }
+      
+   }
+   CATCH;
+}
+

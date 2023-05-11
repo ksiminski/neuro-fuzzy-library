@@ -66,7 +66,7 @@ namespace ksi
                             int nFalsePositives,
                             int nFalseNegatives);
         
-        private:
+        protected:
         /** prints a double values with precision to fit the table */
         std::string ul(double d);
         /** prints an integer value with width to fit the table    */

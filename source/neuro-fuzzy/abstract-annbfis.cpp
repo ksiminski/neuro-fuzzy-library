@@ -406,3 +406,16 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
     _threshold_type = threshold_type;
     _minimal_typicality = dbMinimalTypicality;
 }
+
+
+ksi::partition ksi::abstract_annbfis::doPartition(const ksi::dataset& X)
+{
+    try 
+    {
+        if (_pPartitioner)
+            return _pPartitioner->doPartition(X);
+        else 
+            throw ksi::exception ("no clustering method provided");
+    }
+    CATCH;
+}

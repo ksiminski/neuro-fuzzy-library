@@ -188,7 +188,7 @@ std::string ksi::confusion_matrix::print(
    int FN = nFalseNegatives;
 
   
-   double PRE, PPV, FDR, FOR, NPV, LRP, TPR, FPR, ACC, FNR, TNR, DOR, LRN, F1S, BA, TS, NA, FM, dP, BM, MCC, PT;
+   double PRE, PPV, FDR, FOR, NPV, LRP, TPR, FPR, ACC, FNR, TNR, DOR, LRN, F1S, BA, TS, NA, FM, dP, BM, MCC, PT, P4;
 
    PRE = (double) CP / To;
    PPV = (double) nTruePositives / OP;
@@ -213,6 +213,7 @@ std::string ksi::confusion_matrix::print(
    BM  = TPR + TNR - 1;
    MCC = (TP * TN - FP * FN) / (sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)));
    PT  = (sqrt(TPR * FPR) - FPR) / (TPR - FPR);
+   P4 = (4 * TP * TN) / (4 * TP * TN  + (TP + TN)*(FP + FN));
 
    ss <<
    "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
@@ -268,6 +269,13 @@ std::string ksi::confusion_matrix::print(
    "                   | = ----------------------------------  | = ---------------------                     |" << std::endl <<
    "                   |   sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))  |        TPR - FPR                            |" << std::endl <<
    "                   | = "<< ul(MCC)<<"                      | = "<< ul(PT)<< "                            |" << std::endl <<
+   "                   +---------------------------------------+---------------------------------------------+" << std::endl <<
+   "                   | P4-metric                             |                                             |" << std::endl <<
+   "                   |                                       |                                             |" << std::endl <<
+   "                   |              4 * TP * TN              |                                             |" << std::endl << 
+   "                   | = ----------------------------------  |                                             |" << std::endl << 
+   "                   |   4 * TP * TN  + (TP + TN)*(FP + FN)  |                                             |" << std::endl <<    
+   "                   | = "<< ul(P4)<< "                      |                                             |" << std::endl << 
    "                   +---------------------------------------+---------------------------------------------+" << std::endl;
 
    ss << std::endl << std::endl;
@@ -308,6 +316,10 @@ std::string ksi::confusion_matrix::print(
    ss << "                                                          (TP * TN - FP * FN)                   " << std::endl;
    ss << "Matthews correlation coefficient (MCC) = -----------------------------------------------------: " << ul(MCC) << std::endl;
    ss << "                                         (sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)))  " << std::endl;
+   ss << std::endl;
+   ss << "                           4 * TP * TN                                                          " << std::endl;
+   ss << "P4-metric (P4) = ----------------------------------:                                            " << ul(P4) << std::endl;
+   ss << "                 4 * TP * TN  + (TP + TN)*(FP + FN)                                             " << std::endl;
    
    
 

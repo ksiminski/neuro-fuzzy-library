@@ -36,21 +36,21 @@ void ksi::subspace_annbfis::set_name()
     init_name();
 }
 
-ksi::partition ksi::subspace_annbfis::doPartition(const ksi::dataset& X)
-{
-    //    ksi::sfcm clusterer;
-//    clusterer.setNumberOfClusters(_nRules);
-//    clusterer.setNumberOfIterations(_nClusteringIterations);
-    
-    try 
-    {
-        if (_pPartitioner)
-            return _pPartitioner->doPartition(X);
-        else 
-            throw ksi::exception ("no clustering method provided");
-    }
-    CATCH;
-}
+// ksi::partition ksi::subspace_annbfis::doPartition(const ksi::dataset& X)
+// {
+//     //    ksi::sfcm clusterer;
+// //    clusterer.setNumberOfClusters(_nRules);
+// //    clusterer.setNumberOfIterations(_nClusteringIterations);
+//     
+//     try 
+//     {
+//         if (_pPartitioner)
+//             return _pPartitioner->doPartition(X);
+//         else 
+//             throw ksi::exception ("no clustering method provided");
+//     }
+//     CATCH;
+// }
 
 void ksi::subspace_annbfis::init_name()
 {

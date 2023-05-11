@@ -545,173 +545,176 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
     const double dbNegativeClass, 
     ksi::roc_threshold threshold_type)
 {
-    
-   _TrainDataset =  trainDataset;
-   _TestDataset  =  testDataset;
-   
-   ksi::result wynik;
-   
-   _train_data_file = trainDataFile;
-   _test_data_file  = testDataFile;
-   _nRules = nNumberOfRules;
-   _dbLearningCoefficient = dbLearningCoefficient;
-   _bNormalisation = bNormalisation;
+   try 
+   {
+        _TrainDataset =  trainDataset;
+        _TestDataset  =  testDataset;
+        
+        ksi::result wynik;
+        
+        _train_data_file = trainDataFile;
+        _test_data_file  = testDataFile;
+        _nRules = nNumberOfRules;
+        _dbLearningCoefficient = dbLearningCoefficient;
+        _bNormalisation = bNormalisation;
+        
+        if (_bNormalisation)
+        {
+            ksi::data_modifier_normaliser normaliser;
+            normaliser.modify(_TrainDataset);
+            normaliser.modify(_TestDataset);   
+        }
+        
+        if (_pModyfikator)
+            _pModyfikator->modify(_TrainDataset);
+        
+        ksi::clock zegar;
+        zegar.start();
+        createFuzzyRulebase(nNumberOfClusteringIterations,
+                            nNumberofTuningIterations, dbLearningCoefficient,
+                            _TrainDataset);
+        zegar.stop();
 
-   if (_bNormalisation)
-   {
-      ksi::data_modifier_normaliser normaliser;
-      normaliser.modify(_TrainDataset);
-      normaliser.modify(_TestDataset);   
-   }
-   
-   if (_pModyfikator)
-       _pModyfikator->modify(_TrainDataset);
-   
-   ksi::clock zegar;
-   zegar.start();
-   createFuzzyRulebase(nNumberOfClusteringIterations,
-                       nNumberofTuningIterations, dbLearningCoefficient,
-                       _TrainDataset);
-   zegar.stop();
+        if (_pRulebase)
+        {
+                if (not _pRulebase->validate())
+                    throw std::string ("rule base not valid");   
+        }
+        
+        ksi::directory::create_directory_for_file(outputFile);      
+        std::ofstream model (outputFile);
+        if (not model)
+        {
+            std::stringstream ss;
+            ss << "I cannot open \"" << outputFile << "\" file!";
+            
+            throw ss.str();
+        }
+        
+        std::vector<double> wYtestExpected,  wYtestElaboratedClass,  wYtestElaboratedNumeric,
+                            wYtrainExpected, wYtrainElaboratedClass, wYtrainElaboratedNumeric;
+        
+        get_answers_for_train_classification();
+        for (const auto & answer : _answers_for_train)
+        {
+            double expected, el_numeric;
+            std::tie(expected, el_numeric, std::ignore) = answer;
+            wYtrainExpected.push_back(expected);
+            wYtrainElaboratedNumeric.push_back(el_numeric);       
+        }
+        
+        model << classification_intro() << std::endl;
+        if (threshold_type != ksi::roc_threshold::none)
+            model << "classification threshold type: " << ksi::to_string(threshold_type) << std::endl;
+        _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, 
+                                                dbPositiveClass, dbNegativeClass,
+                                                threshold_type);
 
-   if (_pRulebase)
-   {
-        if (not _pRulebase->validate())
-            throw std::string ("rule base not valid");   
-   }
-   
-   ksi::directory::create_directory_for_file(outputFile);      
-   std::ofstream model (outputFile);
-   if (not model)
-   {
-       std::stringstream ss;
-       ss << "I cannot open \"" << outputFile << "\" file!";
-       
-       throw ss.str();
-   }
-   
-   std::vector<double> wYtestExpected,  wYtestElaboratedClass,  wYtestElaboratedNumeric,
-                       wYtrainExpected, wYtrainElaboratedClass, wYtrainElaboratedNumeric;
-   
-   get_answers_for_train_classification();
-   for (const auto & answer : _answers_for_train)
-   {
-       double expected, el_numeric;
-       std::tie(expected, el_numeric, std::ignore) = answer;
-       wYtrainExpected.push_back(expected);
-       wYtrainElaboratedNumeric.push_back(el_numeric);       
-   }
-   
-   model << classification_intro() << std::endl;
-   if (threshold_type != ksi::roc_threshold::none)
-       model << "classification threshold type: " << ksi::to_string(threshold_type) << std::endl;
-   _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, 
-                                         dbPositiveClass, dbNegativeClass,
-                                         threshold_type);
+        wYtrainElaboratedClass.clear();
+        wYtrainElaboratedNumeric.clear();
+        wYtrainExpected.clear();
+        
+        get_answers_for_train_classification();
+        for (const auto & answer : _answers_for_train)
+        {
+            double expected, el_numeric, el_class;
+            std::tie(expected, el_numeric, el_class) = answer;
+            wYtrainExpected.push_back(expected);
+            wYtrainElaboratedNumeric.push_back(el_numeric); 
+            wYtrainElaboratedClass.push_back(el_class);
+        }
+        
+        wYtestElaboratedClass.clear();
+        wYtestElaboratedNumeric.clear();
+        wYtestExpected.clear();
+        
+        get_answers_for_test_classification();
+        for (const auto & answer : _answers_for_test)
+        {
+            double expected, el_numeric, el_class;
+            std::tie(expected, el_numeric, el_class) = answer;
+            wYtestExpected.push_back(expected);
+            wYtestElaboratedNumeric.push_back(el_numeric);       
+            wYtestElaboratedClass.push_back(el_class);
+        }
+            
+        model << get_classification_threshold_value();
+        
+        model << "fuzzy rule base creation time: ";
+        if (zegar.elapsed_seconds() > 10)
+            model << zegar.elapsed_seconds() << " [s]";
+        else 
+            model << zegar.elapsed_milliseconds() << " [ms]";
+        model << std::endl;
 
-   wYtrainElaboratedClass.clear();
-   wYtrainElaboratedNumeric.clear();
-   wYtrainExpected.clear();
-   
-   get_answers_for_train_classification();
-   for (const auto & answer : _answers_for_train)
-   {
-       double expected, el_numeric, el_class;
-       std::tie(expected, el_numeric, el_class) = answer;
-       wYtrainExpected.push_back(expected);
-       wYtrainElaboratedNumeric.push_back(el_numeric); 
-       wYtrainElaboratedClass.push_back(el_class);
+        ///////////////// confusion matrices 
+        confusion_matrix con_test;
+        int TP {0}, TN {0}, FP {0}, FN {0};
+        
+        model << std::endl;
+        model << "confusion matrix for test data" << std::endl;
+        con_test.calculate_statistics(wYtestExpected, wYtestElaboratedClass,
+                                        dbPositiveClass, dbNegativeClass,
+                                        TP, TN, FP, FN);
+        
+        wynik.TestPositive2Positive = TP;
+        wynik.TestPositive2Negative = FN;
+        wynik.TestNegative2Negative = TN;
+        wynik.TestNegative2Positive = FP;
+        
+        model << con_test.print(TP, TN, FP, FN);
+        model << std::endl;
+        
+        //----------------
+        model << std::endl;
+        model << "confusion matrix for train data" << std::endl;
+        con_test.calculate_statistics(wYtrainExpected, wYtrainElaboratedClass,
+                                        dbPositiveClass, dbNegativeClass,
+                                        TP, TN, FP, FN);
+        wynik.TrainPositive2Positive = TP;
+        wynik.TrainPositive2Negative = FN;
+        wynik.TrainNegative2Negative = TN;
+        wynik.TrainNegative2Positive = FP;
+        
+        
+        model << con_test.print(TP, TN, FP, FN);
+        model << std::endl;
+        
+        ///////////////////////
+        
+        model << std::endl << std::endl;      
+        model << "fuzzy rule base" << std::endl;       
+            
+        printRulebase (model);
+        
+        model << std::endl << std::endl;      
+        model << "answers for the train set" << std::endl;
+        model << "expected\telaborated_numeric\telaborated_class" << std::endl;
+        
+        for (const auto answer : _answers_for_train)
+        {
+            double expected, el_numeric, el_class;
+            std::tie(expected, el_numeric, el_class) = answer;
+            model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
+        }
+        
+        model << std::endl << std::endl;      
+        model << "answers for the test set" << std::endl;
+        model << "expected\telaborated_numeric\telaborated_class" << std::endl;
+        
+        for (const auto answer : _answers_for_test)
+        {
+            double expected, el_numeric, el_class;
+            std::tie(expected, el_numeric, el_class) = answer;
+            model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
+        }
+        
+        model.close();
+        
+        
+        return wynik;
    }
-   
-   wYtestElaboratedClass.clear();
-   wYtestElaboratedNumeric.clear();
-   wYtestExpected.clear();
-   
-   get_answers_for_test_classification();
-   for (const auto & answer : _answers_for_test)
-   {
-       double expected, el_numeric, el_class;
-       std::tie(expected, el_numeric, el_class) = answer;
-       wYtestExpected.push_back(expected);
-       wYtestElaboratedNumeric.push_back(el_numeric);       
-       wYtestElaboratedClass.push_back(el_class);
-   }
-    
-   model << get_classification_threshold_value();
-   
-   model << "fuzzy rule base creation time: ";
-   if (zegar.elapsed_seconds() > 10)
-       model << zegar.elapsed_seconds() << " [s]";
-   else 
-       model << zegar.elapsed_milliseconds() << " [ms]";
-   model << std::endl;
-
-   ///////////////// confusion matrices 
-   confusion_matrix con_test;
-   int TP {0}, TN {0}, FP {0}, FN {0};
-   
-   model << std::endl;
-   model << "confusion matrix for test data" << std::endl;
-   con_test.calculate_statistics(wYtestExpected, wYtestElaboratedClass,
-                                 dbPositiveClass, dbNegativeClass,
-                                 TP, TN, FP, FN);
-   
-   wynik.TestPositive2Positive = TP;
-   wynik.TestPositive2Negative = FN;
-   wynik.TestNegative2Negative = TN;
-   wynik.TestNegative2Positive = FP;
-   
-   model << con_test.print(TP, TN, FP, FN);
-   model << std::endl;
-   
-   //----------------
-   model << std::endl;
-   model << "confusion matrix for train data" << std::endl;
-   con_test.calculate_statistics(wYtrainExpected, wYtrainElaboratedClass,
-                                 dbPositiveClass, dbNegativeClass,
-                                 TP, TN, FP, FN);
-   wynik.TrainPositive2Positive = TP;
-   wynik.TrainPositive2Negative = FN;
-   wynik.TrainNegative2Negative = TN;
-   wynik.TrainNegative2Positive = FP;
-   
-   
-   model << con_test.print(TP, TN, FP, FN);
-   model << std::endl;
-   
-   ///////////////////////
-   
-   model << std::endl << std::endl;      
-   model << "fuzzy rule base" << std::endl;       
-     
-   printRulebase (model);
-   
-   model << std::endl << std::endl;      
-   model << "answers for the train set" << std::endl;
-   model << "expected\telaborated_numeric\telaborated_class" << std::endl;
-   
-   for (const auto answer : _answers_for_train)
-   {
-       double expected, el_numeric, el_class;
-       std::tie(expected, el_numeric, el_class) = answer;
-       model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
-   }
-   
-   model << std::endl << std::endl;      
-   model << "answers for the test set" << std::endl;
-   model << "expected\telaborated_numeric\telaborated_class" << std::endl;
-   
-   for (const auto answer : _answers_for_test)
-   {
-       double expected, el_numeric, el_class;
-       std::tie(expected, el_numeric, el_class) = answer;
-       model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
-   }
- 
-   model.close();
-   
-  
-   return wynik;
+   CATCH;
 }
 
 

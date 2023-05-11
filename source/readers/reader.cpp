@@ -1,6 +1,6 @@
 /** @file */ 
 
-#include "reader.h"
+#include "../readers/reader.h"
 
 ksi::reader::~reader()
 {

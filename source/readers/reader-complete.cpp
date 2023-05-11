@@ -5,12 +5,19 @@
 #include <fstream>
 #include <sstream>
 
-#include "reader-complete.h"
+#include "../readers/reader.h"
+#include "../readers/reader-complete.h"
 #include "../common/datum.h"
 #include "../common/dataset.h"
 #include "../common/number.h"
 #include "../auxiliary/utility-string.h"
 #include "../service/debug.h"
+
+std::shared_ptr<ksi::reader> ksi::reader_complete::clone() const
+{
+    return std::shared_ptr<ksi::reader>(new ksi::reader_complete(*this));
+}
+
 
 ksi::dataset ksi::reader_complete::read (const std::string & filename)
 {
@@ -33,14 +40,11 @@ ksi::dataset ksi::reader_complete::read (const std::string & filename)
          linia = ksi::utility_string::trimString(linia);
          if (linia.length() > 0)
          {
-            std::stringstream ss;
-            ss << linia;
-            
             for (auto & c : linia)
                if (c == ',' or c == '\t')
                   c = ' ';
             
-            ss = std::stringstream();
+            std::stringstream ss;
             ss << linia;
             
             datum d;   

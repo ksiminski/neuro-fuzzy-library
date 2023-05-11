@@ -13,7 +13,10 @@
 #include "fcm-possibilistic.h"
 #include "../service/debug.h"
 
-
+std::string ksi::fcm_possibilistic::getAbbreviation() const
+{
+   return std::string ("fcm_possibilistic");
+}
  
 ksi::partitioner * ksi::fcm_possibilistic::clone()
 {
@@ -24,7 +27,6 @@ ksi::partitioner * ksi::fcm_possibilistic::clone()
 
 ksi::fcm_possibilistic::fcm_possibilistic(const ksi::fcm_possibilistic& wzor) : fcm (wzor)
 {
-  
 }
 
 ksi::fcm_possibilistic & ksi::fcm_possibilistic::operator=(const ksi::fcm_possibilistic & wzor)
@@ -37,7 +39,7 @@ ksi::fcm_possibilistic & ksi::fcm_possibilistic::operator=(const ksi::fcm_possib
    return *this;
 }
 
-ksi::fcm_possibilistic::fcm_possibilistic()
+ksi::fcm_possibilistic::fcm_possibilistic() : fcm()
 {
 
 }

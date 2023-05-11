@@ -21,6 +21,11 @@ ksi::datum::datum()
    pDecision = nullptr;
 }
 
+ksi::datum::datum(const std::vector<double>& attr)
+{
+    for (const double & a : attr)
+        attributes.push_back(new number(a));
+}
 
 ksi::datum::~datum()
 {
@@ -58,6 +63,7 @@ ksi::datum::datum(const ksi::datum & d)
         _typicalityON = d._typicalityON;
         _id = d._id;
         _id_incomplete = d._id_incomplete;
+        _labels = d._labels;
     }
     CATCH;
 }
@@ -73,6 +79,7 @@ ksi::datum::datum(ksi::datum && d) : pDecision (nullptr)
    std::swap (_typicalityON, d._typicalityON);   
    std::swap (_id, d._id);
    std::swap (_id_incomplete, d._id_incomplete);
+   std::swap (_labels, d._labels);
 }
 
 
@@ -108,6 +115,7 @@ ksi::datum& ksi::datum::operator=(const ksi::datum & d)
         _typicalityON = d._typicalityON;
         _id = d._id;
         _id_incomplete = d._id_incomplete;
+        _labels = d._labels;
         
         return *this;
     }
@@ -129,6 +137,7 @@ ksi::datum & ksi::datum::operator=(ksi::datum && d)
    std::swap (_typicalityON, d._typicalityON);
    std::swap (_id, d._id);
    std::swap (_id_incomplete, d._id_incomplete);
+   std::swap (_labels, d._labels);
    
    return *this;
 }
@@ -165,9 +174,18 @@ void ksi::datum::push_back(ksi::number* p)
    attributes.push_back(p);
 }
 
+void ksi::datum::clear_number()
+{
+    for (auto & n : attributes)
+        delete n;
+    attributes.clear();
+}
+
 std::pair<ksi::datum, ksi::datum> ksi::datum::splitDatum(std::size_t last_index) const
 {
-   ksi::datum left, right;
+   ksi::datum left(*this), right(*this);
+   left.clear_number();
+   right.clear_number();
    std::size_t nAttr = attributes.size();
    if (last_index >= nAttr)
       last_index = nAttr - 1;
@@ -175,6 +193,7 @@ std::pair<ksi::datum, ksi::datum> ksi::datum::splitDatum(std::size_t last_index)
       last_index = 0;
    
    std::size_t a;
+   
    for (a = 0; a < last_index; a++)
       left.push_back(* attributes[a]);
    for (a = last_index; a < nAttr; a++)
@@ -252,7 +271,7 @@ namespace ksi
 {
    std::ostream& operator<<(std::ostream& ss, const ksi::datum & d)
    {
-      const int WIDTH = 10;
+      const int WIDTH = 15;
       auto cols = d.getNumberOfAttributes();
       
       for (std::size_t k = 0; k < cols; k++)
@@ -270,7 +289,15 @@ namespace ksi
       if (d.pDecision)
           ss <<" (decision == " << *d.pDecision << ")"; 
       
+      ss << " (weight == " << d._weight << ")";
+      
       //ss << " id == " << d.getID() << ", id_incomplete == " << d.getIDincomplete();
+      if (not d._labels.empty())
+      {
+          ss << " labels: ";
+          for (const auto l : d._labels)
+              ss << l << " ";
+      }
       
       
       return ss;
@@ -321,3 +348,40 @@ const ksi::number * ksi::datum::getDecision() const
     return pDecision;
 }
 
+void ksi::datum::addLabel(const std::string& label)
+{
+    _labels.push_back(label);
+}
+
+std::string ksi::datum::getLabel(const std::size_t index) const
+{
+    try 
+    {
+        return _labels.at(index);
+    }
+    CATCH;
+}
+
+std::vector<std::string> ksi::datum::getLabels() const
+{
+    return _labels;
+}
+
+void ksi::datum::setLabel(const std::size_t index, const std::string& label)
+{
+    try 
+    {
+        _labels.at(index) = label;
+    }
+    CATCH;
+}
+
+void ksi::datum::setLabels(const std::vector<std::string>& labels)
+{
+    _labels = labels;
+}
+
+std::size_t ksi::datum::getNumberOfLabels() const
+{
+    return _labels.size();
+}

@@ -19,7 +19,7 @@ namespace ksi
       
    protected:
       /** the next data_modifier (or derivative) */
-      data_modifier * pNext;
+      data_modifier * pNext = nullptr;
       
       /** text description of the modifier */
       std::string description;

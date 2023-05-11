@@ -15,11 +15,12 @@ namespace ksi
     3. ANNBFIS                                            (classification and regression tasks)
     4. subspace ANNBFIS                                   (classification and regression tasks)
     5. FuBiNFS: fuzzy biclustering subspace annbfis       (classification and regression tasks)
-    6. Proto-NFS: prototype based neurofuzzy systems      (regression task)
+    6. Proto-NFS: prototype based neuro-fuzzy systems     (regression task)
+    7. Proto-NFS: prototype based neuro-fuzzy systems     (classification task)
     7. Three way decision neuro-fuzzy system              (classification task)
     
     
-    @date 2022-07-24
+    @date 2023-04-22
     
     */
    class exp_005 : virtual public experiment

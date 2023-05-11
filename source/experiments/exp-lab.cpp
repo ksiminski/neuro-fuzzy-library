@@ -147,8 +147,8 @@ void ksi::exp_lab::fuzzy_system()
 		std::vector<ksi::neuro_fuzzy_system *> systems { & MA };
 
 		const std::string DIRECTORY ("data/exp-lab");
-		const std::string TRAIN     (DIRECTORY + "/train");
-		const std::string RESULTS   (DIRECTORY + "/results-fuzzy");
+		const std::string TRAIN     (DIRECTORY + "/train.txt");
+		const std::string RESULTS   (DIRECTORY + "/results-fuzzy.txt");
 		const bool NORMALISATION = false;
 
 		for (auto p : systems)

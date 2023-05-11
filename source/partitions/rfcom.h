@@ -20,12 +20,10 @@
 namespace ksi
 {
    /**
-    * @date 2018-07-06 -- 2018-07-13 
-    
     * CITATION REQUEST
     * If you use this algorithm, please cite the paper:
     Krzysztof Siminski, Robust subspace neuro-fuzzy system with data ordering, [in] Neurocomputing, 2017, volume 238, pp. 33-43
- 
+    <pre>
 	@article{id:Siminski2017Robust,
 		year = {2017},
 		author = {Krzysztof Siminski},
@@ -35,7 +33,8 @@ namespace ksi
 		title = {Robust subspace neuro-fuzzy system with data ordering},
 		doi = {10.1016/j.neucom.2017.01.034},
 	}
-	 
+    </pre>
+    * @date 2018-07-06 -- 2018-07-13 
     */
    class rfcom : virtual public ksi::rfcm, virtual public ksi::fcom
    {

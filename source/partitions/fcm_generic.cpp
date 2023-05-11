@@ -27,9 +27,7 @@ std::string ksi::fcm_generic::getAbbreviation() const
    
 ksi::partitioner * ksi::fcm_generic::clone() const
 {
-   auto p = new ksi::fcm_generic(*this);
-   
-   return p;
+   return new ksi::fcm_generic(*this);
 }
 
 ksi::fcm_generic::fcm_generic(const ksi::fcm_generic& wzor) : fcm_T<double>(wzor)

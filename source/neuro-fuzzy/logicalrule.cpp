@@ -9,6 +9,8 @@
 #include "logicalrule.h"
 #include "premise.h"
 #include "../service/debug.h"
+#include "../granules/granule.h"
+
 
 
 std::pair<double, double> 
@@ -44,6 +46,14 @@ ksi::logicalrule::logicalrule (const ksi::t_norm & tnorm,
 }
  
 ksi::logicalrule::logicalrule(const ksi::logicalrule & wzor) : rule (wzor)
+{
+   if (wzor.pImplication)
+      pImplication = wzor.pImplication->clone();
+   else
+      pImplication = nullptr;
+}
+
+ksi::logicalrule::logicalrule(ksi::logicalrule && wzor) : rule (wzor), pImplication (nullptr)
 {
    if (wzor.pImplication)
       pImplication = wzor.pImplication->clone();
@@ -114,3 +124,7 @@ std::ostream & ksi::logicalrule::Print (std::ostream & ss) const
 }
 
 
+ksi::rule * ksi::logicalrule::get_rule() const
+{
+    return clone();
+}

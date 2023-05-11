@@ -118,19 +118,19 @@ void ksi::prototype_minkowski::cummulate_differentials(std::vector<double> X,
         
         for (std::size_t i = 0; i < size; i++)
         {
-            auto roznica = std::fabs(X[i] - _centre[i]);
-            suma += pow(roznica, _m);
+            auto difference = std::fabs(X[i] - _centre[i]);
+            suma += pow(difference, _m);
         }
         auto suma_do_m_1 = pow(suma, (1.0 / _m) - 1.0);
         
-        auto czynnik { similarity * (1.0 / _m) * suma_do_m_1 } ;
+        auto factor { similarity * (1.0 / _m) * suma_do_m_1 } ;
         for (std::size_t i = 0; i < size; i++)
         {
-            auto roznica = std::fabs(X[i] - _centre[i]);
-            auto znak = ksi::utility_math::signum(X[i] - _centre[i]);
+            auto difference = std::fabs(X[i] - _centre[i]);
+            auto signum = ksi::utility_math::signum(X[i] - _centre[i]);
             
-            _d_centre[i]  += partial_differential * czynnik * _m * pow(roznica, _m - 1) * znak;
-            _d_weights[i] += partial_differential * czynnik *      pow(roznica, _m)     * (-1);
+            _d_centre[i]  += partial_differential * factor * _m * pow(difference, _m - 1) * signum;
+            _d_weights[i] += partial_differential * factor *      pow(difference, _m)     * (-1);
         }
     } CATCH;
 }
@@ -189,17 +189,17 @@ void ksi::prototype_minkowski::justified_granularity_principle(const std::vector
     {
         std::size_t nAtrybut = _centre.size();
         
-        std::vector<double> rozniczki_centre (nAtrybut, 0);
-        std::vector<double> rozniczki_wag    (nAtrybut, 0);
+        std::vector<double> differentials_centre (nAtrybut, 0);
+        std::vector<double> differentials_weights    (nAtrybut, 0);
         
         double ETA { 0.0000001 };
-        const int nIteracje { 50 };
+        const int nIteration { 50 };
         
-//         debug(nIteracje);
+//         debug(nIteration);
         auto criterion_prev = 0.0;
         
 //         debug("=========================================================");
-        for (int i = 0; i < nIteracje; i++)
+        for (int i = 0; i < nIteration; i++)
         {
             //// dopasowanie ETY
             auto criterion = debug_criterion_function(X, Y);
@@ -221,17 +221,17 @@ void ksi::prototype_minkowski::justified_granularity_principle(const std::vector
             auto [diffs_centre, diffs_weight] = differentials_justified_granularity_principle(X, Y);
             
             if (is_valid(diffs_centre))
-                rozniczki_centre += diffs_centre;
+                differentials_centre  += diffs_centre;
             if (is_valid(diffs_weight))
-                rozniczki_wag    += diffs_weight;
+                differentials_weights += diffs_weight;
             
             auto previous_weights = _weights;
         
-            _centre  += rozniczki_centre * ETA;
-            _weights += rozniczki_wag    * ETA;
+            _centre  += differentials_centre  * ETA;
+            _weights += differentials_weights * ETA;
 
-//             _centre  -= rozniczki_centre * ETA;
-//             _weights -= rozniczki_wag    * ETA;
+//             _centre  -= differentials_centre  * ETA;
+//             _weights -= differentials_weights * ETA;
             
             for (std::size_t a = 0; a < nAtrybut; a++)
             {
@@ -250,20 +250,20 @@ std::tuple<double, double, std::vector<double>> ksi::prototype_minkowski::cardin
     {
         auto nKrotka = X.size();
         
-        double kardynalnosc = 0;
-        double srednia_y_licznik = 0;
+        double cardinality = 0;
+        double average_y_numerator = 0;
         std::vector<double> similarities(nKrotka, 0);
             
         for (std::size_t x = 0; x < nKrotka; x++)
         {
             auto sim = get_similarity(X[x]);
             similarities[x] = sim;
-            kardynalnosc += sim;
-            srednia_y_licznik += sim * Y[x];  
+            cardinality += sim;
+            average_y_numerator += sim * Y[x];  
         }
-        auto srednia_y = srednia_y_licznik / kardynalnosc;  // srednia atrybutu decyzyjnego dla prototypu
+        auto srednia_y = average_y_numerator / cardinality;  // srednia atrybutu decyzyjnego dla prototypu
         
-        return { kardynalnosc, srednia_y, similarities };
+        return { cardinality, srednia_y, similarities };
     } CATCH;
 }
 
@@ -286,15 +286,15 @@ std::pair<ksi::Matrix<double>, ksi::Matrix<double>> ksi::prototype_minkowski::si
             }
             auto nawias_1_m   = pow(nawias, 1.0 / _m);
             auto nawias_1_m_1 = pow(nawias, (1.0 / _m ) - 1.0);
-            auto czynnik = exp(- nawias_1_m) * (-1) / _m * nawias_1_m_1; 
+            auto factor = exp(- nawias_1_m) * (-1) / _m * nawias_1_m_1; 
             
             
             for (std::size_t a = 0; a < nAtrybut; a++)
             {
-                auto roznica = X[x][a] - _centre[a];
-                dsim_da(x, a) = czynnik * _weights[a] * _m * pow(std::fabs(roznica), _m - 1) * (-1) * ksi::utility_math::signum(roznica); 
+                auto difference = X[x][a] - _centre[a];
+                dsim_da(x, a) = factor * _weights[a] * _m * pow(std::fabs(difference), _m - 1) * (-1) * ksi::utility_math::signum(difference); 
                 
-                dsim_dz(x, a) = czynnik * pow(std::fabs(roznica), _m);
+                dsim_dz(x, a) = factor * pow(std::fabs(difference), _m);
             }
         }
         return { dsim_da, dsim_dz };
@@ -302,7 +302,7 @@ std::pair<ksi::Matrix<double>, ksi::Matrix<double>> ksi::prototype_minkowski::si
 }
  
        
-std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::   decision_attribute_average_differentials (const std::vector<double> & Y,                                                                                                                           const ksi::Matrix<double> & dsim_da,                                                                                                                           const ksi::Matrix<double> & dsim_dz,                                                                                                                           const double kardynalnosc)
+std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::   decision_attribute_average_differentials (const std::vector<double> & Y,                                                                                                                           const ksi::Matrix<double> & dsim_da,                                                                                                                           const ksi::Matrix<double> & dsim_dz,                                                                                                                           const double cardinality)
 {
     try 
     {
@@ -322,9 +322,9 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::  
         }
         
         for (auto & d : dysrednia_da)
-            d /= kardynalnosc * kardynalnosc;
+            d /= cardinality * cardinality;
         for (auto & d : dysrednia_dz)
-            d /= kardynalnosc * kardynalnosc;
+            d /= cardinality * cardinality;
         
         return { dysrednia_da, dysrednia_dz };
     } CATCH;
@@ -338,7 +338,7 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
     const ksi::Matrix<double> & dsim_da, 
     const ksi::Matrix<double> & dsim_dz, 
     const double & srednia_y, 
-    const double & kardynalnosc)
+    const double & cardinality)
 {
     try 
     {
@@ -348,11 +348,11 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
         double suma_iloczynu_kwadratow_roznic_podobienstwa {0.0};
         for (std::size_t x = 0; x < nKrotka; x++)
         {
-            double roznica = Y[x] - srednia_y;
-            suma_iloczynu_kwadratow_roznic_podobienstwa += roznica * roznica * similarities[x];
+            double difference = Y[x] - srednia_y;
+            suma_iloczynu_kwadratow_roznic_podobienstwa += difference * difference * similarities[x];
         }
         
-        // wyznaczenie rozniczek kardynalnosci (kappa)
+        // wyznaczenie rozniczek cardinalityi (kappa)
         // wyznaczenie rozniczek wariancji     (zeta)
         
         auto dodawacz = [] (const double a, const double b) {return a + b;};
@@ -372,16 +372,16 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
             
             for (std::size_t x = 0; x < nKrotka; x++)
             {
-                double roznica = Y[x] - srednia_y;
-                suma_dla_a += -2 * roznica * dysrednia_da[a] * similarities[x] 
-                            + roznica * roznica * dsim_da.get_value(x, a);
-                suma_dla_z += -2 * roznica * dysrednia_dz[a] * similarities[x] 
-                            + roznica * roznica * dsim_dz.get_value(x, a);
+                double difference = Y[x] - srednia_y;
+                suma_dla_a += -2 * difference * dysrednia_da[a] * similarities[x] 
+                            + difference * difference * dsim_da.get_value(x, a);
+                suma_dla_z += -2 * difference * dysrednia_dz[a] * similarities[x] 
+                            + difference * difference * dsim_dz.get_value(x, a);
             }
             
-            dzeta_da[a] = (kardynalnosc * suma_dla_a - dkappa_da[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (kardynalnosc * kardynalnosc); 
+            dzeta_da[a] = (cardinality * suma_dla_a - dkappa_da[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (cardinality * cardinality); 
             
-            dzeta_dz[a] = (kardynalnosc * suma_dla_z - dkappa_dz[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (kardynalnosc * kardynalnosc); 
+            dzeta_dz[a] = (cardinality * suma_dla_z - dkappa_dz[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (cardinality * cardinality); 
         }          
         
         std::vector<double> rozniczki_a = dkappa_da - dzeta_da;
@@ -402,13 +402,13 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
 //         // wyznaczenie kardynalnosci prototypu, 
 //         //             sredniej wartosci atrybutu decyzyjnego
 //         //             podobienstw do prototypu dla danych
-//         auto [kardynalnosc, srednia_y, similarities] = cardinality_similarities(X, Y);
+//         auto [cardinality, srednia_y, similarities] = cardinality_similarities(X, Y);
 //         
 //         // wyznaczenie rozniczek podobienstwa:
 //         auto [dsim_da, dsim_dz] = similarity_differentials (X);
 //                       
 //         // wyznaczenie rozniczek atrybutu decyzyjnego
-//         auto [dysrednia_da, dysrednia_dz] = decision_attribute_average_differentials(Y, dsim_da, dsim_dz, kardynalnosc);
+//         auto [dysrednia_da, dysrednia_dz] = decision_attribute_average_differentials(Y, dsim_da, dsim_dz, cardinality);
 //         
 //         // wyznaczenie rozniczek kardynalnosci i wariancji:
 //         auto [rozniczki_a, rozniczki_z] = cardinality_variance_differentials(Y, similarities,  dysrednia_da, dysrednia_dz, dsim_da, dsim_dz, srednia_y, kardynalnosc);
@@ -425,22 +425,20 @@ double ksi::prototype_minkowski::debug_criterion_function(const std::vector<std:
     try 
     {
         // wyznaczam kardynalnosc
-        auto [kardynalnosc, srednia_y, similarities] = cardinality_similarities(X, Y);
+        auto [cardinality, srednia_y, similarities] = cardinality_similarities(X, Y);
         
         // wyznaczam jeszcze wariancje
         auto size = Y.size();
         double suma = 0;
         for (std::size_t i = 0; i < size; i++)
         {
-            auto roznica = srednia_y - Y[i];
-            suma += roznica * roznica * similarities[i];
+            auto difference = srednia_y - Y[i];
+            suma += difference * difference * similarities[i];
         }
-        auto wariancja = suma / kardynalnosc;
+        auto wariancja = suma / cardinality;
         
-//         debug(kardynalnosc);
-//         debug(wariancja);
-        return kardynalnosc - wariancja;
-//         return wariancja / kardynalnosc;
+        return cardinality - wariancja;
+//         return wariancja / cardinality;
     } CATCH;
 }
 

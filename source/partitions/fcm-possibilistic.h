@@ -35,11 +35,8 @@ namespace ksi
       void calculateEtas (int cluster_number, int nDataItems,
          const ksi::dataset & ds
       );
-      
-      
-   public: 
-
-      
+            
+   public:       
       /** The method executes Fuzzy C-Means clustering algorithm.
        * @param ds dataset to cluster
        * @return partition into clusters
@@ -53,7 +50,10 @@ namespace ksi
       
       
       virtual partitioner * clone ();
-      virtual ~fcm_possibilistic ();      
+      virtual ~fcm_possibilistic ();   
+      
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const;
    };
 
 }

@@ -1,4 +1,3 @@
-/** @file */
 
 #include <algorithm>
 #include <iostream>
@@ -43,22 +42,22 @@ void ksi::annbfis::set_name()
 }
 
 
-ksi::partition ksi::annbfis::doPartition(const ksi::dataset& X)
-{
-    //ksi::fcm clusterer;
-    
-    //clusterer.setNumberOfClusters(_nRules);
-    //clusterer.setNumberOfIterations(_nClusteringIterations);
-    //return clusterer.doPartition(X);
-    try 
-    {
-        if (_pPartitioner)
-            return _pPartitioner->doPartition(X);
-        else 
-            throw ksi::exception ("no clustering method provided");
-    }
-    CATCH;
-}
+// ksi::partition ksi::annbfis::doPartition(const ksi::dataset& X)
+// {
+//     //ksi::fcm clusterer;
+//     
+//     //clusterer.setNumberOfClusters(_nRules);
+//     //clusterer.setNumberOfIterations(_nClusteringIterations);
+//     //return clusterer.doPartition(X);
+//     try 
+//     {
+//         if (_pPartitioner)
+//             return _pPartitioner->doPartition(X);
+//         else 
+//             throw ksi::exception ("no clustering method provided");
+//     }
+//     CATCH;
+// }
 
 ksi::annbfis::annbfis(const ksi::implication & imp) : ksi::neuro_fuzzy_system(), 
 ksi::abstract_annbfis(imp, ksi::fcm()) 

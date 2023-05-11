@@ -13,7 +13,8 @@ namespace ksi
    Algorithms for handling complete datasets:
    1. normalisation
    2. standardisation
-   
+   3. filter 
+    
    Algorithms for handling incomplete datasets:   
    1. marginalisation
    2. imputation with constant
@@ -26,7 +27,7 @@ namespace ksi
    and finally an example of a chain of modifiers:
    1. imputation with values from k nearest neighbours + standardisation
    
-   @date 2018-07-29
+   @date 2021-04-14
     
     */
    class exp_001 : virtual public experiment

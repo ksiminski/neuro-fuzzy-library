@@ -1,8 +1,10 @@
+/** @file */ 
 
 #ifndef RESULT_H
 #define RESULT_H
 
 #include <utility>
+#include <string>
 
 namespace ksi
 {
@@ -21,7 +23,9 @@ namespace ksi
         std::size_t TestPositive2Positive; ///< true positives
         std::size_t TestPositive2Negative; ///< false negatives
         std::size_t TestNegative2Negative; ///< true negatives
-        std::size_t TestNegative2Positive; ///< false positives        
+        std::size_t TestNegative2Positive; ///< false positives    
+        
+        std::string comment; ///< some comment 
         
     };
 }

@@ -8,6 +8,7 @@
  
 
 #include "../readers/reader-complete.h" 
+#include "../readers/weighted_reader_complete.h"
 #include "../common/dataset.h" 
 #include "../partitions/partitioner.h" 
 #include "../partitions/fcm.h"
@@ -16,8 +17,11 @@
 #include "../partitions/fcm-possibilistic.h"
 #include "../partitions/sfcm.h" 
 #include "../partitions/fubi.h"
+#include "../partitions/gk.h"
 #include "../partitions/dbscan.h"
 #include "../partitions/granular-dbscan.h"
+#include "../metrics/metric-minkowski.h"
+#include "../metrics/metric-euclidean.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -33,17 +37,20 @@
 
 #include "../experiments/exp-002.h"
 
-#include <fstream>
 
 void ksi::exp_002::execute()
 {
    try
    {  
-      {
+      {  // FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic");
+         std::string data (dataDir + "/" + "possibilistic.data");
+         // std::string data (dataDir + "/" + "two-spherical.data");
+         // std::string data (dataDir + "/" + "two-crossed.data");
+         // std::string data (dataDir + "/" + "two-parallel.data");
+         
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -55,15 +62,17 @@ void ksi::exp_002::execute()
          
          std::cout << "FCM" << std::endl;
          std::cout << "===" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
 
-      {
+      {  // possibilistic FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic");
+         std::string data (dataDir + "/" + "possibilistic.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -75,24 +84,20 @@ void ksi::exp_002::execute()
          
          std::cout << "possibilistic FCM" << std::endl;
          std::cout << "=================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
 
-      {
+      {  // conditional FCM
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "pedrycz");
-          std::vector<double> weights {0.96, 0.84, 0.70, 0.82, 0.21,
-         0.12, 0.18, 0.96, 0.84, 0.70, 0.82, 0.21, 0.12, 0.18}; 
+         std::string data (dataDir + "/" + "pedrycz.data");
          
-         ksi::reader_complete input;
+         ksi::weighted_reader_complete input;
          auto DataSet = input.read(data);
-         auto number_of_items = DataSet.getNumberOfData();
-         // In this clustering algorithm each data item can have its own weight.
-         for (std::size_t i = 0; i < number_of_items; i++)
-            DataSet.getDatumNonConst(i)->setWeight(weights[i]);
          
          ksi::fcm_conditional algorithm;
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
@@ -102,17 +107,43 @@ void ksi::exp_002::execute()
          
          std::cout << "conditional FCM" << std::endl;
          std::cout << "===============" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
-         
       }
-      
-      
-      {
+
+      {  // Gustafson-Kessel
          std::string dataDir ("data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "sub-135-245");
+         // std::string data (dataDir + "/" + "possibilistic.data");
+         // std::string data (dataDir + "/" + "two-crossed.data");
+         // std::string data (dataDir + "/" + "two-parallel.data");
+         // std::string data (dataDir + "/" + "two-crossed-oblique.data");
+         std::string data (dataDir + "/" + "two-parallel-oblique.data");
+         
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::gk algorithm;
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "Gustafson-Kessel" << std::endl;
+         std::cout << "================" << std::endl;
+         std::cout << "data file: " << data << std::endl; 
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+      
+      {  // subspace FCM
+         std::string dataDir ("data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "sub-135-245.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -124,15 +155,17 @@ void ksi::exp_002::execute()
          
          std::cout << "subspace FCM" << std::endl;
          std::cout << "============" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
       
-      {
+      {  // fuzzy biclustering (FuBi)
          std::string dataDir ("data/exp-002");
          const int NUMBER_OF_ITERATIONS { 100 };
          const int NUMBER_OF_CLUSTERS   {   2 };
-         std::string data (dataDir + "/" + "sub-135-245");
+         std::string data (dataDir + "/" + "sub-135-245.data");
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -142,11 +175,13 @@ void ksi::exp_002::execute()
          
          std::cout << "fuzzy biclustering (FuBi)" << std::endl;
          std::cout << "=========================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
 
-      {
+      {  // FCOM
          const double PC = 0.5;
          const double PA = 0.2;
          const double PL = 0.2;
@@ -182,14 +217,16 @@ void ksi::exp_002::execute()
          
          std::cout << "FCOM" << std::endl;
          std::cout << "====" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
          
          std::cout << "data items with typicalities" << std::endl;
          std::cout << DataSet << std::endl;
-      }   
-      
-      {
+      }      
+
+      {  // DBSCAN
          const double epsilon = 5;    // 1.5
          const double minPts = 10;
          ksi::metric_euclidean metric;
@@ -197,13 +234,16 @@ void ksi::exp_002::execute()
          std::string dataDir ("data/exp-002");
          std::string data (dataDir + "/" + "dbscan.data");
          ksi::reader_complete input;
-         auto DataSet = input.read(data); 
+         auto DataSet = input.read(data);
+//          auto number_of_items = DataSet.getNumberOfData();
          
          ksi::dbscan algorithm(epsilon, minPts, metric);
          auto Partition = algorithm.doPartition(DataSet);
          
          std::cout << "DBSCAN" << std::endl;
          std::cout << "======" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << "data item\t|\tmembership to clusters" << std::endl;
          std::cout << std::endl;
          
@@ -214,7 +254,7 @@ void ksi::exp_002::execute()
          
       } 
 
-      {
+      {  // GrDBSCAN
          std::string dataDir ("data/exp-002");
          const int ITERATIONS = 100;
          const int FCM_NUMBER_OF_CLUSTERS = 30;
@@ -239,6 +279,8 @@ void ksi::exp_002::execute()
          
          std::cout << "GrDBSCAN" << std::endl;
          std::cout << "========" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
          std::cout << "data item\t|\tmembership to clusters" << std::endl;
          std::cout << std::endl;
          std::cout << Partition.print_dataitems_with_memberships_to_clusters(DataSet) << std::endl;

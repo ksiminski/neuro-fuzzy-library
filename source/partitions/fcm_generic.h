@@ -33,11 +33,11 @@ namespace ksi
       fcm_generic & operator = (const fcm_generic & wzor); 
       fcm_generic & operator = (fcm_generic && wzor); 
  
-      virtual partitioner * clone () const;
+      virtual partitioner * clone () const override;
       virtual ~fcm_generic ();  
       
       /** @return an abbreviation of a method */
-      virtual std::string getAbbreviation () const;
+      virtual std::string getAbbreviation () const override;
       
       virtual double calculateDistance(const std::vector<double> & x, const std::vector<double> & y) override;
    };

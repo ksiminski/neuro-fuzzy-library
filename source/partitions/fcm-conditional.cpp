@@ -14,9 +14,14 @@
 #include "fcm-conditional.h"
 #include "../service/debug.h"
 
+std::string ksi::fcm_conditional::getAbbreviation() const
+{
+   return std::string ("fcm_conditional");   
+}
+
 
  
-ksi::partitioner * ksi::fcm_conditional::clone()
+ksi::partitioner * ksi::fcm_conditional::clone()  const
 {
    return new ksi::fcm_conditional(*this);
 }
@@ -27,7 +32,10 @@ ksi::fcm_conditional::~fcm_conditional()
 
 ksi::fcm_conditional::fcm_conditional()
 {
+}
 
+ksi::fcm_conditional::fcm_conditional(const int nClusters, const int nClusteringIterations) : fcm(nClusters, nClusteringIterations)
+{
 }
 
 ksi::fcm_conditional::fcm_conditional(const ksi::fcm & wzor): fcm(wzor)

@@ -104,13 +104,12 @@ namespace ksi
       virtual neuro_fuzzy_system * clone () const ;
       
 
-   protected: 
+   public:
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
-       * @param train train dataset 
-       * @param impl fuzzy implication
+       * @param train train dataset  
        * @date  2018-02-24
        * @author Krzysztof Siminski 
        */
@@ -118,9 +117,9 @@ namespace ksi
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
          const dataset & train); 
-      
+     protected:   
        void set_name ();
-       virtual partition doPartition (const dataset & X);
+//        virtual partition doPartition (const dataset & X);
    public:     
    
       

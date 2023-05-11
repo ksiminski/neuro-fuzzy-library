@@ -387,9 +387,9 @@ namespace ksi
 {
    std::ostream & operator<<(std::ostream& ss, const ksi::dataset & d)
    {
-      const int WIDTH = 10;
+      //const int WIDTH = 12;
       auto rows = d.getNumberOfData();
-      auto cols = d.getNumberOfAttributes();
+      // auto cols = d.getNumberOfAttributes();
       
       for (std::size_t w = 0; w < rows; w++)
       {
@@ -496,4 +496,17 @@ std::pair<ksi::dataset, ksi::dataset> ksi::dataset::splitDataSetHorizontally(std
         second.addDatum(*(getDatum(i)));
     
     return { first, second }; 
+}
+
+
+std::vector<double> ksi::dataset::extract_weights()
+{
+    std::vector<double> weights;
+    
+    auto data_size = data.size();
+    for (std::size_t i = 0; i < data_size; i++)
+    {
+        weights.push_back(data[i]->getWeight());
+    }
+    return weights;
 }

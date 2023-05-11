@@ -280,10 +280,20 @@ std::vector<std::vector<double>> ksi::fcom::calculateClusterCentres(
             iter++;
             
          }
-         while (frob > _epsilon and iter < 100); 
+         while (frob > _epsilon and iter < 100);  /// @bug tymczasowo
+//          debug(iter);
+//          if (iter >= 100)
+//          {
+//             debug(iter);
+//             debug(frob);
+//          }
          
          betas[c] = alphas;
          
+         
+//  //       for (const auto & a : alphas)
+//  //           debug(a);
+
          // reset original pointer to OWA object
          pOwa = pOriginalOwa;
       }
