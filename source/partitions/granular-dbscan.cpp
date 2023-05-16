@@ -18,12 +18,12 @@ ksi::granular_dbscan::granular_dbscan(
     const double minPoints,
     const double xi,
     const double psi,
-    const ksi::partitioner &fuzzyficationAlgorithm,
+    const ksi::partitioner &granulationAlgorithm,
     const ksi::s_norm &snorm,
     const ksi::t_norm &tnorm)
-    : _fuzzyficationAlgorithm(fuzzyficationAlgorithm.clone()),
-      _snorm(snorm.clone()),
-      _tnorm(tnorm.clone())
+    : _pGranulationAlgorithm(granulationAlgorithm.clone()),
+      _pSnorm(snorm.clone()),
+      _pTnorm(tnorm.clone())
 {
    this->_epsilon = epsilon;
    this->_minPoints = minPoints;
@@ -33,9 +33,9 @@ ksi::granular_dbscan::granular_dbscan(
 
 ksi::granular_dbscan::granular_dbscan(const granular_dbscan &obj)
     : partitioner(obj),
-      _fuzzyficationAlgorithm(std::shared_ptr<partitioner>(obj._fuzzyficationAlgorithm->clone())),
-      _snorm(std::shared_ptr<s_norm>(obj._snorm->clone())),
-      _tnorm(std::shared_ptr<t_norm>(obj._tnorm->clone()))
+      _pGranulationAlgorithm(std::shared_ptr<partitioner>(obj._pGranulationAlgorithm->clone())),
+      _pSnorm(std::shared_ptr<s_norm>(obj._pSnorm->clone())),
+      _pTnorm(std::shared_ptr<t_norm>(obj._pTnorm->clone()))
 {
    this->_epsilon = obj._epsilon;
    this->_minPoints = obj._minPoints;
@@ -48,9 +48,9 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    if (this == &obj)
       return *this;
 
-   this->_fuzzyficationAlgorithm = obj._fuzzyficationAlgorithm;
-   this->_tnorm = std::shared_ptr<t_norm>(obj._tnorm->clone());
-   this->_snorm = std::shared_ptr<s_norm>(obj._snorm->clone());
+   this->_pGranulationAlgorithm = obj._pGranulationAlgorithm;
+   this->_pTnorm = std::shared_ptr<t_norm>(obj._pTnorm->clone());
+   this->_pSnorm = std::shared_ptr<s_norm>(obj._pSnorm->clone());
 
    this->_epsilon = obj._epsilon;
    this->_minPoints = obj._minPoints;
@@ -60,13 +60,13 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    return *this;
 }
 
-std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareFuzzyData(const ksi::dataset &ds, std::shared_ptr<partitioner> algorithm)
+std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareGranularData(const ksi::dataset &ds, std::shared_ptr<partitioner> algorithm)
 {
    try
    {
       auto partition = algorithm->doPartition(ds);
 
-      std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> fuzzyData;
+      std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> granularData;
 
       const std::size_t numberOfClusters = partition.getNumberOfClusters();
       for (std::size_t i = 0; i < numberOfClusters; ++i)
@@ -81,10 +81,10 @@ std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan:
             granule.push_back(std::shared_ptr<ksi::descriptor>{cluster->getDescriptor(j)});
          }
 
-         fuzzyData.push_back(granule);
+         granularData.push_back(granule);
       }
 
-      return fuzzyData;
+      return granularData;
    }
    CATCH
 }
@@ -93,25 +93,25 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 {
    try
    {
-      const auto fuzzyDs = prepareFuzzyData(ds, this->_fuzzyficationAlgorithm);
+      const auto granularDs = prepareGranularData(ds, this->_pGranulationAlgorithm);
 
       std::vector<std::vector<double>> partition_matrix; // each row represents a cluster, each column -- a granule
 
-      const std::size_t datasetSize = fuzzyDs.size();
+      const std::size_t datasetSize = granularDs.size();
       std::vector<bool> coreProcessed(datasetSize, false);
 
       // cluster
       int C = 0; 
 
       std::size_t minIndex = 0;
-      std::vector<std::shared_ptr<ksi::descriptor>> coreGranule = fuzzyDs[minIndex];
+      std::vector<std::shared_ptr<ksi::descriptor>> coreGranule = granularDs[minIndex];
       coreProcessed[minIndex] = true;
 
       while (!coreGranule.empty())
       {
          ++C;  // cluster number 
 
-         std::vector<double> neighboursMemberships = findNeighboursMemberships(fuzzyDs, coreGranule);
+         std::vector<double> neighboursMemberships = findNeighboursMemberships(granularDs, coreGranule);
 
          std::vector<bool> processed(datasetSize, false);
          processed[minIndex] = true;
@@ -121,23 +121,23 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 
          if (maxMembIndex != std::numeric_limits<std::size_t>::max())
          {
-            neighbourGranule = fuzzyDs[maxMembIndex];
+            neighbourGranule = granularDs[maxMembIndex];
          }
 
          while (!neighbourGranule.empty())
          {
-            const std::vector<double> expandedNeighboursMemberships = findNeighboursMemberships(fuzzyDs, neighbourGranule);
+            const std::vector<double> expandedNeighboursMemberships = findNeighboursMemberships(granularDs, neighbourGranule);
 
             for (std::size_t i = 0; i < datasetSize; ++i)
             {
-               neighboursMemberships[i] = std::max(neighboursMemberships[i], this->_tnorm->tnorm(neighboursMemberships[maxMembIndex], expandedNeighboursMemberships[i]));
+               neighboursMemberships[i] = std::max(neighboursMemberships[i], this->_pTnorm->tnorm(neighboursMemberships[maxMembIndex], expandedNeighboursMemberships[i]));
             }
             processed[maxMembIndex] = true;
 
             maxMembIndex = findMaxMembIndex(datasetSize, neighboursMemberships, this->_psi, processed);
             if (maxMembIndex != std::numeric_limits<std::size_t>::max())
             {
-               neighbourGranule = fuzzyDs[maxMembIndex];
+               neighbourGranule = granularDs[maxMembIndex];
             }
             else
             {
@@ -153,7 +153,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
          {
             for (std::size_t r = 0; r < C; ++r) // rows
             {
-               aggregated[c] = this->_snorm->snorm(aggregated[c], partition_matrix[r][c]);
+               aggregated[c] = this->_pSnorm->snorm(aggregated[c], partition_matrix[r][c]);
             }
          }
 
@@ -174,7 +174,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
 
          if (minIndex != std::numeric_limits<std::size_t>::max())
          {
-            coreGranule = fuzzyDs[minIndex];
+            coreGranule = granularDs[minIndex];
             coreProcessed[minIndex] = true;
          }
       }
@@ -202,7 +202,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
       // KS: mU: partition matrix for granules
       // KS: 
       
-      auto mClusterDatum = getClusterDatumMatrix(ds, fuzzyDs, mU);
+      auto mClusterDatum = getClusterDatumMatrix(ds, granularDs, mU);
        
      /////////////
       
@@ -215,23 +215,23 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
    CATCH
 }
 
-std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(const ksi::dataset& input_dataset, const std::vector<std::vector<std::shared_ptr<descriptor>>>& granules, const std::vector<std::vector<double>>& mClusterGranule)
+std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(const ksi::dataset& ds, const std::vector<std::vector<std::shared_ptr<descriptor>>>& granularDs, const std::vector<std::vector<double>>& mU)
 {
    try 
    {
-      const auto ds_size = input_dataset.size();    // number of input data 
-      const auto gr_size = granules.size();         // number of granules 
-      const auto cl_size = mClusterGranule.size();  // number of clusters
+      const auto ds_size = ds.size();    // number of input data 
+      const auto gr_size = granularDs.size();         // number of granules 
+      const auto cl_size = mU.size();  // number of clusters
       std::vector<std::vector<double>> mGranuleDatum (gr_size, std::vector<double> (ds_size));
     
       // We have to calculate membership of each data item to each granule. 
       
       for (std::size_t i = 0; i < ds_size; i++)
       {
-         auto d = input_dataset.getDatum(i);
+         auto d = ds.getDatum(i);
          for (std::size_t g = 0; g < gr_size; g++)
          {
-             auto memb = getMembershipToGranule(*d, granules[g], _tnorm);
+             auto memb = getMembershipToGranule(*d, granularDs[g], _pTnorm);
              mGranuleDatum[g][i] = memb;
          }
       }
@@ -248,7 +248,7 @@ std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(con
          {
             double v { 0 };
             for (std::size_t g = 0; g < gr_size; g++)
-               v = std::max(v, mClusterGranule[c][g] * mGranuleDatum[g][d]);
+               v = std::max(v, mU[c][g] * mGranuleDatum[g][d]);
             mClusterDatum[c][d] = v;
          }
       }
@@ -260,14 +260,14 @@ std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(con
 }
 
 
-double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum& d, const std::vector<std::shared_ptr<ksi::descriptor>>& gs, const std::shared_ptr<t_norm> pt)
+double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum& d, const std::vector<std::shared_ptr<ksi::descriptor>>& granule, const std::shared_ptr<t_norm> pTnorm)
 {
    try 
    {
-      if (d.getNumberOfAttributes() != gs.size())
+      if (d.getNumberOfAttributes() != granule.size())
       {
          std::stringstream ss; 
-         ss << "Number of attributes (" << d.getNumberOfAttributes() << ") and number of descriptors of a granules (" << gs.size() << ") do not match!";
+         ss << "Number of attributes (" << d.getNumberOfAttributes() << ") and number of descriptors of a granules (" << granule.size() << ") do not match!";
          
          ksi::exception ex (ss.str());
          throw ex;
@@ -277,10 +277,10 @@ double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum& d, const s
       double memb = 1.0;
       const auto nAttr = d.getNumberOfAttributes();
       
-      for (std::size_t a = 0; a < nAttr; a++)
+      for (std::size_t a = 0; a < nAttr; ++a)
       {
-          double m = gs[a]->getMembership(d.at(a)->getValue());   
-          memb = pt->tnorm(memb, m);
+          double m = granule[a]->getMembership(d.at(a)->getValue());   
+          memb = pTnorm->tnorm(memb, m);
       }
       return memb;
    }
@@ -307,26 +307,26 @@ std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize
 }
 
 std::vector<double> ksi::granular_dbscan::findNeighboursMemberships(
-    const std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> &fuzzyDs,
+    const std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> &granularDs,
     const std::vector<std::shared_ptr<ksi::descriptor>> &granule)
 {
-   const std::size_t dsSize = fuzzyDs.size();
+   const std::size_t dsSize = granularDs.size();
    const std::size_t numberOfDescriptors = granule.size();
 
    std::vector<double> memberships(dsSize, 0);
 
    for (std::size_t i = 0; i < dsSize; ++i)
    {
-      auto granule_ = fuzzyDs[i];
+      auto neighbourGranule = granularDs[i];
 
       double membershipResult = 1;
 
       for (std::size_t j = 0; j < numberOfDescriptors; ++j)
       {
-         const descriptor_triangular distance = calculateDistance(granule[j], granule_[j]);
-         double membership = areaPercentageInSpace(this->_epsilon, distance);
+         const descriptor_triangular distance = calculateDistance(granule[j], neighbourGranule[j]);
+         double membership = calculateAreaPercentageInSpace(this->_epsilon, distance);
 
-         membershipResult = this->_tnorm->tnorm(membershipResult, membership);
+         membershipResult = this->_pTnorm->tnorm(membershipResult, membership);
       }
 
       memberships[i] = membershipResult;
@@ -345,7 +345,7 @@ const ksi::descriptor_triangular ksi::granular_dbscan::calculateDistance(
    return descriptor_triangular(supp_min, core, supp_max);
 }
 
-const double ksi::granular_dbscan::areaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle)
+const double ksi::granular_dbscan::calculateAreaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle)
 {
    if (epsilon < triangle.getSupportMin())
       return 0.0;
