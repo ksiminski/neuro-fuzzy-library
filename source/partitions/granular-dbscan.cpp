@@ -60,11 +60,11 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    return *this;
 }
 
-std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareGranularData(const ksi::dataset &ds, std::shared_ptr<partitioner> algorithm)
+std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareGranularData(const ksi::dataset &ds, std::shared_ptr<partitioner> pAlgorithm)
 {
    try
    {
-      auto partition = algorithm->doPartition(ds);
+      auto partition = pAlgorithm->doPartition(ds);
 
       std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> granularData;
 
