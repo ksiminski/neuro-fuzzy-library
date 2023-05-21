@@ -295,7 +295,7 @@ namespace ksi
       if (not d._labels.empty())
       {
           ss << " labels: ";
-          for (const auto l : d._labels)
+          for (const auto & l : d._labels)
               ss << l << " ";
       }
       
@@ -309,15 +309,15 @@ std::string ksi::datum::to_string() const
     try 
     {
         std::stringstream ss;
-        const int WIDTH = 10;
+        const int WIDTH = 12;
         auto cols = getNumberOfAttributes();
         
         for (std::size_t k = 0; k < cols; k++)
         {
             if (at(k)->exists())
-                ss << std::setw(WIDTH) << *(at(k));
+                ss << std::setw(WIDTH) << *(at(k)) << ' ';
             else
-                ss << std::setw(WIDTH) << MISSING_VALUE_SYMBOL;
+                ss << std::setw(WIDTH) << MISSING_VALUE_SYMBOL << ' ';
         }
         
         return ss.str();

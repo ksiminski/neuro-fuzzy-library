@@ -411,6 +411,15 @@ namespace ksi
    }
 }
 
+std::string ksi::dataset::to_string() const
+{
+   std::stringstream ss;
+   for (const auto row : this->data)
+      ss << row->to_string() << std::endl;      
+   return ss.str();
+}
+
+
 std::pair< ksi::dataset, ksi::dataset > ksi::dataset::splitDataSetVertically(
    std::size_t last_index) const
 {

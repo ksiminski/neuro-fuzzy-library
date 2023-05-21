@@ -202,6 +202,13 @@ namespace ksi
        */
       std::vector<double> extract_weights();
       
+      /** @return the values in the dataset in a string format. 
+       *          Each line represents one data tuple. 
+       *          Values of a data tuple are separated with white spaces.
+       * @author Krzysztof Siminski
+       * @date   2023-05-09 */
+      std::string to_string () const;
+      
       
       
       friend std::ostream & operator << (std::ostream & s, const dataset & d);
