@@ -47,8 +47,8 @@ This example presents clustering algorithms:
 1. subspace fcm   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
 1. fubi (fuzzy biclustering)  (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
 1. fcom
-1. dbscan
-1. grdbscan (granular dbscan)
+1. dbscan (__Citation request__ If you use this algorithm, please cite [^grdbscan])
+1. grdbscan (granular dbscan) (__Citation request__ If you use this algorithm, please cite [^grdbscan])
 
 
 ### make 3
@@ -187,16 +187,32 @@ This example presents neuro-fuzzy systems for
 	}
 	```
 
-[^three]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2022
+[^three]: Krzysztof Siminski, 3WDNFS – Three-way decision neuro-fuzzy system for classification, [in] Fuzzy Sets and Systems, 2023, volume 466, pp. 108432
 	```
-	@article{id:Siminski20223WDNFS,
+	@article{id:Siminski20233WDNFS,
 		author   = {Krzysztof Siminski},
 		title    = {{3WDNFS} – Three-way decision neuro-fuzzy system for classification},
 		journal  = {Fuzzy Sets and Systems},
-		year     = {2022},
+		volume   = {466},
+		pages    = {108432},
+		year     = {2023},
+		issn     = {0165-0114},
 		doi      = {10.1016/j.fss.2014.12.007},
 	}
 	```
-	
+
+[^grdbscan]: Dawid Suchy, Krzysztof Siminski, GrDBSCAN: A granular density–based clustering algorithm, [in] International Journal of Applied Mathematics and Computer Science, 2023, volume 33, number 2, pp. 297–312.
+	```
+	@Article{id:Suchy2023GrDBSCAN,
+		author   = {Dawid Suchy and Krzysztof Siminski},
+		journal  = {International Journal of Applied Mathematics and Computer Science},
+		title    = {GrDBSCAN: A granular density–based clustering algorithm},
+		year     = {2023},
+		pages    = {297–312},
+		volume   = {33},
+		number   = {2},
+		doi      = {10.34768/amcs-2023-0022},
+	}
+	```
 	
 
