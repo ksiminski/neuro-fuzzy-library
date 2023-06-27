@@ -64,6 +64,18 @@ namespace ksi
                      const double positive_class, 
                      const double negative_class, 
                      const ksi::roc_threshold threshold_type);
+
+      /** @date 2023-06-27 */
+      nfs_prototype (const int number_of_rules,
+                     const int number_of_clustering_iterations,
+                     const int number_of_tuning_iterations,
+                     const double learning_coefficient,
+                     const bool normalisation,
+                     const ksi::fac_prototype & prot,
+                     const ksi::partitioner & partitioner,
+                     const double positive_class, 
+                     const double negative_class, 
+                     const ksi::roc_threshold threshold_type);
             
     public:
       double answer(const ksi::datum & item) const override;

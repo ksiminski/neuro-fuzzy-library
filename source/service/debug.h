@@ -32,7 +32,7 @@ catch (std::string & ex)                                     \
 catch (...)                                                  \
 {                                                            \
    throw ksi::exception (__FILE__, __FUNCTION__, __LINE__,             \
-                                 "unknown expection");       \
+     "unknown exception");       \
 }                                                            \
 
 
@@ -53,7 +53,7 @@ catch (std::string & ex)                                     \
 catch (...)                                                  \
 {                                                            \
    throw ksi::exception (__FILE__, __FUNCTION__, __LINE__,             \
-                                 std::string("unknown expection"  " [") + std::string(x) + "]" );       \
+     std::string("unknown expection"  " [") + std::string(x) + "]" );       \
 }                                                            \
 
 

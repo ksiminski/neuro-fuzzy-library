@@ -73,8 +73,7 @@ namespace ksi
       double _negative_class;  ///< label for negative class in classification
       ksi::roc_threshold _threshold_type; ///< threshold type for classification
       double _threshold_value; ///< value of the threshold for classification
-      
-      
+            
       std::size_t _original_size_of_training_dataset = 0;
       std::size_t _reduced_size_of_training_dataset = 0;
       
@@ -82,8 +81,7 @@ namespace ksi
       
       std::vector<std::tuple<double, double, double>> _answers_for_train; ///< answers for the train set: expected elaborated_numeric elaborated_class
       std::vector<std::tuple<double, double, double>> _answers_for_test; ///< answers for the test set: expected elaborated_numeric elaborated_class
-      
-       
+             
    public: 
        /** @return The method return the value of the positive class. 
         @date 2021-12-27 */
@@ -100,9 +98,7 @@ namespace ksi
         @param n negative value to set 
         @date 2021-12-27 */
        void set_negative_class (const double n);
-       
-       
-       
+             
    public:
        /** @return threshold value elaborated for classification
            @date   2021-09-16
@@ -546,8 +542,5 @@ namespace ksi
       
    };
 }
-
-
-
 
 #endif 

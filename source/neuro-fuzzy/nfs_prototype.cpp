@@ -112,7 +112,32 @@ ksi::nfs_prototype::nfs_prototype(const int number_of_rules,
     this->_pPartitioner = new ksi::fcm_generic(number_of_rules, number_of_clustering_iterations, *p);
 }
 
-
+ksi::nfs_prototype::nfs_prototype (const int number_of_rules,
+                     const int number_of_clustering_iterations,
+                     const int number_of_tuning_iterations,
+                     const double learning_coefficient,
+                     const bool normalisation,
+                     const ksi::fac_prototype & prot,
+                     const ksi::partitioner & partitioner,
+                     const double positive_class, 
+                     const double negative_class, 
+                     const ksi::roc_threshold threshold_type)
+{
+    this->_nRules = number_of_rules;
+    this->_nClusteringIterations = number_of_clustering_iterations;
+    this->_nTuningIterations = number_of_tuning_iterations;
+    this->_dbLearningCoefficient = learning_coefficient;
+    this->_bNormalisation = normalisation;
+    this->_positive_class = positive_class;
+    this->_negative_class = negative_class;
+    this->_threshold_type = threshold_type;
+    
+    this->_pFactory = prot.clone();
+    
+    auto p = _pFactory->get_metric();
+    
+    this->_pPartitioner = partitioner.clone();
+}
 
 // void ksi::prototype_nfs::copy_fields(const ksi::prototype_nfs& wzor)
 // {

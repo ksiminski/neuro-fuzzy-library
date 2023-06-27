@@ -65,12 +65,12 @@ ksi::annbfis_prototype & ksi::annbfis_prototype::operator= (ksi::annbfis_prototy
 }
 
 ksi::annbfis_prototype::annbfis_prototype(const int number_of_rules, 
-                                   const int number_of_clustering_iterations, 
-                                   const int number_of_tuning_iterations, 
-                                   const double learning_coefficient, 
-                                   const bool normalisation, 
-                                   const implication & imp,
-                                   const ksi::fac_prototype & prot)
+   const int number_of_clustering_iterations, 
+   const int number_of_tuning_iterations, 
+   const double learning_coefficient, 
+   const bool normalisation, 
+   const implication & imp,
+   const ksi::fac_prototype & prot)
 : 
 ksi::nfs_prototype(number_of_rules, number_of_clustering_iterations, number_of_tuning_iterations, learning_coefficient, normalisation, prot)
 {

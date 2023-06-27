@@ -16,6 +16,11 @@ namespace ksi
    class partitioner
    {
    protected:
+      /** Number of iterations of partition algorithm. */
+      int _nIterations = -1;
+      
+      /** Number of clusters to split the dataset into. */
+      int _nClusters   = -1;
             
    public:
       virtual ~partitioner();
@@ -32,6 +37,13 @@ namespace ksi
       
       /** @return an abbreviation of a method */
       virtual std::string getAbbreviation () const;
+
+      /** @return The method return the number of iterations (if set). If the number if not set, it returns -1. */
+      virtual int get_number_of_iterations () const ;
+
+      /** @return The method return the number of clusters (if set). If the number if not set, it returns -1. */
+      virtual int get_number_of_clusters() const;
+
    };
 }
 

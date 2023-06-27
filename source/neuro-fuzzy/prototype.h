@@ -38,7 +38,10 @@ namespace ksi
       */
       virtual std::ostream & Print (std::ostream & ss) const override;
       
+      /** @return white character free name of the prototype type */
       virtual std::string get_name() const = 0;
+      
+      /** @return description of the prototype type */
       virtual std::string get_description() const = 0;
       
       

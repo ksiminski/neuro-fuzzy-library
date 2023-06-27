@@ -34,9 +34,9 @@ ksi::fubi::~fubi()
 
 
 ksi::fubi::fubi(const int NUMBER_OF_CLUSTERS, const int NUMBER_OF_ITERATIONS)
-  : _number_of_clusters (NUMBER_OF_CLUSTERS), 
-    _number_of_iterations (NUMBER_OF_ITERATIONS)
 {
+    _nClusters = NUMBER_OF_CLUSTERS; 
+    _nIterations = NUMBER_OF_ITERATIONS;
 }
 
 
@@ -69,11 +69,11 @@ std::vector<std::vector<std::vector<double> > > ksi::fubi::normalise(
         for (std::size_t x = 0; x < _number_of_data; x++)
         {
             double suma {0};
-            for (std::size_t c = 0; c < _number_of_clusters; c++)
+            for (std::size_t c = 0; c < _nClusters; c++)
             {
                 suma += U[c][x][a];
             }
-            for (std::size_t c = 0; c < _number_of_clusters; c++)
+            for (std::size_t c = 0; c < _nClusters; c++)
             {
                 norm_U[c][x][a] = U[c][x][a] / suma;
                  //debug(suma);
@@ -94,10 +94,10 @@ std::vector<std::vector<double>> ksi::fubi::cluster_centres_for_data (
     const std::vector<std::vector<double>> & X, 
     const std::vector<std::vector<std::vector<double>>> & _U)
 {
-    std::vector<std::vector<double>> V (_number_of_clusters,
+    std::vector<std::vector<double>> V (_nClusters,
                                         std::vector<double> (_number_of_attributes,0));
     
-    for (std::size_t c = 0; c < _number_of_clusters; c++)
+    for (std::size_t c = 0; c < _nClusters; c++)
     {
         for (std::size_t a = 0; a < _number_of_attributes; a++)
         {
@@ -119,10 +119,10 @@ std::vector<std::vector<double>> ksi::fubi::cluster_centres_for_attibutes (
     const std::vector<std::vector<double>> & X, 
     const std::vector<std::vector<std::vector<double>>> & _U)
 {
-    std::vector<std::vector<double>> V (_number_of_clusters,
+    std::vector<std::vector<double>> V (_nClusters,
                                         std::vector<double> (_number_of_data,0));
     
-    for (std::size_t c = 0; c < _number_of_clusters; c++)
+    for (std::size_t c = 0; c < _nClusters; c++)
     {
         for (std::size_t x = 0; x < _number_of_data; x++)
         {
@@ -170,13 +170,13 @@ ksi::fubi::update_membership_matrix(
         for (std::size_t a = 0; a < _number_of_attributes; a++)
         {
             double sum {0};
-            for (std::size_t c = 0; c < _number_of_clusters; c++)
+            for (std::size_t c = 0; c < _nClusters; c++)
             {
                 auto xi = ksi (X, V_data, V_attr, c, x, a);
                 sum += pow (xi, expo);   
             }
 
-            for (std::size_t c = 0; c < _number_of_clusters; c++)
+            for (std::size_t c = 0; c < _nClusters; c++)
             {
                 auto new_value = pow (ksi (X, V_data, V_attr, c, x, a), expo)  / sum;  
                 
@@ -197,13 +197,13 @@ ksi::partition ksi::fubi::doPartition(const ksi::dataset& ds)
     _number_of_data       = ds.getNumberOfData();
     
     // macierz przynaleznosci jest trojwymiarowa: _U[klaster][dana][atrybut]
-    std::vector<std::vector<std::vector<double>>> _U = randomise(_number_of_clusters, _number_of_data, _number_of_attributes);
+    std::vector<std::vector<std::vector<double>>> _U = randomise(_nClusters, _number_of_data, _number_of_attributes);
     
     _U = normalise(_U);
     
     auto X = ds.getMatrix();
     
-    for (int iter = 0 ; iter < _number_of_iterations; iter++)
+    for (int iter = 0 ; iter < _nIterations; iter++)
     {
         // wyznacz srodki klastrow dla danych i dla atrybutow
 //         debug(iter);
@@ -224,7 +224,7 @@ ksi::partition ksi::fubi::doPartition(const ksi::dataset& ds)
 //     
 //     // przeksztalcenie do postaci zbiorow gaussowskich
     ksi::partition part;
-    for (int c = 0; c < _number_of_clusters; c++)
+    for (int c = 0; c < _nClusters; c++)
     {
         ksi::cluster cl; 
         for (std::size_t a = 0; a < _number_of_attributes; a++)
@@ -245,7 +245,7 @@ std::vector<std::vector<double> > ksi::fubi::calculateClusterFuzzification(
 {
     auto S (V_data);
     
-    for (int c = 0; c < _number_of_clusters; c++)
+    for (int c = 0; c < _nClusters; c++)
     {
         for (std::size_t d = 0; d < _number_of_attributes; d++)
         {
@@ -273,7 +273,7 @@ std::vector<std::vector<double> > ksi::fubi::calculateAttributeWeights(
 {
     auto Z (V_data);
     
-    for (int c = 0; c < _number_of_clusters; c++)
+    for (int c = 0; c < _nClusters; c++)
     {
         double sum_of_all {0.0};
         for (std::size_t d = 0; d < _number_of_attributes; d++)

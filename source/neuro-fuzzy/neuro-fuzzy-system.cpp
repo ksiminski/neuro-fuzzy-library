@@ -1162,3 +1162,8 @@ void ksi::neuro_fuzzy_system::set_positive_class(const double p)
 {
     _positive_class = p;
 }
+
+void ksi::neuro_fuzzy_system::set_threshold_type (const ksi::roc_threshold & th)
+{
+    this->_threshold_type = th;
+}

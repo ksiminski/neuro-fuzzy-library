@@ -108,7 +108,11 @@ namespace ksi
       @param kardynalnosc cardinality of the prototype
       @date 2021-04-27
       */
-     std::pair<std::vector<double>, std::vector<double>> decision_attribute_average_differentials (const std::vector<double> & Y,                                                                                                                           const ksi::Matrix<double> & dsim_da,                                                                                                                           const ksi::Matrix<double> & dsim_za,                                                                                                                           const double kardynalnosc);
+     std::pair<std::vector<double>, std::vector<double>> decision_attribute_average_differentials (
+     	const std::vector<double> & Y,
+     	const ksi::Matrix<double> & dsim_da, 
+    	const ksi::Matrix<double> & dsim_za,
+    	const double kardynalnosc);
      
      
      /** The method elaborates differentials of cardinality and variance 

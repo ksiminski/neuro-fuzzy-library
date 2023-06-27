@@ -39,8 +39,8 @@ namespace ksi
     */
    class fubi : public partitioner
    { 
-       int _number_of_clusters;           ///< number of clusters 
-       int _number_of_iterations;         ///< number of iterations 
+       //int _nClusters;           ///< number of clusters 
+       //int _nIterations;         ///< number of iterations 
        std::size_t _number_of_attributes; ///< number of attributes of data 
        std::size_t _number_of_data;       ///< number of data 
        double _m = 2.0;                   ///< clustering parameter 

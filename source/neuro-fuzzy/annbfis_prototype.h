@@ -100,7 +100,7 @@ namespace ksi
     public:
       ksi::neuro_fuzzy_system * clone() const override;
       
-      // jakies metody, żeby interfejs był zaimplementowany -- zasmiecanie interfejsu  
+      // jakies metody, żeby interfejs był zaimplementowany -- zasmiecanie interfejsami  
       ksi::discriminative_model * clone_discriminant() const override;
       ksi::generative_model * clone_generator() const override;
       

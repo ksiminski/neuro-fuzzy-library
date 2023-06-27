@@ -32,10 +32,10 @@ namespace ksi
    protected:
       /** fuzzification parameter */
       double _m = 2.0;
-      /** number of clusters */
-      int _nClusters = -1;
-      /** number of iterations */
-      double _nIterations = -1;
+      // /** number of clusters */
+      // int _nClusters = -1;
+      // /** number of iterations */
+      // double _nIterations = -1;
       /** Threshold of Frobenius norm for changed in location of cluster
           centres. When the Frobenius norm of 
           differences of U matrices in two consecutive iterations
@@ -215,8 +215,10 @@ ksi::fcm_T<T>::fcm_T()
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T (const int nClusters, const int nClusteringIterations) : _nClusters(nClusters), _nIterations(nClusteringIterations)
+ksi::fcm_T<T>::fcm_T (const int nClusters, const int nClusteringIterations) 
 {
+   _nClusters = nClusters;
+   _nIterations = nClusteringIterations;
 }
 
 template<class T>

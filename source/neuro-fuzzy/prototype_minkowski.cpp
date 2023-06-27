@@ -106,8 +106,7 @@ void ksi::prototype_minkowski::addDescriptor(const ksi::descriptor & d)
     
 }
 
-void ksi::prototype_minkowski::cummulate_differentials(std::vector<double> X, 
-                                                       double partial_differential)
+void ksi::prototype_minkowski::cummulate_differentials(std::vector<double> X, double partial_differential)
 {
     try 
     {
