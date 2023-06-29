@@ -62,7 +62,7 @@ namespace ksi
          @return an address to the descriptor, if it exists
          @return nullptr if the attribute is invalid
        */
-      const descriptor * getAddressOfDescriptor (int attribute);
+      const descriptor * getAddressOfDescriptor (int attribute) const;
       
       
       /** @return The method returns a granule expressed with fuzzy gaussian extensional number

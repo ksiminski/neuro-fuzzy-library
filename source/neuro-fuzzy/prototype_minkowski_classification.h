@@ -8,6 +8,7 @@
 #include "../neuro-fuzzy/prototype.h"
 #include "../neuro-fuzzy/premise.h"
 #include "../auxiliary/matrix.h"
+#include "../partitions/cluster.h"
 
 namespace ksi
 {
@@ -21,6 +22,7 @@ namespace ksi
        
     public:
       prototype_minkowski_classification (const double m, const double positive_class_label, const double negative_class_label);
+      prototype_minkowski_classification (const cluster & cl, const double m, const double positive_class_label, const double negative_class_label);
       prototype_minkowski_classification (const prototype_minkowski_classification & wzor) = default;
       prototype_minkowski_classification (prototype_minkowski_classification && wzor) = default;
       prototype_minkowski_classification & operator= (const prototype_minkowski_classification & wzor) = default;

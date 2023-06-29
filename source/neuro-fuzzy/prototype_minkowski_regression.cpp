@@ -9,8 +9,13 @@
 #include "../auxiliary/vector-operators.h"
 #include "../auxiliary/matrix.h"
 #include "../metrics/metric-minkowski-weighted.h"
+#include "../partitions/cluster.h"
 
 ksi::prototype_minkowski_regression::prototype_minkowski_regression (const double m) : ksi::prototype_minkowski(m)
+{
+}
+
+ksi::prototype_minkowski_regression::prototype_minkowski_regression (const ksi::cluster & cl, const double m) : ksi::prototype_minkowski(cl, m)
 {
 }
 

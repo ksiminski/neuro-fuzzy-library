@@ -99,7 +99,7 @@ ksi::descriptor* ksi::cluster::getDescriptor(int attribute)
    CATCH;
 }
 
-const ksi::descriptor* ksi::cluster::getAddressOfDescriptor(int attribute)
+const ksi::descriptor* ksi::cluster::getAddressOfDescriptor(int attribute) const 
 {
    if (descriptors.empty())
       return nullptr;

@@ -8,6 +8,7 @@
 #include "../neuro-fuzzy/prototype.h"
 #include "../metrics/metric.h"
 #include "../neuro-fuzzy/fac_prototype_minkowski.h"
+#include "../partitions/cluster.h"
 
 namespace ksi
 {
@@ -24,6 +25,7 @@ namespace ksi
       
     public:
       virtual std::shared_ptr<prototype> get_prototype() const override; 
+      virtual std::shared_ptr<prototype> get_prototype_for_cluster(const cluster & cl) override;
 //       virtual std::shared_ptr<metric> get_metric() const override;
       virtual std::shared_ptr<fac_prototype> clone () const override;
    

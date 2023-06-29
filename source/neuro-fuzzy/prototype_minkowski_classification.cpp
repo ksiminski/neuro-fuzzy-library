@@ -10,10 +10,16 @@
 #include "../auxiliary/vector-operators.h"
 #include "../auxiliary/matrix.h"
 #include "../metrics/metric-minkowski-weighted.h"
+#include "../partitions/cluster.h"
 
 ksi::prototype_minkowski_classification::prototype_minkowski_classification (const double m, const double positive_class_label, const double negative_class_label) : ksi::prototype_minkowski(m), _positive_class_label (positive_class_label), _negative_class_label(negative_class_label)
 {
 }
+
+ksi::prototype_minkowski_classification::prototype_minkowski_classification (const cluster & cl, const double m, const double positive_class_label, const double negative_class_label) : ksi::prototype_minkowski(cl, m), _positive_class_label (positive_class_label), _negative_class_label(negative_class_label)
+{
+}
+
 
 ksi::prototype_minkowski_classification::~prototype_minkowski_classification ()
 {

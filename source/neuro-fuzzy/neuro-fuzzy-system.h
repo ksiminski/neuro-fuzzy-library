@@ -72,7 +72,7 @@ namespace ksi
       double _positive_class;  ///< label for positive class in classification
       double _negative_class;  ///< label for negative class in classification
       ksi::roc_threshold _threshold_type; ///< threshold type for classification
-      double _threshold_value; ///< value of the threshold for classification
+      double _threshold_value = 0.5; ///< value of the threshold for classification
             
       std::size_t _original_size_of_training_dataset = 0;
       std::size_t _reduced_size_of_training_dataset = 0;

@@ -298,7 +298,6 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system()
    _name_of_neuro_fuzzy_system = std::string("");
    _description_of_neuro_fuzzy_system = std::string ("");
    
-//    debug(__FUNCTION__);
 }
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(const ksi::neuro_fuzzy_system & wzor) : generative_model (wzor), discriminative_model (wzor)

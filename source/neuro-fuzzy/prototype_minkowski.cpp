@@ -9,9 +9,20 @@
 #include "../auxiliary/vector-operators.h"
 #include "../auxiliary/matrix.h"
 #include "../metrics/metric-minkowski-weighted.h"
+#include "../partitions/cluster.h"
 
 ksi::prototype_minkowski::prototype_minkowski (const double m) : ksi::prototype(), _m(m)
 {
+}
+
+ksi::prototype_minkowski::prototype_minkowski (const cluster & cl, const double m) : _m (m)
+{
+    auto nAttr = cl.get_number_of_desciptors();
+    for (std::size_t a = 0; a < nAttr; a++)
+    {
+        auto p = cl.getAddressOfDescriptor(a);
+        addDescriptor(*p);
+    }
 }
 
 ksi::prototype_minkowski::~prototype_minkowski ()

@@ -6,6 +6,7 @@
 
 #include "../neuro-fuzzy/prototype.h"
 #include "../metrics/metric.h"
+#include "../partitions/cluster.h"
 
 
 namespace ksi
@@ -21,7 +22,8 @@ namespace ksi
       virtual ~fac_prototype ();
       
    public:
-      virtual std::shared_ptr<prototype> get_prototype() const = 0; 
+      virtual std::shared_ptr<prototype> get_prototype() const = 0;
+      virtual std::shared_ptr<prototype> get_prototype_for_cluster (const cluster & cl) = 0; 
       virtual std::shared_ptr<metric> get_metric() const = 0;
       virtual std::shared_ptr<fac_prototype> clone () const = 0; 
       

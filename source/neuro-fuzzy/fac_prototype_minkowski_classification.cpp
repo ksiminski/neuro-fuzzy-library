@@ -63,6 +63,11 @@ std::shared_ptr<ksi::prototype> ksi::fac_prototype_minkowski_classification::get
     return std::shared_ptr<ksi::prototype> (new ksi::prototype_minkowski_classification (_m, _positive_class_label, _negative_class_label));
 }
 
+std::shared_ptr<ksi::prototype> ksi::fac_prototype_minkowski_classification::get_prototype_for_cluster(const ksi::cluster & cl) 
+{
+    return std::shared_ptr<ksi::prototype> (new ksi::prototype_minkowski_classification (cl, _m, _positive_class_label, _negative_class_label));
+}
+
 std::shared_ptr<ksi::fac_prototype> ksi::fac_prototype_minkowski_classification::clone() const
 {
     return std::shared_ptr<ksi::fac_prototype> (new ksi::fac_prototype_minkowski_classification(*this));

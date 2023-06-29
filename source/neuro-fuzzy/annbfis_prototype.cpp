@@ -139,16 +139,21 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
       #pragma omp parallel for 
       for (int c = 0; c < _nRules; c++)
       {
+     /*
          std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype());
-         
+     */    
          auto klaster = podzial.getCluster(c);
-     
+         std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype_for_cluster(*klaster));
+     /*
+         /// @todo To trzeba przerobić, żeby nie było dodawania poszczególnych deskryptorów, ale po prostu cały prototyp.
          for (std::size_t a = 0; a < nAttr_1; a++)
          {
              const ksi::descriptor & des = *klaster->getAddressOfDescriptor(a);
              pPrzeslanka->addDescriptor(des);
          }
- 
+ */
+        
+   
          pPrzeslanka->justified_granularity_principle(wTrainX, wY);
          
          logicalrule regula (*_pTnorm, *_pImplication);

@@ -7,6 +7,7 @@
 #include "../neuro-fuzzy/prototype.h"
 #include "../neuro-fuzzy/premise.h"
 #include "../auxiliary/matrix.h"
+#include "../partitions/cluster.h"
 
 namespace ksi
 {
@@ -30,6 +31,7 @@ namespace ksi
        
     public:
       prototype_minkowski (const double m);
+      prototype_minkowski (const cluster & cl, const double m);
       prototype_minkowski (const prototype_minkowski & wzor) = default;
       prototype_minkowski (prototype_minkowski && wzor) = default;
       prototype_minkowski & operator= (const prototype_minkowski & wzor) = default;

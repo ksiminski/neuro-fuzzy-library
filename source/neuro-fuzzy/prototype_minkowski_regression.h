@@ -7,6 +7,7 @@
 #include "../neuro-fuzzy/prototype_minkowski.h"
 #include "../neuro-fuzzy/premise.h"
 #include "../auxiliary/matrix.h"
+#include "../partitions/cluster.h"
 
 namespace ksi
 {
@@ -14,10 +15,9 @@ namespace ksi
     @date 2021-01-27 */ 
    class prototype_minkowski_regression : public prototype_minkowski
    {
- 
-       
     public:
       prototype_minkowski_regression (const double m);
+      prototype_minkowski_regression (const cluster & cl, const double m);
       prototype_minkowski_regression (const prototype_minkowski_regression & wzor) = default;
       prototype_minkowski_regression (prototype_minkowski_regression && wzor) = default;
       prototype_minkowski_regression & operator= (const prototype_minkowski_regression & wzor) = default;
