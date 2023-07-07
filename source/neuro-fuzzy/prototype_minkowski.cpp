@@ -253,30 +253,6 @@ void ksi::prototype_minkowski::justified_granularity_principle(const std::vector
     } CATCH;
 }
 
-std::tuple<double, double, std::vector<double>> ksi::prototype_minkowski::cardinality_similarities
-(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const 
-{
-    try 
-    {
-        auto nKrotka = X.size();
-        
-        double cardinality = 0;
-        double average_y_numerator = 0;
-        std::vector<double> similarities(nKrotka, 0);
-            
-        for (std::size_t x = 0; x < nKrotka; x++)
-        {
-            auto sim = get_similarity(X[x]);
-            similarities[x] = sim;
-            cardinality += sim;
-            average_y_numerator += sim * Y[x];  
-        }
-        auto srednia_y = average_y_numerator / cardinality;  // srednia atrybutu decyzyjnego dla prototypu
-        
-        return { cardinality, srednia_y, similarities };
-    } CATCH;
-}
-
 std::pair<ksi::Matrix<double>, ksi::Matrix<double>> ksi::prototype_minkowski::similarity_differentials(const std::vector<std::vector<double>>& X)
 {
     try 
@@ -312,7 +288,7 @@ std::pair<ksi::Matrix<double>, ksi::Matrix<double>> ksi::prototype_minkowski::si
 }
  
        
-std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::   decision_attribute_average_differentials (const std::vector<double> & Y,                                                                                                                           const ksi::Matrix<double> & dsim_da,                                                                                                                           const ksi::Matrix<double> & dsim_dz,                                                                                                                           const double cardinality)
+std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::decision_attribute_average_differentials (const std::vector<double> & Y, const ksi::Matrix<double> & dsim_da, const ksi::Matrix<double> & dsim_dz, const double cardinality)
 {
     try 
     {

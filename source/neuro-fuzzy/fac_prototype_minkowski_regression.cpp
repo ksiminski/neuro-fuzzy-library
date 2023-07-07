@@ -1,4 +1,6 @@
 
+#include <memory> 
+
 #include "../neuro-fuzzy/fac_prototype.h"
 #include "../neuro-fuzzy/fac_prototype_minkowski_regression.h"
 

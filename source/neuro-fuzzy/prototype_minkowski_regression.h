@@ -3,6 +3,7 @@
 #define PROTOTYPE_MINKOWSKI_REGRESSION_H
 
 #include <vector>
+#include <iostream>
 
 #include "../neuro-fuzzy/prototype_minkowski.h"
 #include "../neuro-fuzzy/premise.h"
@@ -25,8 +26,6 @@ namespace ksi
       virtual ~prototype_minkowski_regression ();
       
       ksi::premise * clone() const override;
-      
- 
      
      /** The method prints an object into output stream.
       * @param ss an output stream to print to

@@ -135,7 +135,6 @@ double ksi::prototype_minkowski_classification::debug_criterion_function(const s
  
 std::pair<std::vector<double>, std::vector<double> > ksi::prototype_minkowski_classification::differentials_justified_granularity_principle(const std::vector<std::vector<double>>& X, const std::vector<double> & Y)
 {
-    ///@todo zaimplementować tę metodę
     try 
     {    
         

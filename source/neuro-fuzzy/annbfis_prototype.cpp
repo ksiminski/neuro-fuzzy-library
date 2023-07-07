@@ -145,7 +145,6 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
          auto klaster = podzial.getCluster(c);
          std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype_for_cluster(*klaster));
      /*
-         /// @todo To trzeba przerobić, żeby nie było dodawania poszczególnych deskryptorów, ale po prostu cały prototyp.
          for (std::size_t a = 0; a < nAttr_1; a++)
          {
              const ksi::descriptor & des = *klaster->getAddressOfDescriptor(a);

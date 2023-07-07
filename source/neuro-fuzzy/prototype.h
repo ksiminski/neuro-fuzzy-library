@@ -55,6 +55,15 @@ namespace ksi
        virtual double distance_to_similarity (const double distance) const;
        
       
+     /** The method elaborates  cardinality of the prototype, average value of decision attribute in the prototype, and similarities of add data to the prototype
+      @param X dataset
+      @param Y decision attribute
+      @return cardinality of the prototype, average value of decision attribute in the prototype, and similarities of the data to the prototype
+      @date 2023-07-05
+      */
+     std::tuple<double, double, std::vector<double>> cardinality_similarities (const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const;
+
+
    };
 }
 

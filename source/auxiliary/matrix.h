@@ -203,6 +203,27 @@ namespace ksi
       }
       
    public:
+      auto begin()
+      {
+         return data.begin();
+      }
+
+      auto end()
+      {
+         return data.end();
+      }
+
+      auto begin() const 
+      {
+         return data.begin();
+      }
+
+      auto end() const
+      {
+         return data.end();
+      }
+
+   public:
        /** The method shuffles the rows of the matrix 
         @date 2020-08-07 
         */

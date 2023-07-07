@@ -1,6 +1,6 @@
 
-#ifndef PROTOTYPE_MINKOWSKI_H
-#define PROTOTYPE_MINKOWSKI_H
+#ifndef PROTOTYPE_MAHALONOBIS_H
+#define PROTOTYPE_MAHALONOBIS_H
 
 #include <vector>
 
@@ -11,26 +11,25 @@
 
 namespace ksi
 {
-   /** Prototype with Minkowski distance used for similarity.
-    @date 2021-01-27 */ 
-   class prototype_minkowski : public prototype
+   /** Prototype with Mahalanobis distance used for similarity.
+    @date 2023-06-26 */ 
+   class prototype_mahalanobis : public prototype
    {
    protected:
-       double _m;   ///< exponent 
+       Matrix<double> _A;   ///< matrix for the Mahalanobis distance
        std::vector<double> _centre; ///< localisation of prototype centre (attributes)
-       std::vector<double> _weights; ///< weights of prototype attributes 
        
+       Matrix<double> _d_A;   ///< differencial for matrix for the Mahalanobis distance
        std::vector<double> _d_centre; ///< differentials of centres
-       std::vector<double> _d_weights; ///< differentials of weights
        
     public:
-      prototype_minkowski (const double m);
-      prototype_minkowski (const cluster & cl, const double m);
-      prototype_minkowski (const prototype_minkowski & wzor) = default;
-      prototype_minkowski (prototype_minkowski && wzor) = default;
-      prototype_minkowski & operator= (const prototype_minkowski & wzor) = default;
-      prototype_minkowski & operator= (prototype_minkowski && wzor) = default;
-      virtual ~prototype_minkowski ();
+      prototype_mahalanobis (const Matrix<double> m);
+      prototype_mahalanobis (const cluster & cl, const Matrix<double> m);
+      prototype_mahalanobis (const prototype_mahalanobis & wzor) = default;
+      prototype_mahalanobis (prototype_mahalanobis && wzor) = default;
+      prototype_mahalanobis & operator= (const prototype_mahalanobis & wzor) = default;
+      prototype_mahalanobis & operator= (prototype_mahalanobis && wzor) = default;
+      virtual ~prototype_mahalanobis ();
       
 //       ksi::premise * clone() const override;
       
@@ -38,16 +37,17 @@ namespace ksi
       
       virtual double get_similarity (const std::vector<double> & X) const override;
       
-      virtual void addDescriptor (const descriptor & d) override;
+      virtual void addDescriptor (const descriptor & d) override; 
       
       
       /** The method cummulates differentials for an X data item in a rule. 
        @param X the data item to cummulate differantials for 
        @param partial_differential some differentials from other rules
-       @date 2021-01-28
+       @date 2023-07-06
        */
      virtual void cummulate_differentials(std::vector< double > X, double partial_differential) override;
                                   
+     /** @date 2023-07-02*/
      void reset_differentials() override;
      
      /** The method prints an object into output stream.
@@ -61,41 +61,46 @@ namespace ksi
        */
      virtual void actualise_parameters (double eta) override;
      
+     virtual std::string get_name() const override;
+     virtual std::string get_description() const override;
      
      virtual void justified_granularity_principle (const std::vector<std::vector<double>> & X, const std::vector<double> & Y) override; 
                                                    
    protected:
      /** The method elaborates differentials for the justified granularity principle.
-      @date 2021-04-18
+      @date 2023-07-04
+      @return first:  vector of differentials for prototype centres
+              second: matrix of differentials for matrix in Mahalanobis metric
       */  
      virtual
-     std::pair<std::vector<double>, std::vector<double>> differentials_justified_granularity_principle (
+     std::pair<std::vector<double>, ksi::Matrix<double>> differentials_justified_granularity_principle (
          const std::vector<std::vector<double>>& X, 
          const std::vector<double> & Y) = 0;
-     
-     /** The method elaborates differentials of similarities.
+
+     /** The method elaborates differentials of similarities. This method is a part of the grandient tuning algorithm.
       @return differentials of similarities with regard to attributes (centres),
-              differentials of similarities with regard to weights of attributes.
+              differentials of similarities with regard to elements of covariance matrix for the Mahalanobis distance 
       @param X dataset
-      @date 2021-04-27
+      @date 2023-07-03
       */
-     std::pair<ksi::Matrix<double>, ksi::Matrix<double>> similarity_differentials(const std::vector<std::vector<double>>& X);
+     std::pair<ksi::Matrix<double>, std::vector<ksi::Matrix<double>>> similarity_differentials(const std::vector<std::vector<double>>& X);
      
      
      /** The method elaborates differentials of average of decision attribute
       @return differentials with regard to attributes (centres),
-              differentials with regard to weights of attributes.
+              differentials with regard to items of the distance matrix
       @param X dataset
       @param dsim_da differentials of similarities with regard to attributes (centres)
-      @param dsim_za differentials of similarities with regard to weights of attributes
-      @param kardynalnosc cardinality of the prototype
-      @date 2021-04-27
+      @param dsim_aij differentials of similarities with regard to items of the distance matrix
+      @param cardinality cardinality of the prototype
+      @date 2023-07-04
+      @todo zasada uzasadnionej granulacji
       */
-     std::pair<std::vector<double>, std::vector<double>> decision_attribute_average_differentials (
+      std::pair<std::vector<double>, std::vector<ksi::Matrix<double>>> decision_attribute_average_differentials (
      	const std::vector<double> & Y,
      	const ksi::Matrix<double> & dsim_da, 
-    	const ksi::Matrix<double> & dsim_za,
-    	const double kardynalnosc);
+    	const std::vector<ksi::Matrix<double>> & dsim_aij,
+    	const double cardinality);
      
      
      /** The method elaborates differentials of cardinality and variance 
@@ -110,6 +115,7 @@ namespace ksi
       @param average_y average of decision attribute
       @param cardinality cardinality of the prototype
       @date 2021-04-27
+      @todo zasada uzasadnionej granulacji
       */
      std::pair<std::vector<double>, std::vector<double>> cardinality_variance_differentials (
          const std::vector<double> & Y, 
@@ -121,8 +127,7 @@ namespace ksi
          const double & average_y, 
          const double & cardinality);
      
-     virtual double debug_criterion_function(const std::vector<std::vector<double>>& X,
-                                     const std::vector<double> & Y) const;     
+     virtual double debug_criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const;     
    };
 }
 

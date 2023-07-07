@@ -9,6 +9,7 @@
 
 #include "../auxiliary/definitions.h"
 #include "../auxiliary/vector-operators.h"
+#include "../auxiliary/matrix.h"
 #include "../service/debug.h"
 
 
@@ -124,7 +125,19 @@ namespace ksi
                          );
    }
 
-    
+   bool is_valid (const ksi::Matrix<double> & m)
+   {
+       return std::all_of(m.begin(), m.end(),
+                          [](const std::vector<double> &d)
+                          {
+                              return std::all_of(d.begin(), d.end(),
+                              [] (double d)
+                              {
+                                 return std::isfinite(d); 
+                              });
+                          });
+   }
+
    /*
    std::ostream & operator << (std::ostream & ss, const std::vector<std::pair<double, double>> & we)
    {

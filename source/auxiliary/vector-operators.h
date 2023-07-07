@@ -6,6 +6,8 @@
 #include <vector>
 #include <iostream>
 
+#include "../auxiliary/matrix.h"
+
 namespace ksi 
 {
 //   std::ostream & operator << (std::ostream & ss, const std::vector<double> & we);
@@ -62,6 +64,11 @@ namespace ksi
                false if any of values is NaN or infinity.
        @date 2021-04-27 */
    bool is_valid (const std::vector<double> & l);
+
+   /** @return true of all value in a matrix are numbers,
+               false if any of values is NaN or infinity.
+       @date 2023-07-04 */
+   bool is_valid (const ksi::Matrix<double> & m);
 
 }
 
