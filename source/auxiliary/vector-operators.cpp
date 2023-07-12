@@ -138,6 +138,13 @@ namespace ksi
                           });
    }
 
+   bool is_valid (const std::vector<ksi::Matrix<double>> & l)
+   {
+       return std::all_of(l.begin(), l.end(), 
+                          [] (const auto m) 
+                          { return is_valid(m);}
+                         );
+   }
    /*
    std::ostream & operator << (std::ostream & ss, const std::vector<std::pair<double, double>> & we)
    {

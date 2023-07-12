@@ -1,7 +1,7 @@
 
-#include "../neuro-fuzzy/prototype_mahalanobis.h"
-#include "../neuro-fuzzy/prototype_mahalanobis.h"
+#include "../neuro-fuzzy/prototype_mahalanobis.h" 
 #include "../neuro-fuzzy/prototype_mahalanobis_classification.h"
+#include "../neuro-fuzzy/premise.h"
 
 #include "../auxiliary/matrix.h"
 #include "../partitions/cluster.h"
@@ -65,12 +65,11 @@ ksi::prototype_mahalanobis_classification & ksi::prototype_mahalanobis_classific
 
    return *this;
 }
-
-ksi::prototype_mahalanobis * ksi::prototype_mahalanobis_classification::clone () const
+*/
+ksi::premise * ksi::prototype_mahalanobis_classification::clone () const
 {
    // prototype design pattern
    return new ksi::prototype_mahalanobis_classification(*this);
 }
 
-*/
 

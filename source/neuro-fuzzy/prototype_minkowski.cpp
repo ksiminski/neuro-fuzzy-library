@@ -374,7 +374,8 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
         std::vector<double> rozniczki_z = dkappa_dz - dzeta_dz;
         
         return {rozniczki_a, rozniczki_z};
-    } CATCH;
+    } 
+    CATCH;
 }
 
 // std::pair<std::vector<double>, std::vector<double> > ksi::prototype_minkowski::differentials_justified_granularity_principle(const std::vector<std::vector<double>>& X,

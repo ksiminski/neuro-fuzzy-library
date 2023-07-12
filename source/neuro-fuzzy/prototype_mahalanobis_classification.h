@@ -3,7 +3,7 @@
 #define PROTOTYPE_MAHALANOBIS_CLASSIFICATION_H
 
 #include "../neuro-fuzzy/prototype_mahalanobis.h"
-#include "../neuro-fuzzy/prototype_mahalanobis.h"
+#include "../neuro-fuzzy/premise.h"
 
 #include "../partitions/cluster.h"
 
@@ -19,7 +19,7 @@ namespace ksi
       prototype_mahalanobis_classification & operator= (const prototype_mahalanobis_classification & wzor) = default;
       prototype_mahalanobis_classification & operator= (prototype_mahalanobis_classification && wzor) = default;
       virtual ~prototype_mahalanobis_classification ();
-      // virtual prototype_mahalanobis * clone () const;  // prototype design pattern
+      virtual premise * clone () const;  // prototype design pattern
       
    public:
       /** The method elaborates differentials for the justified granularity principle.

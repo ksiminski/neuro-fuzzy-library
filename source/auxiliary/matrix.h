@@ -756,7 +756,6 @@ namespace ksi
       /** Operator scales a matrix by a factor (double value). The operator/ for template type T must exist. Input matrix is not modified.
          * @param m right operand of multiplication
          * @return a product of matices, input matrix is not modified  
-         * @throw std::string with a comment, when dimensions of matrices do not match
       */
       Matrix operator / (const double factor)  
       {
@@ -771,6 +770,24 @@ namespace ksi
             } 
          }
          return res;        
+      }
+
+      /** Operator scales a matrix by a factor (double value). The operator/ for template type T must exist. Input matrix is not modified.
+         * @param m right operand of multiplication
+         * @return a product of matices, input matrix is not modified  
+         * @date 2023-07-09
+      */
+      Matrix & operator /= (const double factor)  
+      {
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+            {
+               data[w][k] /= factor;
+            } 
+         }
+         return *this;        
       }
 
  

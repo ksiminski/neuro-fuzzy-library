@@ -55,7 +55,7 @@ void ksi::prototype_mahalanobis::addDescriptor(const ksi::descriptor & d)
 {
    try 
    {
-        _centre.push_back(d.getCoreMean()); /// @todo To chyba będzie OK, ale się nad tym jeszcze zastanów! 
+        _centre.push_back(d.getCoreMean()); 
 
    } CATCH;
 }
@@ -138,7 +138,6 @@ std::string ksi::prototype_mahalanobis::get_description() const
     return std::string ("Mahalanobis prototypes");
 }
 
-///@todo
 void ksi::prototype_mahalanobis::justified_granularity_principle(const std::vector<std::vector<double> >& X, const std::vector<double>& Y)
 {
     try 
@@ -188,15 +187,15 @@ void ksi::prototype_mahalanobis::justified_granularity_principle(const std::vect
 }
 
 
-std::pair<ksi::Matrix<double>, std::vector<ksi::Matrix<double>>> ksi::prototype_mahalanobis::similarity_differentials(const std::vector<std::vector<double>>& X)
+std::pair<std::vector<std::vector<double>>, std::vector<ksi::Matrix<double>>> ksi::prototype_mahalanobis::similarity_differentials(const std::vector<std::vector<double>>& X)
 {
     try 
     {
         auto nAttributes = _centre.size();  // liczba atrybutow
         auto nDataItems  = X.size();        // liczba danych
             
-        ksi::Matrix<double> ds_dp_x(nDataItems, nAttributes);  // rozniczki podobienstwa
-        std::vector<ksi::Matrix<double>> ds_daij_x (nDataItems);
+        std::vector<std::vector<double>> ds_dp_x(nDataItems, std::vector<double>(nAttributes));  // rozniczki podobienstwa
+       std::vector<ksi::Matrix<double>> ds_daij_x (nDataItems);
         ksi::metric_mahalanobis metryka (_A);
         double dr_dp = -1;
 
@@ -222,7 +221,7 @@ std::pair<ksi::Matrix<double>, std::vector<ksi::Matrix<double>>> ksi::prototype_
                 }
 
                 double ds_dp = ds_dd2 * dd2_dr * dr_dp;
-                ds_dp_x(x, i) = ds_dp;
+                ds_dp_x[x][i] = ds_dp;
 
 
                 ksi::Matrix ds_daij (nAttributes, nAttributes, 0.0);
@@ -240,54 +239,172 @@ std::pair<ksi::Matrix<double>, std::vector<ksi::Matrix<double>>> ksi::prototype_
     } CATCH;
 }
  
-///@todo To trzeba dobrze przemyśleć, czy tak ma być na pewno.       
-    	
-std::pair<std::vector<double>, std::vector<ksi::Matrix<double>>> ksi::prototype_mahalanobis::decision_attribute_average_differentials (const std::vector<double> & Y, const ksi::Matrix<double> & dsim_da, const std::vector<ksi::Matrix<double>> & dsim_aij, const double cardinality)
+std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::decision_attribute_average_differentials (const std::vector<double> & Y, const std::vector<std::vector<double>> & dsim_dp, const std::vector<ksi::Matrix<double>> & dsim_aij, const double cardinality)
 {
     try 
-    { /*
+    { 
         auto nAtrybut = _centre.size();  // liczba atrybutow
         auto nKrotka  = Y.size();        // liczba danych
         
-        std::vector<double> dysrednia_da (nAtrybut, 0.0);
-        std::vector<double> dysrednia_dz (nAtrybut, 0.0);
+        std::vector<double> dysrednia_dp (nAtrybut, 0.0);
+        ksi::Matrix<double> dysrednia_da (nAtrybut, nAtrybut, 0.0);
         
         for (std::size_t x = 0; x < nKrotka; x++)
         {
-            for (std::size_t a = 0; a < nAtrybut; a++)
+            for (std::size_t i = 0; i < nAtrybut; i++)
             {
-                dysrednia_da[a] += Y[x] * dsim_da.get_value(x, a);
-                dysrednia_dz[a] += Y[x] * dsim_dz.get_value(x, a);
+                dysrednia_dp[i] += Y[x] * dsim_dp[x][i];
+                for (std::size_t j = 0; j < nAtrybut; j++)
+                {
+                                
+                   dysrednia_da(i, j) += Y[x] * dsim_aij[x].get_value(i, j);
+                }
             }
         }
+      
+        double cardinality_2 = cardinality * cardinality;
+        for (auto & d : dysrednia_dp)
+            d /= cardinality_2;
+        dysrednia_da /= cardinality_2; // operator /= is implemented for matrices :-)
         
-        for (auto & d : dysrednia_da)
-            d /= cardinality * cardinality;
-        for (auto & d : dysrednia_dz)
-            d /= cardinality * cardinality;
-        
-        return { dysrednia_da, dysrednia_dz };
-        */
+        return { dysrednia_dp, dysrednia_da };
     } CATCH;
-    return { {}, {} };
 }
 
-///@todo
-std::pair<std::vector<double>, std::vector<double>> ksi::prototype_mahalanobis::cardinality_variance_differentials (
+std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::cardinality_variance_differentials (
     const std::vector<double> & Y,
     const std::vector<double> & similarities,
-    const std::vector<double> & dysrednia_da,
-    const std::vector<double> & dysrednia_dz,
-    const ksi::Matrix<double> & dsim_da, 
-    const ksi::Matrix<double> & dsim_dz, 
+    const std::vector<double> & dysrednia_dp,
+    const ksi::Matrix<double> & dysrednia_da,
+    const std::vector<std::vector<double>> & dsim_dp, 
+    const std::vector<ksi::Matrix<double>> & dsim_da, 
     const double & srednia_y, 
     const double & cardinality)
 {
     try 
     {
+        auto nAtrybut = _centre.size();  // liczba atrybutow
+        auto nKrotka  = Y.size();        // liczba danych
+        // suma pomocniczna:
+        double suma_iloczynu_kwadratow_roznic_podobienstwa {0.0};
+        for (std::size_t x = 0; x < nKrotka; x++)
+        {
+            double difference = Y[x] - srednia_y;
+            suma_iloczynu_kwadratow_roznic_podobienstwa += difference * difference * similarities[x];
+        }
         
-        return {{}, {}};
-    } CATCH;
+        // wyznaczenie rozniczek kardynalności (kappa)
+        // wyznaczenie rozniczek wariancji     (zeta)
+        
+        auto dodawacz = [] (const double a, const double b) {return a + b;};
+        std::vector<double> dkappa_dp (nAtrybut, 0.0);
+        ksi::Matrix<double> dkappa_daij (nAtrybut, nAtrybut, 0.0);
+        
+        std::vector<double> dzeta_dp (nAtrybut, 0.0);
+        ksi::Matrix<double> dzeta_daij (nAtrybut, nAtrybut, 0.0);
+        
+        for (std::size_t x = 0; x < nKrotka; ++x)
+        {
+            for (std::size_t i = 0; i < nAtrybut; ++i)
+            {
+                dkappa_dp[i] += dsim_dp[x][i];
+                for (std::size_t j = 0; j < nAtrybut; ++j)
+                {
+                    dkappa_daij(i, j) += dsim_da[x].get_value(i, j);
+                    double similarity = similarities[x];
+
+
+                }
+            }
+        }
+
+        // mamy dkappa_dp i dkappa_da
+        // trzeba jeszcze policzyć ddzeta_dp i ddzeta_da:
+        // ddzeta_dp:
+        for (std::size_t i = 0; i < nAtrybut; i++)
+        {
+            double pierwsza_suma {0};
+            double druga_suma {0};
+
+            for (std::size_t x = 0; x < nKrotka; x++)
+            {
+                double difference = Y[x] - srednia_y;
+                double difference_squared = difference * difference;
+
+                // pierwsza suma
+                auto p_s = difference * (difference * dsim_dp[x][i] - 2 * dysrednia_dp[i] * similarities[x]);                 
+                pierwsza_suma += p_s;
+
+
+                // druga suma
+                auto dr_s = difference_squared * similarities[x]; 
+                druga_suma += dr_s;
+            }
+
+            dzeta_dp[i] = (-1) * (cardinality * pierwsza_suma - dkappa_dp[i] * druga_suma) / (cardinality * cardinality);
+        }
+
+        // ddzeta_da
+        for (std::size_t i = 0; i < nAtrybut; i++)
+        {
+            for (std::size_t j = 0; j < nAtrybut; i++)
+            {
+                double pierwsza_suma{0};
+                double druga_suma{0};
+
+                for (std::size_t x = 0; x < nKrotka; x++)
+                {
+                    double difference = Y[x] - srednia_y;
+                    double difference_squared = difference * difference;
+
+                    // pierwsza suma
+                    auto p_s = difference * (difference * dsim_da[x].get_value(i, j) - 2 * dysrednia_da.get_value(i, j) * similarities[x]);
+                    pierwsza_suma += p_s;
+
+                    // druga suma
+                    auto dr_s = difference_squared * similarities[x];
+                    druga_suma += dr_s;
+                }
+
+                dzeta_daij(i, j) = (-1) * (cardinality * pierwsza_suma - dkappa_daij.get_value(i, j)* druga_suma) / (cardinality * cardinality);
+            }
+        }
+
+        /*
+        // do dokończnia !!!!!
+        for (std::size_t a = 0; a < nAtrybut; a++)
+        {
+            dkappa_dp[a] = dsim_dp.accumulate_column(a, 0.0, dodawacz);
+            dkappa_daij[a] = dsim_dz.accumulate_column(a, 0.0, dodawacz);
+            
+            double suma_dla_a {0};
+            double suma_dla_z {0};
+            
+            for (std::size_t x = 0; x < nKrotka; x++)
+            {
+                double difference = Y[x] - srednia_y;
+                suma_dla_a += -2 * difference * dysrednia_da[a] * similarities[x] 
+                            + difference * difference * dsim_da.get_value(x, a);
+                suma_dla_z += -2 * difference * dysrednia_dz[a] * similarities[x] 
+                            + difference * difference * dsim_dz.get_value(x, a);
+            }
+            
+            dzeta_dp[a] = (cardinality * suma_dla_a - dkappa_dp[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (cardinality * cardinality); 
+            
+            dzeta_daij[a] = (cardinality * suma_dla_z - dkappa_daij[a] * suma_iloczynu_kwadratow_roznic_podobienstwa) / (cardinality * cardinality); 
+        }          
+        
+        std::vector<double> rozniczki_a = dkappa_dp - dzeta_dp;
+        std::vector<double> rozniczki_z = dkappa_daij - dzeta_daij;
+        
+        return {rozniczki_a, rozniczki_z};
+        */
+        std::vector<double> rozniczki_p = dkappa_dp - dzeta_dp;
+        ksi::Matrix<double> rozniczki_aij = dkappa_daij - dzeta_daij;
+        
+        return {rozniczki_p, rozniczki_aij};
+    } 
+    CATCH;
 }
 
 // std::pair<std::vector<double>, std::vector<double> > ksi::prototype_mahalanobis::differentials_justified_granularity_principle(const std::vector<std::vector<double>>& X,

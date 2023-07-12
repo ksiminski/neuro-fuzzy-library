@@ -70,6 +70,11 @@ namespace ksi
        @date 2023-07-04 */
    bool is_valid (const ksi::Matrix<double> & m);
 
+   /** @return true of all value in a vector are numbers,
+               false if any of values is NaN or infinity.
+       @date 2023-07-04 */
+   bool is_valid (const std::vector<ksi::Matrix<double>> & l);
+
 }
 
 #endif 

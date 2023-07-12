@@ -83,47 +83,45 @@ namespace ksi
       @param X dataset
       @date 2023-07-03
       */
-     std::pair<ksi::Matrix<double>, std::vector<ksi::Matrix<double>>> similarity_differentials(const std::vector<std::vector<double>>& X);
+     std::pair<std::vector<std::vector<double>>, std::vector<ksi::Matrix<double>>> similarity_differentials(const std::vector<std::vector<double>>& X);
      
      
      /** The method elaborates differentials of average of decision attribute
       @return differentials with regard to attributes (centres),
               differentials with regard to items of the distance matrix
       @param X dataset
-      @param dsim_da differentials of similarities with regard to attributes (centres)
+      @param dsim_dp differentials of similarities with regard to attributes (centres)
       @param dsim_aij differentials of similarities with regard to items of the distance matrix
       @param cardinality cardinality of the prototype
-      @date 2023-07-04
-      @todo zasada uzasadnionej granulacji
+      @date 2023-07-09
       */
-      std::pair<std::vector<double>, std::vector<ksi::Matrix<double>>> decision_attribute_average_differentials (
-     	const std::vector<double> & Y,
-     	const ksi::Matrix<double> & dsim_da, 
-    	const std::vector<ksi::Matrix<double>> & dsim_aij,
-    	const double cardinality);
+      std::pair<std::vector<double>, ksi::Matrix<double>> decision_attribute_average_differentials (
+            const std::vector<double> & Y,
+            const std::vector<std::vector<double>> & dsim_dp,
+            const std::vector<ksi::Matrix<double>> & dsim_aij,
+            const double cardinality);
      
      
      /** The method elaborates differentials of cardinality and variance 
       @return differentials with regard to attributes (centres),
-              differentials with regard to weights of attributes.
+              differentials with regard to elements of covariance matrix.
       @param Y decision attributes
       @param similarities similarities of data examples to the prototype
-      @param dyaverage_da differentials of average of decision attribute with regard to attributes (centres)
-      @param dyaverage_dz differentials of average of decision attribute with regard to weights of attributes
-      @param dsim_da differentials of similarities with regard to attributes (centres)
-      @param dsim_za differentials of similarities with regard to weights of attributes
+      @param dyaverage_dp differentials of average of decision attribute with regard to attributes (centres)
+      @param dyaverage_da differentials of average of decision attribute with regard to elements of the covariance matrix
+      @param dsim_dp differentials of similarities with regard to attributes (centres)
+      @param dsim_da differentials of similarities with regard to weights of attributes
       @param average_y average of decision attribute
       @param cardinality cardinality of the prototype
-      @date 2021-04-27
-      @todo zasada uzasadnionej granulacji
+      @date 2021-07-11
       */
-     std::pair<std::vector<double>, std::vector<double>> cardinality_variance_differentials (
+     std::pair<std::vector<double>, ksi::Matrix<double>> cardinality_variance_differentials (
          const std::vector<double> & Y, 
          const std::vector<double> & similarities,
-         const std::vector<double> & dyaverage_da,
-         const std::vector<double> & dyaverage_dz,
-         const ksi::Matrix<double> & dsim_da, 
-         const ksi::Matrix<double> & dsim_dz, 
+         const std::vector<double> & dyaverage_dp,
+         const ksi::Matrix<double> & dyaverage_da,
+         const std::vector<std::vector<double>> & dsim_dp, 
+         const std::vector<ksi::Matrix<double>> & dsim_da, 
          const double & average_y, 
          const double & cardinality);
      
