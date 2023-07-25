@@ -212,7 +212,7 @@ void ksi::prototype_minkowski::justified_granularity_principle(const std::vector
         for (int i = 0; i < nIteration; i++)
         {
             //// dopasowanie ETY
-            auto criterion = debug_criterion_function(X, Y);
+            auto criterion = criterion_function(X, Y);
 //             debug(criterion);
             
             if (criterion < criterion_prev)
@@ -338,7 +338,7 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
             suma_iloczynu_kwadratow_roznic_podobienstwa += difference * difference * similarities[x];
         }
         
-        // wyznaczenie rozniczek cardinalityi (kappa)
+        // wyznaczenie rozniczek kardynalności (kappa)
         // wyznaczenie rozniczek wariancji     (zeta)
         
         auto dodawacz = [] (const double a, const double b) {return a + b;};
@@ -406,15 +406,14 @@ std::pair<std::vector<double>, std::vector<double>> ksi::prototype_minkowski::ca
 //     CATCH;
 // }
 
-
-double ksi::prototype_minkowski::debug_criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const
+/*
+double ksi::prototype_minkowski::criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const
 {
     try 
     {
-        // wyznaczam kardynalnosc
         auto [cardinality, srednia_y, similarities] = cardinality_similarities(X, Y);
         
-        // wyznaczam jeszcze wariancje
+        // and the variance
         auto size = Y.size();
         double suma = 0;
         for (std::size_t i = 0; i < size; i++)
@@ -428,4 +427,4 @@ double ksi::prototype_minkowski::debug_criterion_function(const std::vector<std:
 //         return wariancja / cardinality;
     } CATCH;
 }
-
+*/

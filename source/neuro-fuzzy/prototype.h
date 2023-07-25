@@ -63,7 +63,11 @@ namespace ksi
       */
      std::tuple<double, double, std::vector<double>> cardinality_similarities (const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const;
 
-
+  /** The method elaborates the Gini index.
+        @param probability_positive probability of positive class
+        @param probability_negative probability of negative class
+        @return Gini index */
+      double Gini_values(const double probability_positive, const double probability_negative) const;
    };
 }
 

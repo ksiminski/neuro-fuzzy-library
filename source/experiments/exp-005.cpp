@@ -14,6 +14,8 @@
 #include "../implications/imp-reichenbach.h"
 #include "../tnorms/t-norm-product.h"
 
+#include "../partitions/gk.h"
+
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/ma.h"
 #include "../neuro-fuzzy/tsk.h"
@@ -24,6 +26,8 @@
 #include "../neuro-fuzzy/annbfis_prototype.h"
 #include "../neuro-fuzzy/fac_prototype_minkowski_regression.h"
 #include "../neuro-fuzzy/fac_prototype_minkowski_classification.h"
+#include "../neuro-fuzzy/fac_prototype_mahalanobis_regression.h"
+#include "../neuro-fuzzy/fac_prototype_mahalanobis_classification.h"
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 
 #include "../auxiliary/roc.h"
@@ -242,6 +246,43 @@ void ksi::exp_005::classification()
 			std::cout << std::endl;
 		}
 	}
+	
+	// MAHALANOBIS PROTOTYPE TSK NEURO-FUZZY CLASSIFIER
+	{
+		const double POSITIVE { 1 };
+        const double NEGATIVE { 0 };
+       
+		// auto th = ksi::roc_threshold::mean;  /// @todo przywróć pętlę
+		for (auto th : thresholds)  // for all thresholds
+		{
+			ksi::fac_prototype_mahalanobis_classification factory;
+			
+			ksi::gk algorithm;
+			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
+			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
+
+			debug(NUMBER_OF_RULES);
+			ksi::tsk_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory, POSITIVE,  NEGATIVE, th);
+
+			std::string threshold_name;
+			switch(th)
+			{
+				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
+				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
+				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
+				default                                   : threshold_name = "something-wrong-has-happened"; break;
+			}
+
+
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+			std::cout << "\tthreshold: " << threshold_name    << std::endl;
+			system.experiment_classification(TRAIN, TEST, result_file);    
+			std::cout << "\tResults saved to file " << result_file << std::endl;
+			std::cout << std::endl;
+		}
+	}
+	
 	
 	// PROTO_ANNBFIS NEURO-FUZZY CLASSIFIER
 	{

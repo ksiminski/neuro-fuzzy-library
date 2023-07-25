@@ -197,11 +197,7 @@ namespace ksi
           }
           CATCH;
       }
-                                         
-      
-       
-       
-   }; 
+   };
    
    /** Class for representation of a pair: double, std::size_t with operator< .*/
    class distance_index

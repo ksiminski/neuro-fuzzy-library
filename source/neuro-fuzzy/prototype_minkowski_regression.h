@@ -41,7 +41,9 @@ namespace ksi
      virtual std::string get_name() const override;
      virtual std::string get_description() const override;
      
-    
+     /** @return The method returns the value of the criterion function for the principle of justified granularity. */
+     virtual double criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const override;
+
    protected:
        /** The method elaborates differentials for the justified granularity principle.
       @date 2021-04-18

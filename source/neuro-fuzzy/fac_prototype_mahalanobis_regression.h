@@ -12,6 +12,7 @@ namespace ksi
    class fac_prototype_mahalanobis_regression : public fac_prototype_mahalanobis
    {
     public:
+      fac_prototype_mahalanobis_regression ();
       fac_prototype_mahalanobis_regression (const Matrix<double> & A);
       fac_prototype_mahalanobis_regression (const fac_prototype_mahalanobis_regression & wzor) = default;
       fac_prototype_mahalanobis_regression (fac_prototype_mahalanobis_regression && wzor) = default;

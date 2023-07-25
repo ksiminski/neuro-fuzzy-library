@@ -11,6 +11,10 @@
 #include "../neuro-fuzzy/fac_prototype_mahalanobis.h"
 #include "../neuro-fuzzy/fac_prototype_mahalanobis_regression.h"
 
+ksi::fac_prototype_mahalanobis_regression::fac_prototype_mahalanobis_regression () 
+{
+}
+
 ksi::fac_prototype_mahalanobis_regression::fac_prototype_mahalanobis_regression (const ksi::Matrix<double> & A) : ksi::fac_prototype_mahalanobis (A)
 {
 }
@@ -75,7 +79,7 @@ std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_regression::get_p
 
 std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_regression::get_prototype_for_cluster(const ksi::cluster & cl) 
 {
-    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_regression (cl, _A));
+    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_regression (cl));
 }
 
 

@@ -14,13 +14,16 @@ namespace ksi
    {
     public:
       prototype_mahalanobis_regression (const Matrix<double> m);
-      prototype_mahalanobis_regression (const cluster & cl, const Matrix<double> m);
+      prototype_mahalanobis_regression (const cluster & cl);
       prototype_mahalanobis_regression (const prototype_mahalanobis_regression & wzor) = default;
       prototype_mahalanobis_regression (prototype_mahalanobis_regression && wzor) = default;
       prototype_mahalanobis_regression & operator= (const prototype_mahalanobis_regression & wzor) = default;
       prototype_mahalanobis_regression & operator= (prototype_mahalanobis_regression && wzor) = default;
       virtual ~prototype_mahalanobis_regression ();
-      virtual premise * clone () const;
+      virtual premise * clone () const override;
+
+
+     virtual double criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const override;
       
    public:
       /** The method elaborates differentials for the justified granularity principle.

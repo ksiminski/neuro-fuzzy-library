@@ -2,6 +2,7 @@
 #ifndef GK_H
 #define GK_H
 
+#include "../partitions/fcm.h"
 #include "../partitions/fcm_generic.h"
 #include "../partitions/partitioner.h"
 #include "../metrics/metric_mahalanobis.h"

@@ -93,3 +93,13 @@ std::tuple<double, double, std::vector<double>> ksi::prototype::cardinality_simi
         return { cardinality, average_y, similarities };
     } CATCH;
 }
+
+
+double ksi::prototype::Gini_values(const double probability_positive, const double probability_negative) const
+{
+   try
+   {
+       return 1 - probability_positive * probability_positive - probability_negative * probability_negative;
+   }
+   CATCH;
+}

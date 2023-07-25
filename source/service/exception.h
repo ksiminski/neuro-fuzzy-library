@@ -7,7 +7,6 @@
 #include <exception>
 #include <string>  
 
-#include "../auxiliary/vector-operators.h"
 
 
 namespace ksi 

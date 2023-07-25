@@ -231,7 +231,12 @@ ksi::Matrix<double> ksi::gk::getAMatrixForMetric(const Matrix<double> & covarian
       auto C_inv = covariance_matrix.invert(status);
       if (status != 0)
       {
-         throw std::string ("Inversion of matrix impossible!");
+         std::stringstream s;
+         s << "Inversion of matrix impossible!" << std::endl;
+         s << "matrix: " << std::endl;
+         s << covariance_matrix << std::endl;
+         throw s.str();
+         // throw std::string ("Inversion of matrix impossible!");
       }
       auto determinant = covariance_matrix.determinant(status);
       if (status != 0)

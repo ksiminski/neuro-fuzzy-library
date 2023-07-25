@@ -1,12 +1,12 @@
 /** @file */
 
-#include <vector>
 
-#include "matrix.h"
-#include "least-error-squares-regression.h"
+
+#include "../auxiliary/least-error-squares-regression.h"
+#include "../auxiliary/matrix.h"
 #include "../service/debug.h"
  
-
+#include <vector>
 
 const double ksi::least_square_error_regression::BIG_NUMBER = 1'000'000'000;
 

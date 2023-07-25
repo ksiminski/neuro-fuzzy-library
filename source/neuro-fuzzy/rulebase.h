@@ -90,7 +90,7 @@ namespace ksi
       /** The method prints the rulebase to the output stream ss.
        * @param ss the output stream to print into
        */
-      void print(std::ostream & ss);
+      void print(std::ostream & ss) const;
       
       /** The method validates the rule base. It checks if all rules are valid. 
        @return true if all rules valid, otherwise false. */
@@ -116,6 +116,8 @@ namespace ksi
       const ksi::number get_answer(const ksi::datum & d, ksi::granule * pg) override;
       
       virtual ksi::set_of_granules * clone_set_of_granules() const override;
+
+      friend std::ostream & operator << (std::ostream & ss, const ksi::rulebase & rb);
        
    };
 }

@@ -16,6 +16,7 @@ namespace ksi
    protected:
        Matrix<double> _A; ///< covariance matrix for the Mahalanobis metric
     public:
+      fac_prototype_mahalanobis ();
       fac_prototype_mahalanobis (const Matrix<double> & A);
       fac_prototype_mahalanobis (const fac_prototype_mahalanobis & wzor) = default; 
       fac_prototype_mahalanobis (fac_prototype_mahalanobis && wzor) = default;

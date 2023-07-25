@@ -54,6 +54,24 @@ namespace ksi
                      const bool normalisation,
                      const ksi::fac_prototype & prot);
 
+      /** @param partitioner a partitioner for clustering of the input domain
+       *  @param number_of_tuning_iterations number of tuning iterations
+       *  @param learning_coefficient learning coefficient for tuning
+       *  @param normalisation true if data should be normalised
+       *  @param factory factory of prototypes
+       *  @param negative_class label of the negative class
+       *  @param positive_class label of the positive class
+       *  @param threshold_type threshold type for classification
+      */
+      nfs_prototype(const ksi::partitioner &parititoner,
+                    const int number_of_tuning_iterations,
+                    const double learning_coefficient,
+                    const bool normalisation,
+                    const ksi::fac_prototype &factory,
+                    const double positive_class,
+                    const double negative_class,
+                    const ksi::roc_threshold threshold_type);
+
       /** @date 2021-03-22 */
       nfs_prototype (const int number_of_rules,
                      const int number_of_clustering_iterations,

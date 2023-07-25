@@ -4,7 +4,7 @@
 #define LEAST_ERROR_SQUARES_REGRESSION_H
 
 #include <vector>
-#include "matrix.h"
+#include "../auxiliary/matrix.h"
 
 namespace ksi
 {

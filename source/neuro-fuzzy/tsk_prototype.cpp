@@ -68,6 +68,17 @@ ksi::tsk_prototype::tsk_prototype(const int number_of_rules,
 : ksi::nfs_prototype(number_of_rules, number_of_clustering_iterations, number_of_tuning_iterations, learning_coefficient, normalisation, prot)
 {
 }
+ksi::tsk_prototype::tsk_prototype(const ksi::partitioner &partitioner,
+                                  const int number_of_tuning_iterations,
+                                  const double learning_coefficient,
+                                  const bool normalisation,
+                                  const ksi::fac_prototype & factory,
+                                  const double positive_class,
+                                  const double negative_class,
+                                  const ksi::roc_threshold threshold_type)
+    : ksi::nfs_prototype(partitioner, number_of_tuning_iterations, learning_coefficient, normalisation, factory, positive_class, negative_class, threshold_type)
+{
+}
 
 ksi::tsk_prototype::tsk_prototype(const int number_of_rules, 
                                   const int number_of_clustering_iterations, 
@@ -110,8 +121,8 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
       try 
       {
           podzial = doPartition(trainX);
-      } CATCH; 
-      
+      } CATCH;
+
       std::size_t nX = trainX.getNumberOfData();
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
@@ -126,15 +137,19 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
 #pragma omp parallel for  
         for (int c = 0; c < _nRules; c++)
         {
-            std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype());
-            
-            auto klaster = podzial.getCluster(c);
-        
-            for (std::size_t a = 0; a < nAttr_1; a++)
-            {
-                const ksi::descriptor & des = *klaster->getAddressOfDescriptor(a);
-                pPrzeslanka->addDescriptor(des);
-            }
+     /*
+         std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype());
+     */
+         auto klaster = podzial.getCluster(c);
+         std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype_for_cluster(*klaster));
+     /*
+         for (std::size_t a = 0; a < nAttr_1; a++)
+         {
+             const ksi::descriptor & des = *klaster->getAddressOfDescriptor(a);
+             pPrzeslanka->addDescriptor(des);
+         }
+     */
+
             pPrzeslanka->justified_granularity_principle(wTrainX, wY);
 
             rule regula;
@@ -146,7 +161,7 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
             _pRulebase->addRule(regula);
         }
       } CATCH;
-      
+
       try 
       {
         // dla wyznaczenia wartosci konkuzji:

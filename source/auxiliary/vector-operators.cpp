@@ -7,9 +7,10 @@
 #include <random>
 #include <algorithm>
 
-#include "../auxiliary/definitions.h"
+
 #include "../auxiliary/vector-operators.h"
 #include "../auxiliary/matrix.h"
+#include "../auxiliary/definitions.h"
 #include "../service/debug.h"
 
 

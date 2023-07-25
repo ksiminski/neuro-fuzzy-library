@@ -1,13 +1,20 @@
 
 #include <memory>
 
-#include "../neuro-fuzzy/prototype.h"
 #include "../neuro-fuzzy/premise.h"
+
+#include "../neuro-fuzzy/prototype.h"
+#include "../neuro-fuzzy/prototype_mahalanobis.h"
 #include "../neuro-fuzzy/prototype_mahalanobis_classification.h"
+
+#include "../neuro-fuzzy/fac_prototype.h"
 #include "../neuro-fuzzy/fac_prototype_mahalanobis.h"
 #include "../neuro-fuzzy/fac_prototype_mahalanobis_classification.h"
 
-ksi::fac_prototype_mahalanobis_classification::fac_prototype_mahalanobis_classification (const ksi::Matrix<double> & A) : ksi::fac_prototype_mahalanobis (A)
+ksi::fac_prototype_mahalanobis_classification::fac_prototype_mahalanobis_classification () 
+{}
+
+ksi::fac_prototype_mahalanobis_classification::fac_prototype_mahalanobis_classification (const ksi::Matrix<double> & A, const double positive_class_label, const double negative_class_label) : ksi::fac_prototype_mahalanobis (A), _positive_class(positive_class_label), _negative_class(negative_class_label)
 {
 }
 
@@ -66,12 +73,12 @@ ksi::fac_prototype_mahalanobis * ksi::fac_prototype_mahalanobis_classification::
 
 std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_classification::get_prototype() const
 {
-    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_classification (_A));
+    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_classification (_A, _positive_class, _negative_class));
 }
 
 std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_classification::get_prototype_for_cluster(const ksi::cluster & cl) 
 {
-    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_classification (cl, _A));
+    return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_classification (cl, _positive_class, _negative_class));
 }
 
 

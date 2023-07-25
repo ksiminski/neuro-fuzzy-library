@@ -120,9 +120,10 @@ namespace ksi
          const ksi::Matrix<double> & dsim_dz, 
          const double & average_y, 
          const double & cardinality);
-     
-     virtual double debug_criterion_function(const std::vector<std::vector<double>>& X,
-                                     const std::vector<double> & Y) const;     
+
+     /** @return The method returns the value of the criterion function for the principle of justified granularity. */
+     virtual double criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const = 0;
+
    };
 }
 

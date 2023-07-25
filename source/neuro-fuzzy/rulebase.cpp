@@ -237,7 +237,7 @@ std::size_t ksi::rulebase::getNumberOfRules() const
    return rules.size();
 }
 
-void ksi::rulebase::print(std::ostream & ss)
+void ksi::rulebase::print(std::ostream & ss) const
 {
    std::size_t size = getNumberOfRules();
    for (std::size_t i = 0; i < size; i++)
@@ -317,4 +317,11 @@ ksi::set_of_granules * ksi::rulebase::clone_set_of_granules() const
     return new ksi::rulebase(*this);
 }
 
-
+namespace ksi
+{
+    std::ostream &operator<<(std::ostream &ss, const ksi::rulebase &rb)
+    {
+        rb.print(ss);
+        return ss;
+    }
+}

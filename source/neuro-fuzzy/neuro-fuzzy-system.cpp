@@ -716,20 +716,18 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
    CATCH;
 }
 
-
-ksi::result ksi::neuro_fuzzy_system::experiment_classification (
-                                  const std::string & trainDataFile,
-                                  const std::string & testDataFile,
-                                  const std::string & outputFile,
-                                  const int nNumberOfRules,
-                                  const int nNumberOfClusteringIterations,
-                                  const int nNumberofTuningIterations,
-                                  const double dbLearningCoefficient,
-                                  const bool bNormalisation,
-                                  const double dbPositiveClass,
-                                  const double dbNegativeClass,
-                                  ksi::roc_threshold threshold_type
-                                 )
+ksi::result ksi::neuro_fuzzy_system::experiment_classification(
+    const std::string &trainDataFile,
+    const std::string &testDataFile,
+    const std::string &outputFile,
+    const int nNumberOfRules,
+    const int nNumberOfClusteringIterations,
+    const int nNumberofTuningIterations,
+    const double dbLearningCoefficient,
+    const bool bNormalisation,
+    const double dbPositiveClass,
+    const double dbNegativeClass,
+    ksi::roc_threshold threshold_type)
 {
     try 
     {

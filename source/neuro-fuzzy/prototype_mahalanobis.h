@@ -23,18 +23,16 @@ namespace ksi
        std::vector<double> _d_centre; ///< differentials of centres
        
     public:
+      prototype_mahalanobis ();
       prototype_mahalanobis (const Matrix<double> m);
-      prototype_mahalanobis (const cluster & cl, const Matrix<double> m);
+      prototype_mahalanobis (const cluster & cl);
       prototype_mahalanobis (const prototype_mahalanobis & wzor) = default;
       prototype_mahalanobis (prototype_mahalanobis && wzor) = default;
       prototype_mahalanobis & operator= (const prototype_mahalanobis & wzor) = default;
       prototype_mahalanobis & operator= (prototype_mahalanobis && wzor) = default;
       virtual ~prototype_mahalanobis ();
       
-//       ksi::premise * clone() const override;
-      
       virtual double get_similarity (const ksi::datum & d) const override;
-      
       virtual double get_similarity (const std::vector<double> & X) const override;
       
       virtual void addDescriptor (const descriptor & d) override; 
@@ -125,7 +123,11 @@ namespace ksi
          const double & average_y, 
          const double & cardinality);
      
-     virtual double debug_criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const;     
+     virtual double criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double> & Y) const = 0;
+     
+     /** @return  dkappa_dp, dkappa_daij */
+     std::pair<std::vector<double>, ksi::Matrix<double>>  cardinality_differentials (const std::vector<std::vector<double>> & dsim_dp, const std::vector<ksi::Matrix<double>> & dsim_da);
+
    };
 }
 

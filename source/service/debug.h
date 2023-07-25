@@ -11,7 +11,6 @@
 // #include <utility>
 
 #include "../auxiliary/definitions.h"
-#include "../auxiliary/vector-operators.h"
 #include "../service/exception.h"
 
 

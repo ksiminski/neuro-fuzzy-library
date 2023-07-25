@@ -9,6 +9,10 @@
 
 #include "../auxiliary/matrix.h"
 
+ksi::fac_prototype_mahalanobis::fac_prototype_mahalanobis () 
+{
+}
+
 ksi::fac_prototype_mahalanobis::fac_prototype_mahalanobis (const ksi::Matrix<double> & A) : _A (A)
 {
 }

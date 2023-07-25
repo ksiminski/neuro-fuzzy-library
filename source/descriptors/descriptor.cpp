@@ -35,7 +35,7 @@ void ksi::descriptor::reset_differentials()
 
 void ksi::descriptor::actualise_parameters(double eta)
 {
-   //
+   // left unimplemented  
 }
 
 namespace ksi 

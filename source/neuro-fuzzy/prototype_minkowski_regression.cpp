@@ -117,3 +117,24 @@ std::pair<std::vector<double>, std::vector<double> > ksi::prototype_minkowski_re
     }
     CATCH;
 } 
+
+double ksi::prototype_minkowski_regression::criterion_function(const std::vector<std::vector<double>>& X, const std::vector<double>& Y) const
+{
+    try
+    {
+        auto [cardinality, srednia_y, similarities] = cardinality_similarities(X, Y);
+
+        // and the variance
+        auto size = Y.size();
+        double suma = 0;
+        for (std::size_t i = 0; i < size; i++)
+        {
+            auto difference = srednia_y - Y[i];
+            suma += difference * difference * similarities[i];
+        }
+        auto wariancja = suma / cardinality;
+
+        return cardinality - wariancja;
+//         return wariancja / cardinality;
+    } CATCH;
+}
