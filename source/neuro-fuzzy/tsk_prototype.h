@@ -67,7 +67,10 @@ namespace ksi
        * @param number_of_tuning_iterations number of tuning iterations
        * @param learning_coefficient learning coefficient for gradient method
        * @param normalisation normalisation of data 
-       * @param prot prototype factory 
+       * @param prot prototype factory
+       * @param positive_class label of the positive class
+       * @param negative_class label of the negative class
+       * @param threshold_type type of the threshold in classification 
        * @date 2023-07-12
        */
       tsk_prototype (const ksi::partitioner &partitioner,
