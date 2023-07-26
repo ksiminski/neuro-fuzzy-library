@@ -146,7 +146,7 @@ void ksi::exp_lab::fuzzy_system()
 		// [EN] run an experiment
 		std::vector<ksi::neuro_fuzzy_system *> systems { & MA };
 
-		const std::string DIRECTORY ("data/exp-lab");
+		const std::string DIRECTORY ("../data/exp-lab");
 		const std::string TRAIN     (DIRECTORY + "/train.txt");
 		const std::string RESULTS   (DIRECTORY + "/results-fuzzy.txt");
 		const bool NORMALISATION = false;
@@ -166,9 +166,7 @@ void ksi::exp_lab::neuro_fuzzy_system()
 	try 
 	{
 		// regression 
-
-
-		const std::string DIRECTORY ("data/exp-lab");
+		const std::string DIRECTORY ("../data/exp-lab");
 		const std::string TRAIN   (DIRECTORY + "/train"); 
 		const std::string TEST    (DIRECTORY + "/test");
 		const std::string RESULTS (DIRECTORY + "/results-neuro-fuzzy");

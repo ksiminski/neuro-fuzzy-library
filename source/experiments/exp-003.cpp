@@ -31,7 +31,7 @@ void ksi::exp_003::execute()
    try
    {
       {
-         std::string dataDir ("data/exp-003");
+         std::string dataDir ("../data/exp-003");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 3;
          std::string data (dataDir + "/" + "rfcom-10-5.data");
@@ -64,7 +64,7 @@ void ksi::exp_003::execute()
          const double beta  = 1.0;
          const bool useMarginalisedDatasetForClusterCentres = true;
 
-         std::string dataDir ("data/exp-003");
+         std::string dataDir ("../data/exp-003");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 3;
          std::string data (dataDir + "/" + "rfcom-10-5.data");
@@ -113,7 +113,7 @@ void ksi::exp_003::execute()
       {
          const bool useMarginalisedDatasetForClusterCentres = true;
 
-         std::string dataDir ("data/exp-003");
+         std::string dataDir ("../data/exp-003");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 3;
          std::string data (dataDir + "/" + "sub-135-245-m10.data");

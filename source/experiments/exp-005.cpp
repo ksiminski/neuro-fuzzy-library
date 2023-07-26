@@ -36,19 +36,16 @@
 
 #include "../experiments/exp-005.h"
 
-
-
-
 ksi::exp_005::exp_005()
 {
 }
-
 
 void ksi::exp_005::classification()
 {
 	std::cout << "classification" << std::endl;
 	ksi::imp_reichenbach implication;
 	ksi::t_norm_product Tnorm;
+	std::string RESULT_EXTENSION {".txt"};
 
 
 	std::vector<ksi::roc_threshold> thresholds { ksi::roc_threshold::mean,
@@ -58,12 +55,15 @@ void ksi::exp_005::classification()
 
 	const std::string EXPERIMENT           ("exp-005");
 	const std::string TYPE                 ("classification");
-	const std::string DATA_DIRECTORY       ("data/" + EXPERIMENT + "/" + TYPE);
-	const std::string RESULTS_DIRECTORY    ("results/" + EXPERIMENT + "/" + TYPE);
+	const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
+	// const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
+
+	const std::string RESULTS_DIRECTORY    ("../results/" + EXPERIMENT + "/" + TYPE);
 
 	const int NUMBER_OF_RULES = 5;
 	const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
-	const int NUMBER_OF_TUNING_ITERATIONS = 100;
+	//const int NUMBER_OF_TUNING_ITERATIONS = 100;
+	const int NUMBER_OF_TUNING_ITERATIONS = 100;  
 
 	const bool NORMALISATION = false;
 
@@ -100,8 +100,7 @@ void ksi::exp_005::classification()
 				default                                   : threshold_name = "something-wrong-has-happened"; break;
 			}
 
-
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -127,7 +126,7 @@ void ksi::exp_005::classification()
 			}
 
 
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -153,7 +152,7 @@ void ksi::exp_005::classification()
 			}
 
 
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -166,9 +165,8 @@ void ksi::exp_005::classification()
 	{
 		for (auto th : thresholds)  // for all thresholds
 		{
-
 			ksi::subspace_annbfis system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, th);
-
+            
 			std::string threshold_name;
 			switch(th)
 			{
@@ -179,7 +177,7 @@ void ksi::exp_005::classification()
 			}
 
 
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -205,8 +203,7 @@ void ksi::exp_005::classification()
 				default                                   : threshold_name = "something-wrong-has-happened"; break;
 			}
 
-
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -215,7 +212,7 @@ void ksi::exp_005::classification()
 		}
 	}
 	
-	// PROTO_TSK NEURO-FUZZY CLASSIFIER
+	// MINKOWSKI PROTOTYPE PROTO_TSK NEURO-FUZZY CLASSIFIER
 	{
 		const double POSITIVE { 1 };
         const double NEGATIVE { 0 };
@@ -238,7 +235,7 @@ void ksi::exp_005::classification()
 			}
 
 
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -246,11 +243,12 @@ void ksi::exp_005::classification()
 			std::cout << std::endl;
 		}
 	}
-	
+
 	// MAHALANOBIS PROTOTYPE TSK NEURO-FUZZY CLASSIFIER
 	{
+		const int NUMBER_OF_RULES = 3;
 		const double POSITIVE { 1 };
-        const double NEGATIVE { 0 };
+                const double NEGATIVE { 0 };
        
 		// auto th = ksi::roc_threshold::mean;  /// @todo przywróć pętlę
 		for (auto th : thresholds)  // for all thresholds
@@ -274,7 +272,7 @@ void ksi::exp_005::classification()
 			}
 
 
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -283,8 +281,7 @@ void ksi::exp_005::classification()
 		}
 	}
 	
-	
-	// PROTO_ANNBFIS NEURO-FUZZY CLASSIFIER
+	// MINKOWSKI PROTOTYPE ANNBFIS NEURO-FUZZY CLASSIFIER
 	{
 		const double POSITIVE { 1 };
         const double NEGATIVE { 0 };
@@ -307,8 +304,7 @@ void ksi::exp_005::classification()
 				default                                   : threshold_name = "something-wrong-has-happened"; break;
 			}
 
-
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name }; 
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
 			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 			std::cout << "\tthreshold: " << threshold_name    << std::endl;
 			system.experiment_classification(TRAIN, TEST, result_file);    
@@ -317,6 +313,44 @@ void ksi::exp_005::classification()
 		}
 	}
 	
+	// MAHALANOBIS PROTOTYPE ANNBFIS NEURO-FUZZY CLASSIFIER
+	{
+		const int NUMBER_OF_RULES = 3;
+		const double POSITIVE { 1 };
+        const double NEGATIVE { 0 };
+		const ksi::imp_reichenbach IMPLICATION;
+       
+		// auto th = ksi::roc_threshold::mean;  /// @todo przywróć pętlę
+		for (auto th : thresholds)  // for all thresholds
+		{
+			ksi::fac_prototype_mahalanobis_classification factory;
+			
+			ksi::gk algorithm;
+			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
+			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
+
+			debug(NUMBER_OF_RULES);
+			ksi::annbfis_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, IMPLICATION, factory, POSITIVE,  NEGATIVE, th);
+
+			std::string threshold_name;
+			switch(th)
+			{
+				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
+				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
+				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
+				default                                   : threshold_name = "something-wrong-has-happened"; break;
+			}
+
+
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
+			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+			std::cout << "\tthreshold: " << threshold_name    << std::endl;
+			system.experiment_classification(TRAIN, TEST, result_file);    
+			std::cout << "\tResults saved to file " << result_file << std::endl;
+			std::cout << std::endl;
+		}
+	}
+
 	// THREE-WAY DECISION NEURO-FUZZY CLASSIFIER
 	{
 		double noncommitment_value = 0.1; // half of width of the noncommitment interval
@@ -364,7 +398,7 @@ void ksi::exp_005::classification()
 				for (const auto & p : cascade_of_nfs)
 					cascade_name += std::string{"-"} + p->get_nfs_name();
 
-				std::string result_file { RESULTS + "-3WDNFS-" + cascade_name + "-" + threshold_name }; 
+				std::string result_file { RESULTS + "-3WDNFS-" + cascade_name + "-" + threshold_name + RESULT_EXTENSION }; 
 				ksi::three_way_decision_nfs system (cascade_of_nfs, TRAIN, TEST, result_file, noncommitment_value);
 				std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
 				std::cout << "\tthreshold: " << threshold_name    << std::endl;
@@ -385,11 +419,12 @@ void ksi::exp_005::regression()
 
 	ksi::imp_reichenbach implication;
 	ksi::t_norm_product Tnorm;
-
+	std::string RESULT_EXTENSION {".txt"};
+	
 	const std::string EXPERIMENT           ("exp-005");
 	const std::string TYPE                 ("regression");
-	const std::string DATA_DIRECTORY       ("data/" + EXPERIMENT + "/" + TYPE);
-	const std::string RESULTS_DIRECTORY    ("results/" + EXPERIMENT + "/" + TYPE);
+	const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
+	const std::string RESULTS_DIRECTORY    ("../results/" + EXPERIMENT + "/" + TYPE);
 
 	const int NUMBER_OF_RULES = 5;
 	const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
@@ -413,7 +448,7 @@ void ksi::exp_005::regression()
 	{
 		ksi::ma system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
@@ -423,7 +458,7 @@ void ksi::exp_005::regression()
 	{
 		ksi::tsk system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
@@ -433,7 +468,7 @@ void ksi::exp_005::regression()
 	{
 		ksi::annbfis system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
@@ -443,7 +478,7 @@ void ksi::exp_005::regression()
 	{
 		ksi::subspace_annbfis system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
@@ -453,31 +488,31 @@ void ksi::exp_005::regression()
 	{
 		ksi::fubi_annbfis system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
 	}
 
-	// PROTO_TSK
+	// MINKOWSKI PROTOTYPE TSK
 	{
 		const double minkowski_coefficient { 2.0 };
 		ksi::fac_prototype_minkowski_regression factory (minkowski_coefficient);
 		ksi::tsk_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
 	}
 
-	// PROTO_ANNBFIS
+	// MINKOWSKI PROTOTYPE ANNBFIS
 	{
 		const double minkowski_coefficient { 2.0 };
 		ksi::fac_prototype_minkowski_regression factory (minkowski_coefficient);
 		ksi::annbfis_prototype system (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, ksi::imp_reichenbach(), factory);
 		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-		std::string result_file { RESULTS + "-" + system.get_nfs_name() }; 
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
 		system.experiment_regression(TRAIN, TEST, result_file);
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
