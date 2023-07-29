@@ -63,7 +63,9 @@ namespace ksi
       virtual void cummulate_differentials (double x, double partial_differentials);
       
       virtual descriptor * clone () const = 0;
-      virtual std::string toString() const;
+      
+      /** @return The method returns the name and paramters of the descriptor. */
+      virtual std::string to_string() const;
       
      /** The method actualises values of parameters of the fuzzy descriptor
       * Default behaviour: nothing

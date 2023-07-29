@@ -60,9 +60,10 @@ ksi::descriptor * ksi::descriptor_gaussian_subspace::clone() const
 
 std::ostream& ksi::descriptor_gaussian_subspace::Print(std::ostream& ss) const
 {
-   ss << "c == " << _mean   << std::endl;
-   ss << "s == " << _stddev << std::endl;
-   ss << "z == " << _weight << std::endl;
+   ss << "descriptor: gaussian subspace" << std::endl;
+   ss << "   c == " << _mean   << std::endl;
+   ss << "   s == " << _stddev << std::endl;
+   ss << "   z == " << _weight << std::endl;
    return ss;
 }
 

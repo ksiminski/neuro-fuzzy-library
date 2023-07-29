@@ -142,15 +142,16 @@ ksi::descriptor * ksi::descriptor_semitriangular::clone() const
 
 std::ostream& ksi::descriptor_semitriangular::Print(std::ostream& ss) const
 {
+   ss << "descriptor: semitriangular" << std::endl;
    if (_core < _support_extremum) // lewy
    {
-      ss << "mi (" << _core << ") == 0" << std::endl;
-      ss << "mi (" << _support_extremum << ") == 1" << std::endl;
+      ss << "   mi (" << _core << ") == 0" << std::endl;
+      ss << "   mi (" << _support_extremum << ") == 1" << std::endl;
    }
    else // prawy
    {
-      ss << "mi (" << _support_extremum << ") == 1" << std::endl;
-      ss << "mi (" << _core << ") == 0" << std::endl;
+      ss << "   mi (" << _support_extremum << ") == 1" << std::endl;
+      ss << "   mi (" << _core << ") == 0" << std::endl;
    }
    return ss;
 }

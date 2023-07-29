@@ -96,7 +96,9 @@ std::vector<double> ksi::descriptor_triangular::getDifferentials(double x)
 
 std::ostream& ksi::descriptor_triangular::Print(std::ostream& ss) const
 {
-   ss << "(" << _support_min << ", " << _core << ", " << _support_max << ")";
+   ss << "descriptor: triangular" << std::endl;
+   
+   ss << "   (" << _support_min << ", " << _core << ", " << _support_max << ")";
    return ss;
 }
 

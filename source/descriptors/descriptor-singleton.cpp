@@ -51,7 +51,8 @@ ksi::descriptor_singleton::~descriptor_singleton()
 
 std::ostream& ksi::descriptor_singleton::Print(std::ostream& ss) const
 {
-   ss << "(" << _support_min << ")";
+   ss << "descriptor: singleton" << std::endl;
+   ss << "    support: " << _support_min << std::endl;
    return ss;
 }
 

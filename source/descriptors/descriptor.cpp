@@ -3,12 +3,17 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+
 #include "descriptor.h"
 #include "../service/debug.h"
 
-std::string ksi::descriptor::toString() const
+
+std::string ksi::descriptor::to_string() const
 {
-   return std::string ("[empty description]");
+   std::stringstream ss;
+   Print(ss);
+   return ss.str();
 }
 
 void ksi::descriptor::cummulate_differentials(double x, double partial_differentials)

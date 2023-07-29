@@ -36,9 +36,10 @@ double ksi::descriptor_interval_gaussian::getCoreMean() const
 
 std::ostream& ksi::descriptor_interval_gaussian::Print(std::ostream& ss) const
 {
-   ss << "c       == " << _mean << std::endl;
-   ss << "s upper == " << _stddevUpper << std::endl;
-   ss << "s lower == " << _stddev << std::endl;
+   ss << "descriptor: interval gaussian" << std::endl;
+   ss << "   c       == " << _mean << std::endl;
+   ss << "   s upper == " << _stddevUpper << std::endl;
+   ss << "   s lower == " << _stddev << std::endl;
    
    return ss; 
 }

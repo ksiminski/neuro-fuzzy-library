@@ -44,10 +44,11 @@ ksi::descriptor_interval_gaussian_subspace::descriptor_interval_gaussian_subspac
 
 std::ostream& ksi::descriptor_interval_gaussian_subspace::Print(std::ostream& ss) const
 {
-   ss << "c       == " << _mean << std::endl;
-   ss << "s upper == " << _stddevUpper << std::endl;
-   ss << "s lower == " << _stddev << std::endl;
-   ss << "z       == " << _weight << std::endl;
+   ss << "descriptor: interval gaussian subspace" << std::endl;
+   ss << "   c       == " << _mean << std::endl;
+   ss << "   s upper == " << _stddevUpper << std::endl;
+   ss << "   s lower == " << _stddev << std::endl;
+   ss << "   z       == " << _weight << std::endl;
    return ss; 
    
 }

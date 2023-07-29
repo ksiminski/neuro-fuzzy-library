@@ -87,8 +87,9 @@ ksi::descriptor * ksi::descriptor_gaussian::clone() const
 
 std::ostream & ksi::descriptor_gaussian::Print(std::ostream & ss) const
 {
-   ss << "c == " << _mean << std::endl;
-   ss << "s == " << _stddev << std::endl;
+   ss << "descriptor: gaussian" << std::endl;
+   ss << "   c == " << _mean << std::endl;
+   ss << "   s == " << _stddev << std::endl;
    
    return ss;
 }
@@ -103,14 +104,6 @@ ksi::descriptor_gaussian::descriptor_gaussian(const ksi::descriptor_gaussian & w
    sum_dE_dmean = wzor.sum_dE_dmean;
    sum_dE_dstddev = wzor.sum_dE_dstddev;
    
-}
-
- 
-std::string ksi::descriptor_gaussian::toString() const 
-{
-   std::stringstream ss;
-   Print(ss);
-   return ss.str();
 }
 
 void ksi::descriptor_gaussian::actualise_parameters(double eta)

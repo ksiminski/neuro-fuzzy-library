@@ -112,7 +112,9 @@ ksi::descriptor * ksi::descriptor_trapezoidal::clone() const
 
 std::ostream& ksi::descriptor_trapezoidal::Print(std::ostream& ss) const
 {
-   ss << "(" << _support_min << ", " << _core_min << ", " 
+   ss << "descriptor: trapezoidal" << std::endl;
+   
+   ss << "   (" << _support_min << ", " << _core_min << ", " 
       << _core_max << ", " << _support_max << ")";
    return ss;
 }

@@ -60,8 +60,6 @@ namespace ksi
 
       virtual descriptor * clone () const;
       
-      virtual std::string toString() const;
-      
       /** The method sets all cummulated differentials to zero. */
       virtual void reset_differentials ();
     

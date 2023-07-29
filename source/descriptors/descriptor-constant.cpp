@@ -55,7 +55,8 @@ std::vector<double> ksi::descriptor_constant::getDifferentials(double x)
 
 std::ostream& ksi::descriptor_constant::Print(std::ostream& ss) const
 {
-   ss << "(contant: " << _value << ")";
+   ss << "descriptor: constant" << std::endl;
+   ss << "   value: " << _value << std::endl;
    return ss;
 }
 
@@ -68,3 +69,5 @@ double ksi::descriptor_constant::getRandomValue(std::default_random_engine& engi
 {
     return _value;
 }
+
+ 
