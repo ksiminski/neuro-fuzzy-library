@@ -43,4 +43,8 @@ std::ostream& ksi::imp_goguen::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_goguen::to_string() const
+{
+   return std::string {"Goguen"};
+}
 

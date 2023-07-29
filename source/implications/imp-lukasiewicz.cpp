@@ -44,3 +44,7 @@ std::ostream& ksi::imp_lukasiewicz::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_lukasiewicz::to_string() const
+{
+   return std::string {"Lukasiewicz"};
+}

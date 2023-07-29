@@ -41,3 +41,7 @@ std::ostream& ksi::imp_reichenbach::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_reichenbach::to_string() const
+{
+   return std::string {"Reichenbach"};
+}

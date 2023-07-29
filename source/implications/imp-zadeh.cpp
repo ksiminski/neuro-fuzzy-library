@@ -49,6 +49,10 @@ std::ostream& ksi::imp_zadeh::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_zadeh::to_string() const
+{
+   return std::string {"Zadeh"};
+}
 
 
 

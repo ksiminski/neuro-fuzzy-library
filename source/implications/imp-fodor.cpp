@@ -52,3 +52,7 @@ std::ostream& ksi::imp_fodor::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_fodor::to_string() const
+{
+   return std::string {"Fodor"};
+}

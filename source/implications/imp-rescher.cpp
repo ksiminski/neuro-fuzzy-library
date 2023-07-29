@@ -43,4 +43,9 @@ std::ostream& ksi::imp_rescher::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_rescher::to_string() const
+{
+   return std::string {"Rescher"};
+}
+
 

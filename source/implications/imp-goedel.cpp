@@ -43,3 +43,7 @@ std::ostream& ksi::imp_goedel::Print(std::ostream& ss) const
    return ss;
 }
 
+std::string ksi::imp_goedel::to_string() const
+{
+   return std::string {"Goedel"};
+}

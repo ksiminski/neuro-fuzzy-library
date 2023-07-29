@@ -3,6 +3,7 @@
 #define IMPLICATION_H
 
 #include <iostream>
+#include <string>
 
 namespace ksi
 {
@@ -23,6 +24,10 @@ namespace ksi
       virtual ~implication();
       
       virtual std::ostream & Print (std::ostream & ss) const = 0;
+      
+      /** @return The method returns the name of the implication.
+          @date 2023-07-28 */
+      virtual std::string to_string() const = 0;
       
    };
 }
