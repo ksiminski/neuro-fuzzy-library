@@ -14,6 +14,8 @@
 #include "../descriptors/descriptor-triangular.h"
 #include "../descriptors/descriptor-semitriangular.h"
 #include "../descriptors/descriptor-sigmoidal.h"
+#include "../descriptors/descriptor_arctan.h"
+#include "../descriptors/descriptor_tanh.h"
 #include "../descriptors/descriptor-trapezoidal.h"
 #include "../descriptors/descriptor-triangular.h"
 #include "../neuro-fuzzy/consequence-MA.h"
@@ -24,6 +26,8 @@
 #include "../tnorms/t-norm-product.h"
 #include "../tnorms/t-norm-min.h"
 #include "../tnorms/t-norm-fodor.h"
+#include "../tnorms/t-norm-dubois-prade.h"
+#include "../tnorms/t-norm-einstein.h"
 #include "../auxiliary/definitions.h"
 #include "../implications/imp-reichenbach.h"
 #include "../neuro-fuzzy/ma.h"
@@ -92,22 +96,28 @@ void ksi::exp_lab::fuzzy_system()
 		// [PL] Proszę zamodelować zmienne lingwistyczne przy użyciu poniższych deskryptorów (zbiorów rozmytych).
 		// [EN] Please model the linguistic variables with the descriptors (fuzzy sets) below.
 
-		// [PL] deskryptory
-		// [EN] descriptors
+		// [PL] deskryptory (dostępne klasy)
+		// [EN] descriptors (available classes)
 		//         ksi::descriptor_gaussian
 		//         ksi::descriptor_semitriangular
-		//         ksi::descriptor_sigmoidal
 		//         ksi::descriptor_triangular
 		//         ksi::descriptor_trapezoidal
+		//         ksi::descriptor_sigmoidal
+		//         ksi::descriptor_arctan
+		//         ksi::descriptor_tanh
 
 
 
-		// [PL] T-normy
-		// [EN] T-norms
+		// [PL] T-normy (dostępne klasy)
+		// [EN] T-norms (available classes)
 		//          ksi::t_norm_lukasiewicz
 		//          ksi::t_norm_min
 		//          ksi::t_norm_product
 		//          ksi::t_norm_fodor 
+		//          ksi::t_norm_dubois_prade
+		//          ksi::t_norm_einstein
+		
+		
 
 
 		// [PL] przesłanka
