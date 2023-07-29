@@ -8,10 +8,11 @@
 
 namespace ksi
 {
+   /** The descriptor is describes a fuzzy set with a tanh membership function defined as \f$f(x; c, s) = 1 / \left(1+ \exp\left( - s (x - c) \right) \right)\f$. */ 
    class descriptor_sigmoidal : virtual public descriptor
    {
-      double _cross;
-      double _slope;
+      double _cross;  ///< \f$ c\f$: cross
+      double _slope;  ///< \f$ s\f$: slope
       
       double _previous_cross;
       double _previous_slope;
@@ -21,6 +22,7 @@ namespace ksi
       
       descriptor_sigmoidal (const descriptor_sigmoidal & wzor);
       
+      /** @return \f$f(x; c, s) = 1 / \left(1+ \exp\left( - s (x - c) \right) \right)\f$ */
       virtual double getMembership (double x);
       
       /** The method elaborates the differentials of the membership function
