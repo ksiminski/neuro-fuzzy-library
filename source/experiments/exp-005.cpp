@@ -56,25 +56,20 @@ void ksi::exp_005::classification()
 	const std::string EXPERIMENT           ("exp-005");
 	const std::string TYPE                 ("classification");
 	const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
-	// const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
-
 	const std::string RESULTS_DIRECTORY    ("../results/" + EXPERIMENT + "/" + TYPE);
 
 	const int NUMBER_OF_RULES = 5;
 	const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
-	//const int NUMBER_OF_TUNING_ITERATIONS = 100;
 	const int NUMBER_OF_TUNING_ITERATIONS = 100;  
 
 	const bool NORMALISATION = false;
 
-	const double ETA = 0.1;
+	const double ETA = 0.001;
 	const double POSITIVE_CLASS_LABEL = 1.0;
 	const double NEGATIVE_CLASS_LABEL = 0.0;
 
-
 	// dataset
 	std::string dataset_name { "haberman" };
-
 
 	std::cout << "data set: " << dataset_name << std::endl;
 	std::string dataset {DATA_DIRECTORY + "/" + dataset_name};
@@ -243,44 +238,6 @@ void ksi::exp_005::classification()
 			std::cout << std::endl;
 		}
 	}
-
-	// MAHALANOBIS PROTOTYPE TSK NEURO-FUZZY CLASSIFIER
-	{
-		const int NUMBER_OF_RULES = 3;
-		const double POSITIVE { 1 };
-                const double NEGATIVE { 0 };
-       
-		// auto th = ksi::roc_threshold::mean;  /// @todo przywróć pętlę
-		for (auto th : thresholds)  // for all thresholds
-		{
-			ksi::fac_prototype_mahalanobis_classification factory;
-			
-			ksi::gk algorithm;
-			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
-			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
-
-			debug(NUMBER_OF_RULES);
-			ksi::tsk_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory, POSITIVE,  NEGATIVE, th);
-
-			std::string threshold_name;
-			switch(th)
-			{
-				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
-				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
-				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
-				default                                   : threshold_name = "something-wrong-has-happened"; break;
-			}
-
-
-			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
-			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-			std::cout << "\tthreshold: " << threshold_name    << std::endl;
-			system.experiment_classification(TRAIN, TEST, result_file);    
-			std::cout << "\tResults saved to file " << result_file << std::endl;
-			std::cout << std::endl;
-		}
-	}
-	
 	// MINKOWSKI PROTOTYPE ANNBFIS NEURO-FUZZY CLASSIFIER
 	{
 		const double POSITIVE { 1 };
@@ -313,6 +270,40 @@ void ksi::exp_005::classification()
 		}
 	}
 	
+	// MAHALANOBIS PROTOTYPE TSK NEURO-FUZZY CLASSIFIER
+	{
+		const int NUMBER_OF_RULES = 3;
+  		const double POSITIVE { 1 }; 
+		const double NEGATIVE { 0 };
+       
+		for (auto th : thresholds)  // for all thresholds
+		{
+			ksi::fac_prototype_mahalanobis_classification factory;
+			
+			ksi::gk algorithm;
+			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
+			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
+
+			ksi::tsk_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory, POSITIVE,  NEGATIVE, th);
+
+			std::string threshold_name;
+			switch(th)
+			{
+				case ksi::roc_threshold::mean             : threshold_name = "mean";                         break;
+				case ksi::roc_threshold::minimal_distance : threshold_name = "minimal_distance";             break;
+				case ksi::roc_threshold::youden           : threshold_name = "youden";                       break;
+				default                                   : threshold_name = "something-wrong-has-happened"; break;
+			}
+
+			std::string result_file { RESULTS + "-" + system.get_nfs_name() + "-" + threshold_name + RESULT_EXTENSION }; 
+			std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+			std::cout << "\tthreshold: " << threshold_name    << std::endl;
+			system.experiment_classification(TRAIN, TEST, result_file);    
+			std::cout << "\tResults saved to file " << result_file << std::endl;
+			std::cout << std::endl;
+		}
+	}
+	
 	// MAHALANOBIS PROTOTYPE ANNBFIS NEURO-FUZZY CLASSIFIER
 	{
 		const int NUMBER_OF_RULES = 3;
@@ -324,7 +315,9 @@ void ksi::exp_005::classification()
 		for (auto th : thresholds)  // for all thresholds
 		{
 			ksi::fac_prototype_mahalanobis_classification factory;
-			
+
+			//double rho { 1.0 };	
+			//ksi::gk algorithm(rho);
 			ksi::gk algorithm;
 			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
 			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
@@ -432,7 +425,7 @@ void ksi::exp_005::regression()
 
 	const bool NORMALISATION = false;
 
-	const double ETA = 0.1;
+	const double ETA = 0.001;
 
 	std::string dataset_name { "leukocytes" };
 
@@ -517,6 +510,39 @@ void ksi::exp_005::regression()
 		std::cout << "\tResults saved to file " << result_file << std::endl;
 		std::cout << std::endl;
 	}
+	// MAHALANOBIS PROTOTYPE TSK
+	{
+		//const int NUMBER_OF_RULES = 3;
+		ksi::gk algorithm;
+		algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
+		algorithm.setNumberOfClusters(NUMBER_OF_RULES);
+
+		ksi::fac_prototype_mahalanobis_regression factory;
+		ksi::tsk_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, factory);
+
+		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
+		system.experiment_regression(TRAIN, TEST, result_file);
+		std::cout << "\tResults saved to file " << result_file << std::endl;
+		std::cout << std::endl;
+	}
+	// MAHALANOBIS PROTOTYPE ANNBFIS
+	{
+		//const int NUMBER_OF_RULES = 3;
+		ksi::gk algorithm;
+		algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
+		algorithm.setNumberOfClusters(NUMBER_OF_RULES);
+
+        ksi::imp_reichenbach impl;
+		ksi::fac_prototype_mahalanobis_regression factory;
+		ksi::annbfis_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, impl, factory);
+
+		std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+		std::string result_file { RESULTS + "-" + system.get_nfs_name() + RESULT_EXTENSION }; 
+		system.experiment_regression(TRAIN, TEST, result_file);
+		std::cout << "\tResults saved to file " << result_file << std::endl;
+		std::cout << std::endl;
+	}
 }
 
 
@@ -526,11 +552,7 @@ void ksi::exp_005::execute()
 	{
 		classification();
 		regression();
-	}
-	catch (...)
-	{
-		throw;
-	}
+	} CATCH;
 
 	return;
 }

@@ -128,7 +128,7 @@ namespace ksi
       for (auto & d : cl.descriptors)
       {
          ss << "descriptor " << attr++ << ": " << std::endl;
-         ss << d->toString() << std::endl;
+         ss << d->to_string() << std::endl;
       }
       
       if (not cl._A.empty())

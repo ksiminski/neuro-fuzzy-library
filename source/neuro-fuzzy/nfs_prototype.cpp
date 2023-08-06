@@ -133,6 +133,21 @@ ksi::nfs_prototype::nfs_prototype(const ksi::partitioner &partitioner,
     this->_pFactory = factory.clone();
 }
 
+ksi::nfs_prototype::nfs_prototype(const ksi::partitioner &partitioner,
+                                  const int number_of_tuning_iterations,
+                                  const double learning_coefficient,
+                                  const bool normalisation,
+                                  const ksi::fac_prototype &factory)
+{
+    this->_pPartitioner = partitioner.clone();
+    this->_nRules = _pPartitioner->get_number_of_clusters();
+    this->_nClusteringIterations = _pPartitioner->get_number_of_iterations();
+    this->_nTuningIterations = number_of_tuning_iterations;
+    this->_dbLearningCoefficient = learning_coefficient;
+    this->_bNormalisation = normalisation;
+    this->_pFactory = factory.clone();
+}
+
 ksi::nfs_prototype::nfs_prototype (const int number_of_rules,
                      const int number_of_clustering_iterations,
                      const int number_of_tuning_iterations,

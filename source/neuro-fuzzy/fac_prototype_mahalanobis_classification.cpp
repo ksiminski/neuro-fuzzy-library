@@ -67,8 +67,6 @@ ksi::fac_prototype_mahalanobis * ksi::fac_prototype_mahalanobis_classification::
    // prototype design pattern
    return new ksi::fac_prototype_mahalanobis_classification(*this);
 }
-
-
 */
 
 std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_classification::get_prototype() const
@@ -80,8 +78,6 @@ std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_classification::g
 {
     return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_classification (cl, _positive_class, _negative_class));
 }
-
-
 
 std::shared_ptr<ksi::fac_prototype> ksi::fac_prototype_mahalanobis_classification::clone() const
 {

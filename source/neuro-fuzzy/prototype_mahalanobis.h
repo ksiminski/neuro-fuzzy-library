@@ -34,6 +34,7 @@ namespace ksi
       
       virtual double get_similarity (const ksi::datum & d) const override;
       virtual double get_similarity (const std::vector<double> & X) const override;
+      virtual double get_similarity (const double distance) const;
       
       virtual void addDescriptor (const descriptor & d) override; 
       
@@ -58,7 +59,7 @@ namespace ksi
        * @param eta learning coefficient
        */
      virtual void actualise_parameters (double eta) override;
-     
+   
      virtual std::string get_name() const override;
      virtual std::string get_description() const override;
      

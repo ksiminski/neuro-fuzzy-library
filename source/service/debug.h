@@ -15,47 +15,6 @@
 
 
 
-#define CATCH                                                \
-catch (ksi::exception & ex)                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, ex.what()); \
-}                                                            \
-catch (std::exception & ex)                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, ex.what()); \
-}                                                            \
-catch (std::string & ex)                                     \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, ex);        \
-}                                                            \
-catch (...)                                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__,             \
-     "unknown exception");       \
-}                                                            \
-
-
-
-#define COMMENTED_CATCH(x)                                   \
-catch (ksi::exception & ex)                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, std::string(ex.what()) + std::string(" [" + std::string(x) + "]")); \
-}                                                            \
-catch (std::exception & ex)                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, std::string(ex.what()) + std::string(" [" + std::string(x) + "]")); \
-}                                                            \
-catch (std::string & ex)                                     \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__, ex + " [" + std::string(x) + "]");        \
-}                                                            \
-catch (...)                                                  \
-{                                                            \
-   throw ksi::exception (__FILE__, __FUNCTION__, __LINE__,             \
-     std::string("unknown expection"  " [") + std::string(x) + "]" );       \
-}                                                            \
-
-
 
 
 #define drukuj(x) std::cerr << __FILE__ << " (" << __LINE__ << ") " << #x << " == " << (x) << std::endl;

@@ -53,45 +53,7 @@ std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis_r
    CATCH;
 }
 
-/*
-ksi::prototype_mahalanobis_regression::prototype_mahalanobis_regression (const ksi::prototype_mahalanobis_regression & wzor) : ksi::prototype_mahalanobis(wzor)
-{
-   // copy what is to copy
 
-}
-
-ksi::prototype_mahalanobis_regression & ksi::prototype_mahalanobis_regression::operator= (const ksi::prototype_mahalanobis_regression & wzor)
-{
-   if (this == & wzor)
-      return *this;
-
-   ksi::prototype_mahalanobis::operator=(wzor);
-
-   // remove what is to remove
-
-   // allocate what is to allocate
-
-   return *this;
-}
-
-ksi::prototype_mahalanobis_regression::prototype_mahalanobis_regression (ksi::prototype_mahalanobis_regression && wzor) : ksi::prototype_mahalanobis(wzor)
-{
-   // swap what is to swap
-
-}
-
-ksi::prototype_mahalanobis_regression & ksi::prototype_mahalanobis_regression::operator= (ksi::prototype_mahalanobis_regression && wzor)
-{
-   if (this == & wzor)
-      return *this;
-
-   ksi::prototype_mahalanobis::operator=(wzor);
-
-   // swap what is to swap
-
-   return *this;
-}
-*/
 ksi::premise * ksi::prototype_mahalanobis_regression::clone () const
 {
    // prototype design pattern
@@ -112,7 +74,7 @@ double ksi::prototype_mahalanobis_regression::criterion_function(const std::vect
 {
    try
     {
-        auto [cardinality, srednia_y, similarities] = cardinality_similarities(X, Y);
+        auto [card, srednia_y, similarities] = cardinality_similarities(X, Y);
 
         // and the variance
         auto size = Y.size();
@@ -122,9 +84,10 @@ double ksi::prototype_mahalanobis_regression::criterion_function(const std::vect
             auto difference = srednia_y - Y[i];
             suma += difference * difference * similarities[i];
         }
-        auto wariancja = suma / cardinality;
-
-        return cardinality - wariancja;
+        auto wariancja = suma / card;
+        debug(card);
+        debug(wariancja);
+        return card - wariancja;
 //         return wariancja / cardinality;
     } CATCH;
 }

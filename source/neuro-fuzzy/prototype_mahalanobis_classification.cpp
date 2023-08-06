@@ -158,7 +158,8 @@ std::pair<std::vector<double>, ksi::Matrix<double> > ksi::prototype_mahalanobis_
       double sum_sim_for_class{0};
       for (std::size_t i = 0; i < nItems; i++)
       {
-         if (classes[i] == class_label)
+         if (ksi::utility_math::double_equal(classes[i], class_label))
+         //if (classes[i] == class_label)
             sum_sim_for_class += similarities[i];
       }
 
@@ -168,7 +169,8 @@ std::pair<std::vector<double>, ksi::Matrix<double> > ksi::prototype_mahalanobis_
       {
          for (std::size_t i = 0; i < nItems; i++)
          {
-            if (classes[i] == class_label)
+            if (ksi::utility_math::double_equal(classes[i], class_label))
+            //if (classes[i] == class_label)
             {
                ds_dp[d] += dsim_dp[i][d];
             }
@@ -223,7 +225,6 @@ ksi::prototype_mahalanobis_classification::Gini_differentials(
          {
             dG_da(i, j) = -2 * probability_positive * dPpos_da.get_value(i, j)
                           -2 * probability_negative * dPneg_da.get_value(i, j);
-
          }
       }
       return { dG_dp, dG_da };

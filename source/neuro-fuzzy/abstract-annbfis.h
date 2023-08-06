@@ -152,7 +152,8 @@ namespace ksi
        @param X dataset to partition
        @date 2019-12-24 */
       virtual partition doPartition (const dataset & X);
-       
+
+      virtual std::string extra_report () const override; 
    };
 }
 

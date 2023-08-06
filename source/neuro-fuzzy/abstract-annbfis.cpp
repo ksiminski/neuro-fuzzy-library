@@ -419,3 +419,15 @@ ksi::partition ksi::abstract_annbfis::doPartition(const ksi::dataset& X)
     }
     CATCH;
 }
+
+std::string ksi::abstract_annbfis::extra_report() const 
+{
+   try
+   {
+      if (_pImplication)
+         return std::string{"implication: "} + _pImplication->to_string();
+      else
+         return std::string{"[missing implication]"};
+   }
+   CATCH;
+}

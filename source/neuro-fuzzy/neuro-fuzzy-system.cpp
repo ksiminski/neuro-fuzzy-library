@@ -605,9 +605,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         model << classification_intro() << std::endl;
         if (threshold_type != ksi::roc_threshold::none)
             model << "classification threshold type: " << ksi::to_string(threshold_type) << std::endl;
-        _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, 
-                                                dbPositiveClass, dbNegativeClass,
-                                                threshold_type);
+        _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, dbPositiveClass, dbNegativeClass, threshold_type);
 
         wYtrainElaboratedClass.clear();
         wYtrainElaboratedNumeric.clear();
@@ -674,8 +672,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         wynik.TrainPositive2Negative = FN;
         wynik.TrainNegative2Negative = TN;
         wynik.TrainNegative2Positive = FP;
-        
-        
+                
         model << con_test.print(TP, TN, FP, FN);
         model << std::endl;
         
@@ -740,7 +737,6 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification(
     CATCH;
 }
 
-      
 ksi::result ksi::neuro_fuzzy_system::experiment_classification (
                                   const ksi::dataset & trainData,
                                   const ksi::dataset & testData,
@@ -769,15 +765,7 @@ std::string ksi::neuro_fuzzy_system::extra_report() const
     return std::string();
 }
  
-ksi::result ksi::neuro_fuzzy_system::experiment_regression(const std::string & trainDataFile, 
-                                         const std::string & testDataFile, 
-                                         const std::string & outputFile, 
-                                         const int nNumberOfRules, 
-                                         const int nNumberOfClusteringIterations, 
-                                         const int nNumberofTuningIterations, 
-                                         const double dbLearningCoefficient,  
-                                         const bool bNormalisation
-                                        )
+ksi::result ksi::neuro_fuzzy_system::experiment_regression(const std::string & trainDataFile, const std::string & testDataFile, const std::string & outputFile, const int nNumberOfRules, const int nNumberOfClusteringIterations, const int nNumberofTuningIterations, const double dbLearningCoefficient,  const bool bNormalisation)
 {
     ksi::reader_complete czytacz;
     auto zbiorTrain = czytacz.read(trainDataFile);
@@ -1131,9 +1119,12 @@ std::string ksi::neuro_fuzzy_system::classification_intro() const
         if (_pModyfikator)
             model << "train data set modifier(s): " << _pModyfikator->print() << std::endl;
         
+        if (_pPartitioner)
+            model << "partitioner: " << _pPartitioner->getAbbreviation() << std::endl;
+
         auto report = extra_report ();
-            if (not report.empty())
-                model << report << std::endl;
+        if (not report.empty())
+            model << report << std::endl;
             
         return model.str();   
     }

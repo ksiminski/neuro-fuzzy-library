@@ -83,6 +83,22 @@ namespace ksi
                                   const ksi::roc_threshold threshold_type);
 
       /** constructor
+       * @param partitioner a partitioner for clustering of the input domain
+       * @param number_of_tuning_iterations number of tuning iterations
+       * @param learning_coefficient learning coefficient for gradient method
+       * @param normalisation normalisation of data
+       * @param prot prototype factory
+       * @date 2023-07-26
+       */
+      tsk_prototype (const ksi::partitioner &partitioner,
+                                  const int number_of_tuning_iterations,
+                                  const double learning_coefficient,
+                                  const bool normalisation,
+                                  const ksi::fac_prototype &prot
+                         );
+
+
+      /** constructor
        * @param number_of_rules number of rules
        * @param number_of_clustering_iterations number of clustering iterations
        * @param number_of_tuning_iterations number of tuning iterations

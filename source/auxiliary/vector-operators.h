@@ -50,6 +50,9 @@ namespace ksi
    std::vector<double> & operator -= (std::vector<double> & l, 
                                       const std::vector<double> & p);
    
+   std::vector<double> & subtract_with_saturation (std::vector<double> & l, 
+                                   const std::vector<double> & p);
+   
    std::vector<double> get_uniform_unit_random_vector (const std::size_t size);
    
    /** 

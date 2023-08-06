@@ -128,6 +128,7 @@ namespace ksi
        
       
    protected:
+       /** @return The method returns some extra data provided by derived classes.*/
        virtual std::string extra_report () const;
        
        /** @return The method returns an intro for a classification experiment.

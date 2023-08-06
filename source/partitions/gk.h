@@ -52,6 +52,10 @@ namespace ksi
       
    public:
       virtual ksi::partition doPartition(const ksi::dataset & ds) override;
+      
+   public:   
+      /** @return an abbreviation of a method */
+      virtual std::string getAbbreviation () const override;
    };
 }
 

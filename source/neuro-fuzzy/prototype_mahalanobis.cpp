@@ -44,7 +44,6 @@ ksi::prototype_mahalanobis::~prototype_mahalanobis ()
    // delete what is to delete
 }
 
-
 double ksi::prototype_mahalanobis::get_similarity(const ksi::datum & d) const
 {
    try 
@@ -59,10 +58,16 @@ double ksi::prototype_mahalanobis::get_similarity(const std::vector<double>& dat
    try 
    {
       ksi::metric_mahalanobis metryka (_A);
-      return distance_to_similarity(metryka.calculateDistance(_centre, data));
+     return get_similarity(metryka.calculateDistance(_centre, data));
    }
    CATCH;
 }
+
+double ksi::prototype_mahalanobis::get_similarity(const double distance) const
+{
+   return distance_to_similarity(distance);
+}
+
 
 void ksi::prototype_mahalanobis::addDescriptor(const ksi::descriptor & d)
 {
@@ -80,7 +85,7 @@ void ksi::prototype_mahalanobis::cummulate_differentials(std::vector<double> X, 
       ksi::metric_mahalanobis maha(_A); 
 
       auto size = X.size();
-      double dist = maha.calculateDistance(this->_centre, X);
+      double dist = maha.calculateDistance(_centre, X);
       double sim_dist = similarity / (2.0 * dist);
 
       for (std::size_t d = 0; d < size; d++) // for each attribute:
@@ -104,7 +109,6 @@ void ksi::prototype_mahalanobis::cummulate_differentials(std::vector<double> X, 
       }
    } CATCH;
 }
-
 
 void ksi::prototype_mahalanobis::reset_differentials()
 {
@@ -138,8 +142,8 @@ void ksi::prototype_mahalanobis::actualise_parameters(double eta)
       }
       if (ksi::is_valid(_d_A))
       {
-         _A += (_d_A * eta);
-      _d_A = ksi::Matrix<double> (csize, csize, 0.0);
+         _A -= (_d_A * eta);
+         _d_A = ksi::Matrix<double> (csize, csize, 0.0);
       }
    }
    CATCH; 
@@ -157,6 +161,7 @@ std::string ksi::prototype_mahalanobis::get_description() const
 
 void ksi::prototype_mahalanobis::justified_granularity_principle(const std::vector<std::vector<double> >& X, const std::vector<double>& Y)
 {
+   return ;
    try 
    {
       std::size_t nAtrybut = _centre.size();
@@ -164,45 +169,44 @@ void ksi::prototype_mahalanobis::justified_granularity_principle(const std::vect
       std::vector<double> differentials_centre (nAtrybut, 0);
       ksi::Matrix<double> differentials_matrix (nAtrybut, nAtrybut, 0.0);
 
-      double ETA { 0.0001 };
-      const int nIteration { 50 };
+      double ETA { 0.0000001 };
+      const int nIteration { 5 };
+      //const int nIteration { 0 };
 
       //         debug(nIteration);
-      auto criterion_prev = 0.0;
+      //auto criterion_prev = 0.0;
 
-      //         debug("=========================================================");
       for (int i = 0; i < nIteration; i++)
       {
+         /*
          //// dopasowanie ETY
          auto criterion = criterion_function(X, Y);
-         //             debug(criterion);
-
+         debug(criterion);
+         
          if (criterion < criterion_prev)
-         {
             ETA *= 0.1;
-            //                 debug (ETA);
-         }
+         else 
+            ETA /= 0.1;
          criterion_prev = criterion;
-
+         */         
          //// koniec dopasowania ETY
          //             debug(debug_criterion_function(X, Y));
-         //             debug(_centre);
-         //             debug(_weights);
+         //debug(i);
+         //debug(_centre);
 
          auto [diffs_centre, diffs_matrix] = differentials_justified_granularity_principle(X, Y);
 
-         //debug(diffs_centre);
-         //debug(diffs_matrix);
          if (is_valid(diffs_centre))
             differentials_centre  += diffs_centre;
          if (is_valid(diffs_matrix))
             differentials_matrix += diffs_matrix;
 
-         //debug(differentials_centre);
-         //debug(differentials_matrix);
-         //debug(ETA);
-         _centre  += differentials_centre * ETA;
-         _A       += differentials_matrix * ETA;
+         //debug(diffs_centre);
+         //debug(diffs_matrix);
+         if (ksi::is_valid(differentials_centre))
+            _centre  += differentials_centre * ETA;
+         if (ksi::is_valid(differentials_matrix))
+            _A += differentials_matrix * ETA;
       }
    } CATCH;
 }
@@ -224,15 +228,19 @@ std::pair<std::vector<std::vector<double>>, std::vector<ksi::Matrix<double>>> ks
       {
          // similarity of x-th data item and the centre of the prototype:
          const auto & dataitem = X[x];
-         double s = get_similarity(dataitem);
          // squared distance:
          double d = Metric.calculateDistance(_centre, dataitem);
+         if (d < 0)
+            throw ksi::exception("Negative distance!");
+
+         double s = get_similarity(d);
          double d2 = d * d;
          double ds_dt = -s;
          double dt_dd2 = 0.5 / d;
 
          double ds_dd2 = ds_dt * dt_dd2;
 
+         ksi::Matrix ds_daij (nAttributes, nAttributes, 0.0);
          for (std::size_t i = 0; i < nAttributes; i++)
          {
             double dd2_dri = 0;
@@ -242,11 +250,10 @@ std::pair<std::vector<std::vector<double>>, std::vector<ksi::Matrix<double>>> ks
                dd2_dri += rk * (_A(k, i) + _A(i, k));
             }
 
-            double ds_dpi = ds_dd2 * dd2_dri * dri_dpi;
+            double ds_dpi = ds_dd2 * dd2_dri * dri_dpi;// ver:ok 
             ds_dp_x[x][i] = ds_dpi;
 
 
-            ksi::Matrix ds_daij (nAttributes, nAttributes, 0.0);
             for (std::size_t j = i; j < nAttributes; j++)
             {
                double ri = dataitem[i] - _centre[i];
@@ -308,13 +315,92 @@ std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::
       auto nAttributes = _centre.size();  // number of attributes
       auto nDataItems = Y.size();        // number of data items
       
-      double sum_of_product_of_squared_similarity_differences {0.0};
-      for (std::size_t x = 0; x < nDataItems; x++)
+      // elaboration of cardinality differentials (kappa)
+      //                variance differentials    (zeta)
+    
+      std::vector<double> dzeta_dp (nAttributes, 0.0);
+      ksi::Matrix<double> dzeta_daij (nAttributes, nAttributes, 0.0);
+
+      auto [ dkappa_dp, dkappa_daij ] = cardinality_differentials (dsim_dp, dsim_da);
+
+      // dkappa_dp and dkappa_da: done
+      // ddzeta_dp and ddzeta_da: to do
+      for (std::size_t i = 0; i < nAttributes; i++)
       {
-         double difference = Y[x] - mean_y;
-         sum_of_product_of_squared_similarity_differences += difference * difference * similarities[x];
+         double first_sum_for_dzeta_dp {0};
+         double second_sum_for_dzeta_dp {0};
+         
+         for (std::size_t x = 0; x < nDataItems; x++)
+         {
+            double difference = Y[x] - mean_y;
+            double difference_squared = difference * difference;
+            // ddzeta_dp:
+            
+            // the first sum
+            auto sum1 = similarities[x] * difference * dymean_dp[i];                 
+            first_sum_for_dzeta_dp += sum1;
+            
+            // the second sum
+            auto sum2 = difference_squared * dsim_dp[x][i]; 
+            second_sum_for_dzeta_dp += sum2;
+            
+            // ddzeta_da
+
+         }
+         dzeta_dp[i] = 2 * first_sum_for_dzeta_dp - second_sum_for_dzeta_dp;
       }
 
+      for (std::size_t i = 0; i < nAttributes; i++)
+      {
+
+         for (std::size_t j = 0; j < nAttributes; j++)
+         {
+            double first_sum_for_dzeta_da{0};
+            double second_sum_for_dzeta_da{0};
+
+            for (std::size_t x = 0; x < nDataItems; x++)
+            {
+               double difference = Y[x] - mean_y;
+               double difference_squared = difference * difference;
+
+               // the first sum
+               auto sum1 = similarities[x] * difference * dymean_da.get_value(i, j);                 
+               first_sum_for_dzeta_da += sum1;
+
+               // the second sum
+               auto sum2 = difference_squared * dsim_da[x].get_value(i, j); 
+               second_sum_for_dzeta_da += sum2;
+            }
+            dzeta_daij(i, j) = 2 * first_sum_for_dzeta_da - second_sum_for_dzeta_da;
+         }
+      }
+
+      //debug(dkappa_dp);
+      //debug(dzeta_dp);
+      std::vector<double> diffs_p = dkappa_dp + dzeta_dp;  /// @todo Dlaczego? Czy tu nie powinna być suma?
+      //debug(diffs_p);
+      ksi::Matrix<double> diffs_ai = dkappa_daij + dzeta_daij;   /// @todo Dlaczego? Czy tu nie powinna być suma?
+
+      return {diffs_p, diffs_ai};
+   } 
+   CATCH;
+}
+/*
+std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::cardinality_variance_differentials (
+      const std::vector<double> & Y,
+      const std::vector<double> & similarities,
+      const std::vector<double> & dymean_dp,
+      const ksi::Matrix<double> & dymean_da,
+      const std::vector<std::vector<double>> & dsim_dp, 
+      const std::vector<ksi::Matrix<double>> & dsim_da, 
+      const double & mean_y, 
+      const double & cardinality)
+{
+   try 
+   {
+      auto nAttributes = _centre.size();  // number of attributes
+      auto nDataItems = Y.size();        // number of data items
+      
       // elaboration of cardinality differentials (kappa)
       //                variance differentials    (zeta)
 
@@ -349,11 +435,12 @@ std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::
          
          dzeta_dp[i] = (-1) * (cardinality * first_sum - dkappa_dp[i] * second_sum) / (cardinality * cardinality);
       }
-      
+
       // ddzeta_da
       for (std::size_t i = 0; i < nAttributes; i++)
       {
-         for (std::size_t j = 0; j < nAttributes; i++)
+
+         for (std::size_t j = 0; j < nAttributes; j++)
          {
             double first_sum{0};
             double second_sum{0};
@@ -373,17 +460,18 @@ std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis::
             }
 
             dzeta_daij(i, j) = (-1) * (cardinality * first_sum - dkappa_daij.get_value(i, j)* second_sum) / (cardinality * cardinality);
+
          }
       }
 
-      std::vector<double> diffs_p = dkappa_dp - dzeta_dp;
-      ksi::Matrix<double> diffs_ai = dkappa_daij - dzeta_daij;
+      std::vector<double> diffs_p = dkappa_dp + dzeta_dp;  /// @todo Dlaczego? Czy tu nie powinna być suma?
+      ksi::Matrix<double> diffs_ai = dkappa_daij + dzeta_daij;   /// @todo Dlaczego? Czy tu nie powinna być suma?
 
       return {diffs_p, diffs_ai};
    } 
    CATCH;
 }
-
+*/
 std::pair<std::vector<double>, ksi::Matrix<double>>  ksi::prototype_mahalanobis::cardinality_differentials (const std::vector<std::vector<double>> & dsim_dp, const std::vector<ksi::Matrix<double>> & dsim_da)
 {
    try
@@ -408,5 +496,3 @@ std::pair<std::vector<double>, ksi::Matrix<double>>  ksi::prototype_mahalanobis:
    }
    CATCH;
 }
-
-

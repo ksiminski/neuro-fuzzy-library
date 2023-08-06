@@ -53,6 +53,27 @@ namespace ksi
        CATCH;
    }
    
+   std::vector<double> & subtract_with_saturation (std::vector<double> & l, 
+                                   const std::vector<double> & p)
+   {
+       try 
+       {
+           if (l.size() != p.size())
+               throw std::string ("The sizes of vectors do not match! (") + std::to_string(l.size()) + std::string(" != ") + std::to_string(p.size()) + std::string (")");
+           
+           std::vector<double> res (l.size());
+           for (std::size_t i = 0; i < l.size(); i++)
+           {
+              auto sat = ksi::saturate(p[i], l[i], 1.0);
+              //res[i] = l[i] + p[i];
+              l[i] -= sat;
+           }
+           
+           return l;
+       }
+       CATCH;
+   }
+   
    std::vector<double> operator - (const std::vector<double> & l, 
                                    const std::vector<double> & p)
    {

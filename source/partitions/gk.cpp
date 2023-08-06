@@ -6,6 +6,10 @@
 #include "../partitions/gk.h"
 #include "../auxiliary/matrix.h"
 
+std::string ksi::gk::getAbbreviation () const
+{
+    return std::string ("Gustafson-Kessel");
+}
 
 ksi::gk::gk () : fcm()
 {

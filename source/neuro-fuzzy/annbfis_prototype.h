@@ -115,6 +115,21 @@ namespace ksi
                          const double negative_class,
                          const ksi::roc_threshold threshold_type);
                              
+       /** constructor
+       * @param partitioner a partitioner for clustering of the input domain
+       * @param number_of_tuning_iterations number of tuning iterations
+       * @param learning_coefficient learning coefficient for gradient method
+       * @param normalisation normalisation of data 
+       * @param imp fuzzy implication
+       * @param factory prototype factory
+       * @date 2023-07-27
+       */
+      annbfis_prototype (const ksi::partitioner & partitioner,
+                         const int number_of_tuning_iterations,
+                         const double learning_coefficient,
+                         const bool normalisation,
+                         const implication & imp,
+                         const ksi::fac_prototype & factory);
                      
       virtual void createFuzzyRulebase(int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train) override;
       
@@ -128,7 +143,7 @@ namespace ksi
       virtual std::string get_nfs_name() const override;
       virtual std::string get_nfs_description() const override;
       
-      
+      virtual std::string extra_report () const override;  
    };
 }
 

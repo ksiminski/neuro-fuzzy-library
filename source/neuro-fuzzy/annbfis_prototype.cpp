@@ -9,6 +9,7 @@
 #include "../partitions/fcm.h"
 
 #include "../auxiliary/least-error-squares-regression.h"
+#include "../auxiliary/vector-operators.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
 
@@ -116,7 +117,22 @@ ksi::annbfis_prototype::annbfis_prototype(const ksi::partitioner & partitioner,
    CATCH;
 }
 
- 
+ksi::annbfis_prototype::annbfis_prototype(const ksi::partitioner & partitioner, 
+                                          const int number_of_tuning_iterations, 
+                                          const double learning_coefficient, 
+                                          const bool normalisation, 
+                                          const ksi::implication & imp, 
+                                          const ksi::fac_prototype & factory)
+: ksi::nfs_prototype(partitioner, number_of_tuning_iterations, learning_coefficient, normalisation, factory)
+{
+   try 
+   {
+       _pTnorm = new ksi::t_norm_product();
+      _pImplication = std::shared_ptr<ksi::implication> (imp.clone());
+   }
+   CATCH;
+}
+
 void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations, 
                                              int nTuningIterations, 
                                              double dbLearningCoefficient, 
@@ -145,6 +161,7 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
       _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
+      //debug(podzial);
       
       std::size_t nX = trainX.getNumberOfData();
       // pobranie danych w postaci macierzy:
@@ -158,20 +175,9 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
       #pragma omp parallel for 
       for (int c = 0; c < _nRules; c++)
       {
-     /*
-         std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype());
-     */    
          auto klaster = podzial.getCluster(c);
          std::shared_ptr<ksi::prototype> pPrzeslanka (_pFactory->get_prototype_for_cluster(*klaster));
-     /*
-         for (std::size_t a = 0; a < nAttr_1; a++)
-         {
-             const ksi::descriptor & des = *klaster->getAddressOfDescriptor(a);
-             pPrzeslanka->addDescriptor(des);
-         }
- */
-        
-   
+         
          pPrzeslanka->justified_granularity_principle(wTrainX, wY);
          
          logicalrule regula (*_pTnorm, *_pImplication);
@@ -181,8 +187,8 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
 #pragma omp critical
          _pRulebase->addRule(regula);
       }
-      
-      // dla wyznaczenia wartosci konkuzji:
+      //debug(*_pRulebase);      
+      // elaboration of conclusions:
       std::vector<std::vector<double>> G_przyklad_regula; 
       
       // mam zgrupowane dane, teraz trzeba nastroic system
@@ -248,8 +254,11 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
             
                for (std::size_t a = 0; a < nAttr_1 + 1; a++)
                   coeff[a] = p[r * (nAttr_1 + 1) + a];
-               consequence_CL konkluzja (coeff, INITIAL_W);
-               (*_pRulebase)[r].setConsequence(konkluzja);
+               if (ksi::is_valid(coeff))
+               {
+                  consequence_CL konkluzja (coeff, INITIAL_W);
+                  (*_pRulebase)[r].setConsequence(konkluzja);
+               }
             }
          }
          
@@ -259,17 +268,11 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
          for (std::size_t x = 0; x < nX; x++)
             wYelaborated[x] = answer( *(trainX.getDatum(x)));
          
-         //ksi::error_RMSE rmse;
-         //double blad = rmse.getError(wY, wYelaborated);
-         //debug(blad);
-         
-         
       }
       // system nastrojony :-)
    }
    CATCH;
 }
- 
 
 ksi::neuro_fuzzy_system * ksi::annbfis_prototype::clone() const
 {
@@ -285,18 +288,27 @@ ksi::generative_model * ksi::annbfis_prototype::clone_generator() const
 {
     return new ksi::annbfis_prototype(*this);
 }
-
- 
  
 std::string ksi::annbfis_prototype::get_nfs_description() const
 {
     std::shared_ptr<ksi::prototype> p (_pFactory->get_prototype());
-    return std::string("Neuro-fuzzy system with logical interpretation of fuzzy rules with gaussian fuzzy sets in premises and product t-norm and fuzzy c-means (FCM) clustering algorithm with ") + p->get_description();
+    return std::string("Neuro-fuzzy system with logical interpretation of fuzzy rules with gaussian fuzzy sets in premises and product t-norm with ") + p->get_description();
 }
 
 std::string ksi::annbfis_prototype::get_nfs_name() const
 {
     std::shared_ptr<ksi::prototype> p (_pFactory->get_prototype());
-    return std::string("PANNBFIS+") + p->get_name();
+    return std::string("PANNBFIS+") + p->get_name() + std::string{"+"} + _pImplication->to_string();
  
+}
+std::string ksi::annbfis_prototype::extra_report() const 
+{
+   try
+   {
+      if (_pImplication)
+         return std::string{"implication: "} + _pImplication->to_string();
+      else
+         return std::string{"[missing implication]"};
+   }
+   CATCH;
 }

@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include "../service/debug.h"
+#include "../auxiliary/mathematics.h"
 
 namespace ksi
 {
@@ -627,7 +628,7 @@ namespace ksi
          * @param m right operand of summation
          * @return a summed matrix, input matrix is modified  
          * @throw std::string with a comment, when dimensions of matrices do not match
-         * @date 2024-04-25
+         * @date 2023-04-25
       */
       Matrix & operator += (const Matrix & m)
       {
@@ -702,7 +703,30 @@ namespace ksi
          return *this;        
       }
 
-      
+      Matrix & subtract_with_saturation (const Matrix & m)
+      {
+         if (Rows != m.Rows || Cols != m.Cols)
+         {
+            std::stringstream ss;
+            ss << __FILE__ << " (" << __LINE__ << "): different dimensions of matrices: "
+               << "[" << Rows << " x " << Cols << "] and [" << m.Rows << " x " << m.Cols << "]";
+            throw ss.str();
+         }
+         
+         int w, k;
+         for (w = 0; w < Rows; w++)
+         {
+            for (k = 0; k < Cols; k++)
+            {
+               auto v = data[w][k];
+               auto delta = m.data[w][k];
+               auto saturated_delta = ksi::saturate(delta, v, 1);
+               // data[w][k] -= m.data[w][k];
+               data[w][k] -= saturated_delta;
+            }
+         }
+         return *this;        
+      } 
       
       /** Operator returns a product of two matrices. The operator+ and operator* for template type T must exist. Input matrix is not modified.
          * @param m right operand of multiplication
