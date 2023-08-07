@@ -75,14 +75,21 @@ This example presents neuro-fuzzy systems for
 	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
 	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
 	6. 3WDNFS: three way decision neuro-fuzzy system (__Citation request__ If you use this algorithm, please cite [^three] and [^nfl])
+	7. Minkowski prototype TSK    
+	8. Minkowski prototype ANNBFIS
+	9. Mahalanobis prototype TSK
+	10. Mahalanobis prototype ANNBFIS
 1. regression:
 	1. MA
 	2. TSK
 	3. ANNBFIS
 	4. subspace ANNBFIS   (__Citation request__ If you use this algorithm, please cite [^subspace] and [^nfl])
 	5. FuBi ANNBFIS       (__Citation request__ If you use this algorithm, please cite [^fubi] and [^nfl])
-	6. prototype TSK      (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl])
-	7. prototype ANNBFIS  (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl]) 
+	6. Minkowski prototype TSK      (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl])
+	7. Minkowski prototype ANNBFIS  (__Citation request__ If you use this algorithm, please cite [^prototype] and [^nfl]) 
+	8. Mahalanobis prototype TSK
+	9. Mahalanobis prototype ANNBFIS
+	
  
 ------------
 
