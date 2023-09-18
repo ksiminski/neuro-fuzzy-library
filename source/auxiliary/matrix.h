@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <functional>
 #include <cmath>
+#include <random>
+#include <chrono>
 
 #include "../service/debug.h"
 #include "../auxiliary/mathematics.h"
@@ -230,7 +232,8 @@ namespace ksi
         */
        void random_shuffle_rows()
        {
-           std::random_shuffle(data.begin(), data.end());
+          static std::default_random_engine engine (std::chrono::system_clock().now().time_since_epoch().count()); 
+          std::shuffle(data.begin(), data.end(), engine);
        }
        
        /** The method shuffles the columns of the matrix 
