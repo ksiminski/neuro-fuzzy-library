@@ -20,6 +20,7 @@ namespace ksi
       double _volume_rho = 1.0;  // cluster volume parameter
     public:
       gk ();
+      gk (const int nClusters, const int nIterations);
       gk (const double volume_rho);
       gk (const gk & wzor) = default;
       gk (gk && wzor) = default;
@@ -58,6 +59,5 @@ namespace ksi
       virtual std::string getAbbreviation () const override;
    };
 }
-
 
 #endif
