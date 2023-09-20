@@ -1,4 +1,7 @@
 
+#include <numeric>
+#include <vector>
+#include <string>
 
 
 #include "../service/debug.h"

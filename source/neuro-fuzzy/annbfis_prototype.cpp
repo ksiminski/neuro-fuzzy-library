@@ -1,4 +1,8 @@
 
+#include <vector>
+#include <numeric>
+#include <string>
+
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/annbfis_prototype.h"

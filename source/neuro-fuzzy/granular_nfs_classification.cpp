@@ -1,6 +1,12 @@
 
- 
-
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <numeric>
+#include <cmath>
+#include <map>
 
 
 #include "../service/debug.h"

@@ -1,4 +1,9 @@
 
+
+#include <numeric>
+#include <vector>
+#include <string>
+
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/tsk_prototype.h"
