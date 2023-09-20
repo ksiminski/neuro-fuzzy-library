@@ -440,8 +440,13 @@ namespace ksi
           const ksi::dataset & testDataSet,
           const std::string & outputFile);
 
-
-      
+      /** Just run an experiment for regression. All parameters should be already set.
+       @date 2023-08-08*/
+      virtual result experiment_regression (
+          const ksi::dataset & trainDataSet,
+          const ksi::dataset & testDataSet,
+          const std::string & outputFile);
+ 
       /** Just run an experiment for regression. All parameters should be already set. */
       virtual result experiment_regression ();
       /** Just run an experiment for regression. All parameters should be already set. */

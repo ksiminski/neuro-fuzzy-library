@@ -441,6 +441,18 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification(const std::string
                               _threshold_type);
 }
 
+
+ksi::result ksi::neuro_fuzzy_system::experiment_regression(
+    const ksi::dataset& trainDataSet, 
+    const ksi::dataset& testDataSet, 
+    const std::string& outputFile
+)
+{
+    std::string empty {};
+    return experiment_regression(trainDataSet, testDataSet, empty, empty, outputFile, this->_nRules, this->_nClusteringIterations, this->_nTuningIterations, this->_dbLearningCoefficient, this->_bNormalisation);
+}
+
+
 ksi::result ksi::neuro_fuzzy_system::experiment_classification(
     const ksi::dataset& trainDataSet, 
     const ksi::dataset& testDataSet, 
@@ -448,16 +460,16 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification(
 )
 {
     return experiment_classification(trainDataSet, 
-                              testDataSet,
-                              outputFile,
-                              _nRules,
-                              _nClusteringIterations,
-                              _nTuningIterations,
-                              _dbLearningCoefficient,
-                              _bNormalisation,
-                              _positive_class,
-                              _negative_class,
-                              _threshold_type);
+        testDataSet,
+        outputFile,
+        _nRules,
+        _nClusteringIterations,
+        _nTuningIterations,
+        _dbLearningCoefficient,
+        _bNormalisation,
+        _positive_class,
+        _negative_class,
+        _threshold_type);
 }
 
 

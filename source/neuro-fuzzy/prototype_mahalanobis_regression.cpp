@@ -17,7 +17,6 @@ ksi::prototype_mahalanobis_regression::prototype_mahalanobis_regression (const k
 ksi::prototype_mahalanobis_regression::~prototype_mahalanobis_regression ()
 {
    // delete what is to delete
-
 }
 
 std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis_regression::differentials_justified_granularity_principle(const std::vector<std::vector<double>>& X, const std::vector<double>& Y)

@@ -17,6 +17,7 @@
 
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
+#include "../auxiliary/error-RMSE.h"
 
 ksi::tsk_prototype::tsk_prototype ()
 {
@@ -30,7 +31,6 @@ ksi::tsk_prototype::~tsk_prototype ()
 ksi::tsk_prototype::tsk_prototype (const ksi::tsk_prototype & wzor) : ksi::nfs_prototype(wzor)
 {
    // copy what is to copy 
-
 }
 
 ksi::tsk_prototype & ksi::tsk_prototype::operator= (const ksi::tsk_prototype & wzor)
@@ -50,7 +50,6 @@ ksi::tsk_prototype & ksi::tsk_prototype::operator= (const ksi::tsk_prototype & w
 ksi::tsk_prototype::tsk_prototype (ksi::tsk_prototype && wzor) : ksi::nfs_prototype(wzor)
 {
    // swap what is to swap 
-
 }
 
 ksi::tsk_prototype & ksi::tsk_prototype::operator= (ksi::tsk_prototype && wzor)
@@ -137,7 +136,7 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
       {
          podzial = doPartition(trainX);
       } CATCH;
-      
+
       std::size_t nX = trainX.getNumberOfData();
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
