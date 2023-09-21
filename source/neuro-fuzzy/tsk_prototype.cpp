@@ -2,6 +2,9 @@
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/tsk_prototype.h"
+
+#include <numeric>
+
 #include "../neuro-fuzzy/rule.h"
 #include "../neuro-fuzzy/consequence-TSK.h"
 
