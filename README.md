@@ -9,13 +9,13 @@ Neuro-fuzzy is an implementation of fuzzy tools for data analysis:
 
 The project is implemented in the C++ language.
  
-There are 5 examples of usage of the library.
+There are 5 examples of the usage of the library.
 
 Run `make 1` to run the 1st example, `make 2` – the 2nd example, and finally `make 5` to run the 5th example.
 
 Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for the project.
 
-__Citation request__ If you use this library please cite [^nfl]
+__Citation request__ If you use this library, please cite [^nfl]
 
 ## Examples
 
