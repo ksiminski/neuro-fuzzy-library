@@ -158,12 +158,12 @@ void ksi::exp_lab::fuzzy_system()
 
 		const std::string DIRECTORY ("../data/exp-lab");
 		const std::string TRAIN     (DIRECTORY + "/train.txt");
-		const std::string RESULTS   (DIRECTORY + "/results-fuzzy.txt");
+		const std::string RESULTS   (DIRECTORY + "/results-fuzzy");
 		const bool NORMALISATION = false;
 
 		for (auto p : systems)
 		{
-			p->elaborate_answers_for_regression(TRAIN, RESULTS + "-" + p->get_nfs_name(), NORMALISATION);
+			p->elaborate_answers_for_regression(TRAIN, RESULTS + "-" + p->get_nfs_name() + ".txt", NORMALISATION);
 		}
 
 		std::cout << "done" << std::endl;
@@ -177,8 +177,8 @@ void ksi::exp_lab::neuro_fuzzy_system()
 	{
 		// regression 
 		const std::string DIRECTORY ("../data/exp-lab");
-		const std::string TRAIN   (DIRECTORY + "/train"); 
-		const std::string TEST    (DIRECTORY + "/test");
+		const std::string TRAIN   (DIRECTORY + "/train.txt"); 
+		const std::string TEST    (DIRECTORY + "/test.txt");
 		const std::string RESULTS (DIRECTORY + "/results-neuro-fuzzy");
 		const int NUMBER_OF_RULES = 4;
 		const int NUMBER_OF_CLUSTERING_ITERATIONS = 1000;
@@ -195,7 +195,7 @@ void ksi::exp_lab::neuro_fuzzy_system()
 
 		for (auto p : systems)
 		{
-			p->experiment_regression(TRAIN, TEST, RESULTS + "-" + p->get_nfs_name());
+			p->experiment_regression(TRAIN, TEST, RESULTS + "-" + p->get_nfs_name() + ".txt");
 		}
 
 		std::cout << "done" << std::endl;
