@@ -27,11 +27,11 @@ namespace ksi
       /** Just calculates a distance :-) */
       virtual double calculateDistance(const std::vector<double> & l, const std::vector<double> & p) const override;
       /** method for cloning an object */
-      virtual std::shared_ptr<metric> clone () const;
+      std::shared_ptr< ksi::metric > clone();
       
       /** @return abbreviation of the metric 
        @date 2021-02-01 */
-      virtual std::string getAbbreviation() const;
+      virtual std::string getAbbreviation() const override;
    };
 }
 
