@@ -13,7 +13,8 @@
 namespace ksi
 {
    /** Class for calculating a distance between data.
-    * @date 2018-01-04
+    * @date 2023-10-12
+    * @author Maksymilian Broja
     * 
      */
    class metric_cosine : virtual public metric 

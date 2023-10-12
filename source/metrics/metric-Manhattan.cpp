@@ -37,7 +37,7 @@ double ksi::metric_manhattan::calculateDistance(const std::vector<double>& l, co
 {
    try
    {
-      // wyznaczam odleglosc Chebyszewa:
+      // wyznaczam odleglosc Manhattan:
       
       auto lsize = l.size();
       auto psize = p.size();

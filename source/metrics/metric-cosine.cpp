@@ -37,7 +37,7 @@ double ksi::metric_cosine::calculateDistance(const std::vector<double>& l, const
 {
    try
    {
-      // wyznaczam odleglosc Chebyszewa:
+      // wyznaczam odleglosc Kosinusowa:
       
       auto lsize = l.size();
       auto psize = p.size();
@@ -62,7 +62,7 @@ double ksi::metric_cosine::calculateDistance(const std::vector<double>& l, const
         p_modul += (p[a]*p[a]);
          
       }
-      double suma = 1.0-(iloczyn_wektorowy/(l_modul*l_modul*p_modul*p_modul));
+      double suma = 1.0-(iloczyn_wektorowy/(sqrt(l_modul)*sqrt(p_modul)));
       return suma;
    }
    CATCH;
