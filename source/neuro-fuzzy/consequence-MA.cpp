@@ -85,6 +85,15 @@ std::ostream& ksi::consequence_MA::Print(std::ostream& ss)
    return ss;
 }
 
+std::ostream& ksi::consequence_MA::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat)
+{
+
+
+    ss << ;
+    	
+    return ss;
+}
+
 void ksi::consequence_MA::cummulate_differentials(std::vector<double> X, 
                                                   double partial_differential, 
                                                   double secundary_partial_differential,

@@ -236,7 +236,18 @@ std::ostream & ksi::rule::Print(std::ostream & ss) const
    ss << "quality: " <<  this->get_quality() << std::endl;
    return ss;
 }
- 
+
+
+std::ostream& ksi::rule::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat)const
+{
+    ss << "if";
+    pPremise->prettyPrint(ss, datasetStat);
+    ss << "then";
+    pConsequence->prettyPrint(ss, datasetStat);
+    ss << std::endl;
+    return ss;
+}
+
 ksi::granule * ksi::rule::clone_granule() const
 {
     return new  ksi::rule (*this);

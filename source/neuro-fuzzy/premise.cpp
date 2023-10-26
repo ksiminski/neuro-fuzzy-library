@@ -141,7 +141,7 @@ std::ostream & ksi::premise::Print(std::ostream & ss) const
    ss << "premise" << std::endl;
    ss << "desciptors" << std::endl;
    std::size_t i = 1;
-   for (auto * p : descriptors)
+   for (auto* p : descriptors)
    {
       ss << i++ << ": " << std::endl; 
       p->Print(ss);
@@ -149,6 +149,24 @@ std::ostream & ksi::premise::Print(std::ostream & ss) const
    }  
    return ss;
 }
+
+std::ostream& ksi::premise::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) const
+{
+    std::size_t i = 0;
+    std::size_t size = descriptors.size();
+    for (auto* p : descriptors)
+    {
+        ss << ' ' << i + 1 << ". input is "
+        p->prettyPrint(ss, datasetStat.getDescriptorStatistics(i));
+        if(i < size - 1)
+        {
+            ss << " AND ";
+        }
+        i++;
+    }
+    return ss;
+}
+
 
 namespace ksi 
 {

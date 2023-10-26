@@ -39,7 +39,13 @@ namespace ksi
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss);
-      
+
+      /** The method prints an object into output stream.
+        * @param ss an output stream to print to
+        * @param decStat the descriptor statistics to print
+        */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat);
+
       /** The method cummulates differentials for an X data item in the consequence. 
        * The method calculates differentials for parameters. For each parameter \f$a\f$ 
        * (_support_min, _core, _support_max) it calculates:
@@ -50,11 +56,7 @@ namespace ksi
        @param firing firing strength of the premise of the rule
        @date 2018-02-20
        */
-      virtual void cummulate_differentials(std::vector< double > X, 
-                                           double partial_differential,
-                                           double secundary_partial_differential,
-                                           double firing
-                                          );
+      virtual void cummulate_differentials(std::vector< double > X, double partial_differential, double secundary_partial_differential, double firing);
       
       
    };

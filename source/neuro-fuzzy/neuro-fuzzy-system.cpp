@@ -275,6 +275,14 @@ void ksi::neuro_fuzzy_system::printRulebase(std::ostream & ss)
         _pRulebase->print(ss);
 }
 
+void ksi::neuro_fuzzy_system::prettyPrintRulebase(std::ostream& ss)
+{
+    if (_pRulebase)
+    {
+	    
+    }
+}
+
 ksi::neuro_fuzzy_system::~neuro_fuzzy_system()
 {
    delete _pTnorm;

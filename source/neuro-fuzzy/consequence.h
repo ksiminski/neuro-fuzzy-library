@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 
+#include "../common/DatasetStatistics.h"
+
 namespace ksi
 {
    class consequence 
@@ -64,11 +66,16 @@ namespace ksi
        */
       virtual void setLinearParameters (std::vector<double> & coefficients);
       
-      /** The method prints an object into output stream.
+      /** The method prints an object linguistic description into output stream.
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss) = 0;  
-      
+
+      /** The method prints an object into output stream.
+        * @param ss an output stream to print to
+        * @param decStat the descriptor statistics to print
+        */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) = 0;
    };
 }
 

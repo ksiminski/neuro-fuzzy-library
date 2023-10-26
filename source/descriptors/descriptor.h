@@ -8,6 +8,7 @@
 #include <vector>
 #include <random>
 #include "../common/extensional-fuzzy-number-gaussian.h"
+#include "../common/DatasetStatistics.h"
 
 namespace ksi
 {
@@ -77,6 +78,13 @@ namespace ksi
       * @param ss an output stream to print to
       */
      virtual std::ostream & Print (std::ostream & ss) const = 0;
+
+      /**
+       * The method prints an object linguistic description into output stream.
+       * @param ss an output stream to print to
+       * @param decStat the descriptor statistics to print
+       */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const = 0;
      
      /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support */
