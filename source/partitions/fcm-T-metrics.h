@@ -88,19 +88,25 @@ namespace ksi
       /** The method calculated an distance between two data points 
         * represented by two vectors.
         * @param x point represented by a vector of attributes 
-        * @param x point represented by a vector of attributes 
+        * @param y point represented by a vector of attributes 
         * @return an dynamicly chosen distance between x and y */
+      std::shared_ptr<metric> _pMetric = nullptr;   
       virtual T calculateDistance(const std::vector<T> & x, 
                                   const std::vector<T> & y,
                                   ksi::metric &m);
-      std::shared_ptr<metric> _pMetric = nullptr;             
-      /** The method calculated an Euclidean distance between two data points 
+      T ~calculateDistance()
+      {
+         delete _pMetrics;
+      }
+      calculateDistance(const calculateDistance & k) = delete;
+
+      /*The method calculated an Euclidean distance between two data points 
         * represented by two vectors.
         * @param x point represented by a vector of attributes 
         * @param x point represented by a vector of attributes 
-        * @return an Euclidean distance between x and y */
+        * @return an Euclidean distance between x and y
       virtual T calculateDistance(const std::vector<T> & x, 
-                                  const std::vector<T> & y);
+                                  const std::vector<T> & y);*/
 
       /** @return Frobenius norm of differences of two matrices.
        * \f[ \|A - B\|_F \f]
@@ -179,6 +185,7 @@ namespace ksi
       
       /** @return an abbreviation of a method */
       virtual std::string getAbbreviation () const;
+      
    };
 }
 
@@ -415,9 +422,9 @@ T ksi::fcm_T<T>::calculateDistance(
    const std::vector<T> & y,
    ksi::metric &m)
 {
-
+   _pMetric = m.clone();
 }
-template<class T>
+/*template<class T>
 T ksi::fcm_T<T>::calculateDistance(
    const std::vector<T> & x, 
    const std::vector<T> & y)
@@ -448,7 +455,7 @@ T ksi::fcm_T<T>::calculateDistance(
       }
    }
    CATCH;
-}
+}*/
 
 template<class T>
 std::vector< std::vector<T>> ksi::fcm_T<T>::calculateClusterFuzzification(
