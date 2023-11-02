@@ -90,13 +90,14 @@ namespace ksi
         * @param x point represented by a vector of attributes 
         * @param y point represented by a vector of attributes 
         * @return an dynamicly chosen distance between x and y */
+      /** @todo Trzeba przenieść gdzieś wyżej.*/
       std::shared_ptr<metric> _pMetric = nullptr;   
       virtual T calculateDistance(const std::vector<T> & x, 
                                   const std::vector<T> & y,
                                   ksi::metric &m);
       T ~calculateDistance()
       {
-         delete _pMetrics;
+         // delete _pMetrics;
       }
       calculateDistance(const calculateDistance & k) = delete;
 
@@ -172,6 +173,9 @@ namespace ksi
        */
       virtual partition doPartition(const ksi::dataset & ds);
       
+
+      /** @todo Nie będzie konstruktora bezparametrowego. */
+      /** @todo Zamiast konstruktora bezparametrowego będzie konstruktor z parametrem (metryką) i on będzie klonował metrykę. */
       fcm_T ();
       /** @param nClusters number of clusters to cluster data into
           @param nClusteringIterations number of iterations of clutering procedure */
@@ -207,6 +211,7 @@ ksi::partitioner * ksi::fcm_T<T>::clone() const
 template<class T>
 ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
 {
+   /// @todo Tutaj trzeba skopiować metrykę.
    _m = wzor._m;
    _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;
@@ -219,6 +224,7 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
    if (this == &wzor)
       return *this;
    
+   /// @todo Tutaj trzeba skopiować metrykę.
    _m = wzor._m;
    _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;   
@@ -443,7 +449,7 @@ T ksi::fcm_T<T>::calculateDistance(
          CATCH;
       }
       else
-      {
+      {   ///@todo wywyłanie metryki zamiast liczenia na piechotę
          std::size_t size = x.size();
          T sum {};
          for (size_t i = 0; i < size; i++)
