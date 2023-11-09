@@ -176,7 +176,7 @@ namespace ksi
       fcm_T (ksi::metric &m);
       /** @param nClusters number of clusters to cluster data into
           @param nClusteringIterations number of iterations of clutering procedure */
-      fcm_T (const int number_of_clusters, const int number_of_clustering_iterations);
+      fcm_T (ksi::metric &m, const int number_of_clusters, const int number_of_clustering_iterations);
       fcm_T (const fcm_T & wzor); 
       fcm_T & operator = (const fcm_T & wzor); 
       
