@@ -31,6 +31,7 @@ namespace ksi
    class fcm_T : virtual public partitioner
    {
    protected:
+      /** metric object */
       std::shared_ptr<metric> _pMetric = nullptr;  
       /** fuzzification parameter */
       double _m = 2.0;
@@ -212,6 +213,7 @@ ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
    _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;
    _epsilon = wzor._epsilon;
+   _pMetric = wzor._pMetric->clone();
 }
 
 template<class T>
@@ -225,7 +227,7 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
    _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;   
    _epsilon = wzor._epsilon;
-   _pMetric = wzor._pMetric;
+   _pMetric = wzor._pMetric->clone();
    
    return *this;
 }
@@ -237,7 +239,7 @@ ksi::fcm_T<T>::fcm_T(ksi::metric &m)
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T (const int nClusters, const int nClusteringIterations) 
+ksi::fcm_T<T>::fcm_T (ksi::metric &m, const int nClusters, const int nClusteringIterations) : ksi::fcm<T>::fcm_T(m) 
 {
    _nClusters = nClusters;
    _nIterations = nClusteringIterations;
@@ -441,7 +443,7 @@ T ksi::fcm_T<T>::calculateDistance(
       }
       else
       {
-         _pMetric.CalculateDistance(x,y);
+         return _pMetric->CalculateDistance(x,y);
       }
    }
    CATCH;

@@ -67,6 +67,33 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
+      {  // FCM + metric
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         // std::string data (dataDir + "/" + "two-spherical.data");
+         // std::string data (dataDir + "/" + "two-crossed.data");
+         // std::string data (dataDir + "/" + "two-parallel.data");
+         
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ///@todo utworzyć obiekt metryki euklidesowej
+         ///@todo W linii niżej: fcm + metryką
+         ksi::fcm algorithm; 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + metric " << m.getAbbreviation() << std::endl;
+         std::cout << "===" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
 
       {  // possibilistic FCM
          std::string dataDir ("../data/exp-002");
