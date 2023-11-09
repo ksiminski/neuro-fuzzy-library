@@ -31,6 +31,7 @@ namespace ksi
    class fcm_T : virtual public partitioner
    {
    protected:
+      std::shared_ptr<metric> _pMetric = nullptr;  
       /** fuzzification parameter */
       double _m = 2.0;
       // /** number of clusters */
@@ -90,15 +91,9 @@ namespace ksi
         * @param x point represented by a vector of attributes 
         * @param y point represented by a vector of attributes 
         * @return an dynamicly chosen distance between x and y */
-      /** @todo Trzeba przenieść gdzieś wyżej.*/
-      std::shared_ptr<metric> _pMetric = nullptr;   
       virtual T calculateDistance(const std::vector<T> & x, 
-                                  const std::vector<T> & y,
-                                  ksi::metric &m);
-      T ~calculateDistance()
-      {
-         // delete _pMetrics;
-      }
+                                  const std::vector<T> & y);
+      T ~calculateDistance();
       calculateDistance(const calculateDistance & k) = delete;
 
       /*The method calculated an Euclidean distance between two data points 
@@ -173,10 +168,11 @@ namespace ksi
        */
       virtual partition doPartition(const ksi::dataset & ds);
       
-
-      /** @todo Nie będzie konstruktora bezparametrowego. */
-      /** @todo Zamiast konstruktora bezparametrowego będzie konstruktor z parametrem (metryką) i on będzie klonował metrykę. */
-      fcm_T ();
+      //fcm_T ();
+      /** Constructor, copying the metric
+       * @param m metric to be copied
+       */
+      fcm_T (ksi::metric &m);
       /** @param nClusters number of clusters to cluster data into
           @param nClusteringIterations number of iterations of clutering procedure */
       fcm_T (const int number_of_clusters, const int number_of_clustering_iterations);
@@ -229,13 +225,15 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
    _nClusters = wzor._nClusters;
    _nIterations = wzor._nIterations;   
    _epsilon = wzor._epsilon;
+   _pMetric = wzor._pMetric;
    
    return *this;
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T()
+ksi::fcm_T<T>::fcm_T(ksi::metric &m)
 {
+   _pMetric = m.clone();
 }
 
 template<class T>
@@ -422,15 +420,8 @@ std::vector<std::vector<T>> ksi::fcm_T<T>::modifyPartitionMatrix(
    CATCH;
 }
 
+
 template<class T>
-T ksi::fcm_T<T>::calculateDistance( 
-   const std::vector<T> & x, 
-   const std::vector<T> & y,
-   ksi::metric &m)
-{
-   _pMetric = m.clone();
-}
-/*template<class T>
 T ksi::fcm_T<T>::calculateDistance(
    const std::vector<T> & x, 
    const std::vector<T> & y)
@@ -449,19 +440,12 @@ T ksi::fcm_T<T>::calculateDistance(
          CATCH;
       }
       else
-      {   ///@todo wywyłanie metryki zamiast liczenia na piechotę
-         std::size_t size = x.size();
-         T sum {};
-         for (size_t i = 0; i < size; i++)
-         {
-            T roznica = x[i] - y[i];
-            sum += (roznica * roznica);
-         }
-         return ksi::square_root(sum); 
+      {
+         _pMetric.CalculateDistance(x,y);
       }
    }
    CATCH;
-}*/
+}
 
 template<class T>
 std::vector< std::vector<T>> ksi::fcm_T<T>::calculateClusterFuzzification(
