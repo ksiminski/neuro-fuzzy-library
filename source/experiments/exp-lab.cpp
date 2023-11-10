@@ -7,7 +7,6 @@
 #include <string>
 #include <random>
 #include <chrono>
-#include <fstream> 
 
 #include "../neuro-fuzzy/premise.h"
 #include "../descriptors/descriptor-gaussian.h"

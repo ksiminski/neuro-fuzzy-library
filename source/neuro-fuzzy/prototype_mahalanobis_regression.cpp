@@ -52,7 +52,6 @@ std::pair<std::vector<double>, ksi::Matrix<double>> ksi::prototype_mahalanobis_r
    CATCH;
 }
 
-
 ksi::premise * ksi::prototype_mahalanobis_regression::clone () const
 {
    // prototype design pattern

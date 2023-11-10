@@ -157,6 +157,7 @@ ksi::partition ksi::gk::doPartition(const ksi::dataset& ds)
          for (int iter = 0; iter < _nIterations; iter++)
          {
             mV = calculateClusterCentres(mU, mX);
+            
             std::vector<Matrix<double>> covariance_matrices = calculateCovarianceMatrices(mX, mU, mV);
             if (ksi::is_valid(covariance_matrices))          
                updateMetrics(covariance_matrices, nAttr);
@@ -257,6 +258,11 @@ ksi::gk::gk(const double volume_rho) : _volume_rho(volume_rho)
 {
 }
 
+ksi::gk::gk(const int number_of_clusters, const int number_of_iterations) 
+{
+   this->_nClusters = number_of_clusters;
+   this->_nIterations = number_of_iterations;
+}
 
 std::vector<ksi::Matrix<double>> ksi::gk::calculateCovarianceMatrices(const std::vector<std::vector<double>>& mX, const std::vector<std::vector<double>>& mU, const std::vector<std::vector<double>>& mV)
 {
