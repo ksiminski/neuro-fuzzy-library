@@ -132,7 +132,7 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       
       model << std::endl << std::endl << std::endl;      
       model << "data" << std::endl;
-      model << "excepted\telaborated" << std::endl;
+      model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
       for (std::size_t i = 0; i < nXtrain; i++)
          model << wYtrainExpected[i] << '\t' << wYtrainElaborated[i] << std::endl;
