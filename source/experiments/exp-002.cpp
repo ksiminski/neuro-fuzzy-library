@@ -80,7 +80,9 @@ void ksi::exp_002::execute()
          auto DataSet = input.read(data);
          
          ///@todo utworzyć obiekt metryki euklidesowej
-         ///@todo W linii niżej: fcm + metryką
+         ///@todo W linii niżej: fcm + metryka
+         ksi::metric_euclidean m;
+         ksi::fcm metric; 
          ksi::fcm algorithm; 
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
          algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
