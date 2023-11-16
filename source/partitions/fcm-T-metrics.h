@@ -94,8 +94,6 @@ namespace ksi
         * @return an dynamicly chosen distance between x and y */
       virtual T calculateDistance(const std::vector<T> & x, 
                                   const std::vector<T> & y);
-      T ~calculateDistance();
-      calculateDistance(const calculateDistance & k) = delete;
 
       /*The method calculated an Euclidean distance between two data points 
         * represented by two vectors.
@@ -169,20 +167,20 @@ namespace ksi
        */
       virtual partition doPartition(const ksi::dataset & ds);
       
-      //fcm_T ();
+      //fcm_T_metrics ();
       /** Constructor, copying the metric
        * @param m metric to be copied
        */
-      fcm_T (ksi::metric &m);
+      fcm_T_metrics (ksi::metric &m);
       /** @param nClusters number of clusters to cluster data into
           @param nClusteringIterations number of iterations of clutering procedure */
-      fcm_T (ksi::metric &m, const int number_of_clusters, const int number_of_clustering_iterations);
-      fcm_T (const fcm_T & wzor); 
-      fcm_T & operator = (const fcm_T & wzor); 
+      fcm_T_metrics (ksi::metric &m, const int number_of_clusters, const int number_of_clustering_iterations);
+      fcm_T_metrics (const fcm_T_metrics & wzor); 
+      fcm_T_metrics & operator = (const fcm_T_metrics & wzor); 
       
       
       virtual partitioner * clone () const;
-      virtual ~fcm_T ();  
+      virtual ~fcm_T_metrics ();  
       
       /** @return an abbreviation of a method */
       virtual std::string getAbbreviation () const;
@@ -191,22 +189,22 @@ namespace ksi
 }
 
 template<class T>
-std::string ksi::fcm_T<T>::getAbbreviation() const
+std::string ksi::fcm_T_metrics<T>::getAbbreviation() const
 {
    return std::string ("fcm");
 }
 
 
 template<class T>
-ksi::partitioner * ksi::fcm_T<T>::clone() const
+ksi::partitioner * ksi::fcm_T_metrics<T>::clone() const
 {
-   auto p = new ksi::fcm_T<T>(*this);
+   auto p = new ksi::fcm_T_metrics<T>(*this);
    
    return p;
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
+ksi::fcm_T_metrics<T>::fcm_T_metrics(const ksi::fcm_T_metrics<T> & wzor) : partitioner(wzor)
 {
    /// @todo Tutaj trzeba skopiować metrykę.
    _m = wzor._m;
@@ -217,7 +215,7 @@ ksi::fcm_T<T>::fcm_T(const ksi::fcm_T<T> & wzor) : partitioner(wzor)
 }
 
 template<class T>
-ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
+ksi::fcm_T_metrics<T> & ksi::fcm_T_metrics<T>::operator=(const ksi::fcm_T_metrics<T> & wzor)
 {
    if (this == &wzor)
       return *this;
@@ -233,25 +231,25 @@ ksi::fcm_T<T> & ksi::fcm_T<T>::operator=(const ksi::fcm_T<T> & wzor)
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T(ksi::metric &m)
+ksi::fcm_T_metrics<T>::fcm_T_metrics(ksi::metric &m)
 {
    _pMetric = m.clone();
 }
 
 template<class T>
-ksi::fcm_T<T>::fcm_T (ksi::metric &m, const int nClusters, const int nClusteringIterations) : ksi::fcm<T>::fcm_T(m) 
+ksi::fcm_T_metrics<T>::fcm_T_metrics (ksi::metric &m, const int nClusters, const int nClusteringIterations) : ksi::fcm_T_metrics<T>::fcm_T_metrics(m) 
 {
    _nClusters = nClusters;
    _nIterations = nClusteringIterations;
 }
 
 template<class T>
-ksi::fcm_T<T>::~fcm_T()
+ksi::fcm_T_metrics<T>::~fcm_T_metrics()
 {
 }
 
 template<class T>
-std::vector<std::vector<T>> ksi::fcm_T<T>::calculateClusterCentres(
+std::vector<std::vector<T>> ksi::fcm_T_metrics<T>::calculateClusterCentres(
    const std::vector<std::vector<T>> & U, 
    const std::vector<std::vector<T>> & X)
 {
@@ -291,7 +289,7 @@ std::vector<std::vector<T>> ksi::fcm_T<T>::calculateClusterCentres(
 
 ///@todo Zaimplementować funkcję randomizującą dla poszczególnych typów
 template<class T>
-void ksi::fcm_T<T>::randomise(std::vector<std::vector<T>> & m)
+void ksi::fcm_T_metrics<T>::randomise(std::vector<std::vector<T>> & m)
 {
    try
    {
@@ -309,7 +307,7 @@ void ksi::fcm_T<T>::randomise(std::vector<std::vector<T>> & m)
 }
 
 template<class T>
-void ksi::fcm_T<T>::normaliseByColumns(std::vector<std::vector<T>> & m)
+void ksi::fcm_T_metrics<T>::normaliseByColumns(std::vector<std::vector<T>> & m)
 {
    try
    {
@@ -332,7 +330,7 @@ void ksi::fcm_T<T>::normaliseByColumns(std::vector<std::vector<T>> & m)
 }
 
 template<class T>
-void ksi::fcm_T<T>::normaliseByRows(std::vector<std::vector<T>> & m)
+void ksi::fcm_T_metrics<T>::normaliseByRows(std::vector<std::vector<T>> & m)
 {
    try
    {
@@ -355,7 +353,7 @@ void ksi::fcm_T<T>::normaliseByRows(std::vector<std::vector<T>> & m)
 }
 
 template<class T>
-std::vector<std::vector<T>> ksi::fcm_T<T>::modifyPartitionMatrix(
+std::vector<std::vector<T>> ksi::fcm_T_metrics<T>::modifyPartitionMatrix(
    const std::vector<std::vector<T>> & mV, 
    const std::vector<std::vector<T>> & mX)
 {
@@ -424,7 +422,7 @@ std::vector<std::vector<T>> ksi::fcm_T<T>::modifyPartitionMatrix(
 
 
 template<class T>
-T ksi::fcm_T<T>::calculateDistance(
+T ksi::fcm_T_metrics<T>::calculateDistance(
    const std::vector<T> & x, 
    const std::vector<T> & y)
 {
@@ -443,14 +441,14 @@ T ksi::fcm_T<T>::calculateDistance(
       }
       else
       {
-         return _pMetric->CalculateDistance(x,y);
+         return _pMetric->calculateDistance(x,y);
       }
    }
    CATCH;
 }
 
 template<class T>
-std::vector< std::vector<T>> ksi::fcm_T<T>::calculateClusterFuzzification(
+std::vector< std::vector<T>> ksi::fcm_T_metrics<T>::calculateClusterFuzzification(
    const std::vector<std::vector<T>> & mU,    
    const std::vector<std::vector<T>> & mV,
    const std::vector<std::vector<T>> & mX)
@@ -490,7 +488,7 @@ std::vector< std::vector<T>> ksi::fcm_T<T>::calculateClusterFuzzification(
 }
 
 template<class T>
-ksi::partition ksi::fcm_T<T>::doPartition(const ksi::dataset & ds)
+ksi::partition ksi::fcm_T_metrics<T>::doPartition(const ksi::dataset & ds)
 {
    try
    {
@@ -553,25 +551,25 @@ ksi::partition ksi::fcm_T<T>::doPartition(const ksi::dataset & ds)
 
 
 template<class T>
-void ksi::fcm_T<T>::setFuzzification(double m)
+void ksi::fcm_T_metrics<T>::setFuzzification(double m)
 {
    _m = m;
 }
 
 template<class T>
-void ksi::fcm_T<T>::setNumberOfClusters(int c)
+void ksi::fcm_T_metrics<T>::setNumberOfClusters(int c)
 {
    _nClusters = c;
 }
 
 template<class T>
-void ksi::fcm_T<T>::setNumberOfIterations(int i)
+void ksi::fcm_T_metrics<T>::setNumberOfIterations(int i)
 {
    _nIterations = i;
 }
 
 template<class T>
-void ksi::fcm_T<T>::setEpsilonForFrobeniusNorm(const double EPSILON)
+void ksi::fcm_T_metrics<T>::setEpsilonForFrobeniusNorm(const double EPSILON)
 {
    try
    {
@@ -584,7 +582,7 @@ void ksi::fcm_T<T>::setEpsilonForFrobeniusNorm(const double EPSILON)
 }
 
 template<class T>
-T ksi::fcm_T<T>::Frobenius_norm_of_difference(
+T ksi::fcm_T_metrics<T>::Frobenius_norm_of_difference(
    const std::vector<T> & a, 
    const std::vector<T> & b)
 {
@@ -616,7 +614,7 @@ T ksi::fcm_T<T>::Frobenius_norm_of_difference(
 }
 
 template<class T>
-T ksi::fcm_T<T>::Frobenius_norm_of_difference(
+T ksi::fcm_T_metrics<T>::Frobenius_norm_of_difference(
    const std::vector<std::vector<T>> & A, 
    const std::vector<std::vector<T>> & B)
 {
