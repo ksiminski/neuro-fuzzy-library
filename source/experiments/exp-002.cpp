@@ -12,6 +12,7 @@
 #include "../common/dataset.h" 
 #include "../partitions/partitioner.h" 
 #include "../partitions/fcm.h"
+#include "../partitions/fcm-T-metrics.h"
 #include "../partitions/fcom.h"
 #include "../partitions/fcm-conditional.h"
 #include "../partitions/fcm-possibilistic.h"
@@ -82,8 +83,7 @@ void ksi::exp_002::execute()
          ///@todo utworzyć obiekt metryki euklidesowej
          ///@todo W linii niżej: fcm + metryka
          ksi::metric_euclidean m;
-         ksi::fcm metric; 
-         ksi::fcm algorithm; 
+         ksi::fcm_T_metrics algorithm(m); 
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
          algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
 

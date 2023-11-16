@@ -1,7 +1,7 @@
 /** @file */ 
 
-#ifndef FCM_T_H
-#define FCM_T_H
+#ifndef FCM_T_METRICS_H
+#define FCM_T_METRICS_H
  
 
 #include <cmath>
@@ -28,7 +28,7 @@ namespace ksi
 {
    /** The class implements Fuzzy C-means clustering algorithm. */
    template<class T>
-   class fcm_T : virtual public partitioner
+   class fcm_T_metrics : virtual public partitioner
    {
    protected:
       /** metric object */
