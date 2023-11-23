@@ -93,7 +93,7 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
-      
+     return ; 
       {  // possibilistic FCM
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;
