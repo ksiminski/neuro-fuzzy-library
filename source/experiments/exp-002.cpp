@@ -32,7 +32,6 @@
 #include "../owas/plowa.h"
 #include "../owas/uowa.h"
 #include "../service/debug.h"
-#include "../metrics/metric-euclidean.h"
 #include "../tnorms/t-norm-product.h"
 #include "../snorms/s-norm-sum.h"
 
@@ -94,7 +93,7 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
-
+      
       {  // possibilistic FCM
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;

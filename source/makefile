@@ -698,6 +698,12 @@ $(release_folder)/partitions-dbscan.o : partitions/dbscan.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/partitions-dbscan.o : partitions/dbscan.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
+
+$(release_folder)/partitions-fcm-T-metrics.o : partitions/fcm-T-metrics.cpp
+	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
+$(debug_folder)/partitions-fcm-T-metrics.o : partitions/fcm-T-metrics.cpp
+	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
+
 $(release_folder)/partitions-fcm-T.o : partitions/fcm-T.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/partitions-fcm-T.o : partitions/fcm-T.cpp
