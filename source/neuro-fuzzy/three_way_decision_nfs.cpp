@@ -179,7 +179,7 @@ void ksi::three_way_decision_nfs::createFuzzyRulebase(const ksi::dataset& train,
                 
                 // zapisanie do zbioru_treningowego danych bliskich progowi
                 zbior_treningowy = extract_poor_results(zbior_treningowy, results_train, threshold_value, _noncommintment_value); 
-                if (zbior_treningowy.size() < 1)
+                if (zbior_treningowy.size() < 1 or zbior_treningowy.size() <  zbior_treningowy.getNumberOfAttributes())
                 {
                     // wszystkie nastepne systemy trzeba skasowac
                     remove_system = true;  
@@ -200,7 +200,6 @@ double ksi::three_way_decision_nfs::answer(const ksi::datum& item) const
         for (auto & pSystem : _cascade)
         {
             result = pSystem->answer(item);
-            debug(result);
             auto threshold_value = pSystem->get_threshold_value();
             
             if (std::fabs(result - threshold_value) > _noncommintment_value)
