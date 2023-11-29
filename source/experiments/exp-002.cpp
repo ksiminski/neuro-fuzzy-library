@@ -23,6 +23,11 @@
 #include "../partitions/granular-dbscan.h"
 #include "../metrics/metric-minkowski.h"
 #include "../metrics/metric-euclidean.h"
+#include "../metrics/metric_mahalanobis.h"
+#include "../metrics/metric-chebyshev.h"
+#include "../metrics/metric-cosine.h"
+#include "../metrics/metric-manhattan.h"
+#include "../metrics/metric.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -43,10 +48,15 @@ void ksi::exp_002::execute()
    try
    {  
       {  // FCM
-         std::string dataDir ("../data/exp-002");
+         std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic.data");
+         const int NUMBER_OF_CLUSTERS = 1;
+         std::string data (dataDir + "/" + "2.txt");
+         //std::string data (dataDir + "/" + "5.txt");
+         //std::string data (dataDir + "/" + "10.txt");
+         //std::string data (dataDir + "/" + "20.txt");
+         //std::string data (dataDir + "/" + "50.txt");
+         //std::string data (dataDir + "/" + "100.txt");
          // std::string data (dataDir + "/" + "two-spherical.data");
          // std::string data (dataDir + "/" + "two-crossed.data");
          // std::string data (dataDir + "/" + "two-parallel.data");
@@ -67,14 +77,16 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
-      {  // FCM + metric
-         std::string dataDir ("../data/exp-002");
+      {  // FCM + metric euclidean
+         std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 2;
-         std::string data (dataDir + "/" + "possibilistic.data");
-         // std::string data (dataDir + "/" + "two-spherical.data");
-         // std::string data (dataDir + "/" + "two-crossed.data");
-         // std::string data (dataDir + "/" + "two-parallel.data");
+         const int NUMBER_OF_CLUSTERS = 1;
+         //std::string data (dataDir + "/" + "2.txt");
+         //std::string data (dataDir + "/" + "5.txt");
+         //std::string data (dataDir + "/" + "10.txt");
+         //std::string data (dataDir + "/" + "20.txt");
+         //std::string data (dataDir + "/" + "50.txt");
+         std::string data (dataDir + "/" + "100.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
@@ -93,7 +105,66 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
+      {  // FCM + metric euclidean
+         std::string dataDir ("../data/exp-002/data");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 1;
+         //std::string data (dataDir + "/" + "2.txt");
+         //std::string data (dataDir + "/" + "5.txt");
+         //std::string data (dataDir + "/" + "10.txt");
+         //std::string data (dataDir + "/" + "20.txt");
+         //std::string data (dataDir + "/" + "50.txt");
+         std::string data (dataDir + "/" + "100.txt");
+         
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_chebyshev m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + metric " << m.getAbbreviation() << std::endl;
+         std::cout << "===" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+      {  // FCM + metric euclidean
+         std::string dataDir ("../data/exp-002/data");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 1;
+         //std::string data (dataDir + "/" + "2.txt");
+         //std::string data (dataDir + "/" + "5.txt");
+         //std::string data (dataDir + "/" + "10.txt");
+         //std::string data (dataDir + "/" + "20.txt");
+         //std::string data (dataDir + "/" + "50.txt");
+         std::string data (dataDir + "/" + "100.txt");
+         
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_cosine m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + metric " << m.getAbbreviation() << std::endl;
+         std::cout << "===" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+      
      return ; 
+
+
       {  // possibilistic FCM
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;

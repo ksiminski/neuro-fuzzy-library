@@ -75,7 +75,7 @@ ksi::partition ksi::fcm_T_metrics<double>::elaborate_gaussian_partition (
    
    return part;
 }
-/*
+
 template <>
 ksi::partition ksi::fcm_T_metrics<ksi::ext_fuzzy_number_gaussian>::elaborate_gaussian_partition (
    const int _nClusters, const int nAttr, 
@@ -99,4 +99,4 @@ ksi::partition ksi::fcm_T_metrics<ksi::ext_fuzzy_number_gaussian>::elaborate_gau
    part.setPartitionMatrix(mU);
    
    return part;
-}*/
+}
