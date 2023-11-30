@@ -46,7 +46,9 @@
 void ksi::exp_002::execute()
 {
    try
-   { /// + metryka Minkowskiego  (parametryzowana, p = 2 (euklidesowa), p = 1; 1.5
+   { 
+      /// outliers (dane nietypowe, dane odstająca)
+      /// + metryka Minkowskiego  (parametryzowana, p = 2 (euklidesowa), p = 1; 1.5
       {  // FCM
          std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
