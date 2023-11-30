@@ -46,17 +46,17 @@
 void ksi::exp_002::execute()
 {
    try
-   {  
+   { /// + metryka Minkowskiego  (parametryzowana, p = 2 (euklidesowa), p = 1; 1.5
       {  // FCM
          std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 1;
-         std::string data (dataDir + "/" + "2.txt");
+         const int NUMBER_OF_CLUSTERS = 4;
+         //std::string data (dataDir + "/" + "2.txt");
          //std::string data (dataDir + "/" + "5.txt");
          //std::string data (dataDir + "/" + "10.txt");
          //std::string data (dataDir + "/" + "20.txt");
          //std::string data (dataDir + "/" + "50.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         std::string data (dataDir + "/" + "100.txt");
          // std::string data (dataDir + "/" + "two-spherical.data");
          // std::string data (dataDir + "/" + "two-crossed.data");
          // std::string data (dataDir + "/" + "two-parallel.data");
@@ -80,7 +80,7 @@ void ksi::exp_002::execute()
       {  // FCM + metric euclidean
          std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 1;
+         const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "2.txt");
          //std::string data (dataDir + "/" + "5.txt");
          //std::string data (dataDir + "/" + "10.txt");
@@ -108,7 +108,7 @@ void ksi::exp_002::execute()
       {  // FCM + metric euclidean
          std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 1;
+         const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "2.txt");
          //std::string data (dataDir + "/" + "5.txt");
          //std::string data (dataDir + "/" + "10.txt");
@@ -136,7 +136,7 @@ void ksi::exp_002::execute()
       {  // FCM + metric euclidean
          std::string dataDir ("../data/exp-002/data");
          const double EPSILON = 1e-8;
-         const int NUMBER_OF_CLUSTERS = 1;
+         const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "2.txt");
          //std::string data (dataDir + "/" + "5.txt");
          //std::string data (dataDir + "/" + "10.txt");
