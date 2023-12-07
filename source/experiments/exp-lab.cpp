@@ -109,14 +109,12 @@ void ksi::exp_lab::fuzzy_system()
 
 		// [PL] T-normy (dostępne klasy)
 		// [EN] T-norms (available classes)
-		//          ksi::t_norm_lukasiewicz
-		//          ksi::t_norm_min
-		//          ksi::t_norm_product
-		//          ksi::t_norm_fodor 
-		//          ksi::t_norm_dubois_prade
-		//          ksi::t_norm_einstein
-		
-		
+		//          ksi::t_norm_lukasiewicz tnorm;
+		//          ksi::t_norm_min tnorm;
+		//          ksi::t_norm_product tnorm;
+		//          ksi::t_norm_fodor tnorm;
+		//          ksi::t_norm_dubois_prade tnorm;
+		//          ksi::t_norm_einstein tnorm;
 
 
 		// [PL] przesłanka
