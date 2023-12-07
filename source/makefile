@@ -823,6 +823,8 @@ $(debug_folder)/tnorms-t-norm-einstein.o : tnorms/t-norm-einstein.cpp
 $(release_folder)/tnorms-t-norm-dombi.o : tnorms/t-norm-dombi.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/tnorms-t-norm-dombi.o : tnorms/t-norm-dombi.cpp
+
+
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
 $(release_folder)/metrics-metric-minkowski-weighted.o : metrics/metric-minkowski-weighted.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
@@ -831,7 +833,6 @@ $(debug_folder)/metrics-metric-minkowski-weighted.o : metrics/metric-minkowski-w
 $(release_folder)/metrics-metric-minkowski.o : metrics/metric-minkowski.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/metrics-metric-minkowski.o : metrics/metric-minkowski.cpp
-
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
 $(release_folder)/metrics-metric-chebyshev.o : metrics/metric-chebyshev.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
@@ -844,7 +845,6 @@ $(release_folder)/metrics-metric-manhattan.o : metrics/metric-manhattan.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/metrics-metric-manhattan.o : metrics/metric-manhattan.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
-
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
 $(release_folder)/metrics-metric-euclidean.o : metrics/metric-euclidean.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
@@ -863,6 +863,8 @@ $(release_folder)/metrics-metric.o : metrics/metric.cpp
 $(debug_folder)/metrics-metric.o : metrics/metric.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
 $(release_folder)/service-debug.o : service/debug.cpp
+
+
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/service-debug.o : service/debug.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
