@@ -64,15 +64,27 @@ void ksi::exp_lab::fuzzy_system()
 	{
 		// [PL] ADIIO
 		//
-		// Pewien system ma dwa wejścia i jedno wyjście. Wartości wejść mają wartości z zakresu od ok. 0 do ok. 10. Wartości wyjścia są od ok. 0 do ok. 10. Od eksperta dziedzinowego wiemy, że wyjście systemu powinno być niskie, jeżeli wartości obu atrybutów są albo jednocześnie duże, albo jednocześnie małe. Gdy jeden z atrybutów ma wartość dużą, a drugi małą, to wyjście systemu powinno być wysokie. 
+		// Pewien system ma dwa wejścia i jedno wyjście. Wartości wejść są 
+		// z zakresu od ok. 0 do ok. 10. Wartości wyjścia są od ok. 0 do ok. 10. 
+		// Od eksperta dziedzinowego wiemy, że wyjście systemu powinno być niskie, 
+		// jeżeli wartości obu atrybutów są albo jednocześnie duże, albo 
+		// jednocześnie małe. Gdy jeden z atrybutów ma wartość dużą, a drugi małą, 
+		// to wyjście systemu powinno być wysokie. 
 		// 		
-		// 	Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by wartości błędu RMSE dla danych treningowych były jak najmniejsze. W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
+		// Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by wartości błędu RMSE 
+		// dla danych treningowych były jak najmniejsze. 
+		// W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
 
 		// [EN] DAACI
 		// 
-		// A system has two inputs and one output. Approximate range of input values is 0-10. Output values from approx. 0 to approx. 10. An expert says the output of the system is low, if both inputs are simultaneously low or high. The output is high, if one input is low and the other high. 
+		// A system has two inputs and one output. Approximate range of input 
+		// values is 0-10. Output values from approx. 0 to approx. 10. An expert 
+		// says the output of the system is low, if both inputs are simultaneously 
+		// low or high. The output is high, if one input is low and the other high. 
 		// 
-		// Construct a fuzzy rule base for a MA fuzzy system to reduce the output root mean square error (RMSE) for the train set. The system produces the result file results-fuzzy-MA in the directory data/exp-lab.
+		// Construct a fuzzy rule base for a MA fuzzy system to reduce the output root 
+		// mean square error (RMSE) for the train set. The system produces the result 
+		// file results-fuzzy-MA in the directory data/exp-lab.
 
 		////////////////////////////////////////////////////////////////////////////////////
 		
@@ -85,11 +97,13 @@ void ksi::exp_lab::fuzzy_system()
 		
 		
 		
+		// [PL] Jakimi przymiotnikami zostały opisane wartości zmiennych lingwistyczne występujące w regułach?
+		//      w przesłankach:  
+		//      w konluzjach:    
 		
-		
-		// [PL] Jakie zmienne lingwistyczne występują w regułach?
-		// [EN] What linguistic variables can you find in the rules?
-		
+		// [EN] What adjectives have you used to describe values of the linguistic variables in the rules?
+		//      in premises:     
+		//      in consequences:  
 		
 		
 		// [PL] Proszę zamodelować zmienne lingwistyczne przy użyciu poniższych deskryptorów (zbiorów rozmytych).
