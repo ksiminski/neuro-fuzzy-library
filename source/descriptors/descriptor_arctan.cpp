@@ -6,7 +6,7 @@
 #include <cmath>
 #include <numbers>
 
-#include "descriptor_arctan.h"
+#include "./descriptor_arctan.h"
 #include "../service/debug.h"
 
 #include <iostream>
@@ -36,7 +36,7 @@ double ksi::descriptor_arctan::getMembership (const double x)
 {
    try
    {
-      return last_membership = (2.0 *  std::numbers::inv_pi_v<double>) * std::atan(_slope * (x - _cross)); 
+      return last_membership = 0.5 + (std::numbers::inv_pi_v<double>) * std::atan(_slope * (x - _cross)); 
    }
    CATCH;
 }
@@ -45,7 +45,7 @@ std::vector<double> ksi::descriptor_arctan::getDifferentials (double x)
 {
    double sxc = _slope * (x - _cross);
    double sxc2 = sxc * sxc;
-   double common = (2.0 *  std::numbers::inv_pi_v<double>) / ((sxc2 + 1));
+   double common = (std::numbers::inv_pi_v<double>) / ((sxc2 + 1));
    return { - common * _slope,       // d membership / d _cross
               common * (x - _cross)  // d membership / d _slope
           };
@@ -58,7 +58,6 @@ ksi::descriptor * ksi::descriptor_arctan::clone() const
 
 ksi::descriptor_arctan::~descriptor_arctan()
 {
-
 }
 
 std::ostream& ksi::descriptor_arctan::Print(std::ostream& ss) const
@@ -98,4 +97,3 @@ double ksi::descriptor_arctan::getRandomValue(std::default_random_engine& engine
     return 0.0;
 }
 
- 
