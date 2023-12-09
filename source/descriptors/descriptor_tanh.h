@@ -21,6 +21,11 @@ namespace ksi
       double _previous_slope;
       
    public:
+      /** @param crosspoint argument for which the value of the function is 0.5
+       * @param slope positive values: increasing function, <BR>
+       *              negative values: decreasing function; <BR>
+       *              high absolute values: fast increase / descrease,<BR>
+       *              low absolute values: slow increase / descrease */
       descriptor_tanh (const double crosspoint, const double slope);
       
       descriptor_tanh (const descriptor_tanh & wzor);

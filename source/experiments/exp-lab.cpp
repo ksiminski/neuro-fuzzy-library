@@ -71,8 +71,8 @@ void ksi::exp_lab::fuzzy_system()
 		// jednocześnie małe. Gdy jeden z atrybutów ma wartość dużą, a drugi małą, 
 		// to wyjście systemu powinno być wysokie. 
 		// 		
-		// Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by wartości błędu RMSE 
-		// dla danych treningowych były jak najmniejsze. 
+		// Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by 
+      // wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
 		// W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
 
 		// [EN] DAACI

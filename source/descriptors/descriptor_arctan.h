@@ -41,7 +41,6 @@ namespace ksi
        *  @return vector of differentials:                <BR> 
        *          vector[0] : \f$\frac{\partial f}{\partial c}(x; c, s) =  \frac{-s}{\pi \left( \left( s \left(x - c\right) \right)^2 + 1\right)} \f$ <BR>
        *          vector[1] : \f$\frac{\partial f}{\partial s}(x; c, s) =  \frac{x- c}{\pi \left( \left( s \left(x - c\right) \right)^2 + 1\right)} \f$. */
-       */
       virtual std::vector<double> getDifferentials (double x) override;
       
       virtual descriptor * clone () const override;

@@ -11,10 +11,10 @@ namespace ksi
    class descriptor_trapezoidal : virtual public descriptor
    {
    protected:
-      double _support_min;
-      double _support_max;
-      double _core_min;
-      double _core_max;
+      double _support_min;  ///< minimal value of support 
+      double _support_max;  ///< maximal value of support 
+      double _core_min;     ///< minimal value of core
+      double _core_max;     ///< maximal value of core
       
       double _previous_support_min;
       double _previous_support_max;
@@ -22,6 +22,10 @@ namespace ksi
       double _previous_core_max;
       
    public:
+      /** @param support_min support begin
+       *  @param core_min    core begin
+       *  @param core_max    core end 
+       *  @param support_max support end */
       descriptor_trapezoidal (double support_min, double core_min, double core_max, double support_max);
       
       descriptor_trapezoidal(const descriptor_trapezoidal & wzor);
