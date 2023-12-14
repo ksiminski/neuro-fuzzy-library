@@ -160,22 +160,20 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
-      /*{  // FCM + Minkowski
-         std::string dataDir ("../data/exp-002/data");
+      {  // FCM + Minkowski
+         std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "02-out-10.txt");
          //std::string data (dataDir + "/" + "02-out-20.txt");
-
-         std::string data (dataDir + "/" + "02-out-50.txt");
-         
-         //std::string data (dataDir + "/" + "02-out-100.txt");
+         //std::string data (dataDir + "/" + "02-out-50.txt");
+         std::string data (dataDir + "/" + "02-out-100.txt");
          //std::string data (dataDir + "/" + "100.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
-         ksi::metric_minkowski m;
+         ksi::metric_minkowski m(5);
          ksi::fcm_T_metrics<double> algorithm(m); 
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
          algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
@@ -188,9 +186,9 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
          std::cout << Partition << std::endl;
          std::cout << std::endl;
-      }*/
+      }
       {  // FCM + Manhattan
-         std::string dataDir ("../data/exp-002/data");
+         std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "02-out-10.txt");
@@ -216,33 +214,31 @@ void ksi::exp_002::execute()
          std::cout << Partition << std::endl;
          std::cout << std::endl;
       }
-      /*{  // FCM + Mahalanobis
-         std::string dataDir ("../data/exp-002/data");
+      {  // FCM + Mahalanobis
+         std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          //std::string data (dataDir + "/" + "02-out-10.txt");
          //std::string data (dataDir + "/" + "02-out-20.txt");
-         std::string data (dataDir + "/" + "02-out-50.txt");
-         //std::string data (dataDir + "/" + "02-out-100.txt");
+         //std::string data (dataDir + "/" + "02-out-50.txt");
+         std::string data (dataDir + "/" + "02-out-100.txt");
          //std::string data (dataDir + "/" + "100.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
-         ksi::metric_mahalanobis m;
-         ksi::fcm_T_metrics<double> algorithm(m); 
+         ksi::gk algorithm;
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
          algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
 
          auto Partition = algorithm.doPartition(DataSet);
          
-         std::cout << "FCM + metric " << m.getAbbreviation() << std::endl;
-         std::cout << "===" << std::endl;
-         std::cout << "data file: " << data << std::endl;
-         std::cout << std::endl;
+         std::cout << "Mahalanobis" << std::endl;
+         std::cout << "================" << std::endl;
+         std::cout << "data file: " << data << std::endl; 
          std::cout << Partition << std::endl;
          std::cout << std::endl;
-      }*/
+      }
 
      return ; 
 
