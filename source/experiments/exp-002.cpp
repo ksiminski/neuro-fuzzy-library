@@ -81,12 +81,13 @@ void ksi::exp_002::execute()
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
-         
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
+
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
@@ -109,11 +110,12 @@ void ksi::exp_002::execute()
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
@@ -137,11 +139,12 @@ void ksi::exp_002::execute()
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
          
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
@@ -164,11 +167,12 @@ void ksi::exp_002::execute()
          std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
@@ -191,11 +195,12 @@ void ksi::exp_002::execute()
          std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
@@ -218,11 +223,12 @@ void ksi::exp_002::execute()
          std::string dataDir ("../data/exp-002/outliers");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 4;
-         //std::string data (dataDir + "/" + "02-out-10.txt");
-         //std::string data (dataDir + "/" + "02-out-20.txt");
-         //std::string data (dataDir + "/" + "02-out-50.txt");
-         std::string data (dataDir + "/" + "02-out-100.txt");
-         //std::string data (dataDir + "/" + "100.txt");
+         //std::string data (dataDir + "/" + "02-out-300.txt");
+         //std::string data (dataDir + "/" + "02-out-400.txt");
+         //std::string data (dataDir + "/" + "02-out-500.txt");
+         std::string data (dataDir + "/" + "02-out-1000.txt");
+         //std::string data (dataDir + "/" + "02-out-1500.txt");
+         //std::string data (dataDir + "/" + "02-out-2000.txt");
          
          ksi::reader_complete input;
          auto DataSet = input.read(data);
