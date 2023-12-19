@@ -550,7 +550,7 @@ void ksi::exp_005::execute()
 {
 	try
 	{
-		classification();
+		//classification();
 		regression();
 	} CATCH;
 
