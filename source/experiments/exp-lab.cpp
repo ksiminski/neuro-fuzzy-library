@@ -177,8 +177,8 @@ void ksi::exp_lab::neuro_fuzzy_system()
 	{
 		// regression 
 		const std::string DIRECTORY ("../data/exp-lab");
-		const std::string TRAIN   (DIRECTORY + "/train"); 
-		const std::string TEST    (DIRECTORY + "/test");
+		const std::string TRAIN   (DIRECTORY + "/train.txt"); 
+		const std::string TEST    (DIRECTORY + "/test.txt");
 		const std::string RESULTS (DIRECTORY + "/results-neuro-fuzzy");
 		const int NUMBER_OF_RULES = 4;
 		const int NUMBER_OF_CLUSTERING_ITERATIONS = 1000;

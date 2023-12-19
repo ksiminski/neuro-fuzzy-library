@@ -4,9 +4,30 @@
 #include <vector>
 #include <cmath>
 #include <random>
+#include <array>
 
 #include "descriptor.h"
 #include "descriptor-semitriangular.h"
+
+const std::array<std::string, 7> ksi::descriptor_semitriangular::semitriangularLocationDescription
+{
+    "micro",
+        "tiny",
+        "small",
+        "medium",
+        "large",
+        "huge",
+        "giant"
+};
+
+const std::array<std::string, 5> ksi::descriptor_semitriangular::fuzzyDescription
+{
+    "hardly",       // (INFINITY, 10>
+	"mildly",       // (10; 4>
+	"moderately",   // (1 ; 4)
+	"distinctly",   // <1; 0.4)
+	"stepwise"      // <0.4; 0>
+};
 
 ksi::descriptor_semitriangular::~descriptor_semitriangular()
 {
@@ -83,6 +104,31 @@ double ksi::descriptor_semitriangular::getRandomValue(std::default_random_engine
    }
 }
 
+
+std::ostream& ksi::descriptor_semitriangular::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+{
+    const double cross = (_support_extremum + _core) / 2;
+
+    int locationIndex = -(descStat.average - cross) / descStat.std_dev + semitriangularLocationDescription.size() / 2;
+    locationIndex = std::min(std::max(locationIndex, 0), int(semitriangularLocationDescription.size() - 1));
+
+    int slopeIndex;
+    double product = abs(((_support_extremum - _core) / 2) * descStat.std_dev);
+    if (product >= 5)
+        slopeIndex = 0;
+    else if (product >= 2)
+        slopeIndex = 1;
+    else if (product > 0.5)
+        slopeIndex = 2;
+    else if (product > 0.2)
+        slopeIndex = 3;
+    else
+        slopeIndex = 4;
+
+    ss << "is " << fuzzyDescription[slopeIndex] << ' ' << (_support_extremum < _core ? "greater" : "less") << " than " << semitriangularLocationDescription[locationIndex];
+
+    return ss;
+}
 
 std::vector< double > ksi::descriptor_semitriangular::getMAconsequenceParameters() const
 {

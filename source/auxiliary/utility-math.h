@@ -6,7 +6,9 @@
 #include <vector>
 #include <cmath>
 
+#include "matrix.h"
 #include "../service/debug.h"
+#include "../descriptors/DescriptorStatistics.h"
 
 namespace ksi
 {
@@ -32,6 +34,26 @@ namespace ksi
 
        
    public:
+
+
+       /** A method returns a transposed matrix. Input matrix is not modified.
+        * @param matrix matrix to transpose
+        * @return a transposed matrix, input matrix is not modified
+        * @date 2023-11-22
+        * @author Konrad Wnuk
+        */
+       template <typename T = double>
+           std::vector<std::vector<T>> transpose(const std::vector<std::vector<T>>& matrix)
+       {
+           std::vector<std::vector<T>> result(matrix[0].size(), std::vector<T>(matrix.size()));
+
+           for (std::size_t w = 0; w < matrix.size(); w++)
+               for (size_t k = 0; k < matrix[w].size(); k++)
+                   result[k][w] = matrix[w][k];
+           return result;
+       }
+
+
       /** @return The function returns k-th smallest element in an unsorted vector. 
        *  The function has average complexity O(n).
         * @param first iterator to the first element 
@@ -160,7 +182,42 @@ namespace ksi
           }
           CATCH;
       }
-      
+
+      /** @return The function returns standard deviation and median of elements in a vector.
+		* @param first iterator to the first element
+		* @param last  iterator to the past-the-end element in the vector
+        * @param k     k-th smallest  (starts with 0)
+        * @date 2023-11-21
+        * @author Konrad Wnuk
+        * @throw std::string if the array has no items
+        */
+   	template<typename T = double>
+   	static
+        std::pair<T,T> getMedianAndStandardDeviation(
+        const typename std::vector<T>::const_iterator first,
+        const typename std::vector<T>::const_iterator last)
+   	{
+          try {
+              T sum{};    
+              T sumSq{};  
+              std::size_t counter = 0;
+              for (auto iter = first; iter != last; iter++)
+              {
+                  sum += *iter;
+                  sumSq += *iter * *iter;
+                  counter++;
+              }
+
+              if (counter == 0)
+                  throw std::string("The array has no elements!");
+
+              T average = sum / counter;
+              return { average, std::sqrt(sumSq / counter - average * average)};
+          }
+          CATCH;
+      }
+
+
       /** @return The function returns a vector of values without outliers. Only values inside the interval 
        * \f[ (m - 3\sigma, m + 3\sigma) \f]
        * where <br/>
@@ -197,7 +254,43 @@ namespace ksi
           }
           CATCH;
       }
+
+      template<typename T = double>
+      static
+      std::pair<T, T> calculateLineEquation(const std::pair<T, T>& p1, const std::pair<T, T>& p2)
+   		{
+          ///@todo wpisaæ wzorek w latex
+
+          const double slope = (p2.second - p1.second) / (p2.first - p1.first);
+          const double intercept = p1.second - slope * p1.first;
+
+          return std::make_pair(slope, intercept);
+      }
+
+      template<typename T = double>
+      static
+   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& fun, const T& expected)
+       {
+        ///@todo wpisaæ wzorek w latex
+        
+          auto f = [fun] (const auto& x, const auto& expected){return (fun.first * pow(x, 4)) / 4 + (fun.second * pow(x, 3) - 2 * expected * fun.first * pow(x, 3))  / 3 - expected * fun.second * pow(x, 2) + (pow(expected, 2) * fun.first * pow(x, 2)) / 2 + pow(expected, 2) * fun.second * x; };
+           
+       	  return f(x2, expected) - f(x1, expected);
+       }
+
+      template<typename T = double>
+      static
+          T calculateRectangularDefiniteIntegralValue(const T& x1, const T& x2, const T& expected)
+      {
+          ///@todo wpisaæ wzorek w latex
+
+          auto f = [](const auto& x, const auto& expected) {return pow(x, 3) / 3 - expected * pow(x, 2) + pow(expected, 2) * x; };
+
+          return f(x2, expected) - f(x1, expected);
+      }
+
    };
+   
    
    /** Class for representation of a pair: double, std::size_t with operator< .*/
    class distance_index

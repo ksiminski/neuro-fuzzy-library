@@ -56,6 +56,11 @@ std::ostream& ksi::descriptor_singleton::Print(std::ostream& ss) const
    return ss;
 }
 
+std::ostream& ksi::descriptor_singleton::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+{
+    return ss << "is exactly " << _support_min;
+}
+
 
 std::vector< double > ksi::descriptor_singleton::getMAconsequenceParameters() const
 {

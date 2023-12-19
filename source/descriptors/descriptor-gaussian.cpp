@@ -6,11 +6,24 @@
 #include <sstream>
 #include <cmath>
 #include <random>
+#include <array>
 
 #include "descriptor-gaussian.h"
 #include "../service/debug.h" 
 
 #include <iostream>
+
+
+const std::array<std::string, 7> ksi::descriptor_gaussian::gaussianLocationDescription
+{
+	"micro",
+		"tiny",
+		"small",
+		"medium",
+		"large",
+		"huge",
+		"giant"
+};
 
 ksi::descriptor_gaussian::~descriptor_gaussian()
 {
@@ -97,26 +110,11 @@ std::ostream& ksi::descriptor_gaussian::Print(std::ostream& ss) const
 
 std::ostream& ksi::descriptor_gaussian::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
-	if (descStat.average - descStat.std_dev <= _mean)
-		if (descStat.average + descStat.std_dev < _mean)
-			if ((descStat.average + 2 * descStat.std_dev) < _mean)
-				if ((descStat.average + 3 * descStat.std_dev) < _mean)
-					ss << "giant";
-				else
-					ss << "huge";
-			else
-				ss << "large";
-		else
-			ss << "medium";
-	else
-		if ((descStat.average - 2 * descStat.std_dev) > _mean)
-			if ((descStat.average - 3 * descStat.std_dev) < _mean)
-				ss << "micro";
-			else
-				ss << "tiny";
-		else
-			ss << "small";
-	
+	int locationIndex = (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
+	locationIndex = std::min(std::max(locationIndex, 0), int(gaussianLocationDescription.size() - 1));
+
+	ss << "is " << (_stddev <= descStat.std_dev ? "strictly " : "loosely " )<< gaussianLocationDescription[locationIndex];
+
 	return ss;
 }
 

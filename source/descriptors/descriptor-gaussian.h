@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <string>
+#include <array>
+
 #include "descriptor.h" 
 
 
@@ -25,7 +27,9 @@ namespace ksi
       double sum_dE_dmean;
       /** sum of dE / d stddev differentials */
       double sum_dE_dstddev;
-      
+
+      const static std::array<std::string, 7> gaussianLocationDescription;
+
    public:
       /** @param mean mean :-)
           @param stddev standard deviation (also for upper standard deviation) */

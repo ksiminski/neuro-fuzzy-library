@@ -41,6 +41,10 @@ void ksi::consequence::setLinearParameters(std::vector< double >& coefficients)
    // nothing
 }
 
+std::ostream& ksi::consequence::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat)
+{
+    return ss << "[not implemented and to remove]";
+}
 
 namespace ksi 
 {

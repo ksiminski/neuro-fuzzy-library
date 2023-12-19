@@ -7,6 +7,7 @@
 #include <vector>
 #include "datum.h"
 #include "../common/extensional-fuzzy-number-gaussian.h"
+#include "../common/DatasetStatistics.h"
 
 namespace ksi
 {
@@ -208,8 +209,10 @@ namespace ksi
        * @author Krzysztof Siminski
        * @date   2023-05-09 */
       std::string to_string () const;
-      
-      
+
+      /** @author Konrad Wnuk
+         * @date   2023-12-01 */
+      DatasetStatistics calculateDatasetStatistics();
       
       friend std::ostream & operator << (std::ostream & s, const dataset & d);
    };

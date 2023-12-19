@@ -3,6 +3,8 @@
 #ifndef DESCRIPTOR_CONSTANT_H
 #define DESCRIPTOR_CONSTANT_H
 
+#include <array>
+
 #include "descriptor.h"
 
 namespace ksi
@@ -12,7 +14,9 @@ namespace ksi
    {
       double _value;
       double _previous_value;
-      
+
+      const static std::array<std::string, 5> constantLocationDescription;
+
    public:
       descriptor_constant (double value);
       descriptor_constant (const descriptor_constant & wzor);
@@ -36,7 +40,15 @@ namespace ksi
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss) const override;
-      
+
+      /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
+       * @param descStat the descriptor statistics to print
+       * @date 2023-11-26
+       * @author Konrad Wnuk
+      */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const;
+
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
        * evaluated as: _support_min, _core, _support_max 

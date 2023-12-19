@@ -825,7 +825,7 @@ namespace ksi
         Matrix transpose() const
         {
             Matrix res(Cols, Rows);
-            int w, k;
+            std::size_t w, k;
             for (w = 0; w < Rows; w++)
                 for (k = 0; k < Cols; k++)
                     res.data[k][w] = data[w][k];

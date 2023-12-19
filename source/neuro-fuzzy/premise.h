@@ -70,10 +70,12 @@ namespace ksi
       */
      virtual std::ostream& Print(std::ostream& ss) const;
 
-     /** The method prints an object linguistic description into output stream.
-       * @param ss an output stream to print to
+     /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
        * @param datasetStat the dataset statistics to print
-       */
+       * @date 2023-11-26
+       * @author Konrad Wnuk
+      */
      virtual std::ostream& prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) const;
      
      friend std::ostream & operator << (std::ostream & ss, const premise & p);

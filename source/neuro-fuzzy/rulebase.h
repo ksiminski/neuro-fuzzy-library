@@ -98,7 +98,6 @@ namespace ksi
        * @param datasetStat the dataset statistics to print
        * @date 2023-10-09
        * @author Konrad Wnuk
-       * @todo zaprogramowac klase i dodac wektor
        */
       void prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) const;
 

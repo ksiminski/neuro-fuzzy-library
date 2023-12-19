@@ -19,7 +19,9 @@ namespace ksi
       
       double _previous_cross;
       double _previous_slope;
-      
+
+      const static std::array<std::string, 7> tanhLocationDescription;
+      const static std::array<std::string, 5> fuzzyDescription;
    public:
       descriptor_tanh (const double crosspoint, const double slope);
       
@@ -44,6 +46,14 @@ namespace ksi
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss) const ;
+
+      /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
+       * @param descStat the descriptor statistics to print
+       * @date 2023-12-04
+       * @author Konrad Wnuk
+      */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const;
 
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support

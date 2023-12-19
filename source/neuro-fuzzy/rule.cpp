@@ -237,13 +237,12 @@ std::ostream & ksi::rule::Print(std::ostream & ss) const
    return ss;
 }
 
-
 std::ostream& ksi::rule::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat)const
 {
-    ss << "if";
+    ss << "IF";
     pPremise->prettyPrint(ss, datasetStat);
-    ss << "then";
-    pConsequence->prettyPrint(ss, datasetStat);
+    ss << " THEN output ";
+    pConsequence->prettyPrint(ss, datasetStat.getDescriptorStatistics(datasetStat.getNumberOfDescriptors() - 1));
     ss << std::endl;
     return ss;
 }

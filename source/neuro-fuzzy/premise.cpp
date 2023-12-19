@@ -156,11 +156,11 @@ std::ostream& ksi::premise::prettyPrint(std::ostream& ss, const DatasetStatistic
     std::size_t size = descriptors.size();
     for (auto* p : descriptors)
     {
-        ss << ' ' << i + 1 << ". input is "
+        ss << ' ' << i + 1 << ". input ";
         p->prettyPrint(ss, datasetStat.getDescriptorStatistics(i));
         if(i < size - 1)
         {
-            ss << " AND ";
+            ss << " AND";
         }
         i++;
     }
