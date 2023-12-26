@@ -12,7 +12,7 @@
 
 namespace ksi
 {
-   /** Class for calculating a distance between data.
+   /** Class implementing the Euclidean metric.
     * @date 2018-01-04
     * 
      */

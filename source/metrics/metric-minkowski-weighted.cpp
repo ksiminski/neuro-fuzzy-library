@@ -11,7 +11,7 @@
 
 std::string ksi::metric_minkowski_weighted::getAbbreviation() const
 {
-    return {"minkowski_weighted"};
+    return {"Minkowski_weighted"};
 }
 
 

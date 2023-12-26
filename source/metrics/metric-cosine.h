@@ -12,7 +12,7 @@
 
 namespace ksi
 {
-   /** Class for calculating a distance between data.
+   /** Class implementing the cosine metric.
     * @date 2023-10-12
     * @author Maksymilian Broja
     * 
@@ -30,8 +30,7 @@ namespace ksi
       /** method for cloning an object */
       std::shared_ptr< ksi::metric > clone() const;
       
-      /** @return abbreviation of the metric 
-       @date 2021-02-01 */
+      /** @return abbreviation of the metric */
       virtual std::string getAbbreviation() const override;
    };
 }

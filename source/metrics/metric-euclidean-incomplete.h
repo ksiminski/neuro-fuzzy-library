@@ -15,7 +15,6 @@ namespace ksi
 {
    /** Class for calculating an Euclidean distance between incomplete data.
     * @date 2018-01-04
-    * 
      */
    class metric_euclidean_incomplete : virtual public metric_euclidean
    {
