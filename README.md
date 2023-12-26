@@ -40,7 +40,12 @@ This example presents modifiers of data:
 Run `make 2` for this example.
  
 This example presents clustering algorithms:
-1. fcm
+1. FCM (fuzzy c-means)
+1. FCM with Euclidean metric 
+1. FCM with cosine metric 
+1. FCM with Chebyshev metric 
+1. FCM with Minkowski metric 
+1. FCM with Manhattan metric 
 1. possibilistic fcm
 1. conditional fcm
 1. Gustafson-Kessel

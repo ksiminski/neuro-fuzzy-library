@@ -72,6 +72,29 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
+      {  // FCM + Euclidean metric
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_euclidean m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
       {  // FCM + cosine
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;
@@ -95,7 +118,7 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
-      {  // FCM + chebyshev
+      {  // FCM + Chebyshev
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
