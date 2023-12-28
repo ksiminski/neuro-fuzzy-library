@@ -49,14 +49,14 @@ ksi::descriptor_singleton::~descriptor_singleton()
 
 }
 
-std::ostream& ksi::descriptor_singleton::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_singleton::print(std::ostream& ss) const
 {
    ss << "descriptor: singleton" << std::endl;
    ss << "    support: " << _support_min << std::endl;
    return ss;
 }
 
-std::ostream& ksi::descriptor_singleton::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_singleton::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     return ss << "is exactly " << _support_min;
 }

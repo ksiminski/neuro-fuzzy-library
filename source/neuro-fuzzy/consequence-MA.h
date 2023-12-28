@@ -44,13 +44,13 @@ namespace ksi
       */
       virtual std::ostream & Print (std::ostream & ss);
 
-      /** The method prints an object linguistic description into output stream
+      /** The method prints an object linguistic description into output stream.
         * @param ss an output stream to print to
         * @param descStat the descriptor statistics to print
         * @date 2023-11-03
         * @author Konrad Wnuk
         */
-      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat);
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat);
 
       /** The method cummulates differentials for an X data item in the consequence. 
         * The method calculates differentials for parameters. For each parameter \f$a\f$ 

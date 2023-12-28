@@ -105,7 +105,7 @@ double ksi::descriptor_semitriangular::getRandomValue(std::default_random_engine
 }
 
 
-std::ostream& ksi::descriptor_semitriangular::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_semitriangular::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     const double cross = (_support_extremum + _core) / 2;
 
@@ -186,7 +186,7 @@ ksi::descriptor * ksi::descriptor_semitriangular::clone() const
    return new descriptor_semitriangular(*this);
 }
 
-std::ostream& ksi::descriptor_semitriangular::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_semitriangular::print(std::ostream& ss) const
 {
    ss << "descriptor: semitriangular" << std::endl;
    if (_core < _support_extremum) // lewy

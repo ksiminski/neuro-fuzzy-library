@@ -13,11 +13,11 @@ namespace ksi
 	class DatasetStatistics
 	{
 	private:
-		std::vector<ksi::DescriptorStatistics> descriptorsStatistics;
+		std::vector<ksi::DescriptorStatistics> descriptorsStatistics; ///< vector of dataset descriptors
 
 	public:
 		/**
-		 * Add DescriptorStatistics to the dataset
+		 * The method adds DescriptorStatistics to the dataset.
 		 *
 		 * @param descriptorStat The object of DescriptorStatistics
 		 * @date 2023-10-28
@@ -26,7 +26,7 @@ namespace ksi
 		void addDescriptor(const ksi::DescriptorStatistics& descriptorStat);
 
 		/**
-		 * Get the number of descriptors stored in the dataset
+		 * The method gets the number of descriptors stored in the dataset.
 		 *
 		 * @return The number of descriptors in the dataset
 		 * @date 2023-10-28
@@ -35,7 +35,7 @@ namespace ksi
 		size_t getNumberOfDescriptors() const;
 
 		/**
-		 * Get the DescriptorStatistics at index in the dataset
+		 * The method gets the DescriptorStatistics at index in the dataset.
 		 *
 		 * @param index The index of the DescriptorStatistics to retrieve
 		 * @return Reference to the selected DescriptorStatistics

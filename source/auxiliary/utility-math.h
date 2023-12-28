@@ -292,13 +292,13 @@ namespace ksi
        * @brief Calculates the value of a definite integral for a linear function within a given range
 	   *
 	   * This function calculates the definite integral value of a linear function within the range \f$[x1, x2]\f$.
-	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2\mathbb{E}a}{3}x^3 - \mathbb{E}bx^2 + \frac{\mathbb{E}^2a}{2}x^2 + \mathbb{E}^2bx\f$,
-       * where \f$(a, b)\f$ is a pair representing the coefficients of the linear function and \f$\mathbb{E}\f$ is the expected value of the function
+	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2ea}{3}x^3 - ebx^2 + \frac{e^2a}{2}x^2 + e^2bx\f$,
+       * where \f$(a, b)\f$ is a pair representing the coefficients of the linear function and \f$e\f$ is the expected value of the function
 	   *
 	   * @tparam T The data type of the coordinates and coefficients (default is double)
 	   * @param x1 The lower bound of the integration range
 	   * @param x2 The upper bound of the integration range
-	   * @param fun A pair representing the coefficients \f$(a, b)\f$ of the linear function
+	   * @param params A pair representing the coefficients \f$(a, b)\f$ of the linear function
 	   * @param expected The expected value used in the function
 	   * @return The value of the definite integral of the linear function over the specified range
 	   *
@@ -307,10 +307,10 @@ namespace ksi
 	   */
       template<typename T = double>
       static
-   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& fun, const T& expected) {
-          auto f = [fun] (const auto& x, const auto& expected)
+   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& params, const T& expected) {
+          auto f = [params] (const auto& x, const auto& expected)
           {
-	          return (fun.first * pow(x, 4)) / 4 + (fun.second * pow(x, 3) - 2 * expected * fun.first * pow(x, 3))  / 3 - expected * fun.second * pow(x, 2) + (pow(expected, 2) * fun.first * pow(x, 2)) / 2 + pow(expected, 2) * fun.second * x;
+	          return (params.first * pow(x, 4)) / 4 + (params.second * pow(x, 3) - 2 * expected * params.first * pow(x, 3))  / 3 - expected * params.second * pow(x, 2) + (pow(expected, 2) * params.first * pow(x, 2)) / 2 + pow(expected, 2) * params.second * x;
           };
            
        	  return f(x2, expected) - f(x1, expected);

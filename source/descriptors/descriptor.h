@@ -77,7 +77,7 @@ namespace ksi
      /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-     virtual std::ostream & Print (std::ostream & ss) const = 0;
+     virtual std::ostream & print (std::ostream & ss) const = 0;
 
      /** The method prints an object linguistic description into output stream.
        * @param ss an output stream to print to
@@ -85,7 +85,7 @@ namespace ksi
        * @date 2023-11-05
        * @author Konrad Wnuk
        */
-      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const ;
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const ;
      
      /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support */

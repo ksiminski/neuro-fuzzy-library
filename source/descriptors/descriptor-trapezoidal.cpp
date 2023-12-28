@@ -122,7 +122,7 @@ ksi::descriptor * ksi::descriptor_trapezoidal::clone() const
    return new descriptor_trapezoidal(*this);
 }
 
-std::ostream& ksi::descriptor_trapezoidal::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_trapezoidal::print(std::ostream& ss) const
 {
    ss << "descriptor: trapezoidal" << std::endl;
    
@@ -131,7 +131,7 @@ std::ostream& ksi::descriptor_trapezoidal::Print(std::ostream& ss) const
    return ss;
 }
 
-std::ostream& ksi::descriptor_trapezoidal::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_trapezoidal::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     utility_math utility;
 

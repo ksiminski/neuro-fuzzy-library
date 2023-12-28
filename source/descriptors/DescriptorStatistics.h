@@ -7,7 +7,7 @@ namespace ksi
 {
 	struct DescriptorStatistics {
 		double average;	///< descriptor average value
-		double std_dev;	///< descriptor standard 
+		double std_dev;	///< descriptor standard deviation
 	};
 }
 

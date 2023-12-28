@@ -99,7 +99,7 @@ ksi::descriptor* ksi::descriptor_gaussian::clone() const
 	return new descriptor_gaussian(*this);
 }
 
-std::ostream& ksi::descriptor_gaussian::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_gaussian::print(std::ostream& ss) const
 {
 	ss << "descriptor: gaussian" << std::endl;
 	ss << "   c == " << _mean << std::endl;
@@ -108,7 +108,7 @@ std::ostream& ksi::descriptor_gaussian::Print(std::ostream& ss) const
 	return ss;
 }
 
-std::ostream& ksi::descriptor_gaussian::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_gaussian::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
 	int locationIndex = (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
 	locationIndex = std::min(std::max(locationIndex, 0), int(gaussianLocationDescription.size() - 1));

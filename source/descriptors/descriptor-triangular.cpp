@@ -108,7 +108,7 @@ std::vector<double> ksi::descriptor_triangular::getDifferentials(double x)
       return { 0.0, 0.0, 0.0} ;
 }
 
-std::ostream& ksi::descriptor_triangular::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_triangular::print(std::ostream& ss) const
 {
    ss << "descriptor: triangular" << std::endl;
    
@@ -116,7 +116,7 @@ std::ostream& ksi::descriptor_triangular::Print(std::ostream& ss) const
    return ss;
 }
 
-std::ostream& ksi::descriptor_triangular::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_triangular::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     utility_math utility;
 

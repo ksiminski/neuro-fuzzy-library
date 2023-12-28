@@ -63,14 +63,14 @@ std::vector<double> ksi::descriptor_constant::getDifferentials(double x)
    return  std::vector<double> {};
 }
 
-std::ostream& ksi::descriptor_constant::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_constant::print(std::ostream& ss) const
 {
    ss << "descriptor: constant" << std::endl;
    ss << "   value: " << _value << std::endl;
    return ss;
 }
 
-std::ostream& ksi::descriptor_constant::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_constant::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     if (_value == 1.0)
 		ss << constantLocationDescription.back();

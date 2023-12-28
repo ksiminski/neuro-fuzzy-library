@@ -54,11 +54,11 @@ ksi::descriptor * ksi::descriptor_gaussian_subspace::clone() const
 // std::string ksi::descriptor_gaussian_subspace::toString() const 
 // {
 //    std::stringstream ss;
-//    Print(ss);
+//    print(ss);
 //    return ss.str();
 // }
 
-std::ostream& ksi::descriptor_gaussian_subspace::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_gaussian_subspace::print(std::ostream& ss) const
 {
    ss << "descriptor: gaussian subspace" << std::endl;
    ss << "   c == " << _mean   << std::endl;

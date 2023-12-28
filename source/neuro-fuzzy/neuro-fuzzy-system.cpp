@@ -129,7 +129,7 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       model << "fuzzy rule base" << std::endl;       
       
       printRulebase (model);
-      prettyPrintRulebase(model);
+      printLinguisticDescriptionRulebase(model);
 
       model << std::endl << std::endl << std::endl;      
       model << "data" << std::endl;
@@ -276,12 +276,12 @@ void ksi::neuro_fuzzy_system::printRulebase(std::ostream & ss)
         _pRulebase->print(ss);
 }
 
-void ksi::neuro_fuzzy_system::prettyPrintRulebase(std::ostream& ss)
+void ksi::neuro_fuzzy_system::printLinguisticDescriptionRulebase(std::ostream& ss)
 {
     if (_pRulebase)
     {
         const auto TrainSetStat = _TrainDataset.calculateDatasetStatistics();
-        _pRulebase->prettyPrint(ss, TrainSetStat);
+        _pRulebase->printLinguisticDescription(ss, TrainSetStat);
     }
 }
 
@@ -692,7 +692,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         model << "fuzzy rule base" << std::endl;       
             
         printRulebase (model);
-        prettyPrintRulebase(model);
+        printLinguisticDescriptionRulebase(model);
 
         model << std::endl << std::endl;      
         model << "answers for the train set" << std::endl;
@@ -921,7 +921,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_regression(
       model << std::endl << std::endl;      
       model << "fuzzy rule base" << std::endl;       
       printRulebase (model);
-      prettyPrintRulebase(model);
+      printLinguisticDescriptionRulebase(model);
 
 
       _answers_for_test.clear();
@@ -989,7 +989,7 @@ std::string ksi::neuro_fuzzy_system::to_string()
 {
     std::stringstream ss;
     printRulebase(ss);
-    prettyPrintRulebase(ss);
+    printLinguisticDescriptionRulebase(ss);
 
     return ss.str();
 }

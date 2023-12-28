@@ -82,7 +82,7 @@ ksi::descriptor_arctan::~descriptor_arctan()
 
 }
 
-std::ostream& ksi::descriptor_arctan::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_arctan::print(std::ostream& ss) const
 {
    ss << "descriptor: arcus tangent" << std::endl;
    
@@ -91,7 +91,7 @@ std::ostream& ksi::descriptor_arctan::Print(std::ostream& ss) const
    return ss;
 }
 
-std::ostream& ksi::descriptor_arctan::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_arctan::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     if (_slope != 0.0)
     {

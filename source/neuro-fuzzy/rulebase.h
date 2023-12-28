@@ -99,7 +99,7 @@ namespace ksi
        * @date 2023-10-09
        * @author Konrad Wnuk
        */
-      void prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) const;
+      void printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const;
 
       /** The method validates the rule base. It checks if all rules are valid. 
        @return true if all rules valid, otherwise false. */

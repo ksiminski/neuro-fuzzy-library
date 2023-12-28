@@ -228,7 +228,7 @@ std::ostream & ksi::rule::Print(std::ostream & ss) const
         ss << std::endl;
    }
    ss << "premise: " << std::endl;
-   pPremise->Print (ss);
+   pPremise->print (ss);
    ss << std::endl;
    ss << "consequence: " << std::endl;
    pConsequence->Print(ss);
@@ -237,14 +237,13 @@ std::ostream & ksi::rule::Print(std::ostream & ss) const
    return ss;
 }
 
-std::ostream& ksi::rule::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat)const
+std::ostream& ksi::rule::printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat)const
 {
     ss << "IF";
-    pPremise->prettyPrint(ss, datasetStat);
-    ss << " THEN output ";
-    pConsequence->prettyPrint(ss, datasetStat.getDescriptorStatistics(datasetStat.getNumberOfDescriptors() - 1));
-    ss << std::endl;
-    return ss;
+    pPremise->printLinguisticDescription(ss, datasetStat);
+    ss << " THEN ";
+    pConsequence->printLinguisticDescription(ss, datasetStat.getDescriptorStatistics(datasetStat.getNumberOfDescriptors() - 1));
+    return ss << '.' << std::endl;
 }
 
 ksi::granule * ksi::rule::clone_granule() const

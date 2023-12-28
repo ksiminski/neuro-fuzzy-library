@@ -140,7 +140,7 @@ void ksi::exp_004::execute()
 
          auto datasetSTat = dane.calculateDatasetStatistics();
         
-         Rulebase.prettyPrint(std::cout, datasetSTat);
+         Rulebase.printLinguisticDescription(std::cout, datasetSTat);
         
       }
     

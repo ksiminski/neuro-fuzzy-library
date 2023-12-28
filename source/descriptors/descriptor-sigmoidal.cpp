@@ -80,7 +80,7 @@ ksi::descriptor_sigmoidal::~descriptor_sigmoidal()
 
 }
 
-std::ostream& ksi::descriptor_sigmoidal::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_sigmoidal::print(std::ostream& ss) const
 {
    ss << "descriptor: sigmoidal" << std::endl;
    ss << "   crosspoint == " << _cross << std::endl;
@@ -88,7 +88,7 @@ std::ostream& ksi::descriptor_sigmoidal::Print(std::ostream& ss) const
    return ss;
 }
 
-std::ostream& ksi::descriptor_sigmoidal::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor_sigmoidal::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     if (_slope != 0.0)
     {

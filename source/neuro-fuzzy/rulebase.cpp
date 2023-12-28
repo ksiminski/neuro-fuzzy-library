@@ -249,13 +249,14 @@ void ksi::rulebase::print(std::ostream & ss) const
    }
 }
 
-void ksi::rulebase::prettyPrint(std::ostream& ss, const DatasetStatistics& datasetStat) const
+
+void ksi::rulebase::printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const
 {
     std::size_t size = getNumberOfRules();
     for (std::size_t i = 0; i < size; i++)
     {
         ss << "RULE " << (i + 1) << std::endl << std::endl;
-        rules[i]->prettyPrint(ss, datasetStat);
+        rules[i]->printLinguisticDescription(ss, datasetStat);
         ss << std::endl;
     }
 }

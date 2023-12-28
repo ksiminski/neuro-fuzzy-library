@@ -285,7 +285,7 @@ namespace ksi
       /** The method prints rule base linguistic description.
        * @param ss ostream to print to
        */
-      virtual void prettyPrintRulebase(std::ostream& ss);
+      virtual void printLinguisticDescriptionRulebase(std::ostream& ss);
       
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations

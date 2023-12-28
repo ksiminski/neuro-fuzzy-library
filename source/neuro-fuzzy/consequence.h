@@ -77,7 +77,7 @@ namespace ksi
         * @date 2023-11-03
         * @author Konrad Wnuk
         */
-      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat);
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat);
    };
 }
 

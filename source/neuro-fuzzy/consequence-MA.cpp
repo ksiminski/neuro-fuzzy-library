@@ -99,7 +99,7 @@ std::ostream& ksi::consequence_MA::Print(std::ostream& ss)
    return ss;
 }
 
-std::ostream& ksi::consequence_MA::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat)
+std::ostream& ksi::consequence_MA::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat)
 {
     utility_math utility;
 
@@ -116,7 +116,7 @@ std::ostream& ksi::consequence_MA::prettyPrint(std::ostream& ss, const Descripto
     int locationIndex = -(descStat.average - center) / descStat.std_dev + MALocationDescription.size() / 2;
     locationIndex = std::min(std::max(locationIndex, 0), int(MALocationDescription.size() - 1));
 
-    ss << "is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << MALocationDescription[locationIndex];
+    ss << "output is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << MALocationDescription[locationIndex];
     return ss;
 }
 

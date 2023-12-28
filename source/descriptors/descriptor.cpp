@@ -12,7 +12,7 @@
 std::string ksi::descriptor::to_string() const
 {
    std::stringstream ss;
-   Print(ss);
+   print(ss);
    return ss.str();
 }
 
@@ -62,7 +62,7 @@ double ksi::descriptor::getMembershipUpper(double x)
    return getMembership(x);
 }
 
-std::ostream& ksi::descriptor::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
+std::ostream& ksi::descriptor::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
     return ss << "[not implemented]";
 }
