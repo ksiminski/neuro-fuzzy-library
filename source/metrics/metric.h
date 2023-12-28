@@ -13,7 +13,6 @@ namespace ksi
 {
    /** Class for calculating a distance between data.
     * @date 2018-01-04
-    * 
     */
    class metric 
    {

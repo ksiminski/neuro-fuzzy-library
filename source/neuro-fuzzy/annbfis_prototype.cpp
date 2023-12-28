@@ -6,9 +6,6 @@
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/annbfis_prototype.h"
-
-#include <numeric>
-
 #include "../neuro-fuzzy/consequence-CL.h"
 #include "../neuro-fuzzy/logicalrule.h"
 #include "../implications/implication.h"

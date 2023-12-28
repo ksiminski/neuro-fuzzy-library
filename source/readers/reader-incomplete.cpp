@@ -38,15 +38,6 @@ ksi::dataset ksi::reader_incomplete::read (const std::string & filename)
       MISSING.append({ MISSING_VALUE_SYMBOL });
    
       std::ifstream infile (filename);
-
-      if (!infile.is_open()) {
-          std::cerr << "Nie mo¿na otworzyæ pliku." << std::endl;
-
-          // Pobierz i wyœwietl kod b³êdu
-          int error_code = infile.rdstate();
-          std::cerr << "Kod b³êdu: " << error_code << std::endl;
-      }
-
       if (not infile)
       {
          std::stringstream ss;

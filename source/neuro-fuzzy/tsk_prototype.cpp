@@ -7,9 +7,6 @@
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/tsk_prototype.h"
-
-#include <numeric>
-
 #include "../neuro-fuzzy/rule.h"
 #include "../neuro-fuzzy/consequence-TSK.h"
 
@@ -242,6 +239,7 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
             for (std::size_t x = 0; x < nX; x++)
                wYelaborated[x] = answer( *(trainX.getDatum(x)));
          }
+                  
       } CATCH;
       // system nastrojony :-)
    }

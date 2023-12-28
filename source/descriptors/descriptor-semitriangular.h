@@ -12,7 +12,6 @@ namespace ksi
 {
    class descriptor_semitriangular : virtual public descriptor 
    {
-   private:
       double _support_extremum;
       double _core;
       
@@ -73,6 +72,7 @@ namespace ksi
       
       /** @return The method returns a value  */
       virtual double getRandomValue(std::default_random_engine & engine);
+      
    };
 }
 

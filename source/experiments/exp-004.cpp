@@ -8,12 +8,9 @@
  
 
 #include "../neuro-fuzzy/premise.h"
-#include "../descriptors/descriptor-constant.h"
 #include "../descriptors/descriptor-gaussian.h"
 #include "../descriptors/descriptor-triangular.h"
 #include "../descriptors/descriptor-semitriangular.h"
-#include "../descriptors/descriptor_tanh.h"
-#include "../descriptors/descriptor-singleton.h"
 #include "../neuro-fuzzy/consequence-MA.h"
 #include "../neuro-fuzzy/rule.h"
 #include "../neuro-fuzzy/rulebase.h"
@@ -25,12 +22,6 @@
 
 #include "../experiments/exp-004.h"
 
-#include "../readers/reader-complete.h"
-#include "../descriptors/DescriptorStatistics.h"
-#include "../common/DatasetStatistics.h"
-
-#include "../auxiliary/utility-math.h"
-
 #include <fstream>
 
 void ksi::exp_004::execute()
@@ -40,15 +31,11 @@ void ksi::exp_004::execute()
       // You can compose you own fuzzy system. Here is an example.
       
       {
-      	/*ksi::descriptor_triangular     D11 (-0.5, 1, 7);*/
-         ksi::descriptor_constant    D11(0.5);
-         ksi::descriptor_triangular     D12 (2, 4, 5);
-
-         /*ksi::descriptor_gaussian     D11(1, 0.5);
-         ksi::descriptor_gaussian     D12(5.1, 0.5);*/
-
-         ksi::descriptor_tanh D21 (7, 3);
-         ksi::descriptor_singleton D22 (4); 
+         
+         ksi::descriptor_triangular     D11 (-0.5, 1, 7);
+         ksi::descriptor_triangular     D12 (-0.5, 4, 7); 
+         ksi::descriptor_semitriangular D21 (4, 0);
+         ksi::descriptor_semitriangular D22 (0, 4); 
          
          // Each rule can have its own t-norm.
          ksi::t_norm_lukasiewicz Lukasiewicz;
@@ -62,7 +49,7 @@ void ksi::exp_004::execute()
          P1.addDescriptor(D11);
          P1.addDescriptor(D21);
          
-         ksi::consequence_MA C1 (2, 6, 15);
+         ksi::consequence_MA C1 (5, 6, 7);
          
          // Let's use product T-norm as an AND operator for descriptors.
          
@@ -130,18 +117,7 @@ void ksi::exp_004::execute()
          std::cout << std::endl;
          std::cout << "rulebase" << std::endl;
          std::cout << "========" << std::endl;
-         Rulebase.print(std::cout);
-
-         std::string dataDir("../data/exp-lab");
-
-         std::string CompleteDataset("/train.txt");
-         ksi::reader_complete DataReader;
-         auto dane = DataReader.read(dataDir + CompleteDataset);
-
-         auto datasetSTat = dane.calculateDatasetStatistics();
-        
-         Rulebase.printLinguisticDescription(std::cout, datasetSTat);
-        
+         Rulebase.print(std::cout); 
       }
     
    }
