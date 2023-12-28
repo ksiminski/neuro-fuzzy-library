@@ -346,52 +346,6 @@ namespace ksi
          }
 
          public:
-         /** @return The method returns a vector of rows (vectors of values) stored in the matrix
-          *  @date 2020-08-07
-          */
-
-         std::vector<std::vector<T>> getValues()
-         {
-            return data;
-         }
-
-         public:
-         /** @return true if the matrix is empty.
-           @date 2023-04-27 */
-         bool empty() const
-         {
-            return data.size() == 0;
-         }
-
-         public:
-         /**
-          * @param w index of a row (starting with 0)
-          * @param f function that operates on two values and return a value
-          * @return The method return accumulation of a row with function f.
-          * Eg. for summing up all items use lambda [] (T a, T b) {return a + b;} with initial_value = 0; for max search use lambda [] (T a, T b) {return std::max(a,b);} with initial_value = 0;
-          * @throw std::string with a comment, when index of an invalid row
-          * @date 2020-08-07
-          */
-         T accumulate_row(int w, T initial_value, const std::function<T(T, T)>& f) const
-         {
-            if (w < 0 || w >= Rows)
-            {
-               std::stringstream ss;
-               ss << __FILE__ << " (" << __LINE__ << "): incorrect row index: "
-                  << w << " (range: 0 .. " << Rows - 1 << ")";
-               throw ss.str();
-            }
-
-            T wynik{ initial_value };
-            for (const auto& d : data[w])
-            {
-               wynik = f(d, wynik);
-            }
-
-            return wynik;
-         }
-
-         public:
          /**
           * @param w index of a row (starting with 0)
           * @param f function that operates on two values and return a value
