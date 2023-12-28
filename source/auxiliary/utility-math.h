@@ -275,6 +275,7 @@ namespace ksi
 	   * \f[
 	   * \text{{intercept}} = y_1 - \text{{slope}} \cdot x_1
 	   * \f]
+	   *
 	   * @date 2023-12-26
 	   * @author Konrad Wnuk
 	   */
@@ -291,8 +292,8 @@ namespace ksi
        * @brief Calculates the value of a definite integral for a linear function within a given range
 	   *
 	   * This function calculates the definite integral value of a linear function within the range [x1, x2].
-	   * The linear function is represented as \f$\(f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - 2abx^3 - bax^2 + \frac{ab}{2}x^2 + abx\)\f$,
-	   * where (a, b) is a pair representing the coefficients of the linear function
+	   * The integral of a linear function is represented as \(f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - 2abx^3 - bax^2 + \frac{ab}{2}x^2 + abx\),
+       * where (a, b) is a pair representing the coefficients of the linear function
 	   *
 	   * @tparam T The data type of the coordinates and coefficients (default is double)
 	   * @param x1 The lower bound of the integration range
@@ -313,10 +314,10 @@ namespace ksi
        }
 
       /**
-	   * @brief Calculates the value of a definite integral for a rectangular function within a given range.
+	   * @brief Calculates the value of a definite integral for a rectangular function within a given range
 	   *
 	   * This function calculates the definite integral value of a rectangular function within the range [x1, x2].
-	   * The rectangular function is represented as \(f(x) = \frac{x^3}{3} - bx^2 + bx\),
+	   * The integral of a rectangular function is represented as \(f(x) = \frac{x^3}{3} - bx^2 + bx\),
 	   * where b is a coefficient representing the rectangular function
 	   *
 	   * @tparam T The data type of the coordinates and coefficient (default is double)
