@@ -255,35 +255,82 @@ namespace ksi
           CATCH;
       }
 
+      /**
+	   * @brief Calculates the equation of a line given two points
+	   *
+	   * This function calculates the equation of a line in the form \(y = ax + b\),
+	   * where \(a\) is the slope and \(b\) is the y-intercept, based on two given points.
+	   *
+	   * @tparam T The data type of the coordinates (default is double)
+	   * @param p1 The first point (x, y)
+	   * @param p2 The second point (x, y)
+	   * @return A pair representing the slope and y-intercept of the line
+	   *
+	   * The slope (\(m\)) is calculated as:
+	   * \f[
+	   * \text{{slope}} = \frac{{y_2 - y_1}}{{x_2 - x_1}}
+	   * \f]
+	   *
+	   * The y-intercept (\(b\)) is calculated as:
+	   * \f[
+	   * \text{{intercept}} = y_1 - \text{{slope}} \cdot x_1
+	   * \f]
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
       template<typename T = double>
       static
-      std::pair<T, T> calculateLineEquation(const std::pair<T, T>& p1, const std::pair<T, T>& p2)
-   		{
-          ///@todo wpisaæ wzorek w latex
-
+      std::pair<T, T> calculateLineEquation(const std::pair<T, T>& p1, const std::pair<T, T>& p2) {
           const double slope = (p2.second - p1.second) / (p2.first - p1.first);
           const double intercept = p1.second - slope * p1.first;
 
           return std::make_pair(slope, intercept);
       }
 
+      /**
+       * @brief Calculates the value of a definite integral for a linear function within a given range
+	   *
+	   * This function calculates the definite integral value of a linear function within the range [x1, x2].
+	   * The linear function is represented as \f$\(f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - 2abx^3 - bax^2 + \frac{ab}{2}x^2 + abx\)\f$,
+	   * where (a, b) is a pair representing the coefficients of the linear function
+	   *
+	   * @tparam T The data type of the coordinates and coefficients (default is double)
+	   * @param x1 The lower bound of the integration range
+	   * @param x2 The upper bound of the integration range
+	   * @param fun A pair representing the coefficients (a, b) of the linear function
+	   * @param expected The expected value used in the function
+	   * @return The value of the definite integral of the linear function over the specified range
+	   *
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
       template<typename T = double>
       static
-   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& fun, const T& expected)
-       {
-        ///@todo wpisaæ wzorek w latex
-        
+   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& fun, const T& expected) {
           auto f = [fun] (const auto& x, const auto& expected){return (fun.first * pow(x, 4)) / 4 + (fun.second * pow(x, 3) - 2 * expected * fun.first * pow(x, 3))  / 3 - expected * fun.second * pow(x, 2) + (pow(expected, 2) * fun.first * pow(x, 2)) / 2 + pow(expected, 2) * fun.second * x; };
            
        	  return f(x2, expected) - f(x1, expected);
        }
 
+      /**
+	   * @brief Calculates the value of a definite integral for a rectangular function within a given range.
+	   *
+	   * This function calculates the definite integral value of a rectangular function within the range [x1, x2].
+	   * The rectangular function is represented as \(f(x) = \frac{x^3}{3} - bx^2 + bx\),
+	   * where b is a coefficient representing the rectangular function
+	   *
+	   * @tparam T The data type of the coordinates and coefficient (default is double)
+	   * @param x1 The lower bound of the integration range
+	   * @param x2 The upper bound of the integration range
+	   * @param expected The expected value used in the function
+	   * @return The value of the definite integral of the rectangular function over the specified range
+	   *
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
       template<typename T = double>
       static
-          T calculateRectangularDefiniteIntegralValue(const T& x1, const T& x2, const T& expected)
-      {
-          ///@todo wpisaæ wzorek w latex
-
+          T calculateRectangularDefiniteIntegralValue(const T& x1, const T& x2, const T& expected) {
           auto f = [](const auto& x, const auto& expected) {return pow(x, 3) / 3 - expected * pow(x, 2) + pow(expected, 2) * x; };
 
           return f(x2, expected) - f(x1, expected);

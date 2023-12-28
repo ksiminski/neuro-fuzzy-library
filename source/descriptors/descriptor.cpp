@@ -64,7 +64,7 @@ double ksi::descriptor::getMembershipUpper(double x)
 
 std::ostream& ksi::descriptor::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
-    return ss << "[not implemented and to remove]";
+    return ss << "[not implemented]";
 }
 
 ksi::ext_fuzzy_number_gaussian ksi::descriptor::getGranule() const

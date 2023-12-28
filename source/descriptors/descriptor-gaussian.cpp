@@ -113,7 +113,7 @@ std::ostream& ksi::descriptor_gaussian::prettyPrint(std::ostream& ss, const Desc
 	int locationIndex = (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
 	locationIndex = std::min(std::max(locationIndex, 0), int(gaussianLocationDescription.size() - 1));
 
-	ss << "is " << (_stddev <= descStat.std_dev ? "strictly " : "loosely " )<< gaussianLocationDescription[locationIndex];
+	ss << "is " << (_stddev <= descStat.std_dev ? "strictly " : "loosely ") << gaussianLocationDescription[locationIndex];
 
 	return ss;
 }

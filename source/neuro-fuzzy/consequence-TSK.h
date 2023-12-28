@@ -4,7 +4,9 @@
 
 #include <utility>
 #include <vector>
+#include <array>
 #include <iostream>
+
 #include "consequence.h"
 #include "../service/debug.h"
 
@@ -16,6 +18,8 @@ namespace ksi
       /** Linear coefficient in the consequence. 
           The last item is a free parameter. */ 
       std::vector<double> _params;
+
+      const static std::array<std::string, 7> TSKLocationDescription;
    public:
       consequence_TSK();
       consequence_TSK(const consequence_TSK & wzor);
@@ -41,7 +45,15 @@ namespace ksi
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & Print (std::ostream & ss);      
+      virtual std::ostream & Print (std::ostream & ss);
+
+      /** The method prints an object linguistic description into output stream
+          * @param ss an output stream to print to
+          * @param descStat the descriptor statistics to print
+          * @date 2023-12-26
+          * @author Konrad Wnuk
+          */
+      virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat);
    };
 }
 

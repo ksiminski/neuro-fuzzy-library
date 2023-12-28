@@ -4,9 +4,12 @@
 
 #include <utility>
 #include <vector>
+#include <array>
 #include <iostream>
+
 #include "consequence-TSK.h"
 #include "../service/debug.h"
+
 namespace ksi
 {
    /** Consequence Czogala-Leski type
@@ -20,6 +23,8 @@ namespace ksi
       
       /** sum of dE / dw differentials */
       double sum_dE_dw;
+
+      /*const static std::array<std::string, 7> CLLocationDescription;*/
    public:
       virtual ~consequence_CL();
       consequence_CL (const std::vector<double> & params, double w);
@@ -61,6 +66,13 @@ namespace ksi
       */
       virtual std::ostream & Print (std::ostream & ss); 
 
+  //    /** The method prints an object linguistic description into output stream
+  //      * @param ss an output stream to print to
+  //      * @param descStat the descriptor statistics to print
+  //      * @date 2023-12-26
+  //      * @author Konrad Wnuk
+  //      */
+  //    virtual std::ostream& prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat);
    };
 }
 
