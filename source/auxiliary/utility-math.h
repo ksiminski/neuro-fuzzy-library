@@ -291,7 +291,7 @@ namespace ksi
       /**
        * @brief Calculates the value of a definite integral for a linear function within a given range
 	   *
-	   * This function calculates the definite integral value of a linear function within the range \f$[x1, x2]\f$.
+	   * This function calculates the definite integral value of a linear function within the range \f$[x_1, x_2]\f$.
 	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2ea}{3}x^3 - ebx^2 + \frac{e^2a}{2}x^2 + e^2bx\f$,
        * where \f$(a, b)\f$ is a pair representing the coefficients of the linear function and \f$e\f$ is the expected value of the function
 	   *
@@ -319,9 +319,9 @@ namespace ksi
       /**
 	   * @brief Calculates the value of a definite integral for a rectangular function within a given range
 	   *
-	   * This function calculates the definite integral value of a rectangular function within the range [x1, x2].
-	   * The integral of a rectangular function is represented as \f$f(x) = \frac{x^3}{3} - \mathbb{E}x^2 + \mathbb{E}x\f$,
-	   * where \f$\mathbb{E}\f$ is the expected value of the function
+	   * This function calculates the definite integral value of a rectangular function within the range \f$[x_1, x_2]\f$.
+	   * The integral of a rectangular function is represented as \f$f(x) = \frac{x^3}{3} - ex^2 + ex\f$,
+	   * where \f$e\f$ is the expected value of the function
 	   *
 	   * @tparam T The data type of the coordinates and coefficient (default is double)
 	   * @param x1 The lower bound of the integration range
