@@ -97,7 +97,7 @@ std::ostream& ksi::consequence_TSK::Print(std::ostream& ss)
 std::ostream& ksi::consequence_TSK::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat)
 {
     for (std::size_t i = 0; i < _params.size() - 1; ++i) {
-        ss << i+1 << " input has " << (_params[i] <= descStat.std_dev ? "low " : "high ") << (_params[i] < 0 ? "negative " : "positive ") << "importance AND ";
+        ss << " input " << i+1 << " has " << (_params[i] <= descStat.std_dev ? "low " : "high ") << (_params[i] < 0 ? "negative " : "positive ") << "importance AND";
     }
 
     int locationIndex = (_params.back() - descStat.average) / descStat.std_dev + TSKLocationDescription.size() / 2;

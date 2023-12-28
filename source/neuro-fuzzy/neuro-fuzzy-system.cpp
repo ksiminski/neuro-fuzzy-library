@@ -124,14 +124,17 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       model << "RMSE: " << blad_rmse_train << std::endl;
       model << "MAE:  " << blad_mae_train << std::endl;
       
-      
+      ///////////////////////
+      // print model parameters and its linguistic decription
       model << std::endl << std::endl;      
       model << "fuzzy rule base" << std::endl;       
-      
       printRulebase (model);
+      model << std::endl << std::endl;      
+      model << "linguistic description of fuzzy rule base" << std::endl;       
       printLinguisticDescriptionRulebase(model);
-
       model << std::endl << std::endl << std::endl;      
+      ///////////////////////
+
       model << "data" << std::endl;
       model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
@@ -697,19 +700,21 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
                 
         model << con_test.print(TP, TN, FP, FN);
         model << std::endl;
-        
+
         ///////////////////////
-        
+        // print model parameters and its linguistic decription
         model << std::endl << std::endl;      
         model << "fuzzy rule base" << std::endl;       
-            
         printRulebase (model);
-        printLinguisticDescriptionRulebase(model);
-
         model << std::endl << std::endl;      
+        model << "linguistic description of fuzzy rule base" << std::endl;       
+        printLinguisticDescriptionRulebase(model);
+        model << std::endl << std::endl << std::endl;      
+        ///////////////////////
+
         model << "answers for the train set" << std::endl;
         model << "expected\telaborated_numeric\telaborated_class" << std::endl;
-        
+
         for (const auto answer : _answers_for_train)
         {
             double expected, el_numeric, el_class;
@@ -930,12 +935,17 @@ ksi::result ksi::neuro_fuzzy_system::experiment_regression(
       else 
           model << zegar.elapsed_milliseconds() << " [ms]";
       model << std::endl;
+
+      ///////////////////////
+      // print model parameters and its linguistic decription
       model << std::endl << std::endl;      
       model << "fuzzy rule base" << std::endl;       
       printRulebase (model);
+      model << std::endl << std::endl;      
+      model << "linguistic description of fuzzy rule base" << std::endl;       
       printLinguisticDescriptionRulebase(model);
-
-
+      model << std::endl << std::endl << std::endl;      
+      ///////////////////////
       _answers_for_test.clear();
       _answers_for_train.clear();
       

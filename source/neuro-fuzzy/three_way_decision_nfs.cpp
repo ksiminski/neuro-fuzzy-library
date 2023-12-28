@@ -354,10 +354,16 @@ void ksi::three_way_decision_nfs::printRulebase(std::ostream& ss)
         {
             ss << std::endl;
             ss << "classifier: " << i << std::endl;
+            ss << p->get_nfs_name() << std::endl;
             ss << "threshold type:  " << ksi::to_string(p->get_threshold_type()) << std::endl;
             ss << "threshold value: " << p->get_threshold_value() << i << std::endl;
+            ss << "--------------------------------------" << std::endl;
+            ss << std::endl;       
+            ss << "fuzzy rule base" << std::endl;       
             p->printRulebase(ss);
-            ss << p->get_nfs_name() << std::endl;
+            ss << std::endl;       
+            ss << "linguistic description of fuzzy rule base" << std::endl;       
+            p->printLinguisticDescriptionRulebase(ss);
             i++;
         }
         ss << "--------------------------------------" << std::endl;

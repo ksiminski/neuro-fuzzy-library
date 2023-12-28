@@ -152,22 +152,26 @@ std::ostream & ksi::premise::print(std::ostream & ss) const
 
 std::ostream& ksi::premise::printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const
 {
-    std::size_t i = 0;
-    std::size_t size = descriptors.size();
-    if (size > 0) {
-		for (auto* p : descriptors) {
-			ss << ' ' << i + 1 << " input ";
-			p->printLinguisticDescription(ss, datasetStat.getDescriptorStatistics(i));
-			if(i < size - 1) {
-				ss << " AND";
-			}
-			i++;
-		}
-	}
-    else {
-        ss << " [not applicable]";
-    }
-    return ss;
+   std::size_t i = 0;
+   std::size_t size = descriptors.size();
+   if (size > 0) 
+   {
+      for (auto* p : descriptors) 
+      {
+         ss << " input " << i + 1 << ' ';
+         p->printLinguisticDescription(ss, datasetStat.getDescriptorStatistics(i));
+         if(i < size - 1) 
+         {
+            ss << " AND";
+         }
+         i++;
+      }
+   }
+   else 
+   {
+      ss << " [not applicable]";
+   }
+   return ss;
 }
 
 
