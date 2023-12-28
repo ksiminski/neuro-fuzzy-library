@@ -38,7 +38,8 @@ libasan=
 
 .PHONY : clean $(debug_folder) $(release_folder)
 
-
+# [PL] opcje uruchomienia projektu:
+# [EN] project run options:
 #-----------------------
 # run experiments 
 
@@ -143,6 +144,10 @@ $(debug_folder)/descriptors-descriptor-singleton.o : descriptors/descriptor-sing
 $(release_folder)/descriptors-descriptor-sigmoidal.o : descriptors/descriptor-sigmoidal.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/descriptors-descriptor-sigmoidal.o : descriptors/descriptor-sigmoidal.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/descriptors-DescriptorStatistics.o : descriptors/DescriptorStatistics.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/descriptors-DescriptorStatistics.o : descriptors/DescriptorStatistics.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/heuristics-ridders.o : heuristics/ridders.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -620,6 +625,10 @@ $(release_folder)/common-extensional-fuzzy-number-gaussian.o : common/extensiona
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-extensional-fuzzy-number-gaussian.o : common/extensional-fuzzy-number-gaussian.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-DatasetStatistics.o : common/DatasetStatistics.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-DatasetStatistics.o : common/DatasetStatistics.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-number.o : common/number.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-number.o : common/number.cpp
@@ -1040,6 +1049,7 @@ $(release_folder)/partitions-partition.o \
 $(release_folder)/dissimilarities-dis-square.o \
 $(release_folder)/readers-reader-complete-by-parts.o \
 $(release_folder)/granules-data_item.o \
+$(release_folder)/common-DatasetStatistics.o \
 $(release_folder)/neuro-fuzzy-fcom-annbfis.o \
 $(release_folder)/experiments-exp-000.o \
 $(release_folder)/common-data-modifier-imputer-knn.o \
@@ -1055,6 +1065,7 @@ $(release_folder)/descriptors-descriptor-constant.o \
 $(release_folder)/tnorms-t-norm-schweizer-sklar.o \
 $(release_folder)/partitions-fubi.o \
 $(release_folder)/experiments-exp-005.o \
+$(release_folder)/descriptors-DescriptorStatistics.o \
 $(release_folder)/neuro-fuzzy-consequence.o \
 $(release_folder)/dissimilarities-dis-log.o \
 $(release_folder)/tnorms-t-norm-product.o \
@@ -1247,6 +1258,7 @@ $(debug_folder)/partitions-partition.o \
 $(debug_folder)/dissimilarities-dis-square.o \
 $(debug_folder)/readers-reader-complete-by-parts.o \
 $(debug_folder)/granules-data_item.o \
+$(debug_folder)/common-DatasetStatistics.o \
 $(debug_folder)/neuro-fuzzy-fcom-annbfis.o \
 $(debug_folder)/experiments-exp-000.o \
 $(debug_folder)/common-data-modifier-imputer-knn.o \
@@ -1262,6 +1274,7 @@ $(debug_folder)/descriptors-descriptor-constant.o \
 $(debug_folder)/tnorms-t-norm-schweizer-sklar.o \
 $(debug_folder)/partitions-fubi.o \
 $(debug_folder)/experiments-exp-005.o \
+$(debug_folder)/descriptors-DescriptorStatistics.o \
 $(debug_folder)/neuro-fuzzy-consequence.o \
 $(debug_folder)/dissimilarities-dis-log.o \
 $(debug_folder)/tnorms-t-norm-product.o \

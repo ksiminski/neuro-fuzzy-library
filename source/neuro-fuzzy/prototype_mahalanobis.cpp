@@ -118,7 +118,7 @@ void ksi::prototype_mahalanobis::reset_differentials()
    _d_A       = ksi::Matrix<double> (_A.getRows(), _A.getCols(), 0.0);
 }
 
-std::ostream & ksi::prototype_mahalanobis::Print(std::ostream& ss) const
+std::ostream & ksi::prototype_mahalanobis::print(std::ostream& ss) const
 {
    ss << "prototype with Mahalanobis metric" << std::endl;
    ss << "centre:             " << _centre  << std::endl;

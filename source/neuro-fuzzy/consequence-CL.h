@@ -4,9 +4,12 @@
 
 #include <utility>
 #include <vector>
+#include <array>
 #include <iostream>
+
 #include "consequence-TSK.h"
 #include "../service/debug.h"
+
 namespace ksi
 {
    /** Consequence Czogala-Leski type
@@ -20,6 +23,7 @@ namespace ksi
       
       /** sum of dE / dw differentials */
       double sum_dE_dw;
+      
    public:
       virtual ~consequence_CL();
       consequence_CL (const std::vector<double> & params, double w);
@@ -60,7 +64,6 @@ namespace ksi
       * @param ss an output stream to print to
       */
       virtual std::ostream & Print (std::ostream & ss); 
-
    };
 }
 

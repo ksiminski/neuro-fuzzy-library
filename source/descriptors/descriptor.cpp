@@ -12,7 +12,7 @@
 std::string ksi::descriptor::to_string() const
 {
    std::stringstream ss;
-   Print(ss);
+   print(ss);
    return ss.str();
 }
 
@@ -60,6 +60,11 @@ double ksi::descriptor::getWeight() const
 double ksi::descriptor::getMembershipUpper(double x)
 {
    return getMembership(x);
+}
+
+std::ostream& ksi::descriptor::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
+{
+    return ss << "[not implemented]";
 }
 
 ksi::ext_fuzzy_number_gaussian ksi::descriptor::getGranule() const

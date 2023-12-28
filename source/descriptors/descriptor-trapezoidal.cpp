@@ -2,12 +2,24 @@
 
 #include <algorithm>
 #include <string>
+#include <array>
+
 #include "descriptor-trapezoidal.h"
 #include "../service/debug.h"
+#include "../auxiliary/utility-math.h"
 
 #include <iostream>
 
-
+const std::array<std::string, 7> ksi::descriptor_trapezoidal::trapezoidalLocationDescription
+{
+    "micro",
+        "tiny",
+        "small",
+        "medium",
+        "large",
+        "huge",
+        "giant"
+};
 
 ksi::descriptor_trapezoidal::~descriptor_trapezoidal()
 {
@@ -119,13 +131,35 @@ ksi::descriptor * ksi::descriptor_trapezoidal::clone() const
    return new descriptor_trapezoidal(*this);
 }
 
-std::ostream& ksi::descriptor_trapezoidal::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_trapezoidal::print(std::ostream& ss) const
 {
    ss << "descriptor: trapezoidal" << std::endl;
    
    ss << "   (" << _support_min << ", " << _core_min << ", " 
       << _core_max << ", " << _support_max << ")";
    return ss;
+}
+
+std::ostream& ksi::descriptor_trapezoidal::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
+{
+    utility_math utility;
+
+    const double center = (_support_min + _core_min + _core_max + _support_max) / 4;
+
+    const auto firstFunctionParam = utility.calculateLineEquation(std::make_pair(_support_min, 0.0), std::make_pair(_core_min, 1.0));
+    const auto secondFunctionParam = utility.calculateLineEquation(std::make_pair(_core_max, 1.0), std::make_pair(_support_max, 1.0));
+
+    const double firstIntegralValue = utility.calculateLinearDefiniteIntegralValue(_support_min, _core_min, firstFunctionParam, center);
+    const double secondIntegralValue = utility.calculateLinearDefiniteIntegralValue(_core_max, _support_max, secondFunctionParam, center);
+    const auto thirdIntegralValue = utility.calculateRectangularDefiniteIntegralValue(_core_min, _core_max, center);
+
+    const double radius = sqrt(firstIntegralValue + secondIntegralValue + thirdIntegralValue);
+
+    int locationIndex = -(descStat.average - center) / descStat.std_dev + trapezoidalLocationDescription.size() / 2;
+    locationIndex = std::min(std::max(locationIndex, 0), int(trapezoidalLocationDescription.size() - 1));
+
+    ss << "is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << trapezoidalLocationDescription[locationIndex];
+    return ss;
 }
 
 std::vector< double > ksi::descriptor_trapezoidal::getMAconsequenceParameters() const

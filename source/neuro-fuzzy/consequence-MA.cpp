@@ -3,8 +3,22 @@
 
 #include <iostream>
 #include <utility>
-#include "consequence-MA.h"
+#include <array>
 
+#include "consequence-MA.h"
+#include "../auxiliary/utility-math.h"
+
+
+const std::array<std::string, 7> ksi::consequence_MA::MALocationDescription
+{
+    "micro",
+        "tiny",
+        "small",
+        "medium",
+        "large",
+        "huge",
+        "giant"
+};
 
 ksi::consequence_MA::consequence_MA(double support_min, double core, double support_max)
 {
@@ -83,6 +97,27 @@ std::ostream& ksi::consequence_MA::Print(std::ostream& ss)
       << _support_max << ")";
      
    return ss;
+}
+
+std::ostream& ksi::consequence_MA::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat)
+{
+    utility_math utility;
+
+    const double center = (_support_min + _support_max + _core) / 3;
+
+    const auto firstFunctionParam = utility.calculateLineEquation(std::make_pair(_support_min, 0.0), std::make_pair(_core, 1.0));
+    const auto secondFunctionParam = utility.calculateLineEquation(std::make_pair(_core, 1.0), std::make_pair(_support_max, 1.0));
+
+    const double firstIntegralValue = utility.calculateLinearDefiniteIntegralValue(_support_min, _core, firstFunctionParam, center);
+    const double secondIntegralValue = utility.calculateLinearDefiniteIntegralValue(_core, _support_max, secondFunctionParam, center);
+
+    const double radius = sqrt(firstIntegralValue + secondIntegralValue);
+
+    int locationIndex = -(descStat.average - center) / descStat.std_dev + MALocationDescription.size() / 2;
+    locationIndex = std::min(std::max(locationIndex, 0), int(MALocationDescription.size() - 1));
+
+    ss << "output is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << MALocationDescription[locationIndex];
+    return ss;
 }
 
 void ksi::consequence_MA::cummulate_differentials(std::vector<double> X, 
