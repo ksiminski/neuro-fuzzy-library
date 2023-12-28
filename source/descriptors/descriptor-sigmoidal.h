@@ -17,7 +17,9 @@ namespace ksi
       double _previous_cross;
       double _previous_slope;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> sigmoidalLocationDescription;
+      /** linguistic labels */
       const static std::array<std::string, 5> fuzzyDescription;
    public:
       descriptor_sigmoidal (double crosspoint, double slope);

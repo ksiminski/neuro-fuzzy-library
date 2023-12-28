@@ -20,7 +20,9 @@ namespace ksi
       double _previous_cross;
       double _previous_slope;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> tanhLocationDescription;
+      /** linguistic labels */
       const static std::array<std::string, 5> fuzzyDescription;
    public:
       descriptor_tanh (const double crosspoint, const double slope);

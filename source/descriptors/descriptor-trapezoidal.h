@@ -21,6 +21,7 @@ namespace ksi
       double _previous_core_min;
       double _previous_core_max;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> trapezoidalLocationDescription;
 
    public:

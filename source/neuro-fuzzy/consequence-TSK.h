@@ -19,6 +19,7 @@ namespace ksi
           The last item is a free parameter. */ 
       std::vector<double> _params;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> TSKLocationDescription;
    public:
       consequence_TSK();

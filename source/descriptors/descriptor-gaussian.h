@@ -28,6 +28,7 @@ namespace ksi
       /** sum of dE / d stddev differentials */
       double sum_dE_dstddev;
 
+   	  /** linguistic labels */
       const static std::array<std::string, 7> gaussianLocationDescription;
 
    public:

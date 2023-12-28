@@ -15,6 +15,7 @@ namespace ksi
       double _support_min, _core, _support_max;
       double _sum_support_min, _sum_core, _sum_support_max;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> MALocationDescription;
       
    public:

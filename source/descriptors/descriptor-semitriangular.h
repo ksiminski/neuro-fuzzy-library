@@ -19,7 +19,9 @@ namespace ksi
       double _previous_support_extremum;
       double _previous_core;
 
+      /** linguistic labels */
       const static std::array<std::string, 7> semitriangularLocationDescription;
+      /** linguistic labels */
       const static std::array<std::string, 5> fuzzyDescription;
 
    public:

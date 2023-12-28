@@ -20,6 +20,7 @@ namespace ksi
       double _previous_support_max;  ///< previous maximal value of support 
       double _previous_core;         ///< previous value of core
 
+      /** linguistic labels */
       const static std::array<std::string, 7> triangularLocationDescription;
       
    public:

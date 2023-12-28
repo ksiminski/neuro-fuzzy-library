@@ -218,7 +218,7 @@ namespace ksi
       }
 
 
-      /** @return The function returns a vector of values without outliers. Only values inside the interval 
+      /** @return The function returns a vector of values without outliers. Only values inside the interval. 
        * \f[ (m - 3\sigma, m + 3\sigma) \f]
        * where <br/>
        * \f$ m \f$ -- mean values<br/>
@@ -256,7 +256,7 @@ namespace ksi
       }
 
       /**
-	   * @brief Calculates the equation of a line given two points
+	   * @brief Calculates the equation of a line given two points.
 	   *
 	   * This function calculates the equation of a line in the form \f$y = ax + b\f$,
 	   * where \f$a\f$ is the slope and \f$b\f$ is the y-intercept, based on two given points.
@@ -289,7 +289,7 @@ namespace ksi
       }
 
       /**
-       * @brief Calculates the value of a definite integral for a linear function within a given range
+       * @brief Calculates the value of a definite integral for a linear function within a given range.
 	   *
 	   * This function calculates the definite integral value of a linear function within the range \f$[x_1, x_2]\f$.
 	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2ea}{3}x^3 - ebx^2 + \frac{e^2a}{2}x^2 + e^2bx\f$,
@@ -317,7 +317,7 @@ namespace ksi
        }
 
       /**
-	   * @brief Calculates the value of a definite integral for a rectangular function within a given range
+	   * @brief Calculates the value of a definite integral for a rectangular function within a given range.
 	   *
 	   * This function calculates the definite integral value of a rectangular function within the range \f$[x_1, x_2]\f$.
 	   * The integral of a rectangular function is represented as \f$f(x) = \frac{x^3}{3} - ex^2 + ex\f$,

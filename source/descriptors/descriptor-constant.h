@@ -15,6 +15,7 @@ namespace ksi
       double _value;
       double _previous_value;
 
+      /** linguistic labels */
       const static std::array<std::string, 5> constantLocationDescription;
 
    public:
