@@ -1,4 +1,7 @@
 
+#include <numeric>
+#include <vector>
+#include <string>
 
 
 #include "../service/debug.h"
@@ -273,7 +276,7 @@ ksi::result ksi::granular_nfs_regression::experiment_regression(
       
       model << std::endl << std::endl;      
       model << "test data" << std::endl;
-      model << "excepted\telaborated" << std::endl;
+      model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
       for (std::size_t i = 0; i < nXtest; i++)
          model << wYtestExpected[i] << '\t' << wYtestElaborated[i] << std::endl;
@@ -368,7 +371,7 @@ ksi::result ksi::granular_nfs_regression::experiment_regression()
       
       model << std::endl << std::endl;      
       model << "test data" << std::endl;
-      model << "excepted\telaborated" << std::endl;
+      model << "expected\telaborated" << std::endl;
       model << "===========================" << std::endl;
       for (std::size_t i = 0; i < nXtest; i++)
          model << wYtestExpected[i] << '\t' << wYtestElaborated[i] << std::endl;

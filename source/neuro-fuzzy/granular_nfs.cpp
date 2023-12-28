@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <numeric>
 
 // #include <typeinfo>
 

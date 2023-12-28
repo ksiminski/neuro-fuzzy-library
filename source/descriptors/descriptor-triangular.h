@@ -24,6 +24,9 @@ namespace ksi
       const static std::array<std::string, 7> triangularLocationDescription;
       
    public:
+      /** @param support_min support begin
+       *  @param core        core
+       *  @param support_max support end */
       descriptor_triangular (double support_min, double core, double support_max);
       
       /** copy constructor */

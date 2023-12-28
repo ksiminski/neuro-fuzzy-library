@@ -21,7 +21,7 @@ ksi::descriptor_constant::~descriptor_constant()
 }
 
 
-ksi::descriptor_constant::descriptor_constant (double value)
+ksi::descriptor_constant::descriptor_constant (const double value)
 {
    _previous_value = _value = value;
 }

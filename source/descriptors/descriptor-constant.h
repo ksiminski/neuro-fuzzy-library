@@ -19,7 +19,8 @@ namespace ksi
       const static std::array<std::string, 5> constantLocationDescription;
 
    public:
-      descriptor_constant (double value);
+      /** @param value value of the descriptor for all arguments */
+      descriptor_constant (const double value);
       descriptor_constant (const descriptor_constant & wzor);
       virtual double getMembership (double x) override;
       

@@ -20,7 +20,6 @@ ksi::fac_prototype_mahalanobis::fac_prototype_mahalanobis (const ksi::Matrix<dou
 ksi::fac_prototype_mahalanobis::~fac_prototype_mahalanobis ()
 {
    // delete what is to delete
-
 }
 
 std::shared_ptr<ksi::metric> ksi::fac_prototype_mahalanobis::get_metric() const

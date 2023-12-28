@@ -3,8 +3,9 @@
 #include <random>
 #include <array>
 
-#include "descriptor-triangular.h"
+#include "descriptor-triangular.h" 
 #include "../auxiliary/utility-math.h"
+#include "../service/debug.h"
 
 const std::array<std::string, 7> ksi::descriptor_triangular::triangularLocationDescription
 {
@@ -19,20 +20,25 @@ const std::array<std::string, 7> ksi::descriptor_triangular::triangularLocationD
 
 ksi::descriptor_triangular::~descriptor_triangular()
 {
-
 }
-
 
 ksi::descriptor_triangular::descriptor_triangular (double support_min, double core, double support_max)
 {
-   _support_max = support_max;
-   _support_min = support_min;
-   _core = core;
-   
-   _previous_support_min = _support_min;
-   _previous_support_max = _support_max;
-   _previous_core = _core;
-   
+   try 
+   {
+      if ((support_min > core) or (core > support_max))
+      {
+         throw std::string {"The condition support_min <= core <= support_max is not satisfied."};
+      }
+      _support_max = support_max;
+      _support_min = support_min;
+      _core = core;
+
+      _previous_support_min = _support_min;
+      _previous_support_max = _support_max;
+      _previous_core = _core;
+   }
+   CATCH;
 }
 
 ksi::descriptor_triangular::descriptor_triangular(const ksi::descriptor_triangular & wzor)
@@ -61,7 +67,6 @@ double ksi::descriptor_triangular::getCoreMean() const
 {
    return _core;
 }
-      
 
 double ksi::descriptor_triangular::getMembership (double x)
 {

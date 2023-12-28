@@ -1,4 +1,8 @@
 
+#include <vector>
+#include <numeric>
+#include <string>
+
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/nfs_prototype.h"
 #include "../neuro-fuzzy/annbfis_prototype.h"
@@ -13,6 +17,7 @@
 
 #include "../auxiliary/least-error-squares-regression.h"
 #include "../auxiliary/vector-operators.h"
+#include "../auxiliary/error-RMSE.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
 

@@ -23,22 +23,31 @@ const std::array<std::string, 7> ksi::descriptor_trapezoidal::trapezoidalLocatio
 
 ksi::descriptor_trapezoidal::~descriptor_trapezoidal()
 {
-
 }
 
 
 ksi::descriptor_trapezoidal::descriptor_trapezoidal (double support_min, double core_min, double core_max, double support_max)
 {
-   _support_min = support_min;
-   _support_max = support_max;
-   _core_min = core_min; 
-   _core_max = core_max;
-   
-   _previous_support_min = support_min;
-   _previous_support_max = support_max;
-   _previous_core_min = core_min; 
-   _previous_core_max = core_max;
-   
+   try 
+   {
+      if (support_min > core_min or 
+          core_min    > core_max or
+          core_max    > support_max)
+      {
+         throw std::string {"The condition support_min <= core_min <= core_max <= support_max is not satisfied."};
+      }
+
+      _support_min = support_min;
+      _support_max = support_max;
+      _core_min = core_min; 
+      _core_max = core_max;
+
+      _previous_support_min = support_min;
+      _previous_support_max = support_max;
+      _previous_core_min = core_min; 
+      _previous_core_max = core_max;
+   }
+   CATCH;
 }
 
 ksi::descriptor_trapezoidal::descriptor_trapezoidal (const ksi::descriptor_trapezoidal & wzor)
