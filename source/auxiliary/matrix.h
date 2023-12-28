@@ -261,7 +261,7 @@ namespace ksi
       }
       
       public: 
-      /** Method return a row.
+      /** Method returns a row.
          Rows indexed from 0 to nRows - 1.
          @param w -- number of row to return
          @throw string with message when row does not exist
@@ -283,7 +283,7 @@ namespace ksi
       }
       
       public: 
-      /** Method return a column.
+      /** Method returns a column.
          Colums indexed from 0 to nCols - 1.
          @param k -- number of column to return
          @throw string with message when column does not exist
@@ -304,11 +304,10 @@ namespace ksi
          return res;
       }
       
-      public:
+   public:
       /** @return The method returns a vector of rows (vectors of values) stored in the matrix
        *  @date 2020-08-07  
        */
-          
       std::vector<std::vector<T>> getValues()
       {
           return data;
