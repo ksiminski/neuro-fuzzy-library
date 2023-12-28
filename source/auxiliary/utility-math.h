@@ -258,22 +258,22 @@ namespace ksi
       /**
 	   * @brief Calculates the equation of a line given two points
 	   *
-	   * This function calculates the equation of a line in the form \(y = ax + b\),
-	   * where \(a\) is the slope and \(b\) is the y-intercept, based on two given points.
+	   * This function calculates the equation of a line in the form \f$y = ax + b\f$,
+	   * where \f$a\f$ is the slope and \f$b\f$ is the y-intercept, based on two given points.
 	   *
 	   * @tparam T The data type of the coordinates (default is double)
-	   * @param p1 The first point (x, y)
-	   * @param p2 The second point (x, y)
+	   * @param p1 The first point \f$x, y\f$
+	   * @param p2 The second point \f$x, y\f$
 	   * @return A pair representing the slope and y-intercept of the line
 	   *
-	   * The slope (\(m\)) is calculated as:
+	   * The slope \f$a\f$ is calculated as:
 	   * \f[
-	   * \text{{slope}} = \frac{{y_2 - y_1}}{{x_2 - x_1}}
+	   * \text{slope} = \frac{{y_2 - y_1}}{{x_2 - x_1}}
 	   * \f]
 	   *
-	   * The y-intercept (\(b\)) is calculated as:
+	   * The y-intercept \f$b\f$ is calculated as:
 	   * \f[
-	   * \text{{intercept}} = y_1 - \text{{slope}} \cdot x_1
+	   * \text{intercept} = y_1 - \text{slope} \cdot x_1
 	   * \f]
 	   *
 	   * @date 2023-12-26
@@ -291,14 +291,14 @@ namespace ksi
       /**
        * @brief Calculates the value of a definite integral for a linear function within a given range
 	   *
-	   * This function calculates the definite integral value of a linear function within the range [x1, x2].
-	   * The integral of a linear function is represented as \(f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - 2abx^3 - bax^2 + \frac{ab}{2}x^2 + abx\),
-       * where (a, b) is a pair representing the coefficients of the linear function
+	   * This function calculates the definite integral value of a linear function within the range \f$[x1, x2]\f$.
+	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2\mathbb{E}a}{3}x^3 - \mathbb{E}bx^2 + \frac{\mathbb{E}^2a}{2}x^2 + \mathbb{E}^2bx\f$,
+       * where \f$(a, b)\f$ is a pair representing the coefficients of the linear function and \f$\mathbb{E}\f$ is the expected value of the function
 	   *
 	   * @tparam T The data type of the coordinates and coefficients (default is double)
 	   * @param x1 The lower bound of the integration range
 	   * @param x2 The upper bound of the integration range
-	   * @param fun A pair representing the coefficients (a, b) of the linear function
+	   * @param fun A pair representing the coefficients \f$(a, b)\f$ of the linear function
 	   * @param expected The expected value used in the function
 	   * @return The value of the definite integral of the linear function over the specified range
 	   *
@@ -308,7 +308,10 @@ namespace ksi
       template<typename T = double>
       static
    	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& fun, const T& expected) {
-          auto f = [fun] (const auto& x, const auto& expected){return (fun.first * pow(x, 4)) / 4 + (fun.second * pow(x, 3) - 2 * expected * fun.first * pow(x, 3))  / 3 - expected * fun.second * pow(x, 2) + (pow(expected, 2) * fun.first * pow(x, 2)) / 2 + pow(expected, 2) * fun.second * x; };
+          auto f = [fun] (const auto& x, const auto& expected)
+          {
+	          return (fun.first * pow(x, 4)) / 4 + (fun.second * pow(x, 3) - 2 * expected * fun.first * pow(x, 3))  / 3 - expected * fun.second * pow(x, 2) + (pow(expected, 2) * fun.first * pow(x, 2)) / 2 + pow(expected, 2) * fun.second * x;
+          };
            
        	  return f(x2, expected) - f(x1, expected);
        }
@@ -317,8 +320,8 @@ namespace ksi
 	   * @brief Calculates the value of a definite integral for a rectangular function within a given range
 	   *
 	   * This function calculates the definite integral value of a rectangular function within the range [x1, x2].
-	   * The integral of a rectangular function is represented as \(f(x) = \frac{x^3}{3} - bx^2 + bx\),
-	   * where b is a coefficient representing the rectangular function
+	   * The integral of a rectangular function is represented as \f$f(x) = \frac{x^3}{3} - \mathbb{E}x^2 + \mathbb{E}x\f$,
+	   * where \f$\mathbb{E}\f$ is the expected value of the function
 	   *
 	   * @tparam T The data type of the coordinates and coefficient (default is double)
 	   * @param x1 The lower bound of the integration range
