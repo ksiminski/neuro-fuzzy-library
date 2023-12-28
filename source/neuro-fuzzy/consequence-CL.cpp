@@ -6,17 +6,6 @@
 #include "consequence-CL.h"
 #include "../service/debug.h"
 
-//const std::array<std::string, 7> ksi::consequence_CL::CLLocationDescription
-//{
-//    "micro",
-//        "tiny",
-//        "small",
-//        "medium",
-//        "large",
-//        "huge",
-//        "giant"
-//};
-
 ksi::consequence_CL::consequence_CL(const std::vector<double> & params, double w) : consequence_TSK(params)
 {
    _w = w;
@@ -74,10 +63,3 @@ std::ostream& ksi::consequence_CL::Print(std::ostream& ss)
       
    return ss;
 }
-
-//std::ostream& ksi::consequence_CL::prettyPrint(std::ostream& ss, const DescriptorStatistics& descStat)
-//{
-//    
-//    return ss;
-//}
-
