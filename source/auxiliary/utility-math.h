@@ -6,7 +6,9 @@
 #include <vector>
 #include <cmath>
 
+#include "matrix.h"
 #include "../service/debug.h"
+#include "../descriptors/DescriptorStatistics.h"
 
 namespace ksi
 {
@@ -32,6 +34,26 @@ namespace ksi
 
        
    public:
+
+
+       /** A method returns a transposed matrix. Input matrix is not modified.
+        * @param matrix matrix to transpose
+        * @return a transposed matrix, input matrix is not modified
+        * @date 2023-11-22
+        * @author Konrad Wnuk
+        */
+       template <typename T = double>
+           std::vector<std::vector<T>> transpose(const std::vector<std::vector<T>>& matrix)
+       {
+           std::vector<std::vector<T>> result(matrix[0].size(), std::vector<T>(matrix.size()));
+
+           for (std::size_t w = 0; w < matrix.size(); w++)
+               for (size_t k = 0; k < matrix[w].size(); k++)
+                   result[k][w] = matrix[w][k];
+           return result;
+       }
+
+
       /** @return The function returns k-th smallest element in an unsorted vector. 
        *  The function has average complexity O(n).
         * @param first iterator to the first element 
@@ -160,8 +182,43 @@ namespace ksi
           }
           CATCH;
       }
-      
-      /** @return The function returns a vector of values without outliers. Only values inside the interval 
+
+      /** @return The function returns standard deviation and median of elements in a vector.
+		* @param first iterator to the first element
+		* @param last  iterator to the past-the-end element in the vector
+        * @param k     k-th smallest  (starts with 0)
+        * @date 2023-11-21
+        * @author Konrad Wnuk
+        * @throw std::string if the array has no items
+        */
+   	template<typename T = double>
+   	static
+        std::pair<T,T> getMedianAndStandardDeviation(
+        const typename std::vector<T>::const_iterator first,
+        const typename std::vector<T>::const_iterator last)
+   	{
+          try {
+              T sum{};    
+              T sumSq{};  
+              std::size_t counter = 0;
+              for (auto iter = first; iter != last; iter++)
+              {
+                  sum += *iter;
+                  sumSq += *iter * *iter;
+                  counter++;
+              }
+
+              if (counter == 0)
+                  throw std::string("The array has no elements!");
+
+              T average = sum / counter;
+              return { average, std::sqrt(sumSq / counter - average * average)};
+          }
+          CATCH;
+      }
+
+
+      /** @return The function returns a vector of values without outliers. Only values inside the interval. 
        * \f[ (m - 3\sigma, m + 3\sigma) \f]
        * where <br/>
        * \f$ m \f$ -- mean values<br/>
@@ -197,7 +254,94 @@ namespace ksi
           }
           CATCH;
       }
+
+      /**
+	   * @brief Calculates the equation of a line given two points.
+	   *
+	   * This function calculates the equation of a line in the form \f$y = ax + b\f$,
+	   * where \f$a\f$ is the slope and \f$b\f$ is the y-intercept, based on two given points.
+	   *
+	   * @tparam T The data type of the coordinates (default is double)
+	   * @param p1 The first point \f$x, y\f$
+	   * @param p2 The second point \f$x, y\f$
+	   * @return A pair representing the slope and y-intercept of the line
+	   *
+	   * The slope \f$a\f$ is calculated as:
+	   * \f[
+	   * \text{slope} = \frac{{y_2 - y_1}}{{x_2 - x_1}}
+	   * \f]
+	   *
+	   * The y-intercept \f$b\f$ is calculated as:
+	   * \f[
+	   * \text{intercept} = y_1 - \text{slope} \cdot x_1
+	   * \f]
+	   *
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
+      template<typename T = double>
+      static
+      std::pair<T, T> calculateLineEquation(const std::pair<T, T>& p1, const std::pair<T, T>& p2) {
+          const double slope = (p2.second - p1.second) / (p2.first - p1.first);
+          const double intercept = p1.second - slope * p1.first;
+
+          return std::make_pair(slope, intercept);
+      }
+
+      /**
+       * @brief Calculates the value of a definite integral for a linear function within a given range.
+	   *
+	   * This function calculates the definite integral value of a linear function within the range \f$[x_1, x_2]\f$.
+	   * The integral of a linear function is represented as \f$f(x) = \frac{a}{4}x^4 + \frac{b}{3}x^3 - \frac{2ea}{3}x^3 - ebx^2 + \frac{e^2a}{2}x^2 + e^2bx\f$,
+       * where \f$(a, b)\f$ is a pair representing the coefficients of the linear function and \f$e\f$ is the expected value of the function
+	   *
+	   * @tparam T The data type of the coordinates and coefficients (default is double)
+	   * @param x1 The lower bound of the integration range
+	   * @param x2 The upper bound of the integration range
+	   * @param params A pair representing the coefficients \f$(a, b)\f$ of the linear function
+	   * @param expected The expected value used in the function
+	   * @return The value of the definite integral of the linear function over the specified range
+	   *
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
+      template<typename T = double>
+      static
+   	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& params, const T& expected) {
+          auto f = [params] (const auto& x, const auto& expected)
+          {
+	          return (params.first * pow(x, 4)) / 4 + (params.second * pow(x, 3) - 2 * expected * params.first * pow(x, 3))  / 3 - expected * params.second * pow(x, 2) + (pow(expected, 2) * params.first * pow(x, 2)) / 2 + pow(expected, 2) * params.second * x;
+          };
+           
+       	  return f(x2, expected) - f(x1, expected);
+       }
+
+      /**
+	   * @brief Calculates the value of a definite integral for a rectangular function within a given range.
+	   *
+	   * This function calculates the definite integral value of a rectangular function within the range \f$[x_1, x_2]\f$.
+	   * The integral of a rectangular function is represented as \f$f(x) = \frac{x^3}{3} - ex^2 + ex\f$,
+	   * where \f$e\f$ is the expected value of the function
+	   *
+	   * @tparam T The data type of the coordinates and coefficient (default is double)
+	   * @param x1 The lower bound of the integration range
+	   * @param x2 The upper bound of the integration range
+	   * @param expected The expected value used in the function
+	   * @return The value of the definite integral of the rectangular function over the specified range
+	   *
+	   * @date 2023-12-26
+	   * @author Konrad Wnuk
+	   */
+      template<typename T = double>
+      static
+          T calculateRectangularDefiniteIntegralValue(const T& x1, const T& x2, const T& expected) {
+          auto f = [](const auto& x, const auto& expected) {return pow(x, 3) / 3 - expected * pow(x, 2) + pow(expected, 2) * x; };
+
+          return f(x2, expected) - f(x1, expected);
+      }
+
    };
+   
    
    /** Class for representation of a pair: double, std::size_t with operator< .*/
    class distance_index

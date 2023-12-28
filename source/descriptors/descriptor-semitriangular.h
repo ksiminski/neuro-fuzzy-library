@@ -4,21 +4,28 @@
 #define DESCRIPTOR_SEMITRIANGULAR_H
 
 #include <random>
+#include <array>
+
 #include "descriptor.h"
 
 namespace ksi
 {
    class descriptor_semitriangular : virtual public descriptor 
    {
+   private:
       double _support_extremum;
       double _core;
       
       double _previous_support_extremum;
       double _previous_core;
-      
+
+      /** linguistic labels */
+      const static std::array<std::string, 7> semitriangularLocationDescription;
+      /** linguistic labels */
+      const static std::array<std::string, 5> fuzzyDescription;
+
    public:
-      
-      
+            
       /** If core is less than support_extremum, then core is the maximal value of x for which membership is 1 and support_extremum is the minimal value of x for which membership is 0.
        * If support_extremum is less than core, then support_extremum is the maximal value of x for which membership is zero and core is the minimal value of x for which membership is 1.
        */
@@ -41,7 +48,15 @@ namespace ksi
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & Print (std::ostream & ss) const;
+      virtual std::ostream & print (std::ostream & ss) const;
+
+      /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
+       * @param descStat the descriptor statistics to print
+       * @date 2023-11-26
+       * @author Konrad Wnuk
+      */
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
 
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
@@ -58,7 +73,6 @@ namespace ksi
       
       /** @return The method returns a value  */
       virtual double getRandomValue(std::default_random_engine & engine);
-      
    };
 }
 

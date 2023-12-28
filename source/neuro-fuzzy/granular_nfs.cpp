@@ -14,6 +14,9 @@
 #include "../service/debug.h"
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/granular_nfs.h"
+
+#include <numeric>
+
 #include "../granules/granule.h" 
 #include "../granules/set_of_cooperating_granules.h"
 #include "../granules/set_of_granules.h"

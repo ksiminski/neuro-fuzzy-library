@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <string>
+#include <array>
+
 #include "descriptor.h" 
 
 
@@ -25,7 +27,10 @@ namespace ksi
       double sum_dE_dmean;
       /** sum of dE / d stddev differentials */
       double sum_dE_dstddev;
-      
+
+   	  /** linguistic labels */
+      const static std::array<std::string, 7> gaussianLocationDescription;
+
    public:
       /** @param mean mean :-)
           @param stddev standard deviation (also for upper standard deviation) */
@@ -73,7 +78,15 @@ namespace ksi
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & Print (std::ostream & ss) const;
+      virtual std::ostream & print (std::ostream & ss) const;
+
+   	  /** The method prints an object linguistic description into output stream.
+   	   * @param ss the output stream to print into
+   	   * @param descStat the descriptor statistics to print
+   	   * @date 2023-10-24
+   	   * @author Konrad Wnuk
+      */
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
       
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support

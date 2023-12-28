@@ -19,7 +19,11 @@ namespace ksi
       
       double _previous_cross;
       double _previous_slope;
-      
+
+      /** linguistic labels */
+      const static std::array<std::string, 7> tanhLocationDescription;
+      /** linguistic labels */
+      const static std::array<std::string, 5> fuzzyDescription;
    public:
       /** @param crosspoint argument for which the value of the function is 0.5
        * @param slope positive values: increasing function, <BR>
@@ -48,7 +52,15 @@ namespace ksi
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & Print (std::ostream & ss) const ;
+      virtual std::ostream & print (std::ostream & ss) const ;
+
+      /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
+       * @param descStat the descriptor statistics to print
+       * @date 2023-12-04
+       * @author Konrad Wnuk
+      */
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
 
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support

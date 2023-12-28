@@ -136,25 +136,46 @@ void ksi::premise::actualise_parameters(double eta)
       d->actualise_parameters(eta);
 }
 
-std::ostream & ksi::premise::Print(std::ostream & ss) const
+std::ostream & ksi::premise::print(std::ostream & ss) const
 {
    ss << "premise" << std::endl;
    ss << "desciptors" << std::endl;
    std::size_t i = 1;
-   for (auto * p : descriptors)
+   for (auto* p : descriptors)
    {
       ss << i++ << ": " << std::endl; 
-      p->Print(ss);
+      p->print(ss);
       ss << std::endl;
    }  
    return ss;
 }
 
+std::ostream& ksi::premise::printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const
+{
+    std::size_t i = 0;
+    std::size_t size = descriptors.size();
+    if (size > 0) {
+		for (auto* p : descriptors) {
+			ss << ' ' << i + 1 << " input ";
+			p->printLinguisticDescription(ss, datasetStat.getDescriptorStatistics(i));
+			if(i < size - 1) {
+				ss << " AND";
+			}
+			i++;
+		}
+	}
+    else {
+        ss << " [not applicable]";
+    }
+    return ss;
+}
+
+
 namespace ksi 
 {
     std::ostream & operator << (std::ostream & ss, const premise & p)
     {
-        p.Print (ss);
+        p.print (ss);
         return ss;
     }
 }

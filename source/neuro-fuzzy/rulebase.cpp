@@ -8,6 +8,7 @@
 
 #include "rulebase.h"
 #include "rule.h"
+#include "../common/DatasetStatistics.h"
 #include "../service/debug.h"
 
 bool ksi::rulebase::validate() const
@@ -246,6 +247,18 @@ void ksi::rulebase::print(std::ostream & ss) const
       rules[i]->Print(ss);
       ss << std::endl;
    }
+}
+
+
+void ksi::rulebase::printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const
+{
+    std::size_t size = getNumberOfRules();
+    for (std::size_t i = 0; i < size; i++)
+    {
+        ss << "RULE " << (i + 1) << std::endl << std::endl;
+        rules[i]->printLinguisticDescription(ss, datasetStat);
+        ss << std::endl;
+    }
 }
 
 const std::size_t ksi::rulebase::size() const

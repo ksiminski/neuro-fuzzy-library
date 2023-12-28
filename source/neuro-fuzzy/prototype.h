@@ -36,7 +36,7 @@ namespace ksi
       * @param ss an output stream to print to
       * @return the stream (ss -- parameter) the methods has printed into
       */
-      virtual std::ostream & Print (std::ostream & ss) const override;
+      virtual std::ostream & print (std::ostream & ss) const override;
       
       /** @return white character free name of the prototype type */
       virtual std::string get_name() const = 0;

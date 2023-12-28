@@ -76,7 +76,15 @@ namespace ksi
       * @return the stream (ss -- parameter) the methods has printed into
       */
       virtual std::ostream & Print (std::ostream & ss) const;
-            
+
+      /** The method prints an object linguistic description into output stream.
+       *
+       * @param ss an output stream to print to
+       * @param datasetStat the dataset statistics to print
+       * @return the stream (ss -- parameter) the methods has printed into
+       */
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const;
+
       /** The method validates the rule. It checks if both premise and conclusion of the rule exist. 
        @return true if both premise and conclusion exist, otherwise false. */
       virtual bool validate () const;

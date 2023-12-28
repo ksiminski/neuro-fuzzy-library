@@ -7,6 +7,16 @@
 #include "consequence-TSK.h"
 #include "../service/debug.h"
 
+const std::array<std::string, 7> ksi::consequence_TSK::TSKLocationDescription
+{
+    "micro",
+        "tiny",
+        "small",
+        "medium",
+        "large",
+        "huge",
+        "giant"
+};
 
 ksi::consequence_TSK::consequence_TSK(const std::vector<double> & params)
 {
@@ -82,5 +92,17 @@ std::ostream& ksi::consequence_TSK::Print(std::ostream& ss)
    for (auto & d : _params)
       ss << d << "  "; 
    return ss;
+}
+
+std::ostream& ksi::consequence_TSK::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat)
+{
+    for (std::size_t i = 0; i < _params.size() - 1; ++i) {
+        ss << i+1 << " input has " << (_params[i] <= descStat.std_dev ? "low " : "high ") << (_params[i] < 0 ? "negative " : "positive ") << "importance AND ";
+    }
+
+    int locationIndex = (_params.back() - descStat.average) / descStat.std_dev + TSKLocationDescription.size() / 2;
+    locationIndex = std::min(std::max(locationIndex, 0), int(TSKLocationDescription.size() - 1));
+
+    return ss << "intercept is " << TSKLocationDescription[locationIndex];
 }
 

@@ -3,12 +3,33 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <array>
 #include <cmath>
 
 #include "descriptor-sigmoidal.h"
 #include "../service/debug.h"
 
 #include <iostream>
+
+const std::array<std::string, 7> ksi::descriptor_sigmoidal::sigmoidalLocationDescription
+{
+    "micro",
+        "tiny",
+        "small",
+        "medium",
+        "large",
+        "huge",
+        "giant"
+};
+
+const std::array<std::string, 5> ksi::descriptor_sigmoidal::fuzzyDescription
+{
+    "hardly",       // (INFINITY, 10>
+        "mildly",       // (10; 4>
+        "moderately",   // (1 ; 4)
+        "distinctly",   // <1; 0.4)
+        "stepwise"      // <0.4; 0)
+};
 
 ksi::descriptor_sigmoidal::descriptor_sigmoidal (double crosspoint, double slope)
 {
@@ -59,12 +80,40 @@ ksi::descriptor_sigmoidal::~descriptor_sigmoidal()
 
 }
 
-std::ostream& ksi::descriptor_sigmoidal::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_sigmoidal::print(std::ostream& ss) const
 {
    ss << "descriptor: sigmoidal" << std::endl;
    ss << "   crosspoint == " << _cross << std::endl;
    ss << "   slope      == " << _slope << std::endl;
    return ss;
+}
+
+std::ostream& ksi::descriptor_sigmoidal::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
+{
+    if (_slope != 0.0)
+    {
+        int locationIndex = -(descStat.average - _cross) / descStat.std_dev + sigmoidalLocationDescription.size() / 2;
+        locationIndex = std::min(std::max(locationIndex, 0), int(sigmoidalLocationDescription.size() - 1));
+
+        int slopeIndex;
+        double product = abs(_slope * descStat.std_dev);
+        if (product >= 10)
+            slopeIndex = 0;
+        else if (product >= 4)
+            slopeIndex = 1;
+        else if (product > 1)
+            slopeIndex = 2;
+        else if (product > 0.4)
+            slopeIndex = 3;
+        else
+            slopeIndex = 4;
+
+        ss << "is " << fuzzyDescription[slopeIndex] << ' ' << (_slope > 0.0 ? "greater" : "less") << " than " << sigmoidalLocationDescription[locationIndex];
+    }
+    else
+        ss << " half for all";
+
+    return ss;
 }
 
 std::vector< double > ksi::descriptor_sigmoidal::getMAconsequenceParameters() const
