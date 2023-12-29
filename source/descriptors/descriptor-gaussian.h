@@ -30,6 +30,8 @@ namespace ksi
 
       /** linguistic labels */
       const static std::array<std::string, 7> gaussianLocationDescription;
+      /** linguistic labels */
+      const static std::array<std::string, 5> fuzzyDescription;
 
    public:
       /** @param mean mean :-)

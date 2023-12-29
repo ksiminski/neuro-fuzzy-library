@@ -24,6 +24,14 @@ const std::array<std::string, 7> ksi::descriptor_gaussian::gaussianLocationDescr
       "huge",
       "giant"
 };
+const std::array<std::string, 5> ksi::descriptor_gaussian::fuzzyDescription
+{
+   "strictly",     //        std_dev < 0.5
+   "distinctly",   // 0.5 <= std_dev < 1.0 
+   "moderately",   // 1.0 <= std_dev < 2.0
+   "mildly",       // 2.0 <= std_dev < 5.0
+   "loosely"       // 5.0 <= std_dev  
+};
 
 ksi::descriptor_gaussian::~descriptor_gaussian()
 {
@@ -113,7 +121,19 @@ std::ostream& ksi::descriptor_gaussian::printLinguisticDescription(std::ostream&
    int locationIndex = (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
    locationIndex = std::min(std::max(locationIndex, 0), int(gaussianLocationDescription.size() - 1));
 
-   ss << "is " << (_stddev <= descStat.std_dev ? "strictly " : "loosely ") << gaussianLocationDescription[locationIndex];
+   int fuzzinessIndex;
+   if (_stddev < 0.5)
+      fuzzinessIndex = 0;
+   else if (0.5 <= _stddev and _stddev < 1.0)
+      fuzzinessIndex = 1;
+   else if (1.0 <= _stddev and _stddev < 2.0)
+      fuzzinessIndex = 2;
+   else if (2.0 <= _stddev and _stddev < 5.0)
+      fuzzinessIndex = 3;
+   else
+      fuzzinessIndex = 4;
+
+   ss << "is " << fuzzyDescription[fuzzinessIndex] << ' ' << gaussianLocationDescription[locationIndex];
 
    return ss;
 }
