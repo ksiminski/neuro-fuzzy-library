@@ -172,8 +172,8 @@ void ksi::exp_lab::fuzzy_system()
 
 		for (auto p : systems)
 		{
-         ksi::reader_complete reader;
-         p->set_train_dataset(reader.read(TRAIN));
+			ksi::reader_complete reader;
+			p->set_train_dataset(reader.read(TRAIN));
 			p->elaborate_answers_for_regression(TRAIN, RESULTS + "-" + p->get_nfs_name() + ".txt", NORMALISATION);
 		}
 
