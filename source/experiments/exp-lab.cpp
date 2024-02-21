@@ -8,35 +8,33 @@
 #include <random>
 #include <chrono>
 
-#include "../neuro-fuzzy/premise.h"
+#include "../auxiliary/definitions.h"
 #include "../descriptors/descriptor-gaussian.h"
-#include "../descriptors/descriptor-triangular.h"
 #include "../descriptors/descriptor-semitriangular.h"
 #include "../descriptors/descriptor-sigmoidal.h"
-#include "../descriptors/descriptor_arctan.h"
-#include "../descriptors/descriptor_tanh.h"
 #include "../descriptors/descriptor-trapezoidal.h"
 #include "../descriptors/descriptor-triangular.h"
+#include "../descriptors/descriptor-triangular.h"
+#include "../descriptors/descriptor_arctan.h"
+#include "../descriptors/descriptor_tanh.h"
+#include "../experiments/exp-lab.h"
+#include "../implications/imp-reichenbach.h"
+#include "../neuro-fuzzy/annbfis.h"
 #include "../neuro-fuzzy/consequence-MA.h"
 #include "../neuro-fuzzy/consequence-TSK.h"
+#include "../neuro-fuzzy/ma.h"
+#include "../neuro-fuzzy/premise.h"
 #include "../neuro-fuzzy/rule.h"
 #include "../neuro-fuzzy/rulebase.h"
-#include "../tnorms/t-norm-lukasiewicz.h"
-#include "../tnorms/t-norm-product.h"
-#include "../tnorms/t-norm-min.h"
-#include "../tnorms/t-norm-fodor.h"
+#include "../neuro-fuzzy/tsk.h"
+#include "../readers/reader-complete.h"
+#include "../service/debug.h"
 #include "../tnorms/t-norm-dubois-prade.h"
 #include "../tnorms/t-norm-einstein.h"
-#include "../auxiliary/definitions.h"
-#include "../implications/imp-reichenbach.h"
-#include "../neuro-fuzzy/ma.h"
-#include "../neuro-fuzzy/tsk.h"
-#include "../neuro-fuzzy/annbfis.h"
-
-#include "../service/debug.h"
-
-#include "../experiments/exp-lab.h"
-
+#include "../tnorms/t-norm-fodor.h"
+#include "../tnorms/t-norm-lukasiewicz.h"
+#include "../tnorms/t-norm-min.h"
+#include "../tnorms/t-norm-product.h"
 
 
 void ksi::exp_lab::execute()
@@ -45,7 +43,7 @@ void ksi::exp_lab::execute()
 	{
 		// [PL] system rozmyty 
 		// [EN] fuzzy system
-		fuzzy_system();
+		// fuzzy_system();
 
 		// [PL] system neuronowo-rozmyty 
 		//  Proszę sprawdzić, jaki wygląda model wypracowany przez system neuronowo-rozmyty dla danych z zadania Z1. W tym celu należy odkomentować ponizsza linie. Zostaną utworozne dwa pliki results-neuro-fuzzy-MA i results-neuro-fuzzy-TSK.
@@ -53,7 +51,7 @@ void ksi::exp_lab::execute()
 		// [EN] neuro-fuzzy system
 		// Uncomment the commented line below. Now two neuro-fuzzy systems (MA and TSK) are run for the data set. Compare your results with the results elaborated by the neuro-fuzzy systems. Try to interpret fuzzy rule bases produced by the systems.
 
-		// neuro_fuzzy_system();
+		neuro_fuzzy_system();
 	}    
 	CATCH;
 }
@@ -174,6 +172,8 @@ void ksi::exp_lab::fuzzy_system()
 
 		for (auto p : systems)
 		{
+         ksi::reader_complete reader;
+         p->set_train_dataset(reader.read(TRAIN));
 			p->elaborate_answers_for_regression(TRAIN, RESULTS + "-" + p->get_nfs_name() + ".txt", NORMALISATION);
 		}
 
