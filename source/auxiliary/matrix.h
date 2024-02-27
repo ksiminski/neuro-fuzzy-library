@@ -38,7 +38,7 @@ namespace ksi
             Rows = rows;
             Cols = cols;
 
-            data = std::vector<std::vector<T> >(rows);
+            data = std::vector<std::vector<T>>(rows);
             int i;
             for (i = 0; i < rows; i++)
                data[i] = std::vector<T>(cols);
@@ -54,7 +54,7 @@ namespace ksi
             Rows = rows;
             Cols = cols;
 
-            data = std::vector<std::vector<T> >(rows);
+            data = std::vector<std::vector<T>>(rows);
             int i;
             for (i = 0; i < rows; i++)
                data[i] = std::vector<T>(cols, initial);
@@ -66,7 +66,7 @@ namespace ksi
 
          public:
          /** copy constructor **/
-         Matrix(const Matrix& m)
+         Matrix(const Matrix & m)
          {
             Rows = m.Rows;
             Cols = m.Cols;
@@ -76,16 +76,16 @@ namespace ksi
 
          public:
          /** move constructor **/
-         Matrix(Matrix&& m)
+         Matrix(Matrix && m)
          {
             std::swap(Rows, m.Rows);
             std::swap(Cols, m.Cols);
             std::swap(data, m.data);
          }
 
-         Matrix& operator = (const Matrix& m)
+         Matrix & operator = (const Matrix & m)
          {
-            if (this == &m)
+            if (this == & m)
                return *this;
 
             Rows = m.Rows;
@@ -95,9 +95,9 @@ namespace ksi
             return *this;
          }
 
-         Matrix& operator = (Matrix&& m)
+         Matrix & operator = (Matrix && m)
          {
-            if (this == &m)
+            if (this == & m)
                return *this;
 
             std::swap(Rows, m.Rows);
@@ -110,7 +110,7 @@ namespace ksi
          public:
          /** Constructor from a vector of vectors
           * @exception std::string with a comment when number of items in rows differ **/
-         Matrix(const std::vector<std::vector<T>>& t) : Matrix()
+         Matrix(const std::vector<std::vector<T>> & t) : Matrix()
          {
             data = t;
             Rows = t.size();
@@ -139,7 +139,7 @@ namespace ksi
           * @date 2018-01-26
           * @author Krzysztof Siminski
           */
-         static Matrix ColumnMatrix(const std::vector<T>& w)
+         static Matrix ColumnMatrix(const std::vector<T> & w)
          {
             Matrix<double> res;
             res.Rows = w.size();
@@ -147,7 +147,7 @@ namespace ksi
 
             res.data = std::vector<std::vector<T>>(res.Rows);
             for (std::size_t i = 0; i < res.Rows; i++)
-               res.data[i] = std::vector<T>{ w[i] };
+               res.data[i] = std::vector<T> {w[i]};
             return res;
          }
 
@@ -158,7 +158,7 @@ namespace ksi
           * @date 2018-01-26
           * @author Krzysztof Siminski
           */
-         static Matrix RowMatrix(const std::vector<T>& w)
+         static Matrix RowMatrix(const std::vector<T> & w)
          {
             Matrix<double> res;
             res.Rows = 1;
@@ -349,7 +349,7 @@ namespace ksi
          /**
           * @param w index of a row (starting with 0)
           * @param f function that operates on two values and return a value
-          * @return The method return accumulation of a row with function f.
+          * @return The method returns accumulation of a row with function f.
           * Eg. for summing up all items use lambda [] (T a, T b) {return a + b;} with initial_value = 0; for max search use lambda [] (T a, T b) {return std::max(a,b);} with initial_value = 0; for summing up  squares of all items use lambda [](const double a, const double b){return a * a + b;}; with initial value = 0;
           * @throw std::string with a comment, when index of an invalid row
           * @date 2020-08-07
@@ -378,9 +378,9 @@ namespace ksi
          public:
          /** @return sum of squared values in column c
            @param c column index */
-         T sum_of_squared_values_in_column(const int c) const
+         T sum_of_squared_values_in_column(const std::size_t c) const
          {
-            auto lambda = [](const double a, const double b) {return a * a + b; };
+            auto lambda = [](const double a, const double b) { return a * a + b; };
             return accumulate_column(c, T{}, lambda);
          }
 
@@ -486,7 +486,7 @@ namespace ksi
           * @return a reference to an item in the matrix
           * @throw std::string with a comment, when index of row or column invalid
           */
-         T& operator () (const std::size_t& w, const std::size_t& k)
+         T& operator () (const std::size_t & w, const std::size_t & k)
          {
             if (w >= Rows)
             {
@@ -512,7 +512,7 @@ namespace ksi
           * @return a reference to an item in the matrix
           * @throw std::string with a comment, when index of row or column invalid
           */
-         const T& get_value(const std::size_t& w, const std::size_t& k) const
+         const T& get_value(const std::size_t & w, const std::size_t & k) const
          {
             if (w >= Rows)
             {
@@ -539,7 +539,7 @@ namespace ksi
           * @return a copy of value to an item in the matrix
           * @throw std::string with a comment, when index of row or column invalid
           */
-         T getItem(std::size_t w, std::size_t k)  const
+         T getItem(const std::size_t w, const std::size_t k)  const
          {
             if (w >= Rows)
             {
@@ -570,8 +570,6 @@ namespace ksi
             for (int w = Rows - 1; w >= 0; w--)
                for (int k = Cols - 1; k >= 0; k--)
                   res.data[w][k] = data[w][k] * d;
-
-
             return res;
          }
 
@@ -587,8 +585,6 @@ namespace ksi
             for (int w = Rows - 1; w >= 0; w--)
                for (int k = Cols - 1; k >= 0; k--)
                   res.data[w][k] = data[w][k] + d;
-
-
             return res;
          }
          public:
@@ -597,7 +593,7 @@ namespace ksi
           * @return a summed matrix, input matrix is not modified
           * @throw std::string with a comment, when dimensions of matrices do not match
           */
-         Matrix operator + (const Matrix& m)
+         Matrix operator + (const Matrix & m)
          {
             if (Rows != m.Rows || Cols != m.Cols)
             {
@@ -628,7 +624,7 @@ namespace ksi
           * @throw std::string with a comment, when dimensions of matrices do not match
           * @date 2023-04-25
           */
-         Matrix& operator += (const Matrix& m)
+         Matrix & operator += (const Matrix & m)
          {
             if (Rows != m.Rows || Cols != m.Cols)
             {
@@ -657,7 +653,7 @@ namespace ksi
           * @return a difference of matrices
           * @throw std::string with a comment, when dimensions of matrices do not match
           */
-         Matrix operator- (const Matrix& m)
+         Matrix operator- (const Matrix & m)
          {
             if (Rows != m.Rows || Cols != m.Cols)
             {
@@ -682,7 +678,7 @@ namespace ksi
           * @return a difference of matrices
           * @throw std::string with a comment, when dimensions of matrices do not match
           */
-         Matrix& operator -= (const Matrix& m)
+         Matrix& operator -= (const Matrix & m)
          {
             if (Rows != m.Rows || Cols != m.Cols)
             {
@@ -701,7 +697,7 @@ namespace ksi
             return *this;
          }
 
-         Matrix& subtract_with_saturation(const Matrix& m)
+         Matrix & subtract_with_saturation(const Matrix & m)
          {
             if (Rows != m.Rows || Cols != m.Cols)
             {
@@ -731,7 +727,7 @@ namespace ksi
           * @return a product of matices, input matrix is not modified
           * @throw std::string with a comment, when dimensions of matrices do not match
           */
-         Matrix operator * (const Matrix& m)
+         Matrix operator * (const Matrix & m)
          {
             if (Cols != m.Rows)
             {
@@ -741,7 +737,7 @@ namespace ksi
                throw ss.str();
             }
 
-            Matrix res(Rows, m.Cols);
+            Matrix res (Rows, m.Cols);
             int w, k, i;
             for (w = 0; w < Rows; w++)
             {
@@ -763,7 +759,7 @@ namespace ksi
          Matrix operator * (const double factor)
          {
 
-            Matrix res(*this);
+            Matrix res (*this);
             int w, k;
             for (w = 0; w < res.Rows; w++)
             {
@@ -782,7 +778,7 @@ namespace ksi
          Matrix operator / (const double factor)
          {
 
-            Matrix res(*this);
+            Matrix res (*this);
             int w, k;
             for (w = 0; w < res.Rows; w++)
             {
@@ -799,7 +795,7 @@ namespace ksi
           * @return a product of matices, input matrix is not modified
           * @date 2023-07-09
           */
-         Matrix& operator /= (const double factor)
+         Matrix & operator /= (const double factor)  
          {
             int w, k;
             for (w = 0; w < Rows; w++)
@@ -844,7 +840,7 @@ namespace ksi
           1    -- square matrix, intersion impossible<BR>
           2    -- non-square matrix
           */
-         Matrix invert(int& result_status) const
+         Matrix invert(int & result_status) const
          {
             if (Cols != Rows)
             {
@@ -888,7 +884,7 @@ namespace ksi
                         naPrzekatnej = m.data[w][w];
                      }
                   }
-                  if (!udalosie)
+                  if (! udalosie)
                   {
                      result_status = 1; // nie da sie odwrocic macierzy
                      return m;
@@ -939,7 +935,7 @@ namespace ksi
 
             // jeszcze tylko ekstrakcja wartosci macierzy odwroconej
 
-            Matrix res(Rows, Cols);
+            Matrix res (Rows, Cols);
             for (w = 0; w < Rows; w++)
             {
                for (k = 0; k < Cols; k++)
@@ -961,18 +957,18 @@ namespace ksi
           0    -- determinant calculated<BR>
           1    -- non-square matrix
           */
-         T determinant(int& result_status) const
+         T determinant(int & result_status) const
          {
             if (Cols != Rows)
             {
                result_status = 1; // non-square matrix
                return T{};
             }
-            Matrix m(*this);
+            Matrix m (*this);
 
             int w, k;
 
-            T wyznacznik{ 1.0 };
+            T wyznacznik {1.0};
             // teraz wlasciwa eliminacja Gaussa-Jordana
             for (w = 0; w < Rows; w++)
             {  // dla kazdego wiersza
@@ -997,7 +993,7 @@ namespace ksi
                         naPrzekatnej = m.data[w][w];
                      }
                   }
-                  if (!udalosie)
+                  if (! udalosie)
                   {
                      return T{};  // Wartosc wyznacznika wyniki zero.
                   }
@@ -1061,10 +1057,10 @@ namespace ksi
            */
          T Frobenius_norm() const
          {
-            T suma{};
+            T suma {};
 
-            for (auto& w : data)
-               for (auto& e : w)
+            for (auto & w : data)
+               for (auto & e : w)
                {
                   auto e2 = e * e;
                   suma = suma + e2;
@@ -1139,7 +1135,7 @@ namespace ksi
          /** Gauss elimination method for solving system of linear equations: A * X = Y
            @param Y a column vector Y
            @return a column vector X */
-         Matrix Gauss(const Matrix& Y)
+         Matrix Gauss (const Matrix & Y)
          {
             const double EPSILON = 0.001;
             Matrix M(*this);
@@ -1190,7 +1186,7 @@ namespace ksi
                // odejmuje ten wiersz od lezacych ponizej:
                for (size_t ww = w + 1; ww < rows; ww++)
                {
-                  double skala = -M.data[ww][w] / M.data[w][w];
+                  double skala = - M.data[ww][w] / M.data[w][w];
                   for (size_t k = 0; k < cols; k++)
                      M.data[ww][k] += skala * M.data[w][k];
                }
@@ -1205,7 +1201,7 @@ namespace ksi
                for (int ww = w - 1; ww >= 0; ww--)
                {
                   //debug(ww);
-                  double skala = -M.data[ww][w] / M.data[w][w];
+                  double skala = - M.data[ww][w] / M.data[w][w];
                   for (size_t k = ww + 1; k < cols; k++)
                      M.data[ww][k] += skala * M.data[w][k];
                }
@@ -1280,7 +1276,7 @@ namespace ksi
 
    //////////////////////////////
    template<class T>
-      std::ostream& operator<< (std::ostream& ss, const  Matrix<T>& m)
+      std::ostream & operator<< (std::ostream& ss, const Matrix<T> & m)
       {
          int w, k;
          for (w = 0; w < m.Rows; w++)
