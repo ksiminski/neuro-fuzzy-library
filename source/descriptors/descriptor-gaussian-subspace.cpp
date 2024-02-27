@@ -5,13 +5,17 @@
 #include <sstream>
 #include <cmath>
 #include <utility>
+#include <iostream>
 
 #include "descriptor-gaussian.h"
 #include "descriptor-gaussian-subspace.h"
 #include "../service/debug.h"
- 
 
-#include <iostream>
+
+std::string ksi::descriptor_gaussian_subspace::getName() const
+{
+   return std::string {"gaussian_subspace"};
+}
 
 ksi::descriptor_gaussian_subspace::~descriptor_gaussian_subspace()
 {

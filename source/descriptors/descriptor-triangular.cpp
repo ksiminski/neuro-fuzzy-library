@@ -7,6 +7,11 @@
 #include "../auxiliary/utility-math.h"
 #include "../service/debug.h"
 
+std::string ksi::descriptor_triangular::getName() const
+{
+   return {"triangular"};
+}
+
 const std::array<std::string, 7> ksi::descriptor_triangular::triangularLocationDescription
 {
    "micro",
@@ -135,7 +140,7 @@ std::ostream& ksi::descriptor_triangular::printLinguisticDescription(std::ostrea
 
    const double radius = sqrt(firstIntegralValue + secondIntegralValue);
 
-   int locationIndex = -(descStat.average - center) / descStat.std_dev + triangularLocationDescription.size() / 2;
+   int locationIndex = - 2.0 *(descStat.average - center) / descStat.std_dev + triangularLocationDescription.size() / 2;
    locationIndex = std::min(std::max(locationIndex, 0), int(triangularLocationDescription.size() - 1));
 
    ss << "is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << triangularLocationDescription[locationIndex];

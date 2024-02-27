@@ -6,6 +6,12 @@
 #include "descriptor-constant.h"
 #include "../service/debug.h"
 
+std::string ksi::descriptor_constant::getName() const
+{
+   return std::string {"constant"};
+}
+
+
 const std::array<std::string, 5> ksi::descriptor_constant::constantLocationDescription
 {
     "false",

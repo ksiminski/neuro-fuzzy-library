@@ -26,19 +26,24 @@ namespace ksi
       
       virtual ~descriptor_interval_gaussian_subspace();
       
-      virtual descriptor * clone () const;
+      virtual descriptor * clone () const override;
       
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & print (std::ostream & ss) const;
+      virtual std::ostream & print (std::ostream & ss) const override;
       
       /**
       @return the mean value of descriptor's core, for this descriptor it is just a core of the Gaussian set
       */
-      virtual double getCoreMean() const;
+      virtual double getCoreMean() const override;
       
-      void reset_parameters();
+      void reset_parameters() override;
+      
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
+      
       
    };
 }

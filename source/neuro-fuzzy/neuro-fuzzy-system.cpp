@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <tuple>
+#include <deque>
 
  
 
@@ -107,7 +108,7 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       double blad_rmse_train = rmse.getError(wYtrainElaborated, wYtrainExpected);
       ksi::error_MAE mae;
       double blad_mae_train  = mae.getError(wYtrainElaborated, wYtrainExpected);
-      
+     
       std::ofstream model (outputFile);
       
       model << "EXPERIMENT" << std::endl;
@@ -140,7 +141,6 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       model << "===========================" << std::endl;
       for (std::size_t i = 0; i < nXtrain; i++)
          model << wYtrainExpected[i] << '\t' << wYtrainElaborated[i] << std::endl;
-      
       
       model.close();
    }
@@ -323,10 +323,7 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(const ksi::neuro_fuzzy_system & wzor
    _pRulebase = (wzor._pRulebase) ? wzor._pRulebase->clone() : nullptr;
    _pPartitioner = wzor._pPartitioner ? wzor._pPartitioner->clone() : nullptr;
    _pModyfikator = wzor._pModyfikator ? std::shared_ptr<ksi::data_modifier>(wzor._pModyfikator->clone()) : nullptr;
-   
-   
    copy_fields(wzor);
-      
 }
 
 ksi::neuro_fuzzy_system & ksi::neuro_fuzzy_system::operator=(const ksi::neuro_fuzzy_system & wzor)
@@ -1191,3 +1188,27 @@ void ksi::neuro_fuzzy_system::set_threshold_type (const ksi::roc_threshold & th)
 {
     this->_threshold_type = th;
 }
+
+double ksi::neuro_fuzzy_system::modify_learning_coefficient(const double learning_coefficient, const std::deque<double>& errors)
+{
+    const double coefficient {1.1};
+    
+    if (errors.size() > 8)
+    {
+        if ((errors[0] < errors[2]) and (errors[2] < errors[4]) and (errors[4] < errors[6]) and (errors[6] < errors[8]))
+            return learning_coefficient * coefficient;
+        else if ((errors[0] < errors[2]) and (errors[2] > errors[4]) and (errors[4] < errors[6]) and (errors[6] > errors[8]))
+            return learning_coefficient / coefficient;
+        else if ((errors[0] > errors[1]) and (errors[1] > errors[2]) and (errors[2] > errors[3]))
+            return learning_coefficient / coefficient; 
+    }
+    else 
+    if (errors.size() > 3)
+    {
+        if ((errors[0] > errors[1]) and (errors[1] > errors[2]) and (errors[2] > errors[3]))
+            return learning_coefficient / coefficient;
+    }
+            
+    return learning_coefficient;
+}
+

@@ -11,6 +11,12 @@
 
 #include <iostream>
 
+std::string ksi::descriptor_tanh::getName() const
+{
+    return {"tanh"};
+}
+
+
 const std::array<std::string, 7> ksi::descriptor_tanh::tanhLocationDescription
 {
     "micro",

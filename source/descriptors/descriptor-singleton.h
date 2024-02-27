@@ -16,7 +16,7 @@ namespace ksi
       descriptor_singleton (double value);
       
       descriptor_singleton (const descriptor_singleton & wzor);
-      virtual double getMembership (double x);
+      virtual double getMembership (double x) override;
 
       /** The method elaborates the differentials of the membership function
        *  for an attribute value x 
@@ -24,16 +24,16 @@ namespace ksi
        *  @return one element vector with one value -- always zero  <BR>
        *          vector[0] == 0.0 : d membership / d value
        */
-      virtual std::vector<double> getDifferentials (double x);
+      virtual std::vector<double> getDifferentials (double x) override;
       
-      virtual descriptor * clone () const;
+      virtual descriptor * clone () const override;
       
       virtual ~descriptor_singleton ();
 
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & print (std::ostream & ss) const;
+      virtual std::ostream & print (std::ostream & ss) const override;
 
       /** The method prints an object linguistic description into output stream.
          * @param ss the output stream to print into
@@ -41,7 +41,7 @@ namespace ksi
          * @date 2023-10-24
          * @author Konrad Wnuk
         */
-      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const override;
       
      /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
@@ -49,14 +49,19 @@ namespace ksi
        * where EPSILON is a small value (a field of the class)
        * @date 2018-02-16
        */
-      virtual std::vector<double> getMAconsequenceParameters () const;
+      virtual std::vector<double> getMAconsequenceParameters () const override;
 
       /**
       @return the mean value of descriptor's core, for this descriptor it is just the core
       */
-      virtual double getCoreMean() const;
+      virtual double getCoreMean() const override;
       
-      virtual double getRandomValue(std::default_random_engine & engine);
+      virtual double getRandomValue(std::default_random_engine & engine) override;
+      
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
+      
       
    };
 }

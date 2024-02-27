@@ -103,6 +103,6 @@ std::ostream& ksi::consequence_TSK::printLinguisticDescription(std::ostream& ss,
     int locationIndex = (_params.back() - descStat.average) / descStat.std_dev + TSKLocationDescription.size() / 2;
     locationIndex = std::min(std::max(locationIndex, 0), int(TSKLocationDescription.size() - 1));
 
-    return ss << "intercept is " << TSKLocationDescription[locationIndex];
+    return ss << " intercept is " << TSKLocationDescription[locationIndex];
 }
 

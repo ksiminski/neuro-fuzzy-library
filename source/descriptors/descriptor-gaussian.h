@@ -45,7 +45,7 @@ namespace ksi
       /** The method elaborates membership to the fuzzy set with formula
        *  \f[  \mu(x) = \exp \left( - \frac{(x - m)^2}{2 \sigma^2} \right)   \f]
        */
-      virtual double getMembership (double x);
+      virtual double getMembership (double x) override;
       
       /** The method elaborates the differentials of the membership function
        *  for an attribute value x 
@@ -54,7 +54,7 @@ namespace ksi
        *          vector[0] : \f$ \frac{\partial \mu(x)}{\partial m} \f$  <BR>
        *          vector[1] : \f$ \frac{\partial \mu(x)}{\partial \sigma} \f$
        */
-      virtual std::vector<double> getDifferentials (double x);
+      virtual std::vector<double> getDifferentials (double x) override;
       
       /** The method cummulates differentials for gradient tuning of parameters.
        * \f[ \frac{\partial E}{\partial m} = \mathrm{partial\_differentials} \cdot \frac{x - m}{\sigma^2} \f]
@@ -65,22 +65,22 @@ namespace ksi
        */
       virtual void cummulate_differentials (double x, double partial_differentials);
 
-      virtual descriptor * clone () const;
+      virtual descriptor * clone () const override;
       
       /** The method sets all cummulated differentials to zero. */
-      virtual void reset_differentials ();
+      virtual void reset_differentials () override;
     
       /** The method actualises values of parameters of the fuzzy descriptor.
        * If the fuzzification of the fuzzy set (_stddev, \f$\sigma\f$) is negative after
        * actualisation, it will not be changed and the old value of _stddev, \f$\sigma\f$ is kept.
        * @param eta learning coefficient
        */
-      virtual void actualise_parameters (double eta);
+      virtual void actualise_parameters (double eta) override;
 
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & print (std::ostream & ss) const;
+      virtual std::ostream & print (std::ostream & ss) const override;
 
    	  /** The method prints an object linguistic description into output stream.
    	   * @param ss the output stream to print into
@@ -88,32 +88,37 @@ namespace ksi
    	   * @date 2023-10-24
    	   * @author Konrad Wnuk
       */
-      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const override;
       
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
        * evaluated as _mean - _stddev, _mean, _mean + _stddev
        * @date 2018-02-16
        */
-      virtual std::vector<double> getMAconsequenceParameters () const;
+      virtual std::vector<double> getMAconsequenceParameters () const override;
       
       /**
       @return the mean value of descriptor's core, for this descriptor it is just a core of the Gaussian set
       */
-      virtual double getCoreMean() const;
+      virtual double getCoreMean() const override;
       
       /** The method return fuzzification of the descriptor.
       */
-      virtual double getFuzzification () const;
+      virtual double getFuzzification () const override;
       
-      void reset_parameters();
+      void reset_parameters() override;
       
       /** @return The method returns a granule expressed with fuzzy gaussian extensional number
        @date 2019-02-28 
        */
-      virtual ksi::ext_fuzzy_number_gaussian getGranule() const;
+      virtual ksi::ext_fuzzy_number_gaussian getGranule() const override;
       
-      virtual double getRandomValue(std::default_random_engine & engine);
+      virtual double getRandomValue(std::default_random_engine & engine) override;
+      
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
+      
       
    };
 }

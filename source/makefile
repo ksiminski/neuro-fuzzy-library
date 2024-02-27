@@ -525,6 +525,10 @@ $(release_folder)/neuro-fuzzy-consequence-MA.o : neuro-fuzzy/consequence-MA.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/neuro-fuzzy-consequence-MA.o : neuro-fuzzy/consequence-MA.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/neuro-fuzzy-weighted_annbfis.o : neuro-fuzzy/weighted_annbfis.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/neuro-fuzzy-weighted_annbfis.o : neuro-fuzzy/weighted_annbfis.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/neuro-fuzzy-granular_annbfis_regression.o : neuro-fuzzy/granular_annbfis_regression.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/neuro-fuzzy-granular_annbfis_regression.o : neuro-fuzzy/granular_annbfis_regression.cpp
@@ -978,6 +982,7 @@ $(release_folder)/metrics-metric-euclidean.o \
 $(release_folder)/common-data-modifier.o \
 $(release_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(release_folder)/neuro-fuzzy-granular_tsk_regression.o \
+$(release_folder)/neuro-fuzzy-weighted_annbfis.o \
 $(release_folder)/neuro-fuzzy-abstract_fcom.o \
 $(release_folder)/tnorms-t-norm-dubois-prade.o \
 $(release_folder)/readers-reader-incomplete.o \
@@ -1187,6 +1192,7 @@ $(debug_folder)/metrics-metric-euclidean.o \
 $(debug_folder)/common-data-modifier.o \
 $(debug_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(debug_folder)/neuro-fuzzy-granular_tsk_regression.o \
+$(debug_folder)/neuro-fuzzy-weighted_annbfis.o \
 $(debug_folder)/neuro-fuzzy-abstract_fcom.o \
 $(debug_folder)/tnorms-t-norm-dubois-prade.o \
 $(debug_folder)/readers-reader-incomplete.o \

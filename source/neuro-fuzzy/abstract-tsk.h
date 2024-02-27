@@ -50,8 +50,7 @@ namespace ksi
       
       /** @date 2021-05-05 */
       abstract_tsk(int nRules, int nClusteringIterations);
-      
-      
+            
        /** constructor
        * @param trainDataFile 
        * @param testDataDile
@@ -71,7 +70,6 @@ namespace ksi
               double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
               const partitioner & Partitioner, const double dbMinimalTypicality = -1
     );
-
 
       /** constructor
        * @param nRules number of rules
@@ -134,7 +132,6 @@ namespace ksi
                     const t_norm & tnorm, 
                     const partitioner & Partitioner, 
                     const double dbMinimalTypicality = -1);
-
       
       abstract_tsk(const abstract_tsk & a);
       abstract_tsk(abstract_tsk && a);
@@ -156,8 +153,7 @@ namespace ksi
                                         int nTuningIterations, 
                                         double dbLearningCoefficient,
                                         const dataset & train); 
-      
-     
+           
       /** Function that partitions the data set.
        @param X dataset to partition
        @date 2019-12-19 */

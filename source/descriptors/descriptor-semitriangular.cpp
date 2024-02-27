@@ -9,6 +9,12 @@
 #include "descriptor.h"
 #include "descriptor-semitriangular.h"
 
+std::string ksi::descriptor_semitriangular::getName() const
+{
+   return std::string {"semitriangular"};
+}
+
+
 const std::array<std::string, 7> ksi::descriptor_semitriangular::semitriangularLocationDescription
 {
     "micro",

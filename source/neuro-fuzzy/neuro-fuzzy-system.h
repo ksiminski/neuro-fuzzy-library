@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <tuple>
+#include <deque>
 
 #include "../common/dataset.h"
 #include "../neuro-fuzzy/rulebase.h"
@@ -140,6 +141,16 @@ namespace ksi
            @date   2021-09-28
         */
        virtual std::string get_classification_threshold_value () const;
+       
+       /** The method is responsible for modifications of learing coefficient in the tuning procedure.
+        * If in 4 sequential iterations the mean square error had diminished for the 
+        * whole learning set then the learning parameter is increased.
+        * If in 4 sequential iterations the learning parameter has been increased and   
+        * decreased commutatively then the learning parameter is decreased.  
+        * @return a new value of learing_paramter
+        * @date 2024-02-07
+        */
+       double modify_learning_coefficient(const double learning_coefficient, const std::deque<double> & errors);
        
    public:
         

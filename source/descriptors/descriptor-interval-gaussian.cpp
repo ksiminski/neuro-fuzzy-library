@@ -4,11 +4,16 @@
 #include <string>
 #include <sstream>
 #include <cmath>
+#include <iostream>
 
 #include "descriptor-interval-gaussian.h"
 #include "../service/debug.h"
 
-#include <iostream>
+std::string ksi::descriptor_interval_gaussian::getName() const
+{
+   return std::string {"interval_gaussian"};
+}
+
 
 ksi::descriptor_interval_gaussian::~descriptor_interval_gaussian()
 {

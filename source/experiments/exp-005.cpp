@@ -322,7 +322,7 @@ void ksi::exp_005::classification()
 			algorithm.setNumberOfIterations(NUMBER_OF_CLUSTERING_ITERATIONS);
 			algorithm.setNumberOfClusters(NUMBER_OF_RULES);
 
-			debug(NUMBER_OF_RULES);
+			// debug(NUMBER_OF_RULES);
 			ksi::annbfis_prototype system (algorithm, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, IMPLICATION, factory, POSITIVE,  NEGATIVE, th);
 
 			std::string threshold_name;

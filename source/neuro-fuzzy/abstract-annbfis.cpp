@@ -8,7 +8,9 @@
 #include <numeric>
 #include <cmath>
 #include <map>
+#include <deque>
 
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/annbfis.h"
 #include "../neuro-fuzzy/abstract-annbfis.h"
 #include "../neuro-fuzzy/logicalrule.h"
@@ -67,6 +69,7 @@ void ksi::abstract_annbfis::createFuzzyRulebase
 //       if (not _pPartitioner)
 //           throw ksi::exception("no partition object provided");
  
+      std::deque<double> errors; 
       const double INITIAL_W = 2.0;
       
       _nClusteringIterations = nClusteringIterations;
@@ -80,6 +83,12 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
+
+      // remember the best rulebase:
+      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      ////////
+
       
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
@@ -199,13 +208,26 @@ void ksi::abstract_annbfis::createFuzzyRulebase
          for (std::size_t x = 0; x < nX; x++)
             wYelaborated[x] = answer( *(trainX.getDatum(x)));
          
-         //ksi::error_RMSE rmse;
-         //double blad = rmse.getError(wY, wYelaborated);
-         //debug(blad);
+         ///////////////////////////
+         ksi::error_RMSE rmse;
+         double blad = rmse.getError(wY, wYelaborated);
+         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
+         errors.push_front(blad);
          
+         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // remember the best rulebase:
+         if (dbTheBestRMSE > blad)
+         {
+            dbTheBestRMSE = blad;
+            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         }
+         ///////////////////////////
          
       }
       // system nastrojony :-)
+      // update the rulebase with the best one:
+      delete _pRulebase;
+      _pRulebase = pTheBest->clone();
    }
    CATCH;
 }
@@ -283,8 +305,6 @@ ksi::abstract_annbfis& ksi::abstract_annbfis::operator= (ksi::abstract_annbfis &
    return *this;
 }
  
- 
-
 double ksi::abstract_annbfis::discriminate(const ksi::datum& d)
 {
     return answer(d);

@@ -113,7 +113,7 @@ std::ostream& ksi::consequence_MA::printLinguisticDescription(std::ostream& ss, 
 
     const double radius = sqrt(firstIntegralValue + secondIntegralValue);
 
-    int locationIndex = -(descStat.average - center) / descStat.std_dev + MALocationDescription.size() / 2;
+    int locationIndex = - 2.0 *(descStat.average - center) / descStat.std_dev + MALocationDescription.size() / 2;
     locationIndex = std::min(std::max(locationIndex, 0), int(MALocationDescription.size() - 1));
 
     ss << "output is " << (radius <= descStat.std_dev ? "strictly " : "loosely ") << MALocationDescription[locationIndex];

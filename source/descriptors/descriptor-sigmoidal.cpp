@@ -5,11 +5,16 @@
 #include <vector>
 #include <array>
 #include <cmath>
+#include <iostream>
 
 #include "descriptor-sigmoidal.h"
 #include "../service/debug.h"
 
-#include <iostream>
+std::string ksi::descriptor_sigmoidal::getName() const
+{
+    return std::string {"sigmoidal"};
+}
+
 
 const std::array<std::string, 7> ksi::descriptor_sigmoidal::sigmoidalLocationDescription
 {

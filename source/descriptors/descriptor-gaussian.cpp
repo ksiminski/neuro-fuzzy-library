@@ -7,12 +7,16 @@
 #include <cmath>
 #include <random>
 #include <array>
+#include <iostream>
 
 #include "descriptor-gaussian.h"
 #include "../service/debug.h" 
 
-#include <iostream>
 
+std::string ksi::descriptor_gaussian::getName() const
+{
+   return std::string {"gaussian"};
+}
 
 const std::array<std::string, 7> ksi::descriptor_gaussian::gaussianLocationDescription
 {
@@ -60,7 +64,6 @@ double ksi::descriptor_gaussian::getFuzzification() const
    return _stddev;
 }
 
-
 double ksi::descriptor_gaussian::getMembership(double x)
 {
    try
@@ -76,7 +79,6 @@ double ksi::descriptor_gaussian::getMembership(double x)
    }
    CATCH;
 }
-
 
 void ksi::descriptor_gaussian::cummulate_differentials(
       double x, double partial_differentials)
@@ -118,7 +120,7 @@ std::ostream& ksi::descriptor_gaussian::print(std::ostream& ss) const
 
 std::ostream& ksi::descriptor_gaussian::printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const
 {
-   int locationIndex = (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
+   int locationIndex = 2.0 * (_mean - descStat.average) / descStat.std_dev + gaussianLocationDescription.size() / 2;
    locationIndex = std::min(std::max(locationIndex, 0), int(gaussianLocationDescription.size() - 1));
 
    int fuzzinessIndex;

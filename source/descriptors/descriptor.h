@@ -109,6 +109,10 @@ namespace ksi
      /** @return The method returns a random value covered by a descriptor. */
      virtual double getRandomValue (std::default_random_engine & engine) = 0;
      
+     /** @return The method returs the name of the descriptor.
+         @date 2024-02-21 */
+     virtual std::string getName() const = 0;
+     
    };
 }
 

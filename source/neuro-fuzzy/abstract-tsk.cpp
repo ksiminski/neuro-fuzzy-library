@@ -6,7 +6,9 @@
 #include <iomanip>
 #include <string>
 #include <numeric>
+#include <deque>
 
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/abstract-tsk.h"
 #include "../neuro-fuzzy/rule.h"
 #include "../neuro-fuzzy/premise.h"
@@ -34,11 +36,12 @@
  
 void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations, 
                                      int nTuningIterations, 
-                                     double dbLearningCoefficient, 
+                                     double eta, 
                                      const ksi::dataset& train)
 {
    try
    {
+      std::deque<double> errors; 
       //_nRules = nRules;  /// @todo Liczbe regul okresla system podzialu dziedziny!
       _nClusteringIterations = nClusteringIterations;
       _nTuningIterations = nTuningIterations;
@@ -51,7 +54,11 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
-      
+     
+      // remember the best rulebase:
+      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      ////////
       
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
@@ -129,7 +136,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
                // no i juz zwykla metoda gradientowa
                _pRulebase->cummulate_differentials(wTrainX[x], wY[x]);
             }         
-            _pRulebase->actualise_parameters(dbLearningCoefficient);
+            _pRulebase->actualise_parameters(eta);
          }
          
          else
@@ -173,14 +180,26 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
          for (std::size_t x = 0; x < nX; x++)
             wYelaborated[x] = answer( *(trainX.getDatum(x)));
          
+         ///////////////////////////
+         ksi::error_RMSE rmse;
+         double blad = rmse.getError(wY, wYelaborated);
+         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
+         errors.push_front(blad);
          
-         //ksi::error_RMSE rmse;
-         //double blad = rmse.getError(wY, wYelaborated);
-         // koniec testu
-         
+         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // remember the best rulebase:
+         if (dbTheBestRMSE > blad)
+         {
+            dbTheBestRMSE = blad;
+            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         }
+         ///////////////////////////
          
       }
-   // system nastrojony :-)
+      // system nastrojony :-)
+      // update the rulebase with the best one:
+      delete _pRulebase;
+      _pRulebase = pTheBest->clone();
    }
    CATCH;
        

@@ -5,6 +5,10 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <numeric>
+#include <cmath>
+#include <map>
+#include <deque>
 
 #include "../neuro-fuzzy/ma.h" 
 #include "../neuro-fuzzy/abstract-ma.h"
@@ -26,7 +30,7 @@
 #include "../service/debug.h"
 #include "../auxiliary/error-RMSE.h"
 #include "../auxiliary/error-MAE.h"
-#include "../common/number.h" 
+#include "../common/number.h"
 #include "../readers/reader-complete.h"
 #include "../common/data-modifier-normaliser.h"
 #include "../partitions/partition.h"
@@ -106,7 +110,6 @@ ksi::ma & ksi::ma::operator= (ksi::ma && right)
    ksi::abstract_ma::operator=(right);
 
    return *this;
-
 }
  
 ksi::discriminative_model * ksi::ma::clone_discriminant() const

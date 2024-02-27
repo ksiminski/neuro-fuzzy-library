@@ -49,7 +49,7 @@ namespace ksi
        * @date 2023-11-26
        * @author Konrad Wnuk
       */
-      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const;
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const override;
 
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
@@ -67,6 +67,9 @@ namespace ksi
       
       virtual double getRandomValue(std::default_random_engine & engine) override;
       
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
       
       
    };

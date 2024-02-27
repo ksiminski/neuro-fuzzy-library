@@ -85,6 +85,11 @@ namespace ksi
       
       void reset_parameters();
       
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
+      
+      
    };
 }
 

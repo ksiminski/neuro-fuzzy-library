@@ -12,6 +12,12 @@
 
 #include <iostream>
 
+std::string ksi::descriptor_arctan::getName() const
+{
+   return {"arctan"};
+}
+
+
 const std::array<std::string, 7> ksi::descriptor_arctan::arctanLocationDescription
 {
    "micro",

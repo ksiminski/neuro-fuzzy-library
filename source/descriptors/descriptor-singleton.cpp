@@ -2,10 +2,16 @@
 
 #include <algorithm>
 #include <string>
+#include <iostream>
+
 #include "descriptor-singleton.h"
 #include "../service/debug.h"
 
-#include <iostream>
+std::string ksi::descriptor_singleton::getName() const
+{
+   return std::string {"singleton"};
+}
+
 
 ksi::descriptor_singleton::descriptor_singleton (double value) 
    : descriptor_trapezoidal(value, value, value, value)

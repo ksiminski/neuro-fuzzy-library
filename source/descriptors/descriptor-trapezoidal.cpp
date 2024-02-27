@@ -10,6 +10,12 @@
 
 #include <iostream>
 
+std::string ksi::descriptor_trapezoidal::getName() const
+{
+   return {"trapezoidal"};
+}
+
+
 const std::array<std::string, 7> ksi::descriptor_trapezoidal::trapezoidalLocationDescription
 {
     "micro",
