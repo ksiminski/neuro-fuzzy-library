@@ -385,18 +385,21 @@ void ksi::granular_nfs_regression::createFuzzyRulebase(
     int nClusteringIterations, 
     int nTuningIterations, 
     double dbLearningCoefficient, 
-    const ksi::set_of_granules & train_granules)
+    const ksi::set_of_granules & train_granules,
+    const ksi::set_of_granules & validation_granules
+)
 {
    try 
    {   
        // first prepare date:
        int number_of_items = NUMBER_OF_DATA_TO_GENERATE > train_granules.size() ? NUMBER_OF_DATA_TO_GENERATE : train_granules.size();
        
-       auto train = generate_dataset_from_granules(train_granules, number_of_items); 
+       auto train    = generate_dataset_from_granules(train_granules, number_of_items); 
+       auto validate = generate_dataset_from_granules(validation_granules, number_of_items); 
        
        // then elaborate fuzzy rule base for the data:
        createFuzzyNonGranularRulebase(nClusteringIterations, 
-           nTuningIterations, dbLearningCoefficient, train);
+           nTuningIterations, dbLearningCoefficient, train, validate);
             
        int nDataItem = train.getNumberOfData();
        

@@ -49,8 +49,6 @@ std::vector<std::string> ksi::utility_string::splitString(std::string s, const c
    return slowa;
 }
 
-
-
 std::string ksi::utility_string::trimString(std::string s)
 {
     std::string white (" \t\f\v\n\r");

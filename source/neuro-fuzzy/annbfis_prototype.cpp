@@ -140,8 +140,9 @@ ksi::annbfis_prototype::annbfis_prototype(const ksi::partitioner & partitioner,
 
 void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations, 
                                              int nTuningIterations, 
-                                             double dbLearningCoefficient, 
-                                             const ksi::dataset& train)
+                                             double eta, 
+                                             const ksi::dataset& train,
+                                             const ksi::dataset& validation)
 {
    try
    {
@@ -151,28 +152,48 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
        const double INITIAL_W = 2.0;
        
       _TrainDataset = train;
-      
+
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
       
+      // remember the best rulebase:
+      std::deque<double> errors; 
+      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      //////
+
       std::size_t nAttr = _TrainDataset.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
-         
+
       auto XY = train.splitDataSetVertically (nAttr - 1);
       auto trainX = XY.first;
       auto trainY = XY.second;
+
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
       
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
+
       _original_size_of_training_dataset = trainX.getNumberOfData();
-      
-      auto podzial = doPartition(trainX);
-      //debug(podzial);
-      
+      ksi::partition podzial;
+
+      try 
+      {
+         podzial = doPartition(trainX);
+      } CATCH;
+
       std::size_t nX = trainX.getNumberOfData();
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
       auto wTrainY = trainY.getMatrix();      
- 
+
       std::vector<double> wY(nX);
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
@@ -193,88 +214,107 @@ void ksi::annbfis_prototype::createFuzzyRulebase(int nClusteringIterations,
          _pRulebase->addRule(regula);
       }
       //debug(*_pRulebase);      
-      // elaboration of conclusions:
-      std::vector<std::vector<double>> G_przyklad_regula; 
-      
-      // mam zgrupowane dane, teraz trzeba nastroic system
-      for (int i = 0; i < _nTuningIterations; i++)
-      {
-         if (i % 2 == 0)
-         { 
-            G_przyklad_regula.clear(); // dla konkluzji
-            
-            // strojenie gradientowe
-            _pRulebase->reset_differentials();
-            for (std::size_t x = 0; x < nX; x++)
-            {
-               // Uruchomienie strojenia gradiendowego.
-               double odpowiedz = _pRulebase->answer(wTrainX[x]);
-//                debug(odpowiedz);
-               // dla wyznaczania konkluzji:
-               auto localisation_weight = _pRulebase->get_last_rules_localisations_weights();
-               std::vector<double> Gs;
-               for (auto & p : localisation_weight)
-                  Gs.push_back(p.second);
-               
-               G_przyklad_regula.push_back(Gs);
-               // no i juz zwykla metoda gradientowa
-               _pRulebase->cummulate_differentials(wTrainX[x], wY[x]);
-            }         
-            _pRulebase->actualise_parameters(_dbLearningCoefficient);
-//             debug(G_przyklad_regula);
-         }
          
-         else
+      try
+      {
+         // elaboration of conclusions:
+         std::vector<std::vector<double>> G_przyklad_regula; 
+
+         // mam zgrupowane dane, teraz trzeba nastroic system
+         for (int i = 0; i < _nTuningIterations; i++)
          {
-            // wyznaczanie wspolczynnikow konkluzji.
-            least_square_error_regression lser ((nAttr_1 + 1) * _nRules);
-            
-            // przygotowanie wektora D 
-            for (std::size_t x = 0; x < nX; x++)
+            if (i % 2 == 0)
+            { 
+               G_przyklad_regula.clear(); // dla konkluzji
+
+               // strojenie gradientowe
+               _pRulebase->reset_differentials();
+               for (std::size_t x = 0; x < nX; x++)
+               {
+                  // Uruchomienie strojenia gradiendowego.
+                  double odpowiedz = _pRulebase->answer(wTrainX[x]);
+                  // debug(odpowiedz);
+                  // dla wyznaczania konkluzji:
+                  auto localisation_weight = _pRulebase->get_last_rules_localisations_weights();
+                  std::vector<double> Gs;
+                  for (auto & p : localisation_weight)
+                     Gs.push_back(p.second);
+
+                  G_przyklad_regula.push_back(Gs);
+                  // no i juz zwykla metoda gradientowa
+                  _pRulebase->cummulate_differentials(wTrainX[x], wY[x]);
+               }         
+               _pRulebase->actualise_parameters(eta);
+               //             debug(G_przyklad_regula);
+            }
+
+            else
             {
-               auto G_suma = std::accumulate(G_przyklad_regula[x].begin(),
-                  G_przyklad_regula[x].end(), 0.0);
-//                debug(G_suma);
-               
-               std::vector<double> linia((nAttr_1 + 1) * _nRules);
-               int index = 0;
+               // wyznaczanie wspolczynnikow konkluzji.
+               least_square_error_regression lser ((nAttr_1 + 1) * _nRules);
+
+               // przygotowanie wektora D 
+               for (std::size_t x = 0; x < nX; x++)
+               {
+                  auto G_suma = std::accumulate(G_przyklad_regula[x].begin(),
+                        G_przyklad_regula[x].end(), 0.0);
+                  //                debug(G_suma);
+
+                  std::vector<double> linia((nAttr_1 + 1) * _nRules);
+                  int index = 0;
+                  for (int r = 0; r < _nRules; r++)
+                  {
+                     auto S = G_przyklad_regula[x][r] / G_suma;
+                     for (std::size_t a = 0; a < nAttr_1; a++)
+                        linia[index++] = S * wTrainX[x][a];
+                     linia[index++] = S;
+                  }
+                  lser.read_data_item(linia, wY[x]);
+               }
+               auto p = lser.get_regression_coefficients();
+
+               // teraz zapis do regul:
+#pragma omp parallel for 
                for (int r = 0; r < _nRules; r++)
                {
-                  auto S = G_przyklad_regula[x][r] / G_suma;
-                  for (std::size_t a = 0; a < nAttr_1; a++)
-                     linia[index++] = S * wTrainX[x][a];
-                  linia[index++] = S;
-               }
-               lser.read_data_item(linia, wY[x]);
-            }
-            auto p = lser.get_regression_coefficients();
-            
-//             debug(p);
+                  std::vector<double> coeff (nAttr_1 + 1);
 
-            // teraz zapis do regul:
-            #pragma omp parallel for 
-            for (int r = 0; r < _nRules; r++)
-            {
-               std::vector<double> coeff (nAttr_1 + 1);
-            
-               for (std::size_t a = 0; a < nAttr_1 + 1; a++)
-                  coeff[a] = p[r * (nAttr_1 + 1) + a];
-               if (ksi::is_valid(coeff))
-               {
-                  consequence_CL konkluzja (coeff, INITIAL_W);
-                  (*_pRulebase)[r].setConsequence(konkluzja);
+                  for (std::size_t a = 0; a < nAttr_1 + 1; a++)
+                     coeff[a] = p[r * (nAttr_1 + 1) + a];
+                  if (ksi::is_valid(coeff))
+                  {
+                     consequence_CL konkluzja (coeff, INITIAL_W);
+                     (*_pRulebase)[r].setConsequence(konkluzja);
+                  }
                }
             }
+
+            //////////////////////////////////
+            // test: wyznaczam blad systemu
+
+            std::vector<double> wYelaborated (nValY);
+            for (std::size_t x = 0; x < nX; x++)
+               wYelaborated[x] = answer( *(validateX.getDatum(x)));
+
+            ///////////////////////////
+            ksi::error_RMSE rmse;
+            double blad = rmse.getError(wvalidateY, wYelaborated);
+            errors.push_front(blad);
+
+            eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+            // remember the best rulebase:
+            if (dbTheBestRMSE > blad)
+            {
+               dbTheBestRMSE = blad;
+               pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+            }
+            ///////////////////////////
          }
-         
-         // test: wyznaczam blad systemu
-         std::vector<double> wYelaborated (nX);
-         #pragma omp parallel for 
-         for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(trainX.getDatum(x)));
-         
-      }
+      } CATCH;
       // system nastrojony :-)
+      // update the rulebase with the best one:
+      delete _pRulebase;
+      _pRulebase = pTheBest->clone();
    }
    CATCH;
 }

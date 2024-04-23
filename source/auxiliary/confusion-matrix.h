@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+#include "../common/result.h"
+
 namespace ksi
 {
    /** This class calculates statistics and prints confusion matrix.  */
@@ -66,6 +68,13 @@ namespace ksi
                             int nFalsePositives,
                             int nFalseNegatives);
         
+        /** The method prints values of a confusion matrix. It prints all values and a nice matrix.
+         * @param results
+         * @param print_for_test if true, the method print a confusion matrix for test data, otherwise -- for train data.
+         * @date 2024-03-12
+         */
+        std::string print (const ksi::result results, const bool print_for_test = true);
+        
         protected:
         /** prints a double values with precision to fit the table */
         std::string ul(double d);
@@ -75,6 +84,27 @@ namespace ksi
         /** @return true if abs(left - right) < EPSILON
             EPSILON = 0.0001 */
         bool equal (const double left, const double right);
+
+        /** @return quiet_NaN if division impossible, otherwise a legal quotient
+         * @date 2024-04-01 */ 
+        double safe_division(const double number, const double divisor);
+
+        /** @return quiet_NaN if number is zero, otherwise the number itself
+         * @date 2024-04-01 */ 
+        double safe(const double number);
+        
+        public:
+        /** @return f1-score for the test results
+         * @date 2024-03-28
+         * @author Krzysztof Siminski */ 
+        static double TestF1score (const ksi::result & r);
+
+        /** @return f1-score for the train results
+         * @date 2024-03-28
+         * @author Krzysztof Siminski */ 
+        static double TrainF1score (const ksi::result & r);
+
+
    };
    
 }

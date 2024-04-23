@@ -121,7 +121,7 @@ namespace ksi
                      const ksi::roc_threshold threshold_type);
       
       
-      virtual void createFuzzyRulebase(int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train) override;
+      virtual void createFuzzyRulebase(int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train, const dataset & validation) override;
       
     public:
       ksi::neuro_fuzzy_system * clone() const override;

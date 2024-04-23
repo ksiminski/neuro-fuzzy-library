@@ -70,9 +70,10 @@ double ksi::descriptor_gaussian::getMembership(double x)
    {
       if (_stddev <= 0.0)
       {
-         std::stringstream ss;
-         ss << "illegal value of fuzzyfication of a gaussian set: " << NAZWA(_stddev) << " == " << _stddev;
-         throw ss.str();
+         // std::stringstream ss;
+         // ss << "illegal value of fuzzyfication of a gaussian set: " << NAZWA(_stddev) << " == " << _stddev;
+         // throw ss.str();
+         _stddev = 0.000'001; // tiny positive value.
       }
       double diff = x - _mean;
       return last_membership = std::exp(-(diff * diff) / (2 * _stddev * _stddev));

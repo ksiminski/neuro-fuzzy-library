@@ -111,8 +111,8 @@ ksi::tsk_prototype::tsk_prototype(const int number_of_rules,
 
 void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations, 
       int nTuningIterations, 
-      double dbLearningCoefficient, 
-      const ksi::dataset& train)
+      double eta, 
+      const ksi::dataset& train, const ksi::dataset& validation)
 {
    try
    {
@@ -121,6 +121,12 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
+      
+      // remember the best rulebase:
+      std::deque<double> errors; 
+      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      //////
 
       std::size_t nAttr = _TrainDataset.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
@@ -128,6 +134,17 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
       auto XY = train.splitDataSetVertically (nAttr - 1);
       auto trainX = XY.first;
       auto trainY = XY.second;
+
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
+      
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
 
       _original_size_of_training_dataset = trainX.getNumberOfData();
       ksi::partition podzial;
@@ -165,7 +182,7 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
          }
       } CATCH;
 
-      try 
+      try
       {
          // dla wyznaczenia wartosci konkuzji:
          std::vector<std::vector<double>> F_przyklad_regula; 
@@ -217,6 +234,7 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
                   lser.read_data_item(linia, wY[x]);
                }
                auto p = lser.get_regression_coefficients();
+
                // teraz zapis do regul:
 #pragma omp parallel for 
                for (int r = 0; r < _nRules; r++)
@@ -233,15 +251,32 @@ void ksi::tsk_prototype::createFuzzyRulebase(int nClusteringIterations,
                }
             }
 
-            // test: wyznaczam blad systemu
-            std::vector<double> wYelaborated (nX);
-#pragma omp parallel for 
-            for (std::size_t x = 0; x < nX; x++)
-               wYelaborated[x] = answer( *(trainX.getDatum(x)));
+         //////////////////////////////////
+         // test: wyznaczam blad systemu
+
+         std::vector<double> wYelaborated (nValY);
+         for (std::size_t x = 0; x < nX; x++)
+            wYelaborated[x] = answer( *(validateX.getDatum(x)));
+
+         ///////////////////////////
+         ksi::error_RMSE rmse;
+         double blad = rmse.getError(wvalidateY, wYelaborated);
+         errors.push_front(blad);
+
+         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // remember the best rulebase:
+         if (dbTheBestRMSE > blad)
+         {
+            dbTheBestRMSE = blad;
+            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
          }
-                  
+         ///////////////////////////
+         }
       } CATCH;
       // system nastrojony :-)
+      // update the rulebase with the best one:
+      delete _pRulebase;
+      _pRulebase = pTheBest->clone();
    }
    CATCH;
 }

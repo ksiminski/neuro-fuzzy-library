@@ -26,30 +26,14 @@
 #include "../service/debug.h"
 #include "../auxiliary/error-RMSE.h"
 #include "../auxiliary/error-MAE.h"
-#include "../common/number.h" 
+#include "../common/number.h"
 #include "../readers/reader-complete.h"
 #include "../common/data-modifier.h"
 #include "../common/data-modifier-normaliser.h"
 #include "../partitions/partition.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
-
-ksi::partition ksi::tsk::doPartition(const ksi::dataset& X)
-{
-    //ksi::fcm clusterer;
-    
-    //clusterer.setNumberOfClusters(_nRules);
-    //clusterer.setNumberOfIterations(_nClusteringIterations);
-    //return clusterer.doPartition(X);
-    try 
-    {
-        if (_pPartitioner)
-            return _pPartitioner->doPartition(X);
-        else 
-            throw ksi::exception ("no clustering method provided");
-    }
-    CATCH;
-}
+ 
 
 void ksi::tsk::set_name()
 {
@@ -71,7 +55,6 @@ abstract_tsk(nRules, nClusteringIterations)
     
     set_name();
 }
-
 
 ksi::tsk::tsk(int nRules, 
               int nClusteringIterations, 
@@ -154,9 +137,6 @@ ksi::tsk::tsk(const std::string& trainDataFile,
    set_name(); 
 }
 
-
-
-
 ksi::tsk::tsk(int nRules, 
               int nClusteringIterations, 
               int nTuningIterations, 
@@ -232,6 +212,7 @@ ksi::tsk & ksi::tsk::operator= (ksi::tsk && right)
    if (this == & right)
       return *this;
 
+   ksi::neuro_fuzzy_system::operator=(right); 
    ksi::abstract_tsk::operator=(right);  
 
    return *this;

@@ -19,6 +19,7 @@
 #include "../tnorms/t-norm-product.h"
 #include "../partitions/cluster.h"
 #include "../partitions/fcm.h"
+#include "../partitions/partition.h"
 #include "../tnorms/t-norm-product.h"
 #include "../implications/imp-reichenbach.h"
 #include "../descriptors/descriptor-gaussian.h"
@@ -32,9 +33,9 @@
 #include "../auxiliary/error-MAE.h"
 #include "../common/number.h"
 #include "../readers/reader-complete.h"
+#include "../common/data-modifier.h"
 #include "../common/data-modifier-normaliser.h"
 #include "../partitions/partition.h"
-#include "../service/debug.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
  
@@ -53,41 +54,27 @@ ksi::partition ksi::ma::doPartition(const ksi::dataset& X)
 void ksi::ma::set_name ()
 {
    _name_of_neuro_fuzzy_system = std::string("MA");
-   _description_of_neuro_fuzzy_system = std::string("Mamdami-Assilan neuro-fuzzy system with gaussian fuzzy sets in premises and product t-norm");
+   _description_of_neuro_fuzzy_system = std::string("Mamdani-Assilan neuro-fuzzy system with gaussian fuzzy sets in premises and product t-norm");
 }
  
 
-ksi::neuro_fuzzy_system * ksi::ma::clone() const
-{
-   try 
-   {
-      return new ksi::ma (*this);
-   }
-   CATCH;
-}
 
 
 ksi::ma::ma()
 {
-//    debug(__LINE__); 
-    
    set_name(); 
 }
 
 ksi::ma::~ma()
 {
-    
 }
-
 
 ksi::ma::ma(const ksi::ma & right) : neuro_fuzzy_system(right), abstract_ma(right)
 {
- 
 }
 
 ksi::ma::ma(ksi::ma && right) : neuro_fuzzy_system(right), abstract_ma(right)
 {
-  
 }
 
 ksi::ma & ksi::ma::operator=(const ksi::ma & right)
@@ -111,19 +98,6 @@ ksi::ma & ksi::ma::operator= (ksi::ma && right)
 
    return *this;
 }
- 
-ksi::discriminative_model * ksi::ma::clone_discriminant() const
-{
-    return new ksi::ma (*this);
-}
- 
-ksi::generative_model * ksi::ma::clone_generator() const
-{
-    return new ksi::ma (*this);
-}
-
-
-
 
 ksi::ma::ma(int nRules, 
               int nClusteringIterations, 
@@ -163,3 +137,23 @@ ksi::ma::ma(int nRules,
     
     set_name();
 }
+
+ksi::neuro_fuzzy_system * ksi::ma::clone() const
+{
+   try 
+   {
+      return new ksi::ma (*this);
+   }
+   CATCH;
+}
+ 
+ksi::discriminative_model * ksi::ma::clone_discriminant() const
+{
+    return new ksi::ma (*this);
+}
+
+ksi::generative_model * ksi::ma::clone_generator() const
+{
+    return new ksi::ma (*this);
+}
+ 

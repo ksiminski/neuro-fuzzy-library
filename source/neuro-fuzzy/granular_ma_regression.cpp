@@ -76,11 +76,12 @@ void ksi::granular_ma_regression::createFuzzyNonGranularRulebase(
     const int nClusteringIterations, 
     const int nTuningIterations, 
     const double dbLearningCoefficient, 
-    const ksi::dataset& train)
+    const ksi::dataset& train,
+    const ksi::dataset& validation)
 {
     try 
     {
-        ksi::ma::createFuzzyRulebase(nClusteringIterations, nTuningIterations, dbLearningCoefficient, train);
+        ksi::ma::createFuzzyRulebase(nClusteringIterations, nTuningIterations, dbLearningCoefficient, train, validation);
     }
     CATCH;
 }

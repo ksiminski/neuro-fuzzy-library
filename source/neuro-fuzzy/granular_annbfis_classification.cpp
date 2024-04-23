@@ -91,11 +91,12 @@ void ksi::granular_annbfis_classification::createFuzzyNonGranularRulebase(
     const int nClusteringIterations, 
     const int nTuningIterations, 
     const double dbLearningCoefficient, 
-    const ksi::dataset& train)
+    const ksi::dataset& train, 
+    const ksi::dataset & validation)
 {
     try 
     {
-        ksi::annbfis::createFuzzyRulebase( nClusteringIterations, nTuningIterations, dbLearningCoefficient, train);
+        ksi::annbfis::createFuzzyRulebase( nClusteringIterations, nTuningIterations, dbLearningCoefficient, train, validation);
     }
     CATCH;
 }

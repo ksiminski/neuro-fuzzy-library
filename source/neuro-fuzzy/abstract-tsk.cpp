@@ -27,21 +27,32 @@
 #include "../service/debug.h"
 #include "../auxiliary/error-RMSE.h"
 #include "../auxiliary/error-MAE.h"
-#include "../common/number.h" 
+#include "../common/number.h"
 #include "../readers/reader-complete.h"
 #include "../common/data-modifier-normaliser.h"
 #include "../partitions/partition.h"
+#include "../service/debug.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
+
+ksi::abstract_tsk::abstract_tsk(const ksi::partitioner& Partitioner) : ksi::abstract_tsk::abstract_tsk()
+{
+   if (_pPartitioner)
+      delete _pPartitioner;
+   _pPartitioner = Partitioner.clone();
+}
+
  
+
 void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations, 
                                      int nTuningIterations, 
                                      double eta, 
-                                     const ksi::dataset& train)
+                                     const ksi::dataset& train,
+                                     const ksi::dataset& validation)
 {
    try
    {
-      std::deque<double> errors; 
+      std::deque<double> errors;
       //_nRules = nRules;  /// @todo Liczbe regul okresla system podzialu dziedziny!
       _nClusteringIterations = nClusteringIterations;
       _nTuningIterations = nTuningIterations;
@@ -50,11 +61,11 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       if (_pTnorm)
          delete _pTnorm;
       _pTnorm = new t_norm_product ();
-         
+      
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
-     
+
       // remember the best rulebase:
       std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
       double dbTheBestRMSE = std::numeric_limits<double>::max();
@@ -62,16 +73,22 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
-         
+      
       auto XY = train.splitDataSetVertically (nAttr - 1);
       auto trainX = XY.first;
       auto trainY = XY.second;
       
-//       fcm clusterer;
-//       clusterer.setNumberOfClusters(_nRules);
-//       clusterer.setNumberOfIterations(_nClusteringIterations);
-      // auto podzial = clusterer.doPartition(trainX);
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
       
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
+
       _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
@@ -83,10 +100,11 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       
       std::size_t nX = trainX.getNumberOfData();
       _reduced_size_of_training_dataset = nX;
+      
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
-      auto wTrainY = trainY.getMatrix();      
- 
+      auto wTrainY = trainY.getMatrix();
+
       std::vector<double> wY(nX);
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
@@ -175,15 +193,16 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
             }
          }
          
+         //////////////////////////////////
          // test: wyznaczam blad systemu
-         std::vector<double> wYelaborated (nX);
+         
+         std::vector<double> wYelaborated (nValY);
          for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(trainX.getDatum(x)));
+            wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
          ///////////////////////////
          ksi::error_RMSE rmse;
-         double blad = rmse.getError(wY, wYelaborated);
-         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
+         double blad = rmse.getError(wvalidateY, wYelaborated);
          errors.push_front(blad);
          
          eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
@@ -433,14 +452,14 @@ double ksi::abstract_tsk::discriminate (const ksi::datum & d)
 void ksi::abstract_tsk::train_discriminative_model (const dataset & ds)
 {
     createFuzzyRulebase(_nClusteringIterations,
-        _nTuningIterations, _dbLearningCoefficient, ds);
+        _nTuningIterations, _dbLearningCoefficient, ds, ds); // validation == train
      
 }
 
 void ksi::abstract_tsk::train_generative_model(const ksi::dataset& ds)
 {
     createFuzzyRulebase(_nClusteringIterations,
-        _nTuningIterations, _dbLearningCoefficient, ds);
+        _nTuningIterations, _dbLearningCoefficient, ds, ds); // validation == train
 }
 
 ksi::datum ksi::abstract_tsk::get_random_datum(std::default_random_engine & engine)
@@ -454,4 +473,15 @@ ksi::datum ksi::abstract_tsk::get_random_datum(std::default_random_engine & engi
     return krotka;
 }
 
+ksi::partition ksi::abstract_tsk::doPartition(const ksi::dataset& X)
+{
+   try 
+   {
+      if (_pPartitioner)
+         return _pPartitioner->doPartition(X);
+      else 
+         throw ksi::exception ("no clustering method provided");
+   }
+   CATCH;
+}
 

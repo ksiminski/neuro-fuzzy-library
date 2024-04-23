@@ -35,19 +35,26 @@
 #include "../service/debug.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
- 
-  
- 
+
+ksi::abstract_ma::abstract_ma(const ksi::partitioner& Partitioner) : ksi::abstract_ma::abstract_ma()
+{
+   if (_pPartitioner)
+      delete _pPartitioner;
+   _pPartitioner = Partitioner.clone();
+}
+
 void ksi::abstract_ma::createFuzzyRulebase
 (
    int nClusteringIterations, 
    int nTuningIterations, 
    double eta,
-   const ksi::dataset & train)
+   const ksi::dataset & train,
+   const ksi::dataset & validation
+   )
 {
-   try 
+   try
    {
-      std::deque<double> errors;  
+      std::deque<double> errors;
       
       _nClusteringIterations = nClusteringIterations;
       _nTuningIterations = nTuningIterations;
@@ -65,45 +72,47 @@ void ksi::abstract_ma::createFuzzyRulebase
       std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
       double dbTheBestRMSE = std::numeric_limits<double>::max();
       ////////
-
       
-      std::size_t nX = train.getNumberOfData();
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
-         
+      
       auto XY = train.splitDataSetVertically (nAttr - 1);
       auto trainX = XY.first;
       auto trainY = XY.second;
       
-      //auto podzial = clusterer.doPartition(trainX);
-//       auto podzialXY = clusterer.doPartition(train);
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
       
-      //       fcm clusterer;
-//       clusterer.setNumberOfClusters(_nRules);
-//       clusterer.setNumberOfIterations(_nClusteringIterations);
-      
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
+
       _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
-    
       _nRules = podzial.getNumberOfClusters();
+      
       auto typical_items = trainX.get_if_data_typical(_minimal_typicality);
       trainX.remove_untypical_data(typical_items);
       trainY.remove_untypical_data(typical_items);
       
+      std::size_t nX = trainX.getNumberOfData();
       auto trainReduced = train;
       trainReduced.remove_untypical_data(typical_items);
       auto podzialXY = doPartition(trainReduced);
       
+      ///@todo Czy na pewno dobrze tutaj jest z nX?
       nX = trainX.getNumberOfData();
       _reduced_size_of_training_dataset = nX;
       
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
-      auto wTrainY = trainY.getMatrix();  
+      auto wTrainY = trainY.getMatrix();
 
-      
-      
       std::vector<double> wY(nX);
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
@@ -115,7 +124,9 @@ void ksi::abstract_ma::createFuzzyRulebase
          auto klaster = podzialXY.getCluster(c);
          
          for (std::size_t a = 0; a < nAttr_1; a++)
-             przeslanka.addDescriptor(klaster->getDescriptor(a));
+         {
+            przeslanka.addDescriptor(klaster->getDescriptor(a));
+         }
          
          auto needed_descriptor = klaster->getAddressOfDescriptor(nAttr - 1);
          auto scs = needed_descriptor->getMAconsequenceParameters();
@@ -123,6 +134,7 @@ void ksi::abstract_ma::createFuzzyRulebase
          regula.setPremise(przeslanka);
          consequence_MA konkluzja (scs[0], scs[1], scs[2]);
          regula.setConsequence(konkluzja);
+         
 #pragma omp critical
          _pRulebase->addRule(regula);
       }
@@ -141,15 +153,16 @@ void ksi::abstract_ma::createFuzzyRulebase
          }         
          _pRulebase->actualise_parameters(eta);
       
+         //////////////////////////////////
          // test: wyznaczam blad systemu
-         std::vector<double> wYelaborated (nX);
+         
+         std::vector<double> wYelaborated (nValY);
          for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(trainX.getDatum(x)));
+            wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
          ///////////////////////////
          ksi::error_RMSE rmse;
-         double blad = rmse.getError(wY, wYelaborated);
-         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
+         double blad = rmse.getError(wvalidateY, wYelaborated);
          errors.push_front(blad);
          
          eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
@@ -162,7 +175,6 @@ void ksi::abstract_ma::createFuzzyRulebase
          ///////////////////////////
          
       }
-      
       // system nastrojony :-)
       // update the rulebase with the best one:
       delete _pRulebase;
@@ -189,14 +201,11 @@ ksi::number ksi::abstract_ma::elaborate_answer (const ksi::datum & item) const
    }
    CATCH;
 }
-
   
 ksi::abstract_ma::abstract_ma()
 {
    _pPartitioner = nullptr;
 }
-
- 
 
 double ksi::abstract_ma::discriminate(const ksi::datum& d)
 {
@@ -206,15 +215,15 @@ double ksi::abstract_ma::discriminate(const ksi::datum& d)
 void ksi::abstract_ma::train_discriminative_model(const ksi::dataset & ds)
 {
     createFuzzyRulebase( _nClusteringIterations,
-        _nTuningIterations, _dbLearningCoefficient, ds
-    );
+        _nTuningIterations, _dbLearningCoefficient, ds, ds
+    );  // validation == train
 }
 
 void ksi::abstract_ma::train_generative_model(const ksi::dataset& ds)
 {
     createFuzzyRulebase( _nClusteringIterations,
-        _nTuningIterations, _dbLearningCoefficient, ds
-    );
+        _nTuningIterations, _dbLearningCoefficient, ds, ds
+    );  // validation == train
 }
 
 ksi::abstract_ma::abstract_ma(int nRules, 
@@ -323,7 +332,6 @@ ksi::abstract_ma::abstract_ma(int nRules,
     _minimal_typicality = dbMinimalTypicality;
 }
 
-
 ksi::abstract_ma::~abstract_ma()
 {
 //     if (_pPartitioner)
@@ -361,5 +369,17 @@ ksi::abstract_ma & ksi::abstract_ma::operator= (ksi::abstract_ma && right)
 
    return *this;
 
+}
+
+ksi::partition ksi::abstract_ma::doPartition(const ksi::dataset& X)
+{
+   try 
+   {
+      if (_pPartitioner)
+         return _pPartitioner->doPartition(X);
+      else 
+         throw ksi::exception ("no clustering method provided");
+   }
+   CATCH;
 }
 

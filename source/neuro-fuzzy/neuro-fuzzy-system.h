@@ -49,6 +49,9 @@ namespace ksi
       /** train dataset */
       dataset _TrainDataset;
       
+      /** validation dataset */
+      dataset _ValidationDataset;
+      
       /** test dataset */
       dataset _TestDataset;
       
@@ -61,6 +64,8 @@ namespace ksi
       /** partitioner for identification of a fuzzy model */
       partitioner * _pPartitioner = nullptr;
       
+      /** very short (brief) name of a neuro-fuzzy system */
+      std::string _brief_name_of_neuro_fuzzy_system;
       /** short name of a neuro-fuzzy system */
       std::string _name_of_neuro_fuzzy_system;
       /** short description of a neuro-fuzzy system showing its main features */
@@ -68,6 +73,7 @@ namespace ksi
       
       std::string _train_data_file; ///< name of train data file
       std::string _test_data_file;  ///< name of test data file
+      std::string _validation_data_file ; ///< name of validation data file
       std::string _output_file;     ///< name of output file
       
       double _positive_class;  ///< label for positive class in classification
@@ -83,6 +89,16 @@ namespace ksi
       std::vector<std::tuple<double, double, double>> _answers_for_train; ///< answers for the train set: expected elaborated_numeric elaborated_class
       std::vector<std::tuple<double, double, double>> _answers_for_test; ///< answers for the test set: expected elaborated_numeric elaborated_class
              
+             
+   public: 
+     /** @return number of item in the train dataset 
+         @date 2024-03-08 */
+     std::size_t get_train_dataset_size() const;
+     
+   public:
+     /** @return sum of weights of all items in the train dataset 
+         @date 2024-03-08 */
+     double get_train_dataset_cardinality() const;
    public: 
        /** @return The method return the value of the positive class. 
         @date 2021-12-27 */
@@ -100,6 +116,11 @@ namespace ksi
         @date 2021-12-27 */
        void set_negative_class (const double n);
              
+   public:
+     /** @return number of rules in the fuzzy system
+      * @date 2024-03-24 */
+      virtual double get_number_of_rules () const;
+       
    public:
        /** @return threshold value elaborated for classification
            @date   2021-09-16
@@ -120,12 +141,12 @@ namespace ksi
       /** @return expected class, elaborated_numeric answer, elaborated_class for the train dataset
           @date   2021-09-16
          */
-      std::vector<std::tuple<double, double, double>> get_answers_for_train_classification (); 
+      virtual std::vector<std::tuple<double, double, double>> get_answers_for_train_classification (); 
       
       /** @return expected class, elaborated_numeric answer, elaborated_class for the test dataset
           @date   2021-09-16
        */
-      std::vector<std::tuple<double, double, double>> get_answers_for_test_classification () ;  
+      virtual std::vector<std::tuple<double, double, double>> get_answers_for_test_classification () ;  
        
       
    protected:
@@ -200,6 +221,20 @@ namespace ksi
                           const std::string & testDataFile, 
                           const std::string & resultsFile
                          );
+
+      /** 
+       @param trainDataFile
+       @param validationDataFile
+       @param testDataFile
+       @param resultsFile
+       @date 2024-03-11
+       */
+      neuro_fuzzy_system (const std::string & trainDataFile,
+                          const std::string & validationDataFile, 
+                          const std::string & testDataFile, 
+                          const std::string & resultsFile
+                         );
+ 
       
       /** 
        @param trainData     train dataset 
@@ -212,6 +247,18 @@ namespace ksi
                           const std::string  & resultsFile
                          );
       
+      /** 
+       @param trainData     train dataset 
+       @param validationData validation dataset
+       @param testData      test  dataset
+       @param resultsFile   name of the result file
+       @date 2024-03-11
+       */
+      neuro_fuzzy_system (const ksi::dataset & trainData, 
+                          const ksi::dataset & validationData,
+                          const ksi::dataset & testData, 
+                          const std::string  & resultsFile
+                         );
       
 
       /** 
@@ -303,10 +350,11 @@ namespace ksi
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
        * @param train train dataset  
+       * @param validation validation dataset
        * @date  2018-03-29
        * @author Krzysztof Siminski 
        */
-      virtual void createFuzzyRulebase (int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const dataset & train) = 0; 
+      virtual void createFuzzyRulebase (int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train, const dataset & validation) = 0; 
       
       
       /** The method creates a fuzzy rulebase from the dataset.
@@ -315,7 +363,7 @@ namespace ksi
        * @date  2021-09-14
        * @author Krzysztof Siminski 
        */
-      virtual void createFuzzyRulebase (const dataset & train, const dataset & test);
+      virtual void createFuzzyRulebase (const dataset & train, const dataset & test, const dataset & validate);
       
       /** The method executes an experiment for regression.
         * @param trainDataFile name of file with train data
@@ -351,6 +399,22 @@ namespace ksi
                                          const double dbLearningCoefficient,  
                                          const bool bNormalisation
                                         );
+
+      /** @date 2024-04-22 */
+virtual result experiment_regression_core(
+    const ksi::dataset & trainDataset,
+    const ksi::dataset & validationDataset,
+    const ksi::dataset & testDataset, 
+    const std::string & trainDataFile,
+    const std::string & validationDataFile,
+    const std::string & testDataFile,
+    const std::string & outputFile, 
+    const int nNumberOfRules, 
+    const int nNumberOfClusteringIterations, 
+    const int nNumberofTuningIterations, 
+    const double dbLearningCoefficient,  
+    const bool bNormalisation
+);
 
       /** The method executes answers for the regression task.
         * @param trainDataFile name of file with train data
@@ -391,6 +455,37 @@ namespace ksi
                                   const double dbNegativeClass,
                                   ksi::roc_threshold threshold_type
                                  );
+      
+      
+      /** The method executes an experiment for classification.
+       * @param trainDataFile name of file with train data
+       * @param validationDataFile name of file with validation data
+       * @param testDataFile  name of file with test data
+       * @param outputfile    name of file to print results to
+       * @param nNumberOfRules                number of rules 
+       * @param nNumberOfClusteringIterations number of clustering iterations
+       * @param nNumberofTuningIterations     number of tuning iterations
+       * @param dbLearingCoefficient  learning coefficient for gradient method 
+       * @param bNormalisation true, if normalisation of data, false -- otherwise
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_type classification threshold type 
+       * @date  2018-02-04
+       * @author Krzysztof Siminski
+       */
+      virtual result experiment_classification (const std::string & trainDataFile,
+                                                const std::string & validationDataFile,
+                                                const std::string & testDataFile,
+                                                const std::string & outputFile,
+                                                const int nNumberOfRules,
+                                                const int nNumberOfClusteringIterations,
+                                                const int nNumberofTuningIterations,
+                                                const double dbLearningCoefficient, 
+                                                const bool bNormalisation,
+                                                const double dbPositiveClass,
+                                                const double dbNegativeClass,
+                                                ksi::roc_threshold threshold_type
+      );
 
       /** The method executes an experiment for classification.
         * @param trainData train data set
@@ -438,6 +533,25 @@ namespace ksi
                                   ksi::roc_threshold threshold_type
                                  );
        
+       
+       virtual result experiment_classification_core(
+         const ksi::dataset& trainDataset, 
+         const ksi::dataset& validationDataset,
+         const ksi::dataset& testDataset, 
+         const std::string & trainDataFile,
+         const std::string & validationDataFile,
+         const std::string & testDataFile,
+         const std::string& outputFile, 
+         const int nNumberOfRules, 
+         const int nNumberOfClusteringIterations, 
+         const int nNumberofTuningIterations, 
+         const double dbLearningCoefficient, 
+         const bool bNormalisation, 
+         const double dbPositiveClass, 
+         const double dbNegativeClass, 
+         ksi::roc_threshold threshold_type
+       ); 
+       
       virtual result experiment_classification_core ();
    public:
                        
@@ -448,6 +562,12 @@ namespace ksi
       virtual result experiment_classification (const std::string & trainDataFile,
                                       const std::string & testDataFile,
                                       const std::string & outputFile);
+      
+      /** Just run an experiment for classification. All parameters should be already set. */
+      virtual result experiment_classification (const std::string & trainDataFile,
+                                                const std::string & valiadtionDataFile,
+                                                const std::string & testDataFile,
+                                                const std::string & outputFile);
 
       /** Just run an experiment for classification. All parameters should be already set.
        @date 2022-02-02*/
@@ -481,6 +601,9 @@ namespace ksi
             
       virtual double elaborate_rmse_for_dataset (const dataset & ds) override;
       
+      /** @return a very short (symbolic) name of the neuro-fuzzy system 
+       * @date 2024-04-21 * */
+      virtual std::string get_brief_nfs_name () const;
       /** @return a short name of the neuro-fuzzy system */
       virtual std::string get_nfs_name () const;
       /** @return a description of the neuro-fuzzy system */
@@ -494,6 +617,11 @@ namespace ksi
        @param file file name for train data
        @date 2021-09-21*/
       void set_train_data_file(const std::string & file);
+      
+      /** The method sets the validation dat file.
+       @param file file name for the validation data
+       @date 2024-03-16 */
+      void set_validation_data_file(const std::string & file);
       
       /** The method sets test data file.
        @param file file name for test data
@@ -559,8 +687,28 @@ namespace ksi
             
       /** The method sets a test dataset.
        @param ds a dataset to set 
+       @date 2024-03-16 */
+      void set_validation_dataset  (const ksi::dataset & ds);
+            
+      /** The method sets a test dataset.
+       @param ds a dataset to set 
        @date  2021-09-14*/
       void set_test_dataset  (const ksi::dataset & ds);
+      
+      
+   public:
+     /** A report entry on the average number of rules for the train dataset.
+      *  It is used in three way decision NFS and fuzzy three way decision NFS.
+      *  @return empty string 
+      *  @date 2024-03-24 */
+     virtual std::string report_average_number_of_rules_for_train () const;
+   
+   public:
+     /** A report entry on the average number of rules for the test dataset.
+      *  It is used in three way decision NFS and fuzzy three way decision NFS.
+         @return empty string 
+         @date 2024-03-24 */
+     virtual std::string report_average_number_of_rules_for_test () const;
       
    };
 }

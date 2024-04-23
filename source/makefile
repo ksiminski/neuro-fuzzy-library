@@ -66,9 +66,6 @@ lab : $(release_folder) $(release_folder)/main
 
 #-----------------------
 
-# [PL] opcje uruchomienia projektu:
-# [EN] project run options:
-
 release : $(release_folder) $(release_folder)/main
 	./$(release_folder)/main
 
@@ -284,6 +281,10 @@ $(debug_folder)/auxiliary-clock.o : auxiliary/clock.cpp
 $(release_folder)/auxiliary-tempus.o : auxiliary/tempus.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/auxiliary-tempus.o : auxiliary/tempus.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/auxiliary-to_string.o : auxiliary/to_string.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/auxiliary-to_string.o : auxiliary/to_string.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/auxiliary-confusion-matrix.o : auxiliary/confusion-matrix.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -984,6 +985,7 @@ $(release_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(release_folder)/neuro-fuzzy-granular_tsk_regression.o \
 $(release_folder)/neuro-fuzzy-weighted_annbfis.o \
 $(release_folder)/neuro-fuzzy-abstract_fcom.o \
+$(release_folder)/auxiliary-to_string.o \
 $(release_folder)/tnorms-t-norm-dubois-prade.o \
 $(release_folder)/readers-reader-incomplete.o \
 $(release_folder)/partitions-rsfcm.o \
@@ -1194,6 +1196,7 @@ $(debug_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(debug_folder)/neuro-fuzzy-granular_tsk_regression.o \
 $(debug_folder)/neuro-fuzzy-weighted_annbfis.o \
 $(debug_folder)/neuro-fuzzy-abstract_fcom.o \
+$(debug_folder)/auxiliary-to_string.o \
 $(debug_folder)/tnorms-t-norm-dubois-prade.o \
 $(debug_folder)/readers-reader-incomplete.o \
 $(debug_folder)/partitions-rsfcm.o \

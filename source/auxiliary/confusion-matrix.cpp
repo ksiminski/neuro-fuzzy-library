@@ -4,10 +4,26 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <limits>
 
 #include "../auxiliary/confusion-matrix.h"
 #include "../auxiliary/mathematics.h"
 #include "../service/debug.h"
+#include "../common/result.h"
+
+double ksi::confusion_matrix::TrainF1score (const ksi::result & r)
+{
+   double recall    = 1.0 * (r.TrainPositive2Positive) / (r.TrainPositive2Positive + r.TrainPositive2Negative);
+   double precision = 1.0 * (r.TrainPositive2Positive) / (r.TrainPositive2Positive + r.TrainNegative2Positive);
+   return (2.0 * recall * precision) / (recall + precision);
+}
+
+double ksi::confusion_matrix::TestF1score (const ksi::result & r)
+{
+   double recall    = 1.0 * (r.TestPositive2Positive) / (r.TestPositive2Positive + r.TestPositive2Negative);
+   double precision = 1.0 * (r.TestPositive2Positive) / (r.TestPositive2Positive + r.TestNegative2Positive);
+   return (2.0 * recall * precision) / (recall + precision);
+}
 
 
 std::string ksi::confusion_matrix::ca(int n)
@@ -157,6 +173,26 @@ void ksi::confusion_matrix::calculate_statistics (
     }
 }
 
+std::string ksi::confusion_matrix::print(const ksi::result results, const bool print_for_test)
+{
+    if (print_for_test)
+        return ksi::confusion_matrix::print(results.TestPositive2Positive, results.TestNegative2Negative, results.TestNegative2Positive, results.TestPositive2Negative);
+    else 
+        return ksi::confusion_matrix::print(results.TrainPositive2Positive, results.TrainNegative2Negative, results.TrainNegative2Positive, results.TrainPositive2Negative);
+}
+
+double ksi::confusion_matrix::safe_division(const double number, const double divisor)
+{
+   if (divisor == 0)
+     return std::numeric_limits<double>::quiet_NaN();  
+   else 
+      return number / divisor;
+}
+
+double ksi::confusion_matrix::safe(const double d)
+{
+   return d != 0 ? d : std::numeric_limits<double>::quiet_NaN(); 
+}
 
 std::string ksi::confusion_matrix::print(
    int nTruePositives, 
@@ -164,13 +200,11 @@ std::string ksi::confusion_matrix::print(
    int nFalsePositives, 
    int nFalseNegatives)
 {
-
    std::stringstream ss;
-
    
    int CP; // conditional (original) positives 
    int CN; // conditional (original) negatives 
-   int OP; //  TestOutcomePositives
+   int OP; // TestOutcomePositives
    int ON; // TestOutcomeNegatives;
    int To; // TotalPopulation
 
@@ -186,34 +220,36 @@ std::string ksi::confusion_matrix::print(
    int TN = nTrueNegatives;
    int FP = nFalsePositives;
    int FN = nFalseNegatives;
-
   
    double PRE, PPV, FDR, FOR, NPV, LRP, TPR, FPR, ACC, FNR, TNR, DOR, LRN, F1S, BA, TS, NA, FM, dP, BM, MCC, PT, P4;
 
-   PRE = (double) CP / To;
-   PPV = (double) nTruePositives / OP;
-   FDR = (double) nFalsePositives / OP;
-   FOR = (double) nFalseNegatives / ON;
-   NPV = (double) nTrueNegatives /  ON;
-   TPR = (double) nTruePositives / CP;
-   FNR = (double) nFalsePositives / CP;
-   FPR = (double) nFalsePositives / CN;
-   TNR = (double) nTrueNegatives / CN;
-   ACC = (double) (nTruePositives + nTrueNegatives) / To;
+   PRE = (double) CP / ksi::confusion_matrix::safe(To);
+   PPV = (double) nTruePositives / ksi::confusion_matrix::safe(OP);
+   FDR = (double) nFalsePositives / ksi::confusion_matrix::safe(OP);
+   FOR = (double) nFalseNegatives / ksi::confusion_matrix::safe(ON);
+   NPV = (double) nTrueNegatives /  ksi::confusion_matrix::safe(ON);
+   TPR = (double) nTruePositives / ksi::confusion_matrix::safe(CP);
+   FNR = (double) nFalsePositives / ksi::confusion_matrix::safe(CP);
+   FPR = (double) nFalsePositives / ksi::confusion_matrix::safe(CN);
+   TNR = (double) nTrueNegatives / ksi::confusion_matrix::safe(CN);
+   ACC = (double) (nTruePositives + nTrueNegatives) / ksi::confusion_matrix::safe(To);
    
-   F1S = 2 * TPR * PPV / (TPR + PPV);
-   LRP = TPR / FPR;
-   LRN = FNR / TNR;
-   DOR = LRP / LRN;
+   F1S = 2 * TPR * PPV / ksi::confusion_matrix::safe((TPR + PPV));
+   LRP = TPR / ksi::confusion_matrix::safe(FPR);
+   LRN = FNR / ksi::confusion_matrix::safe(TNR);
+   DOR = LRP / ksi::confusion_matrix::safe(LRN);
    
-   TS  = TP / (TP + FN + FP);
+   TS  = TP / ksi::confusion_matrix::safe((TP + FN + FP));
    BA  = (TPR + TNR) / 2.0;
    FM  = sqrt(PPV * TPR);
    dP  = PPV + NPV - 1;
    BM  = TPR + TNR - 1;
-   MCC = (TP * TN - FP * FN) / (sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)));
-   PT  = (sqrt(TPR * FPR) - FPR) / (TPR - FPR);
-   P4 = (4 * TP * TN) / (4 * TP * TN  + (TP + TN)*(FP + FN));
+   MCC = (TP * TN - FP * FN) / ksi::confusion_matrix::safe((sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN))));
+   PT  = (sqrt(TPR * FPR) - FPR) / ksi::confusion_matrix::safe((TPR - FPR));
+   if ((4 * TP * TN  + (TP + TN)*(FP + FN)) == 0)
+       P4 = std::numeric_limits<double>::quiet_NaN();
+   else
+       P4 = (4 * TP * TN) / (4 * TP * TN  + (TP + TN)*(FP + FN));
 
    ss <<
    "+------------------+------------------+--------------------+-----------------------+---------------------+" << std::endl <<
@@ -306,7 +342,7 @@ std::string ksi::confusion_matrix::print(
    ss << "Positive likelihood ratio (LR+) = TPR / FPR:                                        " << ul(LRP) << std::endl;
    ss << "Negative likelihood ratio (LR−) = FNR / TNR:                                        " << ul(LRN) << std::endl;
    ss << "Diagnostic odds ratio (DOR) = LR+ / LR−:                                            " << ul(DOR) << std::endl;
-   ss << "F1 score = recall * precision / (recall + precision):                               " << ul(F1S) << std::endl;
+   ss << "F1 score = 2 * recall * precision / (recall + precision):                           " << ul(F1S) << std::endl;
    ss << "Threat score (TS, critical success index CSI, Jaccard index) = TP / (TP + FN + FP): " << ul(TS)  << std::endl;
    ss << "Balanced accuracy (BA) = (TPR + TNR) / 2 :                                          " << ul(BA)  << std::endl;
    ss << "Fowlkes–Mallows index (FM) = sqrt(PPV * TPR):                                       " << ul(FM)  << std::endl;

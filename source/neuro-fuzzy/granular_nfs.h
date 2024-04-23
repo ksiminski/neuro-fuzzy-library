@@ -45,7 +45,8 @@ namespace ksi
             int nClusteringIterations, 
             int nTuningIterations,
             double dbLearningCoefficient,
-            const ksi::set_of_granules & train) = 0; 
+            const ksi::set_of_granules & train,
+            const ksi::set_of_granules & validation_granules) = 0; 
  
             
          /** The method reads data by parts and creates a fuzzy rule base hierarchically with rules treated as granules. 
@@ -130,7 +131,8 @@ namespace ksi
             const int nClusteringIterations, 
             const int nTuningIterations, 
             const double dbLearningCoefficient, 
-            const dataset & train) = 0;    
+            const dataset & train,
+            const dataset & validation) = 0;    
             
         /** The method reduces the set of granules. It leaves numberOfGranules rules in the set, the others are removed. */    
 //         const ksi::granule_set reduce_granules_set (

@@ -56,7 +56,6 @@ double ksi::descriptor_sigmoidal::getCoreMean() const
    return std::nan("");
 }
 
-
 double ksi::descriptor_sigmoidal::getMembership (double x)
 {
    try
@@ -82,7 +81,6 @@ ksi::descriptor * ksi::descriptor_sigmoidal::clone() const
 
 ksi::descriptor_sigmoidal::~descriptor_sigmoidal()
 {
-
 }
 
 std::ostream& ksi::descriptor_sigmoidal::print(std::ostream& ss) const

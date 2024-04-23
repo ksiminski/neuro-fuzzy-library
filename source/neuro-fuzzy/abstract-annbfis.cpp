@@ -60,7 +60,9 @@ void ksi::abstract_annbfis::createFuzzyRulebase
    int nClusteringIterations, 
    int nTuningIterations, 
    double eta,
-   const ksi::dataset& train )
+   const ksi::dataset& train,
+   const ksi::dataset& validation
+   )
 {
    try 
    {
@@ -89,7 +91,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       double dbTheBestRMSE = std::numeric_limits<double>::max();
       ////////
 
-      
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
          
@@ -97,9 +98,16 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       auto trainX = XY.first;
       auto trainY = XY.second;
       
-//       fcm clusterer;
-//       clusterer.setNumberOfClusters(_nRules);
-//       clusterer.setNumberOfIterations(_nClusteringIterations);
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
+      
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
       
       auto podzial = doPartition(trainX);
       _nRules = podzial.getNumberOfClusters();
@@ -203,14 +211,16 @@ void ksi::abstract_annbfis::createFuzzyRulebase
             }
          }
          
+         //////////////////////////////////
          // test: wyznaczam blad systemu
-         std::vector<double> wYelaborated (nX);
+         
+         std::vector<double> wYelaborated (nValY);
          for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(trainX.getDatum(x)));
+            wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
          ///////////////////////////
          ksi::error_RMSE rmse;
-         double blad = rmse.getError(wY, wYelaborated);
+         double blad = rmse.getError(wvalidateY, wYelaborated);
          // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
          errors.push_front(blad);
          
@@ -222,7 +232,6 @@ void ksi::abstract_annbfis::createFuzzyRulebase
             pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
          }
          ///////////////////////////
-         
       }
       // system nastrojony :-)
       // update the rulebase with the best one:

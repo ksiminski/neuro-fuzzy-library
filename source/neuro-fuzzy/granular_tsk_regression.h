@@ -52,7 +52,8 @@ namespace ksi
             const int nClusteringIterations, 
             const int nTuningIterations, 
             const double dbLearningCoefficient, 
-            const dataset & train);
+            const dataset & train,
+            const dataset & validation);
       
     public:
       virtual ksi::neuro_fuzzy_system * clone() const;

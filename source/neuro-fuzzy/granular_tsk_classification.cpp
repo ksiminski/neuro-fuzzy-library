@@ -89,11 +89,12 @@ void ksi::granular_tsk_classification::createFuzzyNonGranularRulebase(
     const int nClusteringIterations, 
     const int nTuningIterations, 
     const double dbLearningCoefficient, 
-    const ksi::dataset& train)
+    const ksi::dataset& train,
+    const ksi::dataset& validation)
 {
     try 
     {
-        ksi::tsk::createFuzzyRulebase(nClusteringIterations, nTuningIterations, dbLearningCoefficient, train);
+        ksi::tsk::createFuzzyRulebase(nClusteringIterations, nTuningIterations, dbLearningCoefficient, train, validation);
     }
     CATCH;
 }

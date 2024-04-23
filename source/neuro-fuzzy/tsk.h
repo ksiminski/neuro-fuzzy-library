@@ -150,16 +150,8 @@ namespace ksi
       virtual discriminative_model * clone_discriminant () const;
       virtual generative_model * clone_generator () const;
       
-      
-      
    protected:
       void set_name ();
-       
-      virtual partition doPartition (const dataset & X);
-  
-   public:   
-    
-      
       
    };
 }

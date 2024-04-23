@@ -285,7 +285,7 @@ void ksi::granular_nfs::createFuzzyRulebaseByParts(
                }
                 
                createFuzzyRulebase(nNumberOfClusteringIterations,
-                    nNumberofTuningIterations, dbLearningCoefficient, *granules);
+                    nNumberofTuningIterations, dbLearningCoefficient, *granules,  *granules);  // validate == train
                delete granules;
                
                for (int i = 0; i < _nRules; i++)
@@ -296,7 +296,7 @@ void ksi::granular_nfs::createFuzzyRulebaseByParts(
                {
 //                     debug("1 grade reduction");
                     createFuzzyRulebase(nNumberOfClusteringIterations,
-                                        nNumberofTuningIterations, dbLearningCoefficient, *first_grade_granules);
+                                        nNumberofTuningIterations, dbLearningCoefficient, *first_grade_granules, *first_grade_granules);  // validate == train
                     
                     ksi::set_of_granules * next_grade_granules = new ksi::rulebase;
                     for (int i = 0; i < _nRules; i++)
@@ -319,7 +319,8 @@ void ksi::granular_nfs::createFuzzyRulebaseByParts(
         {
             createFuzzyRulebase(nNumberOfClusteringIterations,
                                 nNumberofTuningIterations, dbLearningCoefficient, 
-                                * first_grade_granules);
+                                * first_grade_granules, 
+                                * first_grade_granules);  // validate == train
 
 //             auto reduced = reduce_granules_set (_1_grade_granules, nNumberOfRules);
 //             _pRulebase->clear();
@@ -388,7 +389,7 @@ void ksi::granular_nfs::createFuzzyRulebaseHierarchical(
                 
                 ///@todo Trzeba wyznaczyć próg podziału klasy (threshold_value).
                 createFuzzyRulebase(nNumberOfClusteringIterations,
-                    nNumberofTuningIterations, dbLearningCoefficient, *granules);
+                    nNumberofTuningIterations, dbLearningCoefficient, *granules, *granules);   // validate == train
                 
                 delete granules;
                 granules = nullptr;
@@ -416,7 +417,8 @@ void ksi::granular_nfs::createFuzzyRulebaseHierarchical(
                         createFuzzyRulebase(nNumberOfClusteringIterations,
                                             nNumberofTuningIterations, 
                                             dbLearningCoefficient, 
-                                            * granule_sets[it]);
+                                            * granule_sets[it], 
+                                            * granule_sets[it]); // validate == train
                         
                         ksi::set_of_granules * next_grade_granules = _pRulebase->clone_set_of_granules();
                         
@@ -448,7 +450,7 @@ void ksi::granular_nfs::createFuzzyRulebaseHierarchical(
             if (granule_sets[it]->size() > MINIMAL_NUMBER_OF_GRANULES_IN_SET)
             {
                 createFuzzyRulebase(nNumberOfClusteringIterations,
-                                    nNumberofTuningIterations, dbLearningCoefficient, * granule_sets[it]);
+                                    nNumberofTuningIterations, dbLearningCoefficient, * granule_sets[it], * granule_sets[it]);  // validate == train
                 
                 ksi::set_of_granules * next_grade_granules = _pRulebase->clone_set_of_granules();
                 
@@ -479,7 +481,7 @@ void ksi::granular_nfs::createFuzzyRulebaseHierarchical(
         if (granule_sets.back()->size() > nNumberOfRules)
         {
             createFuzzyRulebase(nNumberOfClusteringIterations,
-                                nNumberofTuningIterations, dbLearningCoefficient, *granule_sets.back());
+                                nNumberofTuningIterations, dbLearningCoefficient, *granule_sets.back(), *granule_sets.back());  // validate == train
             ksi::set_of_granules * next_grade_granules = new ksi::rulebase;
             for (int i = 0; i < _nRules; i++)
                 next_grade_granules->addGranule(_pRulebase->operator[](i));

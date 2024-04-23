@@ -203,6 +203,18 @@ std::size_t ksi::dataset::size() const
     return data.size();
 }
 
+double ksi::dataset::get_cardinality() const
+{
+   double cardinality {0.0};
+   
+   for (const auto & p : data)
+   {
+      cardinality += p->getWeight();
+   }
+   return cardinality;
+}
+
+
 
 std::size_t ksi::dataset::getNumberOfAttributes() const
 {

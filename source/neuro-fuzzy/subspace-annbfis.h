@@ -109,14 +109,16 @@ namespace ksi
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
-       * @param train train dataset  
+       * @param train train dataset
+       * @param validation validation dataset  
        * @date  2018-02-24
        * @author Krzysztof Siminski 
        */
       virtual void createFuzzyRulebase (
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
-         const dataset & train); 
+         const dataset & train,
+         const dataset & validation); 
      protected:   
        void set_name ();
 //        virtual partition doPartition (const dataset & X);

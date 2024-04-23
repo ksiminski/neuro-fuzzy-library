@@ -26,9 +26,6 @@ namespace ksi
     */
    class abstract_tsk : virtual public neuro_fuzzy_system
    {
-   protected: 
-        
-      
    public:
       
       abstract_tsk();      
@@ -139,6 +136,8 @@ namespace ksi
       abstract_tsk & operator = (abstract_tsk && a);
       ~abstract_tsk();
       
+      /** A constructor with partitioner                                                    * @date 2024-02-27 */
+      abstract_tsk (const partitioner & Partitioner);
       
    protected: 
       /** The method creates a fuzzy rulebase from the dataset.
@@ -146,18 +145,20 @@ namespace ksi
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
        * @param train train dataset  
+       * @param validation validation dataset  
        * @date  2018-02-14
        * @author Krzysztof Siminski 
        */
       virtual void createFuzzyRulebase (int nClusteringIterations, 
                                         int nTuningIterations, 
                                         double dbLearningCoefficient,
-                                        const dataset & train); 
+                                        const dataset & train, 
+                                        const dataset & validation); 
            
       /** Function that partitions the data set.
        @param X dataset to partition
        @date 2019-12-19 */
-      virtual partition doPartition (const dataset & X) = 0;
+      virtual partition doPartition (const dataset & X);
       
    public:   
       /** 
@@ -175,8 +176,7 @@ namespace ksi
       virtual number elaborate_answer (const datum & d) const; 
       
       virtual void train_discriminative_model (const dataset & ds);
-      virtual void train_generative_model(const ksi::dataset & ds);
-
+      virtual void train_generative_model(const dataset & ds);
 
       /** The method elaborates the answer of the discriminative_model for a datum 
        @param d a datum to elaborate answer for
@@ -185,7 +185,6 @@ namespace ksi
       virtual double discriminate (const datum & d); 
       
       virtual ksi::datum get_random_datum(std::default_random_engine & engine);
-      
       
    };
 }

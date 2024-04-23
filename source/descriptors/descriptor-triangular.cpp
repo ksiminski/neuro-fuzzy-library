@@ -147,7 +147,7 @@ std::ostream& ksi::descriptor_triangular::printLinguisticDescription(std::ostrea
    return ss;
 }
 
-std::vector< double > ksi::descriptor_triangular::getMAconsequenceParameters() const
+std::vector<double> ksi::descriptor_triangular::getMAconsequenceParameters() const
 {
    return { _support_min, _core, _support_max };
 }

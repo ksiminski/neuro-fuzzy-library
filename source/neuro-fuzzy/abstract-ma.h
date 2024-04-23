@@ -8,14 +8,15 @@
 
 #include "../common/dataset.h"
 #include "../common/number.h"
-#include "rulebase.h"
-#include "neuro-fuzzy-system.h"
+#include "../neuro-fuzzy/rulebase.h"
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../implications/implication.h"
 #include "../tnorms/t-norm.h"
 #include "../auxiliary/roc.h"
+#include "../partitions/partition.h"
+#include "../partitions/partitioner.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
-#include "../partitions/partitioner.h"
 
 namespace ksi
 {
@@ -24,7 +25,6 @@ namespace ksi
     */
    class abstract_ma : virtual public neuro_fuzzy_system
    {
-   
    public:
       
       abstract_ma();   
@@ -97,24 +97,31 @@ namespace ksi
      
       
       
-   protected:   
+      /** A constructor with partitioner   
+       *  @date 2024-02-27 */
+      abstract_ma (const partitioner & Partitioner);
+      
+   protected: 
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
        * @param train train dataset  
+       * @param validation validation dataset  
        * @date  2018-02-16
        * @author Krzysztof Siminski 
        */
       virtual void createFuzzyRulebase ( 
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
-         const dataset & train); 
+         const dataset & train,
+         const dataset & validation
+         ); 
         
       /** Function that partitions the data set.
        @param X dataset to partition
        @date 2019-12-24 */
-      virtual partition doPartition (const dataset & X) = 0;
+      virtual partition doPartition (const dataset & X);
  
    public:  
      

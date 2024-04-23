@@ -186,7 +186,6 @@ namespace ksi
       /** @return The function returns standard deviation and median of elements in a vector.
 		* @param first iterator to the first element
 		* @param last  iterator to the past-the-end element in the vector
-        * @param k     k-th smallest  (starts with 0)
         * @date 2023-11-21
         * @author Konrad Wnuk
         * @throw std::string if the array has no items
@@ -259,21 +258,21 @@ namespace ksi
 	   * @brief Calculates the equation of a line given two points.
 	   *
 	   * This function calculates the equation of a line in the form \f$y = ax + b\f$,
-	   * where \f$a\f$ is the slope and \f$b\f$ is the y-intercept, based on two given points.
+	   * where \f$a\f$ is the slope and \f$b\f$ is the y-constant term, based on two given points.
 	   *
 	   * @tparam T The data type of the coordinates (default is double)
 	   * @param p1 The first point \f$x, y\f$
 	   * @param p2 The second point \f$x, y\f$
-	   * @return A pair representing the slope and y-intercept of the line
+	   * @return A pair representing the slope and y-constant term of the line
 	   *
 	   * The slope \f$a\f$ is calculated as:
 	   * \f[
-	   * \text{slope} = \frac{{y_2 - y_1}}{{x_2 - x_1}}
+	   * a = \frac{{y_2 - y_1}}{{x_2 - x_1}}
 	   * \f]
 	   *
-	   * The y-intercept \f$b\f$ is calculated as:
+	   * The y-constant term \f$b\f$ is calculated as:
 	   * \f[
-	   * \text{intercept} = y_1 - \text{slope} \cdot x_1
+	   * b = y_1 - \text{slope} \cdot x_1
 	   * \f]
 	   *
 	   * @date 2023-12-26
@@ -283,9 +282,9 @@ namespace ksi
       static
       std::pair<T, T> calculateLineEquation(const std::pair<T, T>& p1, const std::pair<T, T>& p2) {
           const double slope = (p2.second - p1.second) / (p2.first - p1.first);
-          const double intercept = p1.second - slope * p1.first;
+          const double constant_term = p1.second - slope * p1.first;
 
-          return std::make_pair(slope, intercept);
+          return std::make_pair(slope, constant_term);
       }
 
       /**
@@ -310,7 +309,7 @@ namespace ksi
    	  T calculateLinearDefiniteIntegralValue(const T& x1, const T& x2, const std::pair<T, T>& params, const T& expected) {
           auto f = [params] (const auto& x, const auto& expected)
           {
-	          return (params.first * pow(x, 4)) / 4 + (params.second * pow(x, 3) - 2 * expected * params.first * pow(x, 3))  / 3 - expected * params.second * pow(x, 2) + (pow(expected, 2) * params.first * pow(x, 2)) / 2 + pow(expected, 2) * params.second * x;
+	       return (params.first * pow(x, 4)) / 4 + (params.second * pow(x, 3) - 2 * expected * params.first * pow(x, 3))  / 3 - expected * params.second * pow(x, 2) + (pow(expected, 2) * params.first * pow(x, 2)) / 2 + pow(expected, 2) * params.second * x;
           };
            
        	  return f(x2, expected) - f(x1, expected);
@@ -339,10 +338,8 @@ namespace ksi
 
           return f(x2, expected) - f(x1, expected);
       }
-
    };
-   
-   
+      
    /** Class for representation of a pair: double, std::size_t with operator< .*/
    class distance_index
    {
@@ -350,8 +347,8 @@ namespace ksi
       double distance;
       std::size_t index;
       
-      bool operator < (const distance_index & right);
-      
+      bool operator < (const distance_index & right);      
    };
 }
 #endif
+

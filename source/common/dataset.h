@@ -64,6 +64,10 @@ namespace ksi
       /** @return returns number of data items in the dataset */
       std::size_t size() const;
       
+      /** @return sum of weights of all items in the train dataset
+          @date 2024-03-08 */
+      double get_cardinality() const ;
+      
       /** @return returns number of attributes in a datum */
       std::size_t getNumberOfAttributes() const;
       
@@ -117,8 +121,7 @@ namespace ksi
        * @date 2019-01-22
        */
       std::vector<std::vector<ext_fuzzy_number_gaussian>> getMatrix(ext_fuzzy_number_gaussian) const ;
-      
-            
+
       /** A method get r-th datum from the dataset. The method does not copy the datum!
        * @return a pointer to the datum or nullptr if r is illegal 
        * @param  r index of datum 

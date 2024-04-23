@@ -1,13 +1,15 @@
 
+#include <deque>
+
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/abstract-annbfis.h"
 #include "../neuro-fuzzy/weighted_annbfis.h"
 #include "../neuro-fuzzy/logicalrule.h"
 #include "../neuro-fuzzy/consequence-CL.h"
 #include "../tnorms/t-norm-product.h"
+#include "../auxiliary/error-RMSE.h"
 #include "../auxiliary/least-error-squares-regression.h"
 #include "../partitions/fcm-conditional.h"
-
-
 
 ksi::weighted_annbfis::weighted_annbfis ()
 {
@@ -17,13 +19,28 @@ ksi::weighted_annbfis::weighted_annbfis ()
 ksi::weighted_annbfis::~weighted_annbfis ()
 {
    // delete what is to delete
-
 }
 
-ksi::weighted_annbfis::weighted_annbfis (const ksi::weighted_annbfis & wzor) : ksi::abstract_annbfis(wzor)
+ksi::weighted_annbfis::weighted_annbfis(int nRules, 
+                      int nClusteringIterations, 
+                      int nTuningIterations, 
+                      double dbLearningCoefficient,
+                      bool bNormalisation,
+                      const t_norm & tnorm,
+                      const implication & imp,
+                      double positive_class, 
+                      double negative_class, 
+                      const ksi::roc_threshold threshold_type
+) :// neuro_fuzzy_system(ksi::fcm(nRules, nClusteringIterations))
+//,  
+abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_type )
+{
+   set_name();
+}
+
+ksi::weighted_annbfis::weighted_annbfis (const ksi::weighted_annbfis & wzor) : ksi::neuro_fuzzy_system(wzor), ksi::abstract_annbfis(wzor)
 {
    // copy what is to copy
-
 }
 
 ksi::weighted_annbfis & ksi::weighted_annbfis::operator= (const ksi::weighted_annbfis & wzor)
@@ -31,6 +48,7 @@ ksi::weighted_annbfis & ksi::weighted_annbfis::operator= (const ksi::weighted_an
    if (this == & wzor)
       return *this;
 
+   ksi::neuro_fuzzy_system::operator=(wzor);
    ksi::abstract_annbfis::operator=(wzor);
 
    // remove what is to remove
@@ -40,7 +58,7 @@ ksi::weighted_annbfis & ksi::weighted_annbfis::operator= (const ksi::weighted_an
    return *this;
 }
 
-ksi::weighted_annbfis::weighted_annbfis (ksi::weighted_annbfis && wzor) : ksi::abstract_annbfis(wzor)
+ksi::weighted_annbfis::weighted_annbfis (ksi::weighted_annbfis && wzor) : ksi::neuro_fuzzy_system(wzor), ksi::abstract_annbfis(wzor)
 {
    // swap what is to swap
 
@@ -51,6 +69,7 @@ ksi::weighted_annbfis & ksi::weighted_annbfis::operator= (ksi::weighted_annbfis 
    if (this == & wzor)
       return *this;
 
+   ksi::neuro_fuzzy_system::operator=(wzor);
    ksi::abstract_annbfis::operator=(wzor);
 
    // swap what is to swap
@@ -75,7 +94,7 @@ void ksi::weighted_annbfis::createFuzzyRulebase
    int nClusteringIterations, 
    int nTuningIterations, 
    double eta,
-   const ksi::dataset& train )
+   const ksi::dataset& train, const ksi::dataset& validation)
 {
    try 
    {
@@ -84,6 +103,7 @@ void ksi::weighted_annbfis::createFuzzyRulebase
 //       if (not _pPartitioner)
 //           throw ksi::exception("no partition object provided");
  
+      std::deque<double> errors; 
       const double INITIAL_W = 2.0;
       
       _nClusteringIterations = nClusteringIterations;
@@ -97,6 +117,12 @@ void ksi::weighted_annbfis::createFuzzyRulebase
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
+
+      // remember the best rulebase:
+      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      ////////
+
       
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
@@ -104,6 +130,17 @@ void ksi::weighted_annbfis::createFuzzyRulebase
       auto XY = train.splitDataSetVertically (nAttr - 1);
       auto trainX = XY.first;
       auto trainY = XY.second;
+      
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
+      
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
       
       auto podzial = doPartition(trainX);
       _nRules = podzial.getNumberOfClusters();
@@ -210,19 +247,33 @@ void ksi::weighted_annbfis::createFuzzyRulebase
                (*_pRulebase)[r].setConsequence(konkluzja);
             }
          }
-      }         
+         //////////////////////////////////
          // test: wyznaczam blad systemu
-//          std::vector<double> wYelaborated (nX);
-//          for (std::size_t x = 0; x < nX; x++)
-//             wYelaborated[x] = answer( *(trainX.getDatum(x)));
-//          
-         //ksi::error_RMSE rmse;
-         //double blad = rmse.getError(wY, wYelaborated);
-         //debug(blad);
          
+         std::vector<double> wYelaborated (nValY);
+         for (std::size_t x = 0; x < nX; x++)
+            wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
-
+         ///////////////////////////
+         ksi::error_RMSE rmse;
+         double blad = rmse.getError(wvalidateY, wYelaborated);
+         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
+         errors.push_front(blad);
+         
+         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // remember the best rulebase:
+         if (dbTheBestRMSE > blad)
+         {
+            dbTheBestRMSE = blad;
+            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         }
+         ///////////////////////////
+         
+      }
       // system nastrojony :-)
+      // update the rulebase with the best one:
+      delete _pRulebase;
+      _pRulebase = pTheBest->clone();
    }
    CATCH;
 }
@@ -231,7 +282,8 @@ void ksi::weighted_annbfis::createFuzzyRulebase
 void ksi::weighted_annbfis::set_name()
 {
     _name_of_neuro_fuzzy_system = std::string ("weighted-ANNBFIS");
-    _description_of_neuro_fuzzy_system = std::string("weighted ANNBFIS, neuro-fuzzy system with logical interpretation of fuzzy rules, with weighted data items");
+    _brief_name_of_neuro_fuzzy_system = std::string ("wANN");
+    _description_of_neuro_fuzzy_system = std::string("ANNBFIS, neuro-fuzzy system with logical interpretation of fuzzy rules for weighted data items");
 }
 
 ksi::neuro_fuzzy_system * ksi::weighted_annbfis::clone() const

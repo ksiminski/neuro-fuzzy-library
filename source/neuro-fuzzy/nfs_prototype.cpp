@@ -203,12 +203,12 @@ double ksi::nfs_prototype::discriminate(const ksi::datum& d)
 
 void ksi::nfs_prototype::train_discriminative_model(const ksi::dataset& ds)
 {
-    createFuzzyRulebase(-1, -1, -1, ds);
+    createFuzzyRulebase(-1, -1, -1, ds, ds); // validation = train
 }
 
 void ksi::nfs_prototype::train_generative_model(const ksi::dataset& ds)
 {
-    createFuzzyRulebase(-1, -1, -1, ds);
+    createFuzzyRulebase(-1, -1, -1, ds, ds); // validation = train
 }
 
 double ksi::nfs_prototype::answer(const ksi::datum& item) const
