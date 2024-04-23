@@ -95,7 +95,8 @@ This example presents neuro-fuzzy systems for
 	8. Mahalanobis prototype TSK
 	9. Mahalanobis prototype ANNBFIS
 	
- 
+Models for the MA, TSK, and ANNBFIS systems are saved into files in numeric and liguistic description [^lin].
+
 ------------
 
 [^nfl]: Krzysztof Siminski, NFL -- Free Library for Fuzzy and Neuro-Fuzzy Systems, [in] Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis (Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, Daniel Kostrzewa, eds.), Springer International Publishing, 2019, pp. 139-150. 
@@ -227,4 +228,14 @@ This example presents neuro-fuzzy systems for
 	}
 	```
 	
-
+[^lin]: Krzysztof Siminski, Konrad Wnuk, Automatic Extraction of Linguistic Description from Fuzzy Rule Base, 2024	
+	```
+	@misc{id:Siminski2024Automatic,
+      title={Automatic Extraction of Linguistic Description from Fuzzy Rule Base}, 
+      author={Krzysztof Siminski and Konrad Wnuk},
+      year={2024},
+      eprint={2404.03058},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+    }
+	```
