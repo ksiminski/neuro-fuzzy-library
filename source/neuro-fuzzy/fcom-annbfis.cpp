@@ -126,6 +126,34 @@ ksi::fcom_annbfis::fcom_annbfis(int nRules,
 }
 
 
+ksi::fcom_annbfis::fcom_annbfis(int nRules, 
+                                double dbFrobeniusEpsilon, 
+                                int nTuningIterations, 
+                                double dbLearningCoefficient, 
+                                bool bNormalisation, 
+                                const ksi::t_norm& tnorm,  
+                                const ksi::implication & imp,
+                                const ksi::dissimilarity & Dissimilarity, 
+                                const ksi::owa & Owa, 
+                                double positive_class, 
+                                double negative_class, 
+                                const double threshold_value,
+                                const double dbMinimalTypicality)
+: neuro_fuzzy_system (nRules, _dbFrobeniusEpsilon,
+                      nTuningIterations, dbMinimalTypicality),
+                      abstract_annbfis(nRules, dbFrobeniusEpsilon,
+                                       nTuningIterations, dbLearningCoefficient,
+                                       bNormalisation, tnorm, imp, ksi::fcom(nRules, dbFrobeniusEpsilon, Dissimilarity, Owa), 
+                                       positive_class, negative_class, threshold_value,
+                                       dbMinimalTypicality
+                      )
+                      {
+                          set_name();
+                          _pDissimilarity = Dissimilarity.clone();
+                          _pOwa = Owa.clone(); 
+                      }
+                      
+
 ksi::fcom_annbfis::~fcom_annbfis()
 {
      
@@ -185,7 +213,7 @@ ksi::generative_model * ksi::fcom_annbfis::clone_generator() const
 }
 
 
-std::string ksi::fcom_annbfis::extra_report()
+std::string ksi::fcom_annbfis::extra_report() const
 {
     std::stringstream ss;
     ss << ksi::abstract_fcom::extra_report();

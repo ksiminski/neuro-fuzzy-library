@@ -80,6 +80,22 @@ namespace ksi
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, double positive_class, double negative_class, ksi::roc_threshold threshold_type);
 
       
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_value classification threshold value 
+       * @date  2024-05-10
+       */
+      fubi_annbfis (int nRules, int nClusteringIterations, int nTuningIterations,
+                    double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, double positive_class, double negative_class, double threshold_value = 0.5);
+      
+      
       /** A constructor with implication.
        @param imp implication
        @date 2020-08-14

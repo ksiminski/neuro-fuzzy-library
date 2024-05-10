@@ -405,6 +405,63 @@ ksi::abstract_tsk::abstract_tsk(int nRules,
 }
 
 
+ksi::abstract_tsk::abstract_tsk(int nRules, 
+                                double dbFrobeniusEpsilon, 
+                                int nTuningIterations, 
+                                double dbLearningCoefficient, 
+                                bool bNormalisation, 
+                                const ksi::t_norm & tnorm,
+                                const ksi::partitioner & Partitioner, 
+                                double positive_class, 
+                                double negative_class, 
+                                double threshold_value, 
+                                const double dbMinimalTypicality)
+{
+    _nRules = nRules;
+    _dbFrobeniusEpsilon = dbFrobeniusEpsilon;
+    _nTuningIterations = nTuningIterations;
+    _dbLearningCoefficient = dbLearningCoefficient;
+    _bNormalisation = bNormalisation;
+    if (not _pTnorm)
+        _pTnorm = tnorm.clone();
+    if (not _pPartitioner)
+        _pPartitioner = Partitioner.clone();
+    _positive_class = positive_class;
+    _negative_class = negative_class;
+    _threshold_type = ksi::roc_threshold::manual;
+    _threshold_value = threshold_value;
+    _minimal_typicality = dbMinimalTypicality;
+}
+
+ksi::abstract_tsk::abstract_tsk(int nRules, 
+                                int nClusteringIterations, 
+                                int nTuningIterations, 
+                                double dbLearningCoefficient, 
+                                bool bNormalisation, 
+                                const ksi::t_norm & tnorm,
+                                const ksi::partitioner & Partitioner, 
+                                double positive_class, 
+                                double negative_class, 
+                                double threshold_value, 
+                                const double dbMinimalTypicality)
+{
+    _nRules = nRules;
+    _nClusteringIterations = nClusteringIterations;
+    _nTuningIterations = nTuningIterations;
+    _dbLearningCoefficient = dbLearningCoefficient;
+    _bNormalisation = bNormalisation;
+    if (not _pTnorm)
+        _pTnorm = tnorm.clone();
+    if (not _pPartitioner)
+        _pPartitioner = Partitioner.clone();
+    _positive_class = positive_class;
+    _negative_class = negative_class;
+    _threshold_type = ksi::roc_threshold::manual;
+    _threshold_value = threshold_value;
+    _minimal_typicality = dbMinimalTypicality;
+}
+
+
 ksi::abstract_tsk::~abstract_tsk()
 {
  

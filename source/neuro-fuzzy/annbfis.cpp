@@ -1,36 +1,11 @@
 
 #include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <string>
-#include <numeric>
 #include <cmath>
 
 #include "annbfis.h"
-#include "logicalrule.h"
-#include "premise.h"
-#include "consequence-CL.h"
-#include "../tnorms/t-norm-product.h"
-#include "../partitions/cluster.h"
 #include "../partitions/fcm.h"
-#include "../neuro-fuzzy/premise.h"
-#include "../tnorms/t-norm-product.h"
-#include "../implications/imp-reichenbach.h"
-#include "../descriptors/descriptor-gaussian.h"
-#include "../neuro-fuzzy/consequence-CL.h"
-#include "../auxiliary/least-error-squares-regression.h"
-#include "../auxiliary/tempus.h"
-#include "../auxiliary/clock.h"
-#include "../auxiliary/confusion-matrix.h"
 #include "../auxiliary/roc.h"
-#include "../service/debug.h"
-#include "../auxiliary/error-RMSE.h"
-#include "../auxiliary/error-MAE.h"
-#include "../common/number.h"
-#include "../readers/reader-complete.h"
-#include "../common/data-modifier-normaliser.h"
-#include "../partitions/partition.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
 
@@ -82,9 +57,7 @@ ksi::annbfis::annbfis() : neuro_fuzzy_system(), abstract_annbfis()
 
 ksi::annbfis::~annbfis()
 {
-   
 }
-
 
 ksi::annbfis::annbfis(const ksi::annbfis & right) : neuro_fuzzy_system(right), abstract_annbfis(right)
 {
@@ -136,9 +109,6 @@ ksi::generative_model * ksi::annbfis::clone_generator() const
     return new ksi::annbfis (*this);
 }
 
- 
- 
-
 ksi::annbfis::annbfis(int nRules, 
               int nClusteringIterations, 
               int nTuningIterations, 
@@ -152,7 +122,6 @@ ksi::annbfis::annbfis(int nRules,
 {
     set_name();
 }
-
 
 ksi::annbfis::annbfis(int nRules, 
               int nClusteringIterations, 
@@ -207,6 +176,11 @@ ksi::annbfis::annbfis(int nRules,
     set_name();
 }
 
+ksi::annbfis::annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, double positive_class, double negative_class, const double threshold_value): neuro_fuzzy_system(),  abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_value)
+{
+    set_name();
+}
+
 ksi::annbfis::annbfis(int nRules, 
               int nClusteringIterations, 
               int nTuningIterations, 
@@ -218,8 +192,14 @@ ksi::annbfis::annbfis(int nRules,
               double negative_class, 
               const ksi::roc_threshold threshold_type,
               const ksi::data_modifier & modifier
-             ) : neuro_fuzzy_system(modifier),  abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_type )
+             ) : neuro_fuzzy_system(modifier),  abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_type)
 {
     set_name();
 }
+
+ksi::annbfis::annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, double positive_class, double negative_class, const ksi::data_modifier& modifier, const double threshold_value): neuro_fuzzy_system(modifier),  abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_value)
+{
+    set_name();
+}
+
 

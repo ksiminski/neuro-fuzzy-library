@@ -71,24 +71,33 @@ namespace ksi
       /** short description of a neuro-fuzzy system showing its main features */
       std::string _description_of_neuro_fuzzy_system;
       
-      std::string _train_data_file; ///< name of train data file
-      std::string _test_data_file;  ///< name of test data file
-      std::string _validation_data_file ; ///< name of validation data file
-      std::string _output_file;     ///< name of output file
+      /** name of train data file */
+      std::string _train_data_file; 
+      /*** name of test data file */
+      std::string _test_data_file; 
+      /*** name of validation data file */
+      std::string _validation_data_file ; 
+      /*** name of output file */
+      std::string _output_file; 
       
-      double _positive_class;  ///< label for positive class in classification
-      double _negative_class;  ///< label for negative class in classification
-      ksi::roc_threshold _threshold_type; ///< threshold type for classification
-      double _threshold_value = 0.5; ///< value of the threshold for classification
+      /*** label for positive class in classification */
+      double _positive_class;  
+      /*** label for negative class in classification */
+      double _negative_class;  
+      /*** threshold type for classification */
+      ksi::roc_threshold _threshold_type; 
+      /*** value of the threshold for classification */
+      double _threshold_value = std::numeric_limits<double>::quiet_NaN(); // <-- illegal value; will be set later. 
             
       std::size_t _original_size_of_training_dataset = 0;
       std::size_t _reduced_size_of_training_dataset = 0;
       
       std::shared_ptr<ksi::data_modifier> _pModyfikator { nullptr };
       
-      std::vector<std::tuple<double, double, double>> _answers_for_train; ///< answers for the train set: expected elaborated_numeric elaborated_class
-      std::vector<std::tuple<double, double, double>> _answers_for_test; ///< answers for the test set: expected elaborated_numeric elaborated_class
-             
+      /** answers for the train set: expected elaborated_numeric elaborated_class */
+      std::vector<std::tuple<double, double, double>> _answers_for_train; 
+      /** answers for the test set: expected elaborated_numeric elaborated_class */
+      std::vector<std::tuple<double, double, double>> _answers_for_test; 
              
    public: 
      /** @return number of item in the train dataset 
@@ -136,7 +145,12 @@ namespace ksi
        @param th threshold type to set 
        @date 2021-12-27 */
       void set_threshold_type (const ksi::roc_threshold & th);     
-      
+
+      /** The method sets the threshold value for a classifier. 
+       *  The method also sets the threshold type to ksi::roc_threshold::manual.
+       @param value threshold type to set 
+       @date 2024-05-10 */
+      void set_threshold_value (const double value);     
       
       /** @return expected class, elaborated_numeric answer, elaborated_class for the train dataset
           @date   2021-09-16
@@ -653,7 +667,6 @@ virtual result experiment_regression_core(
                                          double positiveClassvalue,
                                          double negativeClassvalue,
                                          const ksi::roc_threshold & type);
-      
    public:
        /** 
        @return rulebase's answer of a data item
@@ -675,7 +688,6 @@ virtual result experiment_regression_core(
       
       /** The method trains the generative model. */
       virtual void train_generative_model (const dataset & ds);
-      
       
       virtual std::string to_string ();
       
@@ -710,6 +722,12 @@ virtual result experiment_regression_core(
          @date 2024-03-24 */
      virtual std::string report_average_number_of_rules_for_test () const;
       
+   protected:
+     /** The body is empty. If some extra activities is needed after
+      *  the model has been created, the class implements 
+      *  a non-empty body of this method.
+      *  @date 2024-05-02 */  
+       virtual void run_extra_activities_for_the_model();
    };
 }
 

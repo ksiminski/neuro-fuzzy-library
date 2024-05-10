@@ -15,8 +15,6 @@ namespace ksi
        ksi::dissimilarity * _pDissimilarity = nullptr; ///< dissimilarity function
        ksi::owa * _pOwa = nullptr; ///< ordered weighting average function
        
-       
-  
     public:
       abstract_fcom ();
       abstract_fcom (const abstract_fcom & wzor);
@@ -25,7 +23,7 @@ namespace ksi
       abstract_fcom & operator= (abstract_fcom && wzor);
       virtual ~abstract_fcom ();
       
-      virtual std::string extra_report();
+      virtual std::string extra_report() const;
    };
 }
 

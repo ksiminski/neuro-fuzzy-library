@@ -61,7 +61,23 @@ namespace ksi
       */
      weighted_annbfis (int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, double positive_class, double negative_class, const ksi::roc_threshold threshold_type);
        
-       
+     
+   public:   
+     /** constructor
+      * @param nRules number of rules
+      * @param nClusteringIterations number of clustering iterations
+      * @param nTuningIterations number of tuning iterations
+      * @param dbLearningCoefficient learning coefficient for gradient method
+      * @param tnorm a t-norm
+      * @param imp implication
+      * @param dbPositiveClass label of a positive class
+      * @param dbNegativeClass label of a negative class
+      * @param threshold_value classification threshold value 
+      * @date  2024-05-09
+      */
+     weighted_annbfis (int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, double positive_class, double negative_class, const double threshold_value);
+     
+     
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations

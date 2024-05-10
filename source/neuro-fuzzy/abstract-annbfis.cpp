@@ -436,6 +436,45 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
     _minimal_typicality = dbMinimalTypicality;
 }
 
+ksi::abstract_annbfis::abstract_annbfis(int nRules, double dbFrobeniusEpsilon, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, const partitioner& Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality) : neuro_fuzzy_system() 
+{
+   _nRules = nRules;
+   _dbFrobeniusEpsilon = dbFrobeniusEpsilon;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   if (not _pImplication)
+      _pImplication = imp.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   _minimal_typicality = dbMinimalTypicality;
+}
+
+ksi::abstract_annbfis::abstract_annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, const partitioner& Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality): neuro_fuzzy_system() 
+{
+   _nRules = nRules;
+   _nClusteringIterations = nClusteringIterations;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   if (not _pImplication)
+      _pImplication = imp.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   _minimal_typicality = dbMinimalTypicality;
+}
 
 ksi::partition ksi::abstract_annbfis::doPartition(const ksi::dataset& X)
 {

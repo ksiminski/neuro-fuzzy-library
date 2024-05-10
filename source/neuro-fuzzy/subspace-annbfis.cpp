@@ -1,9 +1,5 @@
 /** @file */
 
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <string>
 #include <numeric>
 
@@ -15,21 +11,11 @@
 #include "../partitions/cluster.h"
 #include "../partitions/sfcm.h"
 #include "../tnorms/t-norm-product.h"
-#include "../implications/imp-reichenbach.h"
-#include "../descriptors/descriptor-gaussian-subspace.h"
 #include "../auxiliary/least-error-squares-regression.h"
-#include "../auxiliary/tempus.h"
-#include "../auxiliary/confusion-matrix.h"
 #include "../auxiliary/roc.h"
-#include "../service/debug.h"
 #include "../auxiliary/error-RMSE.h"
-#include "../auxiliary/error-MAE.h"
-#include "../readers/reader-complete.h"
-#include "../common/data-modifier-normaliser.h"
 #include "../partitions/partition.h"
-#include "../gan/discriminative_model.h"
-#include "../gan/generative_model.h"
-
+// #include "../service/debug.h"
 
 void ksi::subspace_annbfis::set_name()
 {
@@ -92,6 +78,24 @@ ksi::subspace_annbfis::subspace_annbfis(int nRules,
              ) : neuro_fuzzy_system(), 
                  abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::sfcm (nRules, nClusteringIterations), positive_class, negative_class, threshold_type),   
                  annbfis(nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, positive_class, negative_class, threshold_type)
+{
+   init_name();  
+}
+
+
+ksi::subspace_annbfis::subspace_annbfis(int nRules, 
+                                        int nClusteringIterations, 
+                                        int nTuningIterations, 
+                                        double dbLearningCoefficient,
+                                        bool bNormalisation,
+                                        const t_norm & tnorm,
+                                        const implication & imp,
+                                        double positive_class, 
+                                        double negative_class, 
+                                        double threshold_value
+) : neuro_fuzzy_system(), 
+abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::sfcm (nRules, nClusteringIterations), positive_class, negative_class, threshold_value),   
+annbfis(nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, positive_class, negative_class, threshold_value)
 {
    init_name();  
 }

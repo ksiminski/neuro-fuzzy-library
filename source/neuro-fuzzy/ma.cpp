@@ -1,43 +1,17 @@
 /** @file */
 
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <numeric>
 #include <cmath>
-#include <map>
-#include <deque>
+#include <string>
 
-#include "../neuro-fuzzy/ma.h" 
-#include "../neuro-fuzzy/abstract-ma.h"
-#include "../neuro-fuzzy/neuro-fuzzy-system.h"
-#include "../neuro-fuzzy/rule.h"
-#include "../neuro-fuzzy/premise.h"
-#include "../neuro-fuzzy/consequence-MA.h"
-#include "../tnorms/t-norm-product.h"
-#include "../partitions/cluster.h"
-#include "../partitions/fcm.h"
-#include "../partitions/partition.h"
-#include "../tnorms/t-norm-product.h"
-#include "../implications/imp-reichenbach.h"
-#include "../descriptors/descriptor-gaussian.h"
-#include "../auxiliary/least-error-squares-regression.h"
-#include "../auxiliary/tempus.h"
-#include "../auxiliary/clock.h"
-#include "../auxiliary/confusion-matrix.h"
 #include "../auxiliary/roc.h"
-#include "../service/debug.h"
-#include "../auxiliary/error-RMSE.h"
-#include "../auxiliary/error-MAE.h"
-#include "../common/number.h"
-#include "../readers/reader-complete.h"
-#include "../common/data-modifier.h"
-#include "../common/data-modifier-normaliser.h"
-#include "../partitions/partition.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
+#include "../neuro-fuzzy/abstract-ma.h"
+#include "../neuro-fuzzy/ma.h" 
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
+#include "../partitions/fcm.h"
+#include "../partitions/partition.h"
+#include "../partitions/partition.h"
  
 ksi::partition ksi::ma::doPartition(const ksi::dataset& X)
 {
@@ -136,6 +110,29 @@ ksi::ma::ma(int nRules,
     _threshold_type = threshold_type;
     
     set_name();
+}
+
+ksi::ma::ma(int nRules, 
+            int nClusteringIterations, 
+            int nTuningIterations, 
+            double dbLearningCoefficient, 
+            bool bNormalisation, 
+            const ksi::t_norm & tnorm, 
+            double positive_class, 
+            double negative_class, 
+            const double threshold_value)
+: neuro_fuzzy_system ( ksi::fcm (nRules, nClusteringIterations)),
+abstract_ma (nRules, nClusteringIterations,
+             nTuningIterations, dbLearningCoefficient,
+             bNormalisation, tnorm, ksi::fcm (nRules, nClusteringIterations),
+             positive_class, negative_class, threshold_value)
+{
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   
+   set_name();
 }
 
 ksi::neuro_fuzzy_system * ksi::ma::clone() const

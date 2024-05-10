@@ -31,12 +31,18 @@ ksi::weighted_annbfis::weighted_annbfis(int nRules,
                       double positive_class, 
                       double negative_class, 
                       const ksi::roc_threshold threshold_type
-) :// neuro_fuzzy_system(ksi::fcm(nRules, nClusteringIterations))
-//,  
+) : 
 abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_type )
 {
    set_name();
 }
+
+ksi::weighted_annbfis::weighted_annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, double positive_class, double negative_class, const double threshold_value): 
+abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fcm(nRules, nClusteringIterations), positive_class, negative_class, threshold_value)
+{
+   set_name();
+}
+
 
 ksi::weighted_annbfis::weighted_annbfis (const ksi::weighted_annbfis & wzor) : ksi::neuro_fuzzy_system(wzor), ksi::abstract_annbfis(wzor)
 {

@@ -79,6 +79,23 @@ namespace ksi
 
       /** constructor
        * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @param Partitioner partition method object
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_value classification threshold value 
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_annbfis (int nRules, int nClusteringIterations, int nTuningIterations,
+                        double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, const partitioner & Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality = -1);
+      
+      /** constructor
+       * @param nRules number of rules
        * @param dbFrobeniusEpsilon epsilon for Frobenius norm in clustering
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
@@ -94,6 +111,24 @@ namespace ksi
       abstract_annbfis (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, const partitioner & Partitioner, double positive_class, double negative_class, ksi::roc_threshold threshold_type, const double dbMinimalTypicality = -1);
 
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobenius norm in clustering
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @param Partitioner partition method object
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_value classification threshold value 
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_annbfis (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
+                        double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const implication & imp, const partitioner & Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality = -1);
+      
+      
       
       abstract_annbfis(const abstract_annbfis & a);
       abstract_annbfis(abstract_annbfis && a);
@@ -109,9 +144,6 @@ namespace ksi
       ~abstract_annbfis();
       
       
-      
- 
-      
    public:     
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
@@ -126,7 +158,7 @@ namespace ksi
       virtual void createFuzzyRulebase (
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
-         const dataset & train, const dataset & validation); 
+         const dataset & train, const dataset & validation) override; 
       
 
    public:   

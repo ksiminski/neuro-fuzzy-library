@@ -17,6 +17,7 @@ std::string ksi::to_string (const ksi::roc_threshold & th)
         case ksi::roc_threshold::mean             : return "mean";
         case ksi::roc_threshold::minimal_distance : return "minimal-distance";
         case ksi::roc_threshold::youden           : return "youden";
+        case ksi::roc_threshold::manual           : return "manual";
         case ksi::roc_threshold::none             : return "none";
         default                                   : return "error";
     }
@@ -24,7 +25,7 @@ std::string ksi::to_string (const ksi::roc_threshold & th)
 
 double ksi::roc::trapezoidArea(double x1, double x2, double y1, double y2)
 {
-    return abs(x1 - x2) * (y1 + y2) / 2;
+    return fabs(x1 - x2) * (y1 + y2) / 2;
 }
 
 ksi::results ksi::roc::calculate_ROC_points (std::vector<double> & Out,
@@ -69,7 +70,7 @@ ksi::results ksi::roc::calculate_ROC_points (std::vector<double> & Out,
              iter != Out.end();
              iter++)
         {
-            if (abs(*iter - negativeClassvalue) < epsilon) // negative
+            if (fabs(*iter - negativeClassvalue) < epsilon) // negative
                nNeg++;
             else
                nPos++;
@@ -96,7 +97,7 @@ ksi::results ksi::roc::calculate_ROC_points (std::vector<double> & Out,
             points.push_back(punkt);
             
             
-            if (abs(iter->first - negativeClassvalue) < epsilon) // negative
+            if (fabs(iter->first - negativeClassvalue) < epsilon) // negative
             {
                nFP--;
                //cerr << "n ";

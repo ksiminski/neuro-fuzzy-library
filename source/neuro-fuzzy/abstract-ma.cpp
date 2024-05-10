@@ -296,6 +296,63 @@ ksi::abstract_ma::abstract_ma(int nRules,
     _minimal_typicality = dbMinimalTypicality;
 }
 
+
+ksi::abstract_ma::abstract_ma(int nRules, 
+                              double dbFrobeniusEpsilon, 
+                              int nTuningIterations, 
+                              double dbLearningCoefficient, 
+                              bool bNormalisation, 
+                              const ksi::t_norm & tnorm,
+                              const ksi::partitioner & Partitioner, 
+                              double positive_class, 
+                              double negative_class, 
+                              const double threshold_value, 
+                              const double dbMinimalTypicality)
+{
+   _nRules = nRules;
+   _dbFrobeniusEpsilon = dbFrobeniusEpsilon;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   _minimal_typicality = dbMinimalTypicality;
+}
+
+
+ksi::abstract_ma::abstract_ma(int nRules, 
+                              int nClusteringIterations, 
+                              int nTuningIterations, 
+                              double dbLearningCoefficient, 
+                              bool bNormalisation, 
+                              const ksi::t_norm & tnorm, 
+                              const partitioner & Partitioner, 
+                              double positive_class, 
+                              double negative_class, 
+                              ksi::roc_threshold threshold_type, 
+                              const double dbMinimalTypicality)
+{
+   _nRules = nRules;
+   _nClusteringIterations = nClusteringIterations;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = threshold_type;
+   _minimal_typicality = dbMinimalTypicality;
+}
+
 ksi::abstract_ma::abstract_ma(int nRules, 
             int nClusteringIterations, 
             int nTuningIterations, 
@@ -305,17 +362,8 @@ ksi::abstract_ma::abstract_ma(int nRules,
             const partitioner & Partitioner, 
             double positive_class, 
             double negative_class, 
-            ksi::roc_threshold threshold_type, 
-              const double dbMinimalTypicality)
-/*  : abstract_ma (nRules, 
-                 nClusteringIterations, 
-                 nTuningIterations, 
-                 dbLearningCoefficient, 
-                 bNormalisation, 
-                 tnorm, 
-                 Partitioner, 
-                 dbMinimalTypicality)
-*/
+            const double threshold_value, 
+            const double dbMinimalTypicality)
 {
     _nRules = nRules;
     _nClusteringIterations = nClusteringIterations;
@@ -328,7 +376,8 @@ ksi::abstract_ma::abstract_ma(int nRules,
        _pPartitioner = Partitioner.clone();
     _positive_class = positive_class;
     _negative_class = negative_class;
-    _threshold_type = threshold_type;
+    _threshold_type = ksi::roc_threshold::manual;
+    _threshold_value = threshold_value;
     _minimal_typicality = dbMinimalTypicality;
 }
 

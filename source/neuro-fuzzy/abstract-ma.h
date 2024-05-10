@@ -54,6 +54,21 @@ namespace ksi
        */
       abstract_ma (int nRules, int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner, double positive_class, double negative_class, ksi::roc_threshold threshold_type, const double dbMinimalTypicality = -1);
+
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_value threshold value for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       */
+      abstract_ma (int nRules, int nClusteringIterations, int nTuningIterations,
+                   double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner, double positive_class, double negative_class, const double threshold_value, const double dbMinimalTypicality = -1);
+      
       
  
       /** constructor
@@ -74,6 +89,24 @@ namespace ksi
                     double positive_class, double negative_class, ksi::roc_threshold threshold_type, const double dbMinimalTypicality = -1
     );
 
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param Partitioner clustering object
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_value threshold value for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_ma (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
+                   double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner,
+                   double positive_class, double negative_class, const double threshold_value, const double dbMinimalTypicality = -1
+      );
+      
       
       /** constructor
        * @param nRules number of rules

@@ -3,7 +3,7 @@
 #ifndef TSK_H
 #define TSK_H
 
-
+#include <limits>
 #include <vector>
 #include <iostream>
 
@@ -26,9 +26,7 @@ namespace ksi
     */
    class tsk : public abstract_tsk
    {
-      
    public:
-      
       tsk();      
       
       /** constructor
@@ -57,8 +55,6 @@ namespace ksi
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
           const ksi::data_modifier & modifier);
 
-
-
       /** constructor
        * @param nRules number of rules
        * @param nClusteringIterations number of clustering iterations
@@ -70,8 +66,21 @@ namespace ksi
        * @param threshold_type classification threshold type 
        * @date  2019-12-22
        */
-      tsk (int nRules, int nClusteringIterations, int nTuningIterations,
-         double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, double positive_class, double negative_class, ksi::roc_threshold threshold_type);
+      tsk (const int nRules, const int nClusteringIterations, const int nTuningIterations, const double dbLearningCoefficient, const bool bNormalisation, const t_norm & tnorm, const double positive_class, const double negative_class, const ksi::roc_threshold threshold_type);
+
+
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_value classification threshold value 
+       * @date  2024-05-09
+       */
+      tsk (const int nRules, const int nClusteringIterations, const int nTuningIterations, const double dbLearningCoefficient, const bool bNormalisation, const t_norm & tnorm, const double positive_class, const double negative_class, const double threshold_value = 0.5);
 
 
       /** constructor
@@ -86,11 +95,21 @@ namespace ksi
        * @param modifier data modifier one or a chain of modifiers
        * @date  2021-01-09
        */
-      tsk (int nRules, int nClusteringIterations, int nTuningIterations,
-         double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, double positive_class, double negative_class, ksi::roc_threshold threshold_type,
-          const ksi::data_modifier & modifier);
-
+      tsk (const int nRules, const int nClusteringIterations, const int nTuningIterations, const double dbLearningCoefficient, const bool bNormalisation, const t_norm & tnorm, const double positive_class, const double negative_class, const ksi::roc_threshold threshold_type, const ksi::data_modifier & modifier);
       
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param modifier data modifier one or a chain of modifiers
+       * @param threshold_type classification threshold type 
+       * @date  2024-05-09
+       */
+      tsk (const int nRules, const int nClusteringIterations, const int nTuningIterations, const double dbLearningCoefficient, const bool bNormalisation, const t_norm & tnorm, const double positive_class, const double negative_class, const ksi::data_modifier & modifier, const double threshold_value = 0.5);
       
       /** 
        * @param trainDataFile 

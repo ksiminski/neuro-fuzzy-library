@@ -25,7 +25,6 @@ double ksi::confusion_matrix::TestF1score (const ksi::result & r)
    return (2.0 * recall * precision) / (recall + precision);
 }
 
-
 std::string ksi::confusion_matrix::ca(int n)
 {
    std::stringstream ss;

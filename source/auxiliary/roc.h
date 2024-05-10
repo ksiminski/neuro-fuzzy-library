@@ -16,6 +16,7 @@ namespace ksi
       mean,             ///< mean value of positive and negative class labels
       youden,           ///< Youden criterion
       minimal_distance, ///< minimal distance of ROC to point (0, 1) 
+      manual,           ///< the threshold value must be set manually
       none              ///< none
    };
    

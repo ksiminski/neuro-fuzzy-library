@@ -3,6 +3,7 @@
 #ifndef MA_H
 #define MA_H
 
+#include <limits>
 #include <vector>
 #include <iostream>
 
@@ -42,6 +43,8 @@ namespace ksi
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm);
       ma (int nRules, int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, double positive_class, double negative_class, ksi::roc_threshold threshold_type);
+      ma (int nRules, int nClusteringIterations, int nTuningIterations,
+          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, double positive_class, double negative_class, const double threshold_value = 0.5);
       
       ma(const ma & a);
       ma(ma && a);

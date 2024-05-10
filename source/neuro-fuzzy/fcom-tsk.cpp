@@ -119,6 +119,30 @@ ksi::fcom_tsk::fcom_tsk(int nRules,
      _pOwa = Owa.clone(); 
 }
 
+ksi::fcom_tsk::fcom_tsk(int nRules, 
+                        double dbFrobeniusEpsilon, 
+                        int nTuningIterations, 
+                        double dbLearningCoefficient, 
+                        bool bNormalisation, 
+                        const ksi::t_norm& tnorm,  
+                        const ksi::dissimilarity & Dissimilarity, 
+                        const ksi::owa & Owa, 
+                        double positive_class, 
+                        double negative_class, 
+                        const double threshold_value, 
+                        const double dbMinimalTypicality)
+: abstract_tsk(nRules, dbFrobeniusEpsilon,
+               nTuningIterations, dbLearningCoefficient,
+               bNormalisation, tnorm, ksi::fcom(nRules, dbFrobeniusEpsilon, Dissimilarity, Owa), 
+               positive_class, negative_class, threshold_value,
+               dbMinimalTypicality
+) 
+{
+    set_name();
+    _pDissimilarity = Dissimilarity.clone();
+    _pOwa = Owa.clone(); 
+}
+
 
 ksi::fcom_tsk::~fcom_tsk()
 {
@@ -178,7 +202,7 @@ ksi::generative_model * ksi::fcom_tsk::clone_generator() const
 }
 
 
-std::string ksi::fcom_tsk::extra_report()
+std::string ksi::fcom_tsk::extra_report() const
 {
     std::stringstream ss;
     ss << ksi::abstract_fcom::extra_report();

@@ -78,6 +78,42 @@ namespace ksi
        * @param negative_class label for negative_class
        * @param threshold_type threshold type for classification
        * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_tsk (int nRules, int nClusteringIterations, int nTuningIterations,
+                    double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
+                    const partitioner & Partitioner,
+                    double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality = -1
+    );
+
+      /** constructor
+       * @param nRules number of rules
+       *  @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_type threshold type for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_tsk (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
+                    double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
+                    const partitioner & Partitioner,
+                    double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality = -1
+    );
+
+      /** constructor
+       * @param nRules number of rules
+       * @param nClusteringIterations number of clustering iterations
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_type threshold type for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
        * @date  2019-12-22
        */
       abstract_tsk (int nRules, int nClusteringIterations, int nTuningIterations,
@@ -136,7 +172,8 @@ namespace ksi
       abstract_tsk & operator = (abstract_tsk && a);
       ~abstract_tsk();
       
-      /** A constructor with partitioner                                                    * @date 2024-02-27 */
+      /** A constructor with partitioner 
+       *  @date 2024-02-27 */
       abstract_tsk (const partitioner & Partitioner);
       
    protected: 
@@ -188,8 +225,5 @@ namespace ksi
       
    };
 }
-
-
-
 
 #endif 

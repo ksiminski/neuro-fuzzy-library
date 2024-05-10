@@ -1,12 +1,13 @@
 /** @file */
 
 #include <algorithm>
+#include <cmath>
 #include <deque>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <syncstream>
+// #include <syncstream>
 #include <tuple>
 
 #include "../auxiliary/clock.h"
@@ -24,8 +25,7 @@
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/rulebase.h" 
 #include "../readers/reader-complete.h"
-#include "../service/debug.h"
-#include "../service/debug.h"
+// #include "../service/debug.h"
 
 
 
@@ -119,7 +119,6 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       model << "answers of a fuzzy system" << std::endl;
       model << "data file: " << trainDataFile << std::endl;
       model << "normalisation:   " << std::boolalpha << bNormalisation << std::endl;
-      
       
       model << "RMSE: " << blad_rmse_train << std::endl;
       model << "MAE:  " << blad_mae_train << std::endl;
@@ -248,10 +247,6 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(const ksi::dataset& trainData,
     _pPartitioner = nullptr;
     _pModyfikator = nullptr;
 }
-
-
-
-
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(const std::string & trainDataFile, 
                                             const std::string & testDataFile, 
@@ -586,6 +581,16 @@ double ksi::neuro_fuzzy_system::elaborate_threshold_value(
 {
     try     
     {
+        if (type == ksi::roc_threshold::manual)
+        {
+           if (std::isnan(_threshold_value))
+           {
+              throw std::string ("Threshold type is manual, but values is not set.");
+           }
+           else
+              return _threshold_value; 
+        }
+
         roc ROC;
         auto progi = ROC.calculate_ROC_points(Expected, Elaborated, positiveClassvalue, negativeClassvalue);
         
@@ -714,6 +719,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
                             nNumberofTuningIterations, dbLearningCoefficient,
                             _TrainDataset, _ValidationDataset);
         zegar.stop();
+        run_extra_activities_for_the_model();
 
         if (_pRulebase)
         {
@@ -735,13 +741,10 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
             throw ss.str();
         }
         
-        // thdebug(__LINE__);
         std::vector<double> wYtestExpected,  wYtestElaboratedClass,  wYtestElaboratedNumeric,
                             wYtrainExpected, wYtrainElaboratedClass, wYtrainElaboratedNumeric;
         
-        // thdebug(__LINE__);
         get_answers_for_train_classification();
-        // thdebug(__LINE__);
         for (const auto & answer : _answers_for_train)
         {
             double expected, el_numeric;
@@ -753,17 +756,13 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         model << classification_intro() << std::endl;
         if (threshold_type != ksi::roc_threshold::none)
             model << "classification threshold type: " << ksi::to_string(threshold_type) << std::endl;
-        // thdebug(__LINE__);
         _threshold_value = elaborate_threshold_value (wYtrainExpected, wYtrainElaboratedNumeric, dbPositiveClass, dbNegativeClass, threshold_type);
-        // thdebug(__LINE__);
 
         wYtrainElaboratedClass.clear();
         wYtrainElaboratedNumeric.clear();
         wYtrainExpected.clear();
         
-        // thdebug(__LINE__);
         get_answers_for_train_classification();
-        // thdebug(__LINE__);
         for (const auto & answer : _answers_for_train)
         {
             double expected, el_numeric, el_class;
@@ -777,9 +776,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         wYtestElaboratedNumeric.clear();
         wYtestExpected.clear();
         
-        // thdebug(__LINE__);
         get_answers_for_test_classification();
-        // thdebug(__LINE__);
         for (const auto & answer : _answers_for_test)
         {
             double expected, el_numeric, el_class;
@@ -789,9 +786,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
             wYtestElaboratedClass.push_back(el_class);
         }
             
-        // thdebug(__LINE__);
         model << get_classification_threshold_value();
-        // thdebug(__LINE__);
         
         model << "fuzzy rule base creation time: ";
         if (zegar.elapsed_seconds() > 10)
@@ -810,30 +805,24 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         
         model << std::endl;
         model << "confusion matrix for test data" << std::endl;
-        // thdebug(__LINE__);
         con_test.calculate_statistics(wYtestExpected, wYtestElaboratedClass,
-                                        dbPositiveClass, dbNegativeClass,
-                                        TP, TN, FP, FN);
-        // thdebug(__LINE__);
+                                      dbPositiveClass, dbNegativeClass,
+                                      TP, TN, FP, FN);
         
         wynik.TestPositive2Positive = TP;
         wynik.TestPositive2Negative = FN;
         wynik.TestNegative2Negative = TN;
         wynik.TestNegative2Positive = FP;
         
-        // thdebug(__LINE__);
         model << con_test.print(TP, TN, FP, FN);
-        // thdebug(__LINE__);
         model << std::endl;
         
         //----------------
         model << std::endl;
         model << "confusion matrix for train data" << std::endl;
-        // thdebug(__LINE__);
         con_test.calculate_statistics(wYtrainExpected, wYtrainElaboratedClass,
                                         dbPositiveClass, dbNegativeClass,
                                         TP, TN, FP, FN);
-        // thdebug(__LINE__);
         wynik.TrainPositive2Positive = TP;
         wynik.TrainPositive2Negative = FN;
         wynik.TrainNegative2Negative = TN;
@@ -856,7 +845,6 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         model << "answers for the train set" << std::endl;
         model << "expected\telaborated_numeric\telaborated_class" << std::endl;
 
-        // thdebug(__LINE__);
         for (const auto & answer : _answers_for_train)
         {
             double expected, el_numeric, el_class;
@@ -864,7 +852,6 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
             model << expected << "   " << el_numeric <<  "  " << el_class <<  std::endl;
         }
         
-        // thdebug(__LINE__);
         model << std::endl << std::endl;      
         model << "answers for the test set" << std::endl;
         model << "expected\telaborated_numeric\telaborated_class" << std::endl;
@@ -877,7 +864,6 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification_core(
         }
         
         model.close();        
-        // thdebug(__LINE__);
         
         return wynik;
    }
@@ -1574,7 +1560,13 @@ void ksi::neuro_fuzzy_system::set_positive_class(const double p)
 
 void ksi::neuro_fuzzy_system::set_threshold_type (const ksi::roc_threshold & th)
 {
-    this->_threshold_type = th;
+    _threshold_type = th;
+}
+
+void ksi::neuro_fuzzy_system::set_threshold_value (const double value)
+{
+    _threshold_value = value;
+    _threshold_type  = ksi::roc_threshold::manual;
 }
 
 double ksi::neuro_fuzzy_system::modify_learning_coefficient(const double learning_coefficient, const std::deque<double>& errors)
@@ -1620,6 +1612,11 @@ std::string ksi::neuro_fuzzy_system::report_average_number_of_rules_for_train() 
     return {};
 }
 
-
+void ksi::neuro_fuzzy_system::run_extra_activities_for_the_model()
+{
+   // The body is empty. If some extra activities is needed after
+   // the model has been created, the class implements 
+   // a non-empty body of this method.
+}
 
 
