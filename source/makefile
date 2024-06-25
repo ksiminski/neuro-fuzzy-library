@@ -46,6 +46,9 @@ libasan=
 __ : $(release_folder) $(release_folder)/main
 	./$(release_folder)/main
 	
+9 :  $(release_folder) $(release_folder)/main
+	./$(release_folder)/main  9  
+		
 1 :  $(release_folder) $(release_folder)/main
 	./$(release_folder)/main  1  
 		
@@ -186,6 +189,14 @@ $(release_folder)/readers-reader-complete.o : readers/reader-complete.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader-complete.o : readers/reader-complete.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-train_test_model.o : readers/train_test_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-train_test_model.o : readers/train_test_model.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-cross_validation_model.o : readers/cross_validation_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-cross_validation_model.o : readers/cross_validation_model.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/readers-reader.o : readers/reader.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader.o : readers/reader.cpp
@@ -197,6 +208,10 @@ $(debug_folder)/readers-weighted_reader_complete.o : readers/weighted_reader_com
 $(release_folder)/readers-reader-incomplete.o : readers/reader-incomplete.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader-incomplete.o : readers/reader-incomplete.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-train_validation_test_model.o : readers/train_validation_test_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-train_validation_test_model.o : readers/train_validation_test_model.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/implications-imp-kleene-dienes.o : implications/imp-kleene-dienes.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -955,6 +970,7 @@ $(release_folder)/metrics-metric-chebyshev.o \
 $(release_folder)/common-data-modifier-imputer-knn-average.o \
 $(release_folder)/tnorms-t-norm-frank.o \
 $(release_folder)/partitions-cluster.o \
+$(release_folder)/readers-cross_validation_model.o \
 $(release_folder)/partitions-fcm-possibilistic.o \
 $(release_folder)/common-data-modifier-filter.o \
 $(release_folder)/auxiliary-tempus.o \
@@ -1023,8 +1039,8 @@ $(release_folder)/partitions-fcm.o \
 $(release_folder)/neuro-fuzzy-ma.o \
 $(release_folder)/descriptors-descriptor-interval-gaussian-subspace.o \
 $(release_folder)/descriptors-descriptor-triangular.o \
-$(release_folder)/readers-weighted_reader_complete.o \
 $(release_folder)/implications-imp-fodor.o \
+$(release_folder)/readers-weighted_reader_complete.o \
 $(release_folder)/snorms-s-norm-lukasiewicz.o \
 $(release_folder)/tnorms-t-norm-lukasiewicz.o \
 $(release_folder)/common-data-modifier-imputer-knn-median.o \
@@ -1079,6 +1095,7 @@ $(release_folder)/tnorms-t-norm-product.o \
 $(release_folder)/partitions-fcm-T.o \
 $(release_folder)/neuro-fuzzy-granular_subspace_annbfis_classification.o \
 $(release_folder)/neuro-fuzzy-granular_nfs.o \
+$(release_folder)/readers-train_test_model.o \
 $(release_folder)/auxiliary-mathematics.o \
 $(release_folder)/tnorms-t-norm-fodor.o \
 $(release_folder)/neuro-fuzzy-consequence-MA.o \
@@ -1087,6 +1104,7 @@ $(release_folder)/descriptors-descriptor-gaussian-subspace.o \
 $(release_folder)/descriptors-descriptor-singleton.o \
 $(release_folder)/common-datum.o \
 $(release_folder)/neuro-fuzzy-fac_prototype_minkowski_regression.o \
+$(release_folder)/readers-train_validation_test_model.o \
 $(release_folder)/metrics-metric-minkowski.o \
 $(release_folder)/tnorms-t-norm-sugeno-weber.o \
 $(release_folder)/common-data-modifier-normaliser.o \
@@ -1166,6 +1184,7 @@ $(debug_folder)/metrics-metric-chebyshev.o \
 $(debug_folder)/common-data-modifier-imputer-knn-average.o \
 $(debug_folder)/tnorms-t-norm-frank.o \
 $(debug_folder)/partitions-cluster.o \
+$(debug_folder)/readers-cross_validation_model.o \
 $(debug_folder)/partitions-fcm-possibilistic.o \
 $(debug_folder)/common-data-modifier-filter.o \
 $(debug_folder)/auxiliary-tempus.o \
@@ -1234,8 +1253,8 @@ $(debug_folder)/partitions-fcm.o \
 $(debug_folder)/neuro-fuzzy-ma.o \
 $(debug_folder)/descriptors-descriptor-interval-gaussian-subspace.o \
 $(debug_folder)/descriptors-descriptor-triangular.o \
-$(debug_folder)/readers-weighted_reader_complete.o \
 $(debug_folder)/implications-imp-fodor.o \
+$(debug_folder)/readers-weighted_reader_complete.o \
 $(debug_folder)/snorms-s-norm-lukasiewicz.o \
 $(debug_folder)/tnorms-t-norm-lukasiewicz.o \
 $(debug_folder)/common-data-modifier-imputer-knn-median.o \
@@ -1290,6 +1309,7 @@ $(debug_folder)/tnorms-t-norm-product.o \
 $(debug_folder)/partitions-fcm-T.o \
 $(debug_folder)/neuro-fuzzy-granular_subspace_annbfis_classification.o \
 $(debug_folder)/neuro-fuzzy-granular_nfs.o \
+$(debug_folder)/readers-train_test_model.o \
 $(debug_folder)/auxiliary-mathematics.o \
 $(debug_folder)/tnorms-t-norm-fodor.o \
 $(debug_folder)/neuro-fuzzy-consequence-MA.o \
@@ -1298,6 +1318,7 @@ $(debug_folder)/descriptors-descriptor-gaussian-subspace.o \
 $(debug_folder)/descriptors-descriptor-singleton.o \
 $(debug_folder)/common-datum.o \
 $(debug_folder)/neuro-fuzzy-fac_prototype_minkowski_regression.o \
+$(debug_folder)/readers-train_validation_test_model.o \
 $(debug_folder)/metrics-metric-minkowski.o \
 $(debug_folder)/tnorms-t-norm-sugeno-weber.o \
 $(debug_folder)/common-data-modifier-normaliser.o \

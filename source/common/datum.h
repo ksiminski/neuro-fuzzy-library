@@ -202,10 +202,25 @@ namespace ksi
        @author Krzysztof Siminski */
       std::size_t getNumberOfLabels () const;
       
-      /** Output stream operator
-        @date 2018-05-13
+      /** Output stream operator for datum.
+		* 
+        * @param ss The output stream.
+        * @param d The datum to write to the stream.
+        * @return The output stream with the datum written to it.
+        * @date 2018-05-13
         */
       friend std::ostream & operator << (std::ostream & ss, const datum & d);
+
+      /**
+       * Prints the datum to the provided output stream in the required format.
+       * Numerical attributes are separated from symbolical labels with a bar '|'.
+       * Example format: 1.2 5.6 7.8 | A B
+       *
+       * @param os The output stream to print the datum.
+       * @date 2024-06-10
+       * @author Konrad Wnuk
+       */
+      void save_print(std::ostream& os) const;
    };
 }
 

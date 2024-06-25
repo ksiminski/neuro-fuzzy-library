@@ -36,3 +36,9 @@ source/results/
 *.exe
 *.out
 *.app
+/neuro-fu.993AC922/x64
+/results/exp-005
+/doxygen/html
+/.vs
+# Temporary VS file
+*.pdb
