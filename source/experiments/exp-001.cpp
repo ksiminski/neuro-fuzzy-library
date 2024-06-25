@@ -90,7 +90,6 @@ void ksi::exp_001::execute()
          std::cout << dane << std::endl;
          std::cout << std::endl;
 
-
          {
             const double n { 1 }; 
             auto data = dane;
@@ -100,7 +99,6 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
-
 
          {
             const double n { 3 }; 
@@ -121,9 +119,7 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
-
       }
-
 
       // incomplete data
       {
@@ -225,7 +221,6 @@ void ksi::exp_001::execute()
             std::cout << marg << std::endl;
             std::cout << std::endl;
             std::cout << imputer.print() << std::endl;
-
          }
 
          {
@@ -258,6 +253,7 @@ void ksi::exp_001::execute()
             std::cout << std::endl;
             std::cout << dm1.print() << std::endl;
          }
+
          {
             std::cout << std::endl;
             std::cout << "==================================" << std::endl;
@@ -277,7 +273,7 @@ void ksi::exp_001::execute()
                tt.read_and_split_file(dataDir + CompleteDataset, chunks);
 
                int counter { 1 };
-               for (const auto & [train, test] : tt)
+               for (const auto & [train, test] : tt) // std::tuple<ksi::dataset, ksi::dataset>
                {
                   std::cout << "chunk: " <<  counter++ << ", train dataset size: " <<  train.size() << ", test data set size: " << test.size() << std::endl; 
                }
@@ -296,15 +292,11 @@ void ksi::exp_001::execute()
                tvt.read_and_split_file(dataDir + CompleteDataset, chunks);
 
                int counter { 1 };
-               for (const auto & [train, validate, test] : tvt)
+               for (const auto & [train, validate, test] : tvt) // std::tuple<ksi::dataset, ksi::dataset, ksi::dataset>
                {
                   std::cout << "chunk: " <<  counter++ << ", train dataset size: " <<  train.size() << ", validation data set size: " << validate.size() << ", test data set size: " << test.size() << std::endl; 
                }
             }
-
-
-
-
          }
       } 
    }
