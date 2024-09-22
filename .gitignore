@@ -40,5 +40,6 @@ source/results/
 /results/exp-005
 /doxygen/html
 /.vs
+/.vscode
 # Temporary VS file
 *.pdb
