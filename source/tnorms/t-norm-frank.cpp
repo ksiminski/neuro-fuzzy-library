@@ -25,7 +25,7 @@ std::ostream & ksi::t_norm_frank::Print(std::ostream& ss) const
    return ss << "Frank (s = " << _parameter << ") t-norm";
 }
 
-double ksi::t_norm_frank::tnorm(double a, double b) const
+double ksi::t_norm_frank::tnorm(const double a, const double b) const
 {
    if (_parameter == 0)
       return std::min(a, b);

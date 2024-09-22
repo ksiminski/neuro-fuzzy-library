@@ -22,7 +22,7 @@ ksi::t_norm_sugeno_weber::t_norm_sugeno_weber(double s) : t_norm_parametrized (s
 {
 }
 
-double ksi::t_norm_sugeno_weber::tnorm(double a, double b) const
+double ksi::t_norm_sugeno_weber::tnorm(const double a, const double b) const
 {
    if (_parameter == -1.0)
    {

@@ -103,6 +103,11 @@ namespace ksi
        */
       number operator / (const double d);
       
+      /** The method make a number non-existing.
+       @date 2024-09-22
+       @author Krzysztof Siminski */
+      void make_non_existing();
+      
       /** output operator for a number
         @date 2018-04-03
         */

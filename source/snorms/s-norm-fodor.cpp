@@ -5,7 +5,7 @@
 #include "s-norm-fodor.h"
 #include "s-norm.h"
  
-double ksi::s_norm_fodor::snorm (double a, double b) const
+double ksi::s_norm_fodor::snorm (const double a, const double b) const
 {
    if (a + b < 1)
       return std::max(a, b);

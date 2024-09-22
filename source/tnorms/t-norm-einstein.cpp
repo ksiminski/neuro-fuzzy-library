@@ -5,7 +5,7 @@
 #include "t-norm-einstein.h"
 #include "t-norm.h"
  
-double ksi::t_norm_einstein::tnorm (double a, double b) const
+double ksi::t_norm_einstein::tnorm (const double a, const double b) const
 {
    return (a * b) / (2 - (a + b - a * b));
 }

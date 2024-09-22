@@ -15,7 +15,7 @@ namespace ksi
    struct s_norm_sum : public s_norm
    {
       /** value of S-norm: \f$ S(a, b) = a + b - ab \f$ */
-      virtual double snorm (double, double) const;
+      virtual double snorm (const double, const double) const;
       virtual s_norm * clone() const ;
       
       /** The method prints an object into output stream.

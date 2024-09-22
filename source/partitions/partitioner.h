@@ -3,11 +3,8 @@
 #ifndef PARTITIONER_H
 #define PARTITIONER_H
 
-
-
 #include "partition.h"
 #include "../common/dataset.h"
-
 
 namespace ksi
 {

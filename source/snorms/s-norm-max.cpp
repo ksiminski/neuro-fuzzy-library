@@ -6,7 +6,7 @@
 #include "s-norm.h"
 
  
-double ksi::s_norm_max::snorm (double a, double b) const
+double ksi::s_norm_max::snorm (const double a, const double b) const
 {
    return std::max(a, b);
 }

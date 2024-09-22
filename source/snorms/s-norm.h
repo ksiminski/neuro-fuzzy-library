@@ -12,7 +12,7 @@ namespace ksi
     */
    struct s_norm 
    {
-      virtual double snorm (double, double) const = 0;
+      virtual double snorm (const double, const double) const = 0;
       virtual s_norm * clone() const = 0; 
       
       /** The method prints an object into output stream.

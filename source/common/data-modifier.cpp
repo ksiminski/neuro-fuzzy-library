@@ -60,29 +60,12 @@ ksi::data_modifier & ksi::data_modifier::operator=(ksi::data_modifier&& dm)
    return *this;
 }
 
-/*
-ksi::data_modifier* ksi::data_modifier::clone() const
-{
-   return new data_modifier (*this);
-}
-*/
-
 ksi::data_modifier::~data_modifier()
 {
    if (pNext)
       delete pNext;
 }
 
-/*
-void ksi::data_modifier::modify(ksi::dataset& ds)
-{
-   // empty methods -- modifies nothing
-   
-   // only calles the modify method of the next modifier:
-   if (pNext)
-      pNext->modify(ds);
-}
-*/
 void ksi::data_modifier::addModifier(ksi::data_modifier & dm)
 {
    if (pNext == nullptr)
@@ -90,7 +73,6 @@ void ksi::data_modifier::addModifier(ksi::data_modifier & dm)
    else 
       pNext->addModifier(dm);
 }
-
 
 std::string ksi::data_modifier::print() const
 {

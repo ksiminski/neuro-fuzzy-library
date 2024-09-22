@@ -21,7 +21,7 @@ ksi::t_norm_schweizer_sklar::t_norm_schweizer_sklar(double s) : t_norm_parametri
 {
 }
 
-double ksi::t_norm_schweizer_sklar::tnorm(double a, double b) const
+double ksi::t_norm_schweizer_sklar::tnorm(const double a, const double b) const
 {
    if (_parameter == 0)
       return a * b;

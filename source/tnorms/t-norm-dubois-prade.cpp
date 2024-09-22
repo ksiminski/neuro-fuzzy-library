@@ -26,7 +26,7 @@ ksi::t_norm_dubois_prade::~t_norm_dubois_prade()
 {
 }
 
-double ksi::t_norm_dubois_prade::tnorm(double a, double b) const
+double ksi::t_norm_dubois_prade::tnorm(const double a, const double b) const
 {
    return (a * b) / (std::max( std::max (a, b), _parameter));
 }

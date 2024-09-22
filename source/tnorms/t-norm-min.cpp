@@ -6,7 +6,7 @@
 #include "t-norm.h"
 
  
-double ksi::t_norm_min::tnorm (double a, double b) const
+double ksi::t_norm_min::tnorm (const double a, const double b) const
 {
    return std::min(a, b);
 }

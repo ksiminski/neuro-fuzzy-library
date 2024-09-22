@@ -4,7 +4,7 @@
 #include "s-norm-einstein.h"
 #include "s-norm.h"
  
-double ksi::s_norm_einstein::snorm (double a, double b) const
+double ksi::s_norm_einstein::snorm (const double a, const double b) const
 {
    return (a + b) / (1 + (a * b));
 }

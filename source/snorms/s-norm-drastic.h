@@ -18,7 +18,7 @@ namespace ksi
     
       /** value of S-norm: \f$ S(a, b) = \max(a, b)\f$ for \f$ a = 0 \f$ or \f$ b = 0 \f$  
           and \f$ S(a, b) =  1 \f$ otherwise*/
-      virtual double snorm (double, double) const;
+      virtual double snorm (const double, const double) const;
       virtual s_norm * clone() const ;
       /** The method prints an object into output stream.
       * @param ss an output stream to print to

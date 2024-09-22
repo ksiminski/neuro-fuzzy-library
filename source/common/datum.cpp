@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <format>
 
 #include "../common/datum.h"
 #include "../common/number.h"
@@ -289,12 +290,13 @@ namespace ksi
       if (d.pDecision)
           ss <<" (decision == " << *d.pDecision << ")"; 
       
-      ss << " (weight == " << d._weight << ")";
+      if (d._weight < 1.0)
+          ss << " (weight == " << d._weight << ")";
       
       //ss << " id == " << d.getID() << ", id_incomplete == " << d.getIDincomplete();
       if (not d._labels.empty())
       {
-          ss << " labels: ";  // " | "
+          ss << " labels: ";
           for (const auto & l : d._labels)
               ss << l << " ";
       }
@@ -413,3 +415,16 @@ void ksi::datum::save_print(std::ostream& os) const
     os << std::endl;
 }
 
+void ksi::datum::make_attribute_incomplete(std::size_t attribute)
+{
+    try 
+    {
+        if (attribute > attributes.size() - 1)
+        {
+            throw std::format ("The attribute index ({}) is incorrect. Legal values are [{}, {}].", attribute, 0, attributes.size() - 1);
+        }
+        
+        attributes[attribute]->make_non_existing();
+    }
+    CATCH;
+}

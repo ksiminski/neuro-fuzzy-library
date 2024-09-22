@@ -21,7 +21,7 @@ ksi::t_norm * ksi::t_norm_yager::clone() const
    return new t_norm_yager(_parameter);
 }
 
-double ksi::t_norm_yager::tnorm(double a, double b) const
+double ksi::t_norm_yager::tnorm(const double a, const double b) const
 {
    if (_parameter == 0)
    {

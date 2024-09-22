@@ -202,6 +202,13 @@ namespace ksi
        @author Krzysztof Siminski */
       std::size_t getNumberOfLabels () const;
       
+      /** The methods makes an attribute missing. 
+       @param attribute index of an attribute to be made missing 
+       @date 2024-09-22
+       @author Krzysztof Siminski */
+      void make_attribute_incomplete (std::size_t attribute);
+
+
       /** Output stream operator for datum.
 		* 
         * @param ss The output stream.

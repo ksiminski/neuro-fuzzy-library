@@ -581,6 +581,10 @@ $(release_folder)/common-data-modifier-marginaliser.o : common/data-modifier-mar
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-marginaliser.o : common/data-modifier-marginaliser.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter.o : common/data_modifier_incompleter.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter.o : common/data_modifier_incompleter.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
@@ -609,6 +613,10 @@ $(release_folder)/common-data-modifier-filter.o : common/data-modifier-filter.cp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-filter.o : common/data-modifier-filter.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter_random_without_last.o : common/data_modifier_incompleter_random_without_last.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter_random_without_last.o : common/data_modifier_incompleter_random_without_last.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-data-modifier-imputer-average.o : common/data-modifier-imputer-average.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-imputer-average.o : common/data-modifier-imputer-average.cpp
@@ -616,6 +624,10 @@ $(debug_folder)/common-data-modifier-imputer-average.o : common/data-modifier-im
 $(release_folder)/common-data-modifier-imputer-median.o : common/data-modifier-imputer-median.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-imputer-median.o : common/data-modifier-imputer-median.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter_random.o : common/data_modifier_incompleter_random.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter_random.o : common/data_modifier_incompleter_random.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-result.o : common/result.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -977,9 +989,11 @@ $(release_folder)/auxiliary-tempus.o \
 $(release_folder)/metrics-metric-minkowski-weighted.o \
 $(release_folder)/descriptors-descriptor-sigmoidal.o \
 $(release_folder)/snorms-s-norm-fodor.o \
+$(release_folder)/common-data_modifier_incompleter_random.o \
 $(release_folder)/common-data-modifier-imputer-values-from-knn.o \
 $(release_folder)/partitions-fcm_generic.o \
 $(release_folder)/common-data-modifier-outlier-remove-sigma.o \
+$(release_folder)/common-data_modifier_incompleter_random_without_last.o \
 $(release_folder)/neuro-fuzzy-tsk.o \
 $(release_folder)/common-data-modifier-imputer-median.o \
 $(release_folder)/neuro-fuzzy-prototype_mahalanobis.o \
@@ -1131,6 +1145,7 @@ $(release_folder)/owas-uowa.o \
 $(release_folder)/heuristics-ridders-gaussian-m.o \
 $(release_folder)/neuro-fuzzy-granular_annbfis_regression.o \
 $(release_folder)/auxiliary-least-error-squares-regression.o \
+$(release_folder)/common-data_modifier_incompleter.o \
 $(release_folder)/neuro-fuzzy-prototype_minkowski_regression.o \
 $(release_folder)/owas-plowa.o \
 $(release_folder)/common-number.o \
@@ -1191,9 +1206,11 @@ $(debug_folder)/auxiliary-tempus.o \
 $(debug_folder)/metrics-metric-minkowski-weighted.o \
 $(debug_folder)/descriptors-descriptor-sigmoidal.o \
 $(debug_folder)/snorms-s-norm-fodor.o \
+$(debug_folder)/common-data_modifier_incompleter_random.o \
 $(debug_folder)/common-data-modifier-imputer-values-from-knn.o \
 $(debug_folder)/partitions-fcm_generic.o \
 $(debug_folder)/common-data-modifier-outlier-remove-sigma.o \
+$(debug_folder)/common-data_modifier_incompleter_random_without_last.o \
 $(debug_folder)/neuro-fuzzy-tsk.o \
 $(debug_folder)/common-data-modifier-imputer-median.o \
 $(debug_folder)/neuro-fuzzy-prototype_mahalanobis.o \
@@ -1345,6 +1362,7 @@ $(debug_folder)/owas-uowa.o \
 $(debug_folder)/heuristics-ridders-gaussian-m.o \
 $(debug_folder)/neuro-fuzzy-granular_annbfis_regression.o \
 $(debug_folder)/auxiliary-least-error-squares-regression.o \
+$(debug_folder)/common-data_modifier_incompleter.o \
 $(debug_folder)/neuro-fuzzy-prototype_minkowski_regression.o \
 $(debug_folder)/owas-plowa.o \
 $(debug_folder)/common-number.o \
