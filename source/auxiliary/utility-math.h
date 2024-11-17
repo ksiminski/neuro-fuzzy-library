@@ -183,69 +183,6 @@ namespace ksi
           CATCH;
       }
 
-   private:
-       /**
-	    * @brief Find the k-th smallest element in a range using the Quickselect algorithm.
-	    *
-	    * This function implements the Quickselect algorithm to find the k-th smallest element in a range of elements from a vector. 
-	    *
-	    * @tparam T The type of the elements in the vector. It should support comparison (`<`).
-	    * @param first An iterator to the first element in the range.
-	    * @param last An iterator to the element just past the last element in the range.
-	    * @param k The index (0-based) of the element to find.
-	    *
-	    * @return The k-th smallest element in the range.
-	    *
-	    * @throws std::runtime_error If an unexpected condition occurs during the execution.
-	    *
-	    * @date 2024-11-17
-        * @author Konrad Wnuk
-	    */
-      template<typename T>
-      T quickselect(
-          const typename std::vector<T>::const_iterator first,
-          const typename std::vector<T>::const_iterator last, 
-          std::size_t k
-      ) {
-	      try
-	      {
-              std::vector<T> data(first, last);
-
-              auto partition = [](std::vector<T>& arr, std::size_t left, std::size_t right, std::size_t pivotIndex) {
-                  T pivotValue = arr[pivotIndex];
-                  std::swap(arr[pivotIndex], arr[right]);
-                  std::size_t storeIndex = left;
-                  for (std::size_t i = left; i < right; i++) {
-                      if (arr[i] < pivotValue) {
-                          std::swap(arr[i], arr[storeIndex]);
-                          storeIndex++;
-                      }
-                  }
-                  std::swap(arr[storeIndex], arr[right]);
-                  return storeIndex;
-                  };
-
-              std::size_t left = 0;
-              std::size_t right = data.size() - 1;
-              while (left <= right) {
-                  std::size_t pivotIndex = left + (right - left) / 2;
-                  pivotIndex = partition(data, left, right, pivotIndex);
-                  if (pivotIndex == k) {
-                      return data[k];
-                  }
-                  else if (pivotIndex < k) {
-                      left = pivotIndex + 1;
-                  }
-                  else {
-                      right = pivotIndex - 1;
-                  }
-              }
-              throw std::runtime_error("Unexpected condition in quickselect");
-	      }
-          CATCH;          
-      }
-
-	public:
       /**
         * @return The function returns median and standard deviation of elements in a vector.
         * @param first iterator to the first element
@@ -273,19 +210,61 @@ namespace ksi
                   throw std::string("The array has no elements!");
 
               T median;
-              if (numberOfElements % 2 == 1) { 
-                  median = quickselect(first, last, numberOfElements / 2);
+              std::vector<T> data(first, last);
+
+              if (numberOfElements % 2 == 1) {
+                  auto mid = data.begin() + numberOfElements / 2;
+                  std::nth_element(data.begin(), mid, data.end());
+                  median = *mid;
               }
               else {
-                  T mid1 = quickselect(first, last, numberOfElements / 2 - 1);
-                  T mid2 = quickselect(first, last, numberOfElements / 2);
-                  median = (mid1 + mid2) / 2.0;
+                  auto mid1 = data.begin() + numberOfElements / 2 - 1;
+                  auto mid2 = data.begin() + numberOfElements / 2;
+                  std::nth_element(data.begin(), mid1, data.end());
+                  T val1 = *mid1;
+                  std::nth_element(data.begin(), mid2, data.end());
+                  T val2 = *mid2;
+                  median = (val1 + val2) / 2.0;
               }
 
               return { median, std::sqrt(sumSq / numberOfElements - std::pow(sum / numberOfElements, 2)) };
           }
           CATCH;
       }
+
+      /** @return The function returns mean and standard deviation of elements in a vector.
+       * @param first iterator to the first element
+       * @param last  iterator to the past-the-end element in the vector
+       * @date 2023-11-21
+       * @author Konrad Wnuk
+       * @throw std::string if the array has no items
+       */
+      template<typename T = double>
+      static
+          std::pair<T, T> getMeanAndStandardDeviation(
+              const typename std::vector<T>::const_iterator first,
+              const typename std::vector<T>::const_iterator last
+          ) {
+          try {
+              T sum{};
+              T sumSq{};
+              std::size_t counter = 0;
+              for (auto iter = first; iter != last; iter++)
+              {
+                  sum += *iter;
+                  sumSq += *iter * *iter;
+                  counter++;
+              }
+
+              if (counter == 0)
+                  throw std::string("The array has no elements!");
+
+              T average = sum / counter;
+              return { average, std::sqrt(sumSq / counter - average * average) };
+          }
+          CATCH;
+      }
+
 
 
       /** @return The function returns a vector of values without outliers. Only values inside the interval. 
