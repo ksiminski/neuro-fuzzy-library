@@ -43,7 +43,7 @@ void ksi::exp_lab::execute()
 	{
 		// [PL] system rozmyty 
 		// [EN] fuzzy system
-		fuzzy_system();
+		// fuzzy_system();
 
 		// [PL] system neuronowo-rozmyty 
 		//  Proszę sprawdzić, jaki wygląda model wypracowany przez system neuronowo-rozmyty dla danych z zadania Z1. W tym celu należy odkomentować ponizsza linie. Zostaną utworozne dwa pliki results-neuro-fuzzy-MA i results-neuro-fuzzy-TSK.
@@ -51,7 +51,7 @@ void ksi::exp_lab::execute()
 		// [EN] neuro-fuzzy system
 		// Uncomment the commented line below. Now two neuro-fuzzy systems (MA and TSK) are run for the data set. Compare your results with the results elaborated by the neuro-fuzzy systems. Try to interpret fuzzy rule bases produced by the systems.
 
-		// neuro_fuzzy_system();
+		neuro_fuzzy_system();
 	}    
 	CATCH;
 }
