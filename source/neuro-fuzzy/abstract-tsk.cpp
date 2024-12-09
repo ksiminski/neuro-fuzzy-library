@@ -70,7 +70,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       // std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
       // double dbTheBestRMSE = std::numeric_limits<double>::max();
       ////////
-      
+
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
       
@@ -114,6 +114,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       {
          premise przeslanka;      
          auto klaster = podzial.getCluster(c);
+         
          for (std::size_t a = 0; a < nAttr_1; a++)
          {
             przeslanka.addDescriptor(klaster->getDescriptor(a));
@@ -213,7 +214,6 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
          //    pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
          // }
          ///////////////////////////
-         
       }
       // system nastrojony :-)
       // update the rulebase with the best one:
@@ -221,7 +221,6 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       // _pRulebase = pTheBest->clone();
    }
    CATCH;
-       
 }
 
 double ksi::abstract_tsk::answer(const ksi::datum& item) const
