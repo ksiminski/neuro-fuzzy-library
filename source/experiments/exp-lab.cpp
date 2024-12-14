@@ -70,7 +70,7 @@ void ksi::exp_lab::fuzzy_system()
 		// to wyjście systemu powinno być wysokie. 
 		// 		
 		// Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by 
-      // wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
+		// wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
 		// W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
 
 		// [EN] DAACI
