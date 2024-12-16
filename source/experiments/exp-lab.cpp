@@ -51,7 +51,7 @@ void ksi::exp_lab::execute()
 		// [EN] neuro-fuzzy system
 		// Uncomment the commented line below. Now two neuro-fuzzy systems (MA and TSK) are run for the data set. Compare your results with the results elaborated by the neuro-fuzzy systems. Try to interpret fuzzy rule bases produced by the systems.
 
-		// neuro_fuzzy_system();
+		neuro_fuzzy_system();
 	}    
 	CATCH;
 }
@@ -73,6 +73,12 @@ void ksi::exp_lab::fuzzy_system()
       // wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
 		// W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
 
+      // R1: JEŻELI x1 jest duże i x2 jest duże,   TO wyjscie jest niskie.
+      // R2: JEŻELI x1 jest male i x2 jest male,   TO wyjscie jest niskie.
+      // R3: JEŻELI x1 jest male i x2 jest duże,   TO wyjscie jest wysokie.
+      // R4: JEŻELI x1 jest duże i x2 jest male,   TO wyjscie jest wysokie.
+
+
 		// [EN] DAACI
 		// 
 		// A system has two inputs and one output. Approximate range of input 
@@ -91,14 +97,20 @@ void ksi::exp_lab::fuzzy_system()
 		
 		
 		
+      // R1: JEŻELI x1 jest duże i x2 jest duże,   TO wyjscie jest niskie.
+      // R2: JEŻELI x1 jest male i x2 jest male,   TO wyjscie jest niskie.
+      // R3: JEŻELI x1 jest male i x2 jest duże,   TO wyjscie jest wysokie.
+      // R4: JEŻELI x1 jest duże i x2 jest male,   TO wyjscie jest wysokie.
 		
 		
 		
 		
 		// [PL] Jakimi przymiotnikami zostały opisane wartości zmiennych lingwistyczne występujące w regułach?
-		//      w przesłankach:  
-		//      w konluzjach:    
-		
+		//      w przesłankach: duze, male  
+		//      w konluzjach:   niskie, wysokie 
+	
+
+
 		// [EN] What adjectives have you used to describe values of the linguistic variables in the rules?
 		//      in premises:     
 		//      in consequences:  
@@ -117,11 +129,14 @@ void ksi::exp_lab::fuzzy_system()
 		//         ksi::descriptor_arctan
 		//         ksi::descriptor_tanh
 
-
+      //ksi::descriptor_trapezoidal male (-3, 0, 3, 7);
+      //ksi::descriptor_trapezoidal duze (5.5, 7, 10, 15);
+      ksi::descriptor_sigmoidal male (5, -2);
+      ksi::descriptor_sigmoidal duze (5,  2);
 
 		// [PL] T-normy (dostępne klasy)
 		// [EN] T-norms (available classes)
-		//          ksi::t_norm_lukasiewicz tnorm;
+		          ksi::t_norm_lukasiewicz tnorm;
 		//          ksi::t_norm_min tnorm;
 		//          ksi::t_norm_product tnorm;
 		//          ksi::t_norm_fodor tnorm;
@@ -131,25 +146,56 @@ void ksi::exp_lab::fuzzy_system()
 
 		// [PL] przesłanka
 		// [EN] premise
-		//          ksi::premise P1;
+		          ksi::premise P1;
 		// [PL] dodanie deskryptora do przesłanki: 
 		// [EN] add descriptor to a premise
-		//          P1.addDescriptor(D11);
+		          P1.addDescriptor(duze);
+		          P1.addDescriptor(duze);
 
+      // R1: JEŻELI x1 jest duże i x2 jest duże,   TO wyjscie jest niskie.
+                ksi::premise P2;
+                P2.addDescriptor(male);
+                P2.addDescriptor(male);
+
+      // R2: JEŻELI x1 jest male i x2 jest male,   TO wyjscie jest niskie.
+                ksi::premise P3;
+                P3.addDescriptor(male);
+                P3.addDescriptor(duze);
+      // R3: JEŻELI x1 jest male i x2 jest duże,   TO wyjscie jest wysokie.
+                ksi::premise P4;
+                P4.addDescriptor(duze);
+                P4.addDescriptor(male);
+      // R4: JEŻELI x1 jest duże i x2 jest male,   TO wyjscie jest wysokie.
 		// [PL] konkluzja
 		// [EN] consequence
-		//          ksi::consequence_MA C1 (support_min, core, support_max);
+		          ksi::consequence_MA niska  (0, 1, 2);
+		          ksi::consequence_MA wysoka (8, 9, 10);
 
 		// [PL] utworzenie reguły z przesłanki, konkluzji i t-normy:
 		// [EN] compose the premise, consequence and t-norm into a rule
-		//          ksi::rule R1 (tnorm);
-		//          R1.setPremise(P1);
-		//          R1.setConsequence(C1);         
+		          ksi::rule R1 (tnorm);
+		          R1.setPremise(P1);
+		          R1.setConsequence(niska);         
+
+		          ksi::rule R2 (tnorm);
+		          R2.setPremise(P2);
+		          R2.setConsequence(niska);         
+
+		          ksi::rule R3 (tnorm);
+		          R3.setPremise(P3);
+		          R3.setConsequence(wysoka);         
+
+		          ksi::rule R4 (tnorm);
+		          R4.setPremise(P4);
+		          R4.setConsequence(wysoka);         
 
 		// [PL] dodanie reguł do bazy reguł      
 		// [EN] add a rule to a fuzzy rule base
-		//          ksi::rulebase Rulebase;         
-		//          Rulebase.addRule(R1);
+		          ksi::rulebase Rulebase;         
+		          Rulebase.addRule(R1);
+		          Rulebase.addRule(R2);
+		          Rulebase.addRule(R3);
+		          Rulebase.addRule(R4);
 
 		// [PL] system rozmyty Mamdamiego-Assilana
 		// [EN] Mamdani-Assilan fuzzy system
@@ -157,7 +203,7 @@ void ksi::exp_lab::fuzzy_system()
 
 		// [PL] ustawienie systemowi bazy reguł 
 		// [EN] set the composed fuzzy rule base
-		//          MA.set_rulebase(Rulebase);
+	            MA.set_rulebase(Rulebase);
 
 
 
