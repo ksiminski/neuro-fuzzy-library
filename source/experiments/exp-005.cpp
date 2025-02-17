@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <thread>
 
 #include "../auxiliary/roc.h"
 #include "../auxiliary/tempus.h"
@@ -39,25 +40,24 @@
 using cascade = std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>;
 const std::vector<std::string> datasets = 
    {
-     	"banana", 
-      	"blood",
-      	"fire",
-      	"heart",
-      	"ilpd",
-      	"magic",
-      	"parkinsons",
-      	"ring",
-      	"banknote",
-      	"bupa",
-      	"haberman",
-      	"htru",
-      	"wisconsin",
-      	"ionosphere",
-      	"phoneme",
-      	"vertebral",
-      	"ring",
-      	"magic"
-
+     	//"banana", 
+      //"blood",
+      //"fire",
+      //"heart",
+      //"ilpd",
+      //"magic",
+      //"parkinsons",
+      //"ring",
+      //"banknote",
+      //"bupa",
+      //"haberman",
+      //"htru",
+      //"wisconsin",
+      //"ionosphere",
+      //"phoneme",
+      //"vertebral",
+      "ring",
+      //"magic"
    };
 
 ksi::exp_005::exp_005()
@@ -354,97 +354,97 @@ void ksi::exp_005::regression()
 }
 
 
-void ksi::exp_005::WP_classification_CV(const std::string& dataset_name)
-{
-   std::cout << "classification CV" << std::endl;
-   ksi::imp_reichenbach implication;
-   ksi::t_norm_product Tnorm;
-   std::string RESULT_EXTENSION {".txt"};
+//void ksi::exp_005::WP_classification_CV(const std::string& dataset_name)
+//{
+//   std::cout << "classification CV" << std::endl;
+//   ksi::imp_reichenbach implication;
+//   ksi::t_norm_product Tnorm;
+//   std::string RESULT_EXTENSION {".txt"};
 
-   const std::string EXPERIMENT           ("exp-005");
-   const std::string TYPE                 ("classification");
-   const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
-   const std::string RESULTS_DIRECTORY    ("../results/" + EXPERIMENT + "/" + TYPE);
+//   const std::string EXPERIMENT           ("exp-005");
+//   const std::string TYPE                 ("classification");
+//   const std::string DATA_DIRECTORY       ("../data/" + EXPERIMENT + "/" + TYPE);
+//   const std::string RESULTS_DIRECTORY    ("../results/" + EXPERIMENT + "/" + TYPE);
 
-   const int NUMBER_OF_RULES = 5;
-   const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
-   const int NUMBER_OF_TUNING_ITERATIONS = 100;  
+//   const int NUMBER_OF_RULES = 5;
+//   const int NUMBER_OF_CLUSTERING_ITERATIONS = 100;
+//   const int NUMBER_OF_TUNING_ITERATIONS = 100;  
 
-   const bool NORMALISATION = false;
+//   const bool NORMALISATION = false;
 
-   const double ETA = 0.001;
-   const double POSITIVE_CLASS_LABEL = 1.0;
-   const double NEGATIVE_CLASS_LABEL = 0.0;
+//   const double ETA = 0.001;
+//   const double POSITIVE_CLASS_LABEL = 1.0;
+//   const double NEGATIVE_CLASS_LABEL = 0.0;
 
  
-   std::cout << "data set: " << dataset_name << std::endl;
-   std::string dataset {DATA_DIRECTORY + "/" + dataset_name};
+//   std::cout << "data set: " << dataset_name << std::endl;
+//   std::string dataset {DATA_DIRECTORY + "/" + dataset_name};
 
-   std::string results_dir {RESULTS_DIRECTORY + "/" + dataset_name};
-   std::string TRAIN   (dataset + "/" + dataset_name + ".train");
-   std::string TEST    (dataset + "/" + dataset_name + ".test");
-   std::string RESULTS (results_dir + "/results-" + dataset_name);
-   // THREE-WAY DECISION NEURO-FUZZY CLASSIFIER (separate noncommitment values)
-   {
-      // We compose several types of cascades built of neuro-fuzzy systems:
-      std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> systems 
-      {
-         // ANNBFIS
-         std::shared_ptr<ksi::neuro_fuzzy_system> (new ksi::annbfis (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, ksi::roc_threshold::youden)),
-         // TSK 
-         std::shared_ptr<ksi::neuro_fuzzy_system> (new ksi::tsk (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, ksi::roc_threshold::youden)),
-      };
+//   std::string results_dir {RESULTS_DIRECTORY + "/" + dataset_name};
+//   std::string TRAIN   (dataset + "/" + dataset_name + ".train");
+//   std::string TEST    (dataset + "/" + dataset_name + ".test");
+//   std::string RESULTS (results_dir + "/results-" + dataset_name);
+//   // THREE-WAY DECISION NEURO-FUZZY CLASSIFIER (separate noncommitment values)
+//   {
+//      // We compose several types of cascades built of neuro-fuzzy systems:
+//      std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> systems 
+//      {
+//         // ANNBFIS
+//         std::shared_ptr<ksi::neuro_fuzzy_system> (new ksi::annbfis (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, ksi::roc_threshold::youden)),
+//         // TSK 
+//         std::shared_ptr<ksi::neuro_fuzzy_system> (new ksi::tsk (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, ksi::roc_threshold::youden)),
+//      };
 
-      auto functions = {WP::get_noncommitment, WP::get_noncommitment_based_on_threshold};
-      auto func_names = {"noncommitment", "noncommitment_based_on_threshold"};
-      // for all systems we compose cascades:
+//      auto functions = {WP::get_noncommitment, WP::get_noncommitment_based_on_threshold};
+//      auto func_names = {"noncommitment", "noncommitment_based_on_threshold"};
+//      // for all systems we compose cascades:
       
-      for (auto & nfs : systems)
-      {
-         std::map<std::string, double> statistics {
-            {std::string("no_rules"), 0.},
-            {std::string("f1_test_score"), 0.}
-         };
-         for(auto i = 0; i < NO_ITERATIONS; ++i)
-         {
-            std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> cascade_of_nfs 
-            { 
-               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone()),
-               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone()), 
-               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone())
-            };
+//      for (auto & nfs : systems)
+//      {
+//         std::map<std::string, double> statistics {
+//            {std::string("no_rules"), 0.},
+//            {std::string("f1_test_score"), 0.}
+//         };
+//         for(auto i = 0; i < NO_ITERATIONS; ++i)
+//         {
+//            std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> cascade_of_nfs 
+//            { 
+//               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone()),
+//               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone()), 
+//               std::shared_ptr<ksi::neuro_fuzzy_system> (nfs->clone())
+//            };
 
-            // And we run experiments:
-            std::string cascade_name;
-            for (const auto & p : cascade_of_nfs)
-               cascade_name += std::string{"-"} + p->get_nfs_name();
-            cascade_name += std::string{"-based_on_threshold"};
-            cascade_name += std::string{"-"} + std::to_string(i);
+//            // And we run experiments:
+//            std::string cascade_name;
+//            for (const auto & p : cascade_of_nfs)
+//               cascade_name += std::string{"-"} + p->get_nfs_name();
+//            cascade_name += std::string{"-based_on_threshold"};
+//            cascade_name += std::string{"-"} + std::to_string(i);
 
-            std::string result_file { RESULTS + "-3WDNFS-" + cascade_name + RESULT_EXTENSION }; 
-            ksi::three_way_decision_nfs_WP system(cascade_of_nfs, TRAIN, TEST, TEST, result_file,
-            WP::get_noncommitment_based_on_threshold);
-            std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
-            system.experiment_classification(TRAIN, TEST, result_file);    
-            std::cout << "\tResults saved to file " << result_file << std::endl;
-            std::cout << std::endl;
+//            std::string result_file { RESULTS + "-3WDNFS-" + cascade_name + RESULT_EXTENSION }; 
+//            ksi::three_way_decision_nfs_WP system(cascade_of_nfs, TRAIN, TEST, TEST, result_file,
+//            WP::get_noncommitment_based_on_threshold);
+//            std::cout << "\tmethod:    " << system.get_nfs_name() << std::endl;
+//            system.experiment_classification(TRAIN, TEST, result_file);    
+//            std::cout << "\tResults saved to file " << result_file << std::endl;
+//            std::cout << std::endl;
          
-            statistics["no_rules"] = system.get_number_of_rules();
-            for(auto j = 0; j < 3;++j)
-            {
-               statistics["f1_test_score"] += system.get_test_F1score_for_part_of_the_cascade(j);
-            }
-            statistics["f1_test_score"] = statistics["f1_test_score"]/3;
-         }
+//            statistics["no_rules"] = system.get_number_of_rules();
+//            for(auto j = 0; j < 3;++j)
+//            {
+//               statistics["f1_test_score"] += system.get_test_F1score_for_part_of_the_cascade(j);
+//            }
+//            statistics["f1_test_score"] = statistics["f1_test_score"]/3;
+//         }
 
-         for(auto it = statistics.begin(); it != statistics.end(); ++it)
-         {
-            it->second = it->second/NO_ITERATIONS;
-            std::cout << it->first << " : " << it->second << std::endl;
-         }
-      }
-   }
-}
+//         for(auto it = statistics.begin(); it != statistics.end(); ++it)
+//         {
+//            it->second = it->second/NO_ITERATIONS;
+//            std::cout << it->first << " : " << it->second << std::endl;
+//         }
+//      }
+//   }
+//}
 
 void ksi::exp_005::WP_classification(const std::string& dataset_name)
 {
@@ -582,7 +582,7 @@ cascade create_anbfis()
    };
 }
 
-cascade create_anbfis_advanced()
+cascade create_anbfis_increasing_no_rules()
 {
    ksi::imp_reichenbach implication;
    ksi::t_norm_product Tnorm;
@@ -631,7 +631,7 @@ cascade create_tsk()
    };
 }
 
-cascade create_tsk_advanced()
+cascade create_tsk_increasing_no_rules()
 {
    ksi::imp_reichenbach implication;
    ksi::t_norm_product Tnorm;
@@ -651,7 +651,7 @@ cascade create_tsk_advanced()
       std::make_shared<ksi::tsk> (NUMBER_OF_RULES-3, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold),
       std::make_shared<ksi::tsk> (NUMBER_OF_RULES-1, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold),
       std::make_shared<ksi::tsk> (NUMBER_OF_RULES+1, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold),
-      std::make_shared<ksi::tsk> (NUMBER_OF_RULES+1, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold)
+      std::make_shared<ksi::tsk> (NUMBER_OF_RULES+3, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold)
    };
 }
 
@@ -704,10 +704,36 @@ void ksi::exp_005::execute()
    {
       for(auto dataset : datasets)
       {
-         test_algorithm_simple(dataset, 13, create_anbfis_advanced(), create_3WDNFS_algorithm_penalize, "ANNBFIS-alg-advanced-hard-penalization");
-         test_algorithm_simple(dataset, 13, create_tsk_advanced(), create_3WDNFS_algorithm_penalize, "TSK-alg-advanced-hard-penalization");
+         test_algorithm_simple(dataset, 13, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm, "ANNBFIS-increasing_no_rules_soft_penalization");
+         test_algorithm_simple(dataset, 13, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "ANNBFIS-increasing_no_rules_hard_penalization");
+         test_algorithm_simple(dataset, 13, create_anbfis(), create_3WDNFS_algorithm, "ANNBFIS_steady_no_rules_soft_penalization");
+         test_algorithm_simple(dataset, 13, create_anbfis(), create_3WDNFS_algorithm_penalize, "ANNBFIS_steady_no_rules_hard_penalization");
+         test_algorithm_simple(dataset, 13, create_tsk(), create_3WDNFS_algorithm, "TSK-steady_no_rules_soft_penalization");
+         test_algorithm_simple(dataset, 13, create_tsk(), create_3WDNFS_algorithm_penalize, "TSK-steady_no_rules_hard_penalization");
+         test_algorithm_simple(dataset, 13, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm, "TSK-increasing_no_rules_soft_penalization");
+         test_algorithm_simple(dataset, 13, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "TSK-increasing_no_rules_hard_penalization");
       }
       //regression();
+   //   std::vector<std::tuple<double, double, double>> values = {
+   //      {0, 0.06, 0},
+   //      {0, 0.11, 0},
+   //      {0, 0.15, 0},
+   //      {0, 0.16, 0},
+   //      {0, 0.18, 0},
+   //      {0, 0.30, 0},
+   //      {0, 0.46, 0},
+   //      {1, 0.62, 0},
+   //      {0, 0.71, 0},
+   //      {1, 0.75, 0},
+   //      {1, 0.82, 0},
+   //      {1, 0.91, 0},
+   //      {1, 0.93, 0},
+   //      {1, 0.95, 0},
+   //      {1, 0.94242, 0},
+         
+   //  };
+   //  auto res = WP::get_noncommitment_based_on_threshold(values, 0.46);
+   //  std::cout << "Left boundary:" << std::get<0>(res) << "\nRight boundary: " << std::get<1>(res) << std::endl;
    } CATCH;
 
    return;

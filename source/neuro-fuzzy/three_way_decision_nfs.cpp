@@ -880,13 +880,16 @@ void ksi::three_way_decision_nfs_WP::createFuzzyRulebase(
     CATCH;
 }
 namespace WP{
-    std::map<double, std::tuple<int,int>> create_prefixes(const std::vector<std::tuple<double, double, double>> & data)
+    using numeric_response = double;
+    using expected_class = double;
+    using _ = double;
+    std::map<double, std::tuple<int,int>> create_prefixes(const std::vector<std::tuple<expected_class, numeric_response, double>> & data)
     {
         auto data_copied = data;
         std::sort(data_copied.begin(), data_copied.end(),
             [](const auto & a, const auto & b) {return std::get<1>(a) < std::get<1>(b);});
 
-        std::map<double, std::array<int, 2>> values_map;
+        std::map<numeric_response, std::array<int, 2>> values_map;
         for (const auto&d : data_copied)
         {
             auto value = std::get<1>(d);
@@ -896,16 +899,6 @@ namespace WP{
             }
             values_map[value][(int)std::get<0>(d)]++;
         }
-
-        std::vector<double> intervals(data.size());
-        auto prev = values_map.begin()->first;
-        for(auto i = 1; i < values_map.size(); i++)
-        {
-            intervals[i-1] = std::next(values_map.begin(), i)->first + prev;
-            prev = std::next(values_map.begin(), i)->first;
-            intervals[i-1] /= 2;
-        }
-        intervals[values_map.size()-1] = std::next(values_map.begin(), values_map.size()-1)->first + 0.01;
         std::map<double, std::tuple<int, int>> prefixes;
         std::array<int, 2> previous = {0, 0};
         std::size_t i = 0;
@@ -913,22 +906,55 @@ namespace WP{
         {
             previous[0] += it->second[0];
             previous[1] += it->second[1];
-            prefixes[intervals[i]] = {previous[0], previous[1]};
+            prefixes[it->first] = {previous[0], previous[1]};
             i++;
         }
         return prefixes;
+        //std::vector<double> intervals(data.size());
+        //auto prev = values_map.begin()->first;
+        //for(auto i = 1; i < values_map.size(); i++)
+        //{
+        //    intervals[i-1] = std::next(values_map.begin(), i)->first + prev;
+        //    prev = std::next(values_map.begin(), i)->first;
+        //    intervals[i-1] /= 2;
+        //}
+        //intervals[values_map.size()-1] = std::next(values_map.begin(), values_map.size()-1)->first + 0.01;
+        //std::map<double, std::tuple<int, int>> prefixes;
+        //std::array<int, 2> previous = {0, 0};
+        //std::size_t i = 0;
+        //for (auto it = values_map.begin(); it != values_map.end(); it++)
+        //{
+        //    previous[0] += it->second[0];
+        //    previous[1] += it->second[1];
+        //    prefixes[intervals[i]] = {previous[0], previous[1]};
+        //    i++;
+        //}
+        return prefixes;
     }
+
+  double get_key_for_value(const std::map<double, std::tuple<int, int>>& prefixes, const double& value)
+    {
+        for (auto it = prefixes.rbegin(); it != prefixes.rend(); ++it) {
+            if (it->first <= value) {
+                return it->first;
+            }
+        }
+
+        return prefixes.begin()->first;
+    }
+
     double f1_score(const std::map<double, std::tuple<int, int>>& prefixes, const double& beginning, const double& end)
     {
-        double tp = std::get<1>((prefixes.rbegin())->second) - std::get<1>(prefixes.at(beginning));
-        double fp = std::get<0>((prefixes.rbegin())->second) - std::get<0>(prefixes.at(beginning));
+        double tp = std::get<1>((prefixes.rbegin())->second) - std::get<1>(prefixes.at(end)); // @TODO ??
+        double fp = std::get<0>((prefixes.rbegin())->second) - std::get<0>(prefixes.at(end));
         double fn = std::get<1>(prefixes.at(beginning));
+        //std::cout << "For values: " << beginning << " and " << end << " TP: " << tp << " FP: " << fp << " FN: " << fn << std::endl;
         return 2*tp/(2*tp+fp+fn+std::numeric_limits<double>::epsilon());
     }
     double get_no_points_between(const std::map<double, std::tuple<int, int>>& prefixes, const double& beginning, const double& end)
-    {   // @TODO
-        auto no_0 = std::get<0>(prefixes.lower_bound(end)->second) - std::get<0>(prefixes.lower_bound(beginning)->second);
-        auto no_1 = std::get<1>(prefixes.lower_bound(end)->second) - std::get<1>(prefixes.lower_bound(beginning)->second);
+    {
+        auto no_0 = std::get<0>(prefixes.at(get_key_for_value(prefixes, end))) - std::get<0>(prefixes.at(get_key_for_value(prefixes, beginning)));
+        auto no_1 = std::get<1>(prefixes.at(get_key_for_value(prefixes, end))) - std::get<1>(prefixes.at(get_key_for_value(prefixes, beginning)));
         return no_0 + no_1;
     }
     std::tuple<std::size_t, std::size_t> retrieve_initial(const std::map<double, std::tuple<int, int>>& prefixes)
@@ -962,6 +988,10 @@ namespace WP{
     std::tuple<double,double> get_noncommitment_based_on_threshold(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
     {
         auto prefixes = create_prefixes(data);
+        //for (const auto& [key, value] : prefixes)
+        //{
+        //    std::cout << "r_i: " << key << " c_n: " << std::get<0>(value) << " c_p:" << std::get<1>(value) << std::endl;
+        //}
         auto best_score_so_far = std::numeric_limits<double>::max();
         double delta = threshold - prefixes.begin()->first;
         auto best_delta = delta;
@@ -969,11 +999,12 @@ namespace WP{
         {
             while(delta > 0)
             {
-                auto beginning_value = prefixes.lower_bound(threshold-delta)->first;
-                auto end_value = prefixes.lower_bound(threshold+delta)->first;
+                auto beginning_value = get_key_for_value(prefixes, threshold-delta);
+                auto end_value = get_key_for_value(prefixes, threshold+delta);
                 auto f1 = f1_score(prefixes, beginning_value, end_value);
                 auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
                 auto score = 1/(f1+std::numeric_limits<double>::epsilon()) + pow(frac_between,2);
+                //std::cout<< "Score for delta = " << delta << " is " << score << " Number between is:" << frac_between*data.size() << " F1 score is:" << f1 << std::endl;
                 if (score < best_score_so_far)
                 {
                     best_score_so_far = score;
@@ -986,6 +1017,7 @@ namespace WP{
         {
             std::cerr << es.what() << std::endl;
         }
+        //std::cout << "Best delta is: " << best_delta << std::endl;
         return {threshold-best_delta, threshold+best_delta};
     }
     std::tuple<double,double> get_noncommitment_based_on_threshold_hard_penalize(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
@@ -998,8 +1030,8 @@ namespace WP{
         {
             while(delta > 0)
             {
-                auto beginning_value = prefixes.lower_bound(threshold-delta)->first;
-                auto end_value = prefixes.lower_bound(threshold+delta)->first;
+                auto beginning_value = get_key_for_value(prefixes, threshold-delta);
+                auto end_value = get_key_for_value(prefixes, threshold+delta);
                 auto f1 = f1_score(prefixes, beginning_value, end_value);
                 auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
                 auto score = 1/(f1+std::numeric_limits<double>::epsilon()) + 0.5*pow(frac_between,2);
