@@ -215,7 +215,8 @@ namespace ksi
        * @return a pair: elaborated numeric, class 
        * @date   2024-04-29 */
       virtual std::pair<double, double> answer_classification (const datum & item, const std::size_t depth) const;
-       
+      virtual std::tuple<double, double, std::size_t> answer_classification_with_cascade_depth(const ksi::datum& item) const;
+      std::vector<std::pair<std::vector<double>, std::size_t> > get_answers_for_test_classification_depth();
        /** The method prints rule base.
        * @param ss ostream to print to */
        virtual void printRulebase(std::ostream & ss) override;

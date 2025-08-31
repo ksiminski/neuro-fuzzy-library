@@ -40,7 +40,7 @@
 using cascade = std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>;
 const std::vector<std::string> datasets = 
    {
-     	//"banana", 
+     	"banana", 
       //"blood",
       //"fire",
       //"heart",
@@ -56,7 +56,7 @@ const std::vector<std::string> datasets =
       //"ionosphere",
       //"phoneme",
       //"vertebral",
-      "ring",
+      //"ring",
       //"magic"
    };
 
@@ -544,7 +544,7 @@ std::unique_ptr<ksi::three_way_decision_nfs> create_3WDNFS_one_noncommitment(con
 
 std::unique_ptr<ksi::three_way_decision_nfs> create_3WDNFS_stairs(const cascade& cascade_of_nfs, const std::string& TRAIN, const std::string& TEST, const std::string& result_file)
 {
-   std::vector vec{0.2, 0.1, 0.1};
+   std::vector vec{0.3, 0.2, 0.1, 0.1};
    return std::make_unique<ksi::three_way_decision_nfs>(cascade_of_nfs, TRAIN, TEST, result_file, vec);
 }
 
@@ -576,6 +576,7 @@ cascade create_anbfis()
    const double NEGATIVE_CLASS_LABEL = 0.0;
    auto x = std::make_shared<ksi::annbfis> (NUMBER_OF_RULES, NUMBER_OF_CLUSTERING_ITERATIONS, NUMBER_OF_TUNING_ITERATIONS, ETA, NORMALISATION, Tnorm, implication, POSITIVE_CLASS_LABEL, NEGATIVE_CLASS_LABEL, threshold);
    return cascade{
+      std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone())
@@ -627,6 +628,7 @@ cascade create_tsk()
    return cascade{
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
+      std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone()),
       std::shared_ptr<ksi::neuro_fuzzy_system>(x->clone())
    };
 }
@@ -656,6 +658,20 @@ cascade create_tsk_increasing_no_rules()
 }
 
 
+void save_depth_to_file(const std::string& file_path, const std::vector<std::pair<std::vector<double>, std::size_t>>& answers)
+{
+   using namespace std::string_literals;
+   std::ofstream file(file_path);
+   if (!file) throw std::runtime_error("Cannot open file: "s + file_path);
+   for(const auto& answer : answers)
+   {
+      for(const auto& val : answer.first)
+      {
+         file << val << ",";
+      }
+      file << answer.second << std::endl;
+   }
+}
 
 void test_algorithm_simple(const std::string& dataset_name, const int repetitions, cascade cascade_of_nfs, std::function<std::unique_ptr<ksi::three_way_decision_nfs> (const cascade&, const std::string&, const std::string&, const std::string&)> func, std::string name = "")
 {
@@ -689,7 +705,9 @@ void test_algorithm_simple(const std::string& dataset_name, const int repetition
       
       auto system = func(cascade_of_nfs, TRAIN, TEST, result_file);
       std::cout << "\tmethod:    " << system->get_nfs_name() << std::endl;
-      auto result = system->experiment_classification(TRAIN, TEST, result_file);    
+      auto result = system->experiment_classification(TRAIN, TEST, result_file);
+      auto second_result = system->get_answers_for_test_classification_depth();
+      save_depth_to_file(RESULTS + "/" + std::to_string(i) +"/depth-" + dataset_name + cascade_name + RESULT_EXTENSION, second_result);
       std::cout << "\tResults saved to file " << result_file << std::endl << std::endl;
       f1_scores.at(i) = f1_score(result);
       avg_num_of_samples.at(i) = system->get_number_of_rules();
@@ -704,36 +722,91 @@ void ksi::exp_005::execute()
    {
       for(auto dataset : datasets)
       {
-         test_algorithm_simple(dataset, 13, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm, "ANNBFIS-increasing_no_rules_soft_penalization");
-         test_algorithm_simple(dataset, 13, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "ANNBFIS-increasing_no_rules_hard_penalization");
-         test_algorithm_simple(dataset, 13, create_anbfis(), create_3WDNFS_algorithm, "ANNBFIS_steady_no_rules_soft_penalization");
-         test_algorithm_simple(dataset, 13, create_anbfis(), create_3WDNFS_algorithm_penalize, "ANNBFIS_steady_no_rules_hard_penalization");
-         test_algorithm_simple(dataset, 13, create_tsk(), create_3WDNFS_algorithm, "TSK-steady_no_rules_soft_penalization");
-         test_algorithm_simple(dataset, 13, create_tsk(), create_3WDNFS_algorithm_penalize, "TSK-steady_no_rules_hard_penalization");
-         test_algorithm_simple(dataset, 13, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm, "TSK-increasing_no_rules_soft_penalization");
-         test_algorithm_simple(dataset, 13, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "TSK-increasing_no_rules_hard_penalization");
+         {
+            auto annbfis_increasing_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis_increasing_no_rules(), create_3WDNFS_stairs, "ANNBFIS-increasing_no_rules_stairs");
+            };
+            auto annbfis_increasing_one = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis_increasing_no_rules(), create_3WDNFS_one_noncommitment, "ANNBFIS-increasing_no_rules_one_noncommitment");
+            };
+            auto annbfis_simple_one = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis(), create_3WDNFS_one_noncommitment, "ANNBFIS_steady_no_rules_one_noncommitment");
+            };
+            auto annbfis_simple_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis(), create_3WDNFS_stairs, "ANNBFIS_steady_no_rules_stairs");   
+            };
+            auto tsk_simple_one = [=]() {
+               test_algorithm_simple(dataset, 23, create_tsk(), create_3WDNFS_one_noncommitment, "TSK-steady_no_rules_one_noncommitment");
+            };
+            auto tsk_increasing_one = [=](){
+               test_algorithm_simple(dataset, 23, create_tsk_increasing_no_rules(), create_3WDNFS_one_noncommitment, "TSK-increasing_no_rules_one_noncommitment");
+            };
+            auto tsk_simple_stairs = [=]() {
+               test_algorithm_simple(dataset, 23, create_tsk(), create_3WDNFS_stairs, "TSK-steady_no_rules_stairs");
+            };
+            auto tsk_increasing_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_tsk_increasing_no_rules(), create_3WDNFS_stairs, "TSK-increasing_no_rules_stairs");   
+            };
+            auto x =    std::thread(annbfis_increasing_stairs); 
+            auto x1 =    std::thread(annbfis_increasing_one);
+            auto x2 =    std::thread(annbfis_simple_one); 
+            auto x3 =    std::thread(annbfis_simple_stairs);
+            auto x4 =    std::thread(tsk_simple_one); 
+            auto x5 =    std::thread(tsk_increasing_one); 
+            auto x6 =    std::thread(tsk_simple_stairs); 
+            auto x7 =    std::thread(tsk_increasing_stairs);
+            x.join(); 
+            x1.join();
+            x2.join();
+            x3.join();
+            x4.join();
+            x5.join();
+            x6.join();
+            x7.join();
+         }
+         {
+            auto annbfis_increasing_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm, "ANNBFIS-increasing_no_rules_soft_penalization");
+            };
+            auto annbfis_increasing_one = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "ANNBFIS-increasing_no_rules_hard_penalization");
+            };
+            auto annbfis_simple_one = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis(), create_3WDNFS_algorithm_penalize, "ANNBFIS_steady_no_rules_hard_penalization");
+            };
+            auto annbfis_simple_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_anbfis(), create_3WDNFS_algorithm, "ANNBFIS_steady_no_rules_soft_penalization");   
+            };
+            auto tsk_simple_one = [=]() {
+               test_algorithm_simple(dataset, 23, create_tsk(), create_3WDNFS_algorithm_penalize, "TSK-steady_no_rules_hard_penalization");
+            };
+            auto tsk_increasing_one = [=](){
+               test_algorithm_simple(dataset, 23, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm_penalize, "TSK-increasing_no_rules_hard_penalization");
+            };
+            auto tsk_simple_stairs = [=]() {
+               test_algorithm_simple(dataset, 23, create_tsk(), create_3WDNFS_algorithm, "TSK-steady_no_rules_soft_penalization");
+            };
+            auto tsk_increasing_stairs = [=](){
+               test_algorithm_simple(dataset, 23, create_tsk_increasing_no_rules(), create_3WDNFS_algorithm, "TSK-increasing_no_rules_soft_penalization");   
+            };
+            auto x =    std::thread(annbfis_increasing_stairs); 
+            auto x1 =    std::thread(annbfis_increasing_one);
+            auto x2 =    std::thread(annbfis_simple_one); 
+            auto x3 =    std::thread(annbfis_simple_stairs);
+            auto x4 =    std::thread(tsk_simple_one); 
+            auto x5 =    std::thread(tsk_increasing_one); 
+            auto x6 =    std::thread(tsk_simple_stairs); 
+            auto x7 =    std::thread(tsk_increasing_stairs);
+            x.join(); 
+            x1.join();
+            x2.join();
+            x3.join();
+            x4.join();
+            x5.join();
+            x6.join();
+            x7.join();
+         }
       }
-      //regression();
-   //   std::vector<std::tuple<double, double, double>> values = {
-   //      {0, 0.06, 0},
-   //      {0, 0.11, 0},
-   //      {0, 0.15, 0},
-   //      {0, 0.16, 0},
-   //      {0, 0.18, 0},
-   //      {0, 0.30, 0},
-   //      {0, 0.46, 0},
-   //      {1, 0.62, 0},
-   //      {0, 0.71, 0},
-   //      {1, 0.75, 0},
-   //      {1, 0.82, 0},
-   //      {1, 0.91, 0},
-   //      {1, 0.93, 0},
-   //      {1, 0.95, 0},
-   //      {1, 0.94242, 0},
-         
-   //  };
-   //  auto res = WP::get_noncommitment_based_on_threshold(values, 0.46);
-   //  std::cout << "Left boundary:" << std::get<0>(res) << "\nRight boundary: " << std::get<1>(res) << std::endl;
    } CATCH;
 
    return;
