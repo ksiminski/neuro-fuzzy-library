@@ -310,6 +310,15 @@ namespace ksi
          }
 
          public:
+         /** @return The method returns a vector of rows (vectors of values) stored in the matrix
+          *  @date 2025-08-06
+          */
+         std::vector<std::vector<T>> getConstValues() const
+         {
+            return data;
+         }
+
+         public:
          /** @return true if the matrix is empty.
            @date 2023-04-27 */
          bool empty() const 

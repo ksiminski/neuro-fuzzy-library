@@ -27,7 +27,10 @@
 #include "../readers/reader-complete.h"
 // #include "../service/debug.h"
 
-
+bool ksi::neuro_fuzzy_system::get_normalisation_status() const 
+{
+   return _bNormalisation;
+}
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(int nRules, 
                                             double dbFrobeniusEpsilon, 
@@ -43,10 +46,8 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(int nRules,
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(const ksi::partitioner& p)
 {
-//      debug(__func__);
     _pPartitioner = p.clone();
     _pModyfikator = nullptr;
-//      debug(_pPartitioner);
 }
 
 ksi::neuro_fuzzy_system::neuro_fuzzy_system(const ksi::partitioner& p, 
@@ -62,7 +63,6 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(int nRules,
                                             int nClusteringIterations, 
                                             int nTuningIterations)
 {
-//     debug(__LINE__);
     _nRules = nRules;
     _nClusteringIterations = nClusteringIterations;
     _nTuningIterations = nTuningIterations;
@@ -181,7 +181,6 @@ ksi::neuro_fuzzy_system::neuro_fuzzy_system(const int nRules,
   _bNormalisation (bNormalisation)
 {
   _pTnorm = tnorma.clone();
-//   debug(_pTnorm);
 }
 
 

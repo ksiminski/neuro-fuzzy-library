@@ -44,7 +44,7 @@ namespace ksi
       double _dbLearningCoefficient = -1.0;
       
       /** normalisation of data */
-      bool _bNormalisation;
+      bool _bNormalisation = false;
       
       /** train dataset */
       dataset _TrainDataset;
@@ -728,6 +728,11 @@ virtual result experiment_regression_core(
       *  a non-empty body of this method.
       *  @date 2024-05-02 */  
        virtual void run_extra_activities_for_the_model();
+
+   public:
+       /** @return true, if _bNormalisation set, otherwise false 
+        *  @date 2024-05-19 */
+       bool get_normalisation_status() const;
    };
 }
 
