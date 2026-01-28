@@ -105,7 +105,7 @@ namespace ksi
 }
 
 
-ksi::cluster* ksi::partition::getCluster(std::size_t index)
+ksi::cluster* ksi::partition::getCluster(std::size_t index) const
 {
    if (clusters.size() == 0)
       return nullptr; 
