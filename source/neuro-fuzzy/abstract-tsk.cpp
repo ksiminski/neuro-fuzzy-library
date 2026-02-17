@@ -52,7 +52,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
 {
    try
    {
-      std::deque<double> errors;
+      // std::deque<double> errors;
       //_nRules = nRules;  /// @todo Liczbe regul okresla system podzialu dziedziny!
       _nClusteringIterations = nClusteringIterations;
       _nTuningIterations = nTuningIterations;
@@ -67,10 +67,10 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       _pRulebase = new rulebase();
 
       // remember the best rulebase:
-      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
-      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      // std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      // double dbTheBestRMSE = std::numeric_limits<double>::max();
       ////////
-      
+
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
       
@@ -114,6 +114,7 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
       {
          premise przeslanka;      
          auto klaster = podzial.getCluster(c);
+         
          for (std::size_t a = 0; a < nAttr_1; a++)
          {
             przeslanka.addDescriptor(klaster->getDescriptor(a));
@@ -196,32 +197,30 @@ void ksi::abstract_tsk::createFuzzyRulebase (int nClusteringIterations,
          //////////////////////////////////
          // test: wyznaczam blad systemu
          
-         std::vector<double> wYelaborated (nValY);
-         for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(validateX.getDatum(x)));
+         // std::vector<double> wYelaborated (nValY);
+         // for (std::size_t x = 0; x < nX; x++)
+             // wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
          ///////////////////////////
-         ksi::error_RMSE rmse;
-         double blad = rmse.getError(wvalidateY, wYelaborated);
-         errors.push_front(blad);
+         // ksi::error_RMSE rmse;
+         // double blad = rmse.getError(wvalidateY, wYelaborated);
+         // errors.push_front(blad);
          
-         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
          // remember the best rulebase:
-         if (dbTheBestRMSE > blad)
-         {
-            dbTheBestRMSE = blad;
-            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
-         }
+         // if (dbTheBestRMSE > blad)
+         // {
+         //    dbTheBestRMSE = blad;
+         //    pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         // }
          ///////////////////////////
-         
       }
       // system nastrojony :-)
       // update the rulebase with the best one:
-      delete _pRulebase;
-      _pRulebase = pTheBest->clone();
+      // delete _pRulebase;
+      // _pRulebase = pTheBest->clone();
    }
    CATCH;
-       
 }
 
 double ksi::abstract_tsk::answer(const ksi::datum& item) const

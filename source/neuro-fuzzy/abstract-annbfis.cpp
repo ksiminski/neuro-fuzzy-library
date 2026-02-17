@@ -71,7 +71,7 @@ void ksi::abstract_annbfis::createFuzzyRulebase
 //       if (not _pPartitioner)
 //           throw ksi::exception("no partition object provided");
  
-      std::deque<double> errors; 
+      // std::deque<double> errors; 
       const double INITIAL_W = 2.0;
       
       _nClusteringIterations = nClusteringIterations;
@@ -87,8 +87,8 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       _pRulebase = new rulebase();
 
       // remember the best rulebase:
-      std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
-      double dbTheBestRMSE = std::numeric_limits<double>::max();
+      // std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      // double dbTheBestRMSE = std::numeric_limits<double>::max();
       ////////
 
       std::size_t nAttr = train.getNumberOfAttributes();
@@ -108,22 +108,23 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       for (std::size_t x = 0; x < nValY; x++)
          wvalidateY[x] = mvalidateY[x][0];      
       ////////////////////////
+
+      _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
       _nRules = podzial.getNumberOfClusters();
-      _original_size_of_training_dataset = trainX.getNumberOfData();
-
+      
       auto typical_items = trainX.get_if_data_typical(_minimal_typicality);
       trainX.remove_untypical_data(typical_items);
       trainY.remove_untypical_data(typical_items);
-       _reduced_size_of_training_dataset = trainX.getNumberOfData();
       
       std::size_t nX = trainX.getNumberOfData();
+      _reduced_size_of_training_dataset = nX;
       
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
       auto wTrainY = trainY.getMatrix();
-      
+
       std::vector<double> wY(nX);
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
@@ -135,7 +136,9 @@ void ksi::abstract_annbfis::createFuzzyRulebase
          auto klaster = podzial.getCluster(c);
          
          for (std::size_t a = 0; a < nAttr_1; a++)
+         {
             przeslanka.addDescriptor(klaster->getDescriptor(a));
+         }
          
          logicalrule regula (*_pTnorm, *_pImplication);
          regula.setPremise(przeslanka);
@@ -214,29 +217,28 @@ void ksi::abstract_annbfis::createFuzzyRulebase
          //////////////////////////////////
          // test: wyznaczam blad systemu
          
-         std::vector<double> wYelaborated (nValY);
-         for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(validateX.getDatum(x)));
+         // std::vector<double> wYelaborated (nValY);
+         // for (std::size_t x = 0; x < nX; x++)
+             // wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
          ///////////////////////////
-         ksi::error_RMSE rmse;
-         double blad = rmse.getError(wvalidateY, wYelaborated);
-         // std::cout << __FILE__ << " (" << __LINE__ << ") " << "coeff: " << eta << ", iter: " << i << ", RMSE(train): " << blad << std::endl;
-         errors.push_front(blad);
+         // ksi::error_RMSE rmse;
+         // double blad = rmse.getError(wvalidateY, wYelaborated);
+         // errors.push_front(blad);
          
-         eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
          // remember the best rulebase:
-         if (dbTheBestRMSE > blad)
-         {
-            dbTheBestRMSE = blad;
-            pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
-         }
+         // if (dbTheBestRMSE > blad)
+         // {
+         //    dbTheBestRMSE = blad;
+         //    pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         // }
          ///////////////////////////
       }
       // system nastrojony :-)
       // update the rulebase with the best one:
-      delete _pRulebase;
-      _pRulebase = pTheBest->clone();
+      // delete _pRulebase;
+      // _pRulebase = pTheBest->clone();
    }
    CATCH;
 }

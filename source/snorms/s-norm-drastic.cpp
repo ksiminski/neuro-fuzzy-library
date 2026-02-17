@@ -3,7 +3,7 @@
 #include "s-norm-drastic.h"
 #include "s-norm.h"
  
-double ksi::s_norm_drastic::snorm (double a, double b) const
+double ksi::s_norm_drastic::snorm (const double a, const double b) const
 {
    if (a == 0 || b == 0)
       return std::max(a, b);

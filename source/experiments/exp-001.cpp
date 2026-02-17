@@ -1,7 +1,10 @@
 /** @file */
 
 #include <iostream>
+#include <vector>
 #include <string>
+#include <fstream> 
+
  
 #include "../readers/reader-complete.h"
 #include "../readers/reader-incomplete.h"
@@ -19,6 +22,14 @@
 #include "../common/data-modifier-imputer-knn-median.h"
 #include "../common/data-modifier-imputer-values-from-knn.h"
 #include "../common/data-modifier-outlier-remove-sigma.h"
+#include "../common/data_modifier_incompleter_random.h"
+#include "../common/data_modifier_incompleter_random_without_last.h"
+#include "../common/data_modifier_outlier_remove_granular.h"
+#include "../tnorms/t-norm-min.h"
+#include "../snorms/s-norm-max.h"
+#include "../partitions/partitioner.h" 
+#include "../partitions/fcm.h"
+
 
 #include "../experiments/exp-001.h"
 
@@ -74,6 +85,26 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
+
+         {
+            auto data = dane;
+            const double probability {0.2};
+            ksi::data_modifier_incompleter_random incompleter (probability);
+            incompleter.modify(data);
+            std::cout << "all attributes missing at random with probability p = " << probability << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
+
+         {
+            auto data = dane;
+            const double probability {0.2};
+            ksi::data_modifier_incompleter_random_without_last incompleter (probability);
+            incompleter.modify(data);
+            std::cout << "all attributes but last missing at random with probability p = " << probability << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
       }
 
       // outliers
@@ -119,8 +150,20 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
+         
+         {
+            auto data = dane;
+            int nGranules = 3;
+            int nIterations = 10;
+            double threshold = 0.001;
+            ksi::fcm partitioner (nGranules, nIterations);
+            ksi::data_modifier_outlier_remove_granular remover (partitioner, ksi::t_norm_min(), ksi::s_norm_max(), threshold);
+            remover.modify(data);
+            std::cout << "outliers removed with " << nGranules << " granules" << std::endl;
+            std::cout << data << std::endl;
+            std::cout << std::endl;
+         }
       }
-
       // incomplete data
       {
          std::cout << std::endl;

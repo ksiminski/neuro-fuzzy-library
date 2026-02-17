@@ -5,7 +5,7 @@
 #include "t-norm-fodor.h"
 #include "t-norm.h"
  
-double ksi::t_norm_fodor::tnorm (double a, double b) const
+double ksi::t_norm_fodor::tnorm (const double a, const double b) const
 {
    if (a + b > 1)
       return std::min(a, b);

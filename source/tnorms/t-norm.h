@@ -8,7 +8,7 @@ namespace ksi
 {
    struct t_norm 
    {
-      virtual double tnorm (double, double) const = 0;
+      virtual double tnorm (const double, const double) const = 0;
       virtual t_norm * clone() const = 0; 
       
       /** The method prints an object into output stream.

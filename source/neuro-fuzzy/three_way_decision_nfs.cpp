@@ -7,7 +7,8 @@
 #include <iomanip>
 #include <sstream>
 #include <syncstream>
-
+#include <algorithm>
+#include <map>
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../gan/discriminative_model.h"
@@ -297,7 +298,11 @@ void ksi::three_way_decision_nfs::createFuzzyRulebase(const ksi::dataset& train,
                 }
             }   
         }
-        std::erase_if(_cascade, [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;});
+        _cascade.erase(
+            std::remove_if(_cascade.begin(), _cascade.end(),
+                [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;}),
+            _cascade.end()
+        );
     }
     CATCH;
 }
@@ -445,6 +450,33 @@ std::vector<std::tuple<double, double, double> > ksi::three_way_decision_nfs::ge
     return _answers_for_test;
 }
 
+std::vector<std::tuple<std::vector<double>, std::size_t, size_t>> ksi::three_way_decision_nfs::get_answers_for_test_classification_depth(bool useTestDataset) const
+{
+    _number_of_rules_used = 0;
+    _number_of_data_items = 0;
+    
+    ksi::dataset dataset_to_use = useTestDataset ? _TestDataset : _TrainDataset;
+
+    auto XYtest  = dataset_to_use.splitDataSetVertically(dataset_to_use.getNumberOfAttributes() - 1);
+    std::size_t nXtest  = dataset_to_use.getNumberOfData();
+
+    std::vector<std::tuple<std::vector<double>, std::size_t, std::size_t>> answers_for_test(nXtest);
+    #pragma omp parallel for 
+    for (std::size_t i = 0; i < nXtest; i++)
+    {
+        const ksi::datum* d = XYtest.first.getDatum(i);
+        auto [ elaborated_numeric, elaborated_class, classifier_number ] = answer_classification_with_cascade_depth(*d);
+        //auto expected = XYtest.second.get(i, 0);
+        //;
+        // _answers_for_test.push_back({expected, elaborated_numeric, elaborated_class});
+        answers_for_test[i] = std::make_tuple(d->getVector(), classifier_number, elaborated_class); 
+    }
+    auto data_size = _TestDataset.size();
+    _dbTestAverageNumerOfRulesUsed = 1.0 * _number_of_rules_used / _number_of_data_items;
+    return answers_for_test;
+}
+
+
 /*
 std::pair<double, double> ksi::three_way_decision_nfs::answer_classification(const ksi::datum& item) const
 {
@@ -511,6 +543,43 @@ std::pair<double, double> ksi::three_way_decision_nfs::answer_classification(con
     }
     CATCH;
 }
+
+std::tuple<double, double, std::size_t> ksi::three_way_decision_nfs::answer_classification_with_cascade_depth(const ksi::datum& item) const
+{
+    try 
+    {
+        auto nan = std::numeric_limits<double>::signaling_NaN();
+        auto result = std::make_pair (nan, nan);
+        auto _final_result = std::make_tuple (nan, nan, 0);
+
+        std::size_t number_of_rules = 0;
+        
+        auto depth = std::min(std::numeric_limits<std::size_t>::max(), _cascade.size() - 1);
+        for (std::size_t i = 0; i < depth + 1; i++)
+        {
+            auto & pSystem = _cascade[i];
+            result = pSystem->answer_classification(item);
+            std::get<2>(_final_result) = i + 1;
+
+            number_of_rules += pSystem->get_number_of_rules();
+            auto threshold_value = pSystem->get_threshold_value();
+            auto numeric = result.first;
+            std::get<0>(_final_result) = result.first;
+            std::get<1>(_final_result) = result.second;
+            if ((i == depth) or (std::fabs(numeric - threshold_value) > _noncommitment_widths[i]))
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return _final_result;
+            }
+        }
+        ++_number_of_data_items;
+        _number_of_rules_used += number_of_rules;
+        return _final_result; 
+    }
+    CATCH;
+}
+
 
 ksi::dataset ksi::three_way_decision_nfs::extract_poor_results(
     const ksi::dataset & data, 
@@ -818,5 +887,789 @@ void ksi::three_way_decision_nfs::elaborate_cascade_f1scores()
 void ksi::three_way_decision_nfs::run_extra_activities_for_the_model()
 {
    ksi::three_way_decision_nfs::elaborate_cascade_f1scores();
+}
+
+ksi::three_way_decision_nfs_WP::three_way_decision_nfs_WP(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> &cascade,
+    const std::string &train,
+    const std::string &validation,
+    const std::string &test,
+    const std::string &result,
+    std::function<std::tuple<double,double>(const std::vector<std::tuple<double, double, double>> &, const double& )> fitnessFunction
+)
+: three_way_decision_nfs(cascade, train, validation, test, result, 0.0)
+, m_fitnessFunction(fitnessFunction) {
+}
+
+void ksi::three_way_decision_nfs_WP::createFuzzyRulebase(
+    const ksi::dataset &train, const ksi::dataset &test, const ksi::dataset &validation)
+{
+    try 
+    {
+        auto zbior_treningowy = train;
+        auto nAttributes = zbior_treningowy.getNumberOfAttributes(); 
+        bool remove_system = false;
+        for (std::size_t i = 0; i < _cascade.size(); i++)
+        {
+            if (remove_system)
+            {
+                _cascade[i] = nullptr;
+                continue;
+            }
+            auto& pSystem = _cascade[i];
+            pSystem->set_train_data_file(this->_train_data_file);
+            pSystem->set_validation_data_file (this->_validation_data_file);
+            pSystem->set_test_data_file (this->_test_data_file);
+            pSystem->set_output_file(this->_output_file + std::to_string(i));
+            pSystem->set_train_dataset(zbior_treningowy);
+            pSystem->set_validation_dataset(validation);
+            pSystem->set_test_dataset(test);
+            pSystem->experiment_classification_core(); 
+            
+            // wydzielenie tych danych, które są zbyt bliskie progowi 
+            auto results_train = pSystem->get_answers_for_train_classification();
+            auto threshold_value = pSystem->get_threshold_value();
+            auto [a, b] = m_fitnessFunction(results_train, threshold_value);
+            _noncommitment_widths[i] = (b - a) / 2;
+            auto new_threshold = (a + b) / 2;
+            pSystem->set_threshold_value(new_threshold);
+            pSystem->set_threshold_type(ksi::roc_threshold::manual);
+            // zapisanie do zbioru_treningowego danych bliskich progowi
+            zbior_treningowy = extract_poor_results(zbior_treningowy, results_train, threshold_value, _noncommitment_widths[i]); 
+              
+            if (zbior_treningowy.size() < nAttributes)
+            {
+                // wszystkie nastepne systemy trzeba skasowac
+                remove_system = true;  
+            }
+        }
+        _cascade.erase(
+            std::remove_if(_cascade.begin(), _cascade.end(),
+                [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;}),
+            _cascade.end()
+        );
+    }
+    CATCH;
+}
+namespace WP{
+    using numeric_response = double;
+    using expected_class = double;
+    using _ = double;
+    std::map<double, std::tuple<int,int>> create_prefixes(const std::vector<std::tuple<expected_class, numeric_response, double>> & data)
+    {
+        auto data_copied = data;
+        std::sort(data_copied.begin(), data_copied.end(),
+            [](const auto & a, const auto & b) {return std::get<1>(a) < std::get<1>(b);});
+
+        std::map<numeric_response, std::array<int, 2>> values_map;
+        for (const auto&d : data_copied)
+        {
+            auto value = std::get<1>(d);
+            if (values_map.find(value) == values_map.end())
+            {
+                values_map[value] = {0, 0};
+            }
+            values_map[value][(int)std::get<0>(d)]++;
+        }
+        std::map<double, std::tuple<int, int>> prefixes;
+        std::array<int, 2> previous = {0, 0};
+        std::size_t i = 0;
+        for (auto it = values_map.begin(); it != values_map.end(); it++)
+        {
+            previous[0] += it->second[0];
+            previous[1] += it->second[1];
+            prefixes[it->first] = {previous[0], previous[1]};
+            i++;
+        }
+        return prefixes;
+        //std::vector<double> intervals(data.size());
+        //auto prev = values_map.begin()->first;
+        //for(auto i = 1; i < values_map.size(); i++)
+        //{
+        //    intervals[i-1] = std::next(values_map.begin(), i)->first + prev;
+        //    prev = std::next(values_map.begin(), i)->first;
+        //    intervals[i-1] /= 2;
+        //}
+        //intervals[values_map.size()-1] = std::next(values_map.begin(), values_map.size()-1)->first + 0.01;
+        //std::map<double, std::tuple<int, int>> prefixes;
+        //std::array<int, 2> previous = {0, 0};
+        //std::size_t i = 0;
+        //for (auto it = values_map.begin(); it != values_map.end(); it++)
+        //{
+        //    previous[0] += it->second[0];
+        //    previous[1] += it->second[1];
+        //    prefixes[intervals[i]] = {previous[0], previous[1]};
+        //    i++;
+        //}
+        return prefixes;
+    }
+
+  double get_key_for_value(const std::map<double, std::tuple<int, int>>& prefixes, const double& value)
+    {
+        for (auto it = prefixes.rbegin(); it != prefixes.rend(); ++it) {
+            if (it->first <= value) {
+                return it->first;
+            }
+        }
+
+        return prefixes.begin()->first;
+    }
+
+    double f1_score(const std::map<double, std::tuple<int, int>>& prefixes, const double& beginning, const double& end)
+    {
+        double tp = std::get<1>((prefixes.rbegin())->second) - std::get<1>(prefixes.at(end)); // @TODO ??
+        double fp = std::get<0>((prefixes.rbegin())->second) - std::get<0>(prefixes.at(end));
+        double fn = std::get<1>(prefixes.at(beginning));
+        //std::cout << "For values: " << beginning << " and " << end << " TP: " << tp << " FP: " << fp << " FN: " << fn << std::endl;
+        return 2*tp/(2*tp+fp+fn+std::numeric_limits<double>::epsilon());
+    }
+    double get_no_points_between(const std::map<double, std::tuple<int, int>>& prefixes, const double& beginning, const double& end)
+    {
+        auto no_0 = std::get<0>(prefixes.at(get_key_for_value(prefixes, end))) - std::get<0>(prefixes.at(get_key_for_value(prefixes, beginning)));
+        auto no_1 = std::get<1>(prefixes.at(get_key_for_value(prefixes, end))) - std::get<1>(prefixes.at(get_key_for_value(prefixes, beginning)));
+        return no_0 + no_1;
+    }
+    std::tuple<std::size_t, std::size_t> retrieve_initial(const std::map<double, std::tuple<int, int>>& prefixes)
+    {
+        std::size_t beginning = 0, end = prefixes.size() - 1;
+        auto no = end;
+        for(auto it = prefixes.begin(); it != prefixes.end(); it++)
+        {
+            if (!std::get<1>(std::next(it,1)->second))
+            {
+                beginning++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        for(auto it = prefixes.rbegin(); it != prefixes.rend(); it++)
+        {
+            if (!(std::get<0>(std::next(prefixes.rend(),1)->second)-std::get<0>(std::next(it,1)->second)))
+            {
+                end--;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return {beginning, end};
+    }
+    std::tuple<double,double> get_noncommitment_based_on_threshold(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
+    {
+        auto prefixes = create_prefixes(data);
+        //for (const auto& [key, value] : prefixes)
+        //{
+        //    std::cout << "r_i: " << key << " c_n: " << std::get<0>(value) << " c_p:" << std::get<1>(value) << std::endl;
+        //}
+        auto best_score_so_far = std::numeric_limits<double>::max();
+        double delta = threshold - prefixes.begin()->first;
+        auto best_delta = delta;
+        try 
+        {
+            while(delta > 0)
+            {
+                auto beginning_value = get_key_for_value(prefixes, threshold-delta);
+                auto end_value = get_key_for_value(prefixes, threshold+delta);
+                auto f1 = f1_score(prefixes, beginning_value, end_value);
+                auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
+                auto score = 1/(f1+std::numeric_limits<double>::epsilon()) + pow(frac_between,2);
+                //std::cout<< "Score for delta = " << delta << " is " << score << " Number between is:" << frac_between*data.size() << " F1 score is:" << f1 << std::endl;
+                if (score < best_score_so_far)
+                {
+                    best_score_so_far = score;
+                    best_delta = delta;
+                }
+                delta -= 0.01;
+            }
+        }
+        catch(std::exception& es)
+        {
+            std::cerr << es.what() << std::endl;
+        }
+        //std::cout << "Best delta is: " << best_delta << std::endl;
+        return {threshold-best_delta, threshold+best_delta};
+    }
+    std::tuple<double,double> get_noncommitment_based_on_threshold_hard_penalize(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
+    {
+        auto prefixes = create_prefixes(data);
+        auto best_score_so_far = std::numeric_limits<double>::max();
+        double delta = threshold - prefixes.begin()->first;
+        auto best_delta = delta;
+        try 
+        {
+            while(delta > 0)
+            {
+                auto beginning_value = get_key_for_value(prefixes, threshold-delta);
+                auto end_value = get_key_for_value(prefixes, threshold+delta);
+                auto f1 = f1_score(prefixes, beginning_value, end_value);
+                auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
+                auto score = 1/(f1+std::numeric_limits<double>::epsilon()) + 0.5*pow(frac_between,2);
+                if (score < best_score_so_far)
+                {
+                    best_score_so_far = score;
+                    best_delta = delta;
+                }
+                delta -= 0.01;
+            }
+        }
+        catch(std::exception& es)
+        {
+            std::cerr << es.what() << std::endl;
+        }
+        return {threshold-best_delta, threshold+best_delta};
+    }
+    std::tuple<double,double> get_noncommitment(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
+    {
+        throw std::runtime_error("SHOULD NOT BE USED");
+        auto prefixes = create_prefixes(data);
+        auto [beginning, end] = retrieve_initial(prefixes);
+        auto best_score_so_far = 1000000.0;
+        auto best_end = end;
+        auto best_beginning = beginning;
+        for(auto i = beginning; i <= end; ++i)
+        {
+            for (auto j = i; j <= end; ++j)
+            {
+                auto beginning_value = std::next(prefixes.begin(),i)->first;
+                auto end_value = std::next(prefixes.begin(),j)->first;
+                auto f1 = f1_score(prefixes, beginning_value, end_value);
+                auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
+                auto score = 1/(f1+0.00001) + pow(frac_between,2);
+                if (score < best_score_so_far)
+                {
+                    best_score_so_far = score;
+                    best_beginning = i;
+                    best_end = j;
+                }
+            }
+        }
+        return {std::next(prefixes.begin(),beginning)->first, std::next(prefixes.begin(),end)->first};
+    }
+}
+
+// ============================================================================
+// Implementation of three_way_decision_nfs_meta
+// ============================================================================
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta() : three_way_decision_nfs()
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade
+) : three_way_decision_nfs(cascade), _meta_classifiers(meta_cascade)
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+    const std::string& train, 
+    const std::string& test, 
+    const std::string& result
+) : three_way_decision_nfs(cascade, train, test, result, 0.0), _meta_classifiers(meta_cascade)
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+    const std::string& train,
+    const std::string& validation, 
+    const std::string& test, 
+    const std::string& result
+) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0), _meta_classifiers(meta_cascade)
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+    const ksi::dataset& train, 
+    const ksi::dataset& test, 
+    const std::string& result
+) : three_way_decision_nfs(cascade, train, test, result, 0.0), _meta_classifiers(meta_cascade)
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+    const ksi::dataset& train,
+    const ksi::dataset& validation, 
+    const ksi::dataset& test, 
+    const std::string& result
+) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0), _meta_classifiers(meta_cascade)
+{
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(const three_way_decision_nfs_meta& wzor) 
+    : three_way_decision_nfs(wzor)
+{
+    for (const auto& s : wzor._meta_classifiers)
+        _meta_classifiers.push_back(std::shared_ptr<ksi::neuro_fuzzy_system>(s->clone()));
+    
+    meta_copy_fields(wzor);
+}
+
+ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(three_way_decision_nfs_meta&& wzor) 
+    : three_way_decision_nfs(wzor)
+{
+    std::swap(_meta_classifiers, wzor._meta_classifiers);
+    meta_copy_fields(wzor);
+}
+
+ksi::three_way_decision_nfs_meta& ksi::three_way_decision_nfs_meta::operator=(const three_way_decision_nfs_meta& wzor)
+{
+    if (this == &wzor)
+        return *this;
+
+    ksi::three_way_decision_nfs::operator=(wzor);
+    
+    _meta_classifiers.clear();
+    for (const auto& s : wzor._meta_classifiers)
+        _meta_classifiers.push_back(std::shared_ptr<ksi::neuro_fuzzy_system>(s->clone()));
+    
+    meta_copy_fields(wzor);
+    
+    return *this;
+}
+
+ksi::three_way_decision_nfs_meta& ksi::three_way_decision_nfs_meta::operator=(three_way_decision_nfs_meta&& wzor)
+{
+    if (this == &wzor)
+        return *this;
+
+    ksi::three_way_decision_nfs::operator=(wzor);
+    
+    std::swap(_meta_classifiers, wzor._meta_classifiers);
+    meta_copy_fields(wzor);
+    
+    return *this;
+}
+
+ksi::three_way_decision_nfs_meta::~three_way_decision_nfs_meta()
+{
+}
+
+ksi::neuro_fuzzy_system* ksi::three_way_decision_nfs_meta::clone() const
+{
+    return new ksi::three_way_decision_nfs_meta(*this);
+}
+
+void ksi::three_way_decision_nfs_meta::meta_copy_fields(const three_way_decision_nfs_meta& other)
+{
+    // Currently no additional fields to copy beyond what's in _meta_classifiers
+}
+
+ksi::dataset ksi::three_way_decision_nfs_meta::extract_incorrect_results(
+    const ksi::dataset& data,
+    const std::vector<std::tuple<double, double, double>>& answers
+)
+{
+    try 
+    {
+        std::vector<std::size_t> indices;
+        
+        for (std::size_t i = 0; i < answers.size(); i++)
+        {
+            double expected, elaborated_class;
+            std::tie(expected, std::ignore, elaborated_class) = answers[i];
+            
+            // Check if classification was incorrect
+            if (std::fabs(expected - elaborated_class) > 0.001)
+                indices.push_back(i);
+        }
+        
+        ksi::dataset incorrect_data;
+        for (const auto i : indices)
+        {
+            incorrect_data.addDatum(*data.getDatum(i));
+        }
+        return incorrect_data;    
+    }
+    CATCH;
+}
+
+ksi::dataset ksi::three_way_decision_nfs_meta::create_meta_training_data(
+    const ksi::dataset& data,
+    const std::vector<std::tuple<double, double, double>>& answers
+)
+{
+    try 
+    {
+        ksi::dataset meta_data;
+        
+        for (std::size_t i = 0; i < answers.size(); i++)
+        {
+            double expected, elaborated_class;
+            std::tie(expected, std::ignore, elaborated_class) = answers[i];
+            
+            // Create a copy of the datum
+            auto datum_copy = *data.getDatum(i);
+            
+            // Set label: 1.0 if correct, 0.0 if incorrect
+            double label = (std::fabs(expected - elaborated_class) < 0.001) ? 1.0 : 0.0;
+            datum_copy.setDecision(label);
+            
+            meta_data.addDatum(datum_copy);
+        }
+        
+        return meta_data;    
+    }
+    CATCH;
+}
+
+void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
+    const ksi::dataset& train, 
+    const ksi::dataset& test, 
+    const ksi::dataset& validation
+)
+{
+    try 
+    {
+        auto zbior_treningowy = train;
+        auto nAttributes = zbior_treningowy.getNumberOfAttributes(); 
+        bool remove_system = false;
+        
+        // Ensure we have the right number of meta-classifiers (one less than primary classifiers)
+        if (_meta_classifiers.size() != _cascade.size() - 1)
+        {
+            throw std::string("Number of meta-classifiers must be one less than number of primary classifiers.");
+        }
+        
+        for (std::size_t i = 0; i < _cascade.size(); i++)
+        {
+            if (remove_system)
+            {
+                _cascade[i] = nullptr;
+                if (i < _meta_classifiers.size())
+                    _meta_classifiers[i] = nullptr;
+            }
+            else 
+            {
+                // Train primary classifier
+                auto& pSystem = _cascade[i];
+                pSystem->set_train_data_file(this->_train_data_file);
+                pSystem->set_validation_data_file(this->_validation_data_file);
+                pSystem->set_test_data_file(this->_test_data_file);
+                pSystem->set_output_file(this->_output_file + "-primary-" + std::to_string(i));
+                pSystem->set_train_dataset(zbior_treningowy);
+                pSystem->set_validation_dataset(validation);
+                pSystem->set_test_dataset(test);
+                pSystem->experiment_classification_core(); 
+                
+                // Get results from primary classifier
+                auto results_train = pSystem->get_answers_for_train_classification();
+                
+                // Train meta-classifier for this level (except for the last level)
+                if (i < _meta_classifiers.size())
+                {
+                    auto& pMetaSystem = _meta_classifiers[i];
+                    
+                    // Create meta-training data: label 1.0 if correct, -1.0 if incorrect
+                    auto meta_train_data = create_meta_training_data(zbior_treningowy, results_train);
+                    
+                    // Set positive and negative classes for meta-classifier
+                    pMetaSystem->set_positive_class(1.0);   // correct predictions
+                    pMetaSystem->set_negative_class(0.0);  // incorrect predictions
+                    
+                    // Use Youden index for meta-classifier threshold
+                    pMetaSystem->set_threshold_type(ksi::roc_threshold::youden);
+                    
+                    pMetaSystem->set_train_data_file(this->_train_data_file);
+                    pMetaSystem->set_validation_data_file(this->_validation_data_file);
+                    pMetaSystem->set_test_data_file(this->_test_data_file);
+                    pMetaSystem->set_output_file(this->_output_file + "-meta-" + std::to_string(i));
+                    pMetaSystem->set_train_dataset(meta_train_data);
+                    pMetaSystem->set_validation_dataset(validation);
+                    pMetaSystem->set_test_dataset(test);
+                    pMetaSystem->experiment_classification_core();
+                    
+                    // Get meta-classifier predictions on training data
+                    auto meta_results = pMetaSystem->get_answers_for_train_classification();
+                    
+                    // Get meta-classifier's Youden threshold
+                    auto meta_threshold = pMetaSystem->get_threshold_value();
+                    
+                    // Extract items that meta-classifier predicts will be incorrectly classified
+                    // These are items where numeric score < threshold (predicting class -1.0)
+                    std::vector<std::size_t> indices_for_next_level;
+                    for (std::size_t j = 0; j < meta_results.size(); j++)
+                    {
+                        double meta_elaborated_numeric;
+                        std::tie(std::ignore, meta_elaborated_numeric, std::ignore) = meta_results[j];
+                        
+                        // If meta-classifier predicts incorrect (numeric < threshold), pass to next level
+                        if (meta_elaborated_numeric < meta_threshold)
+                            indices_for_next_level.push_back(j);
+                    }
+                    
+                    // Create dataset for next level
+                    ksi::dataset next_level_data;
+                    for (const auto j : indices_for_next_level)
+                    {
+                        next_level_data.addDatum(*zbior_treningowy.getDatum(j));
+                    }
+                    
+                    zbior_treningowy = next_level_data;
+                }
+                
+                // Check if we have enough data to continue
+                if (zbior_treningowy.size() < nAttributes)
+                {
+                    remove_system = true;  
+                }
+            }   
+        }
+        
+        // Remove null systems
+        _cascade.erase(
+            std::remove_if(_cascade.begin(), _cascade.end(),
+                [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;}),
+            _cascade.end()
+        );
+        _meta_classifiers.erase(
+            std::remove_if(_meta_classifiers.begin(), _meta_classifiers.end(),
+                [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;}),
+            _meta_classifiers.end()
+        );
+    }
+    CATCH;
+}
+
+std::pair<double, double> ksi::three_way_decision_nfs_meta::answer_classification(const ksi::datum& item) const
+{
+    try 
+    {
+        auto nan = std::numeric_limits<double>::signaling_NaN();
+        auto result = std::make_pair(nan, nan);
+        std::size_t number_of_rules = 0;
+        
+        for (std::size_t i = 0; i < _cascade.size(); i++)
+        {
+            auto& pSystem = _cascade[i];
+            result = pSystem->answer_classification(item);
+            number_of_rules += pSystem->get_number_of_rules();
+            
+            // If this is the last classifier, return its result
+            if (i == _cascade.size() - 1)
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return result;
+            }
+            
+            // Otherwise, check with meta-classifier
+            auto& pMetaSystem = _meta_classifiers[i];
+            auto meta_result = pMetaSystem->answer_classification(item);
+            number_of_rules += pMetaSystem->get_number_of_rules();
+            
+            // Get meta-classifier's threshold (calculated using Youden index during training)
+            auto meta_threshold = pMetaSystem->get_threshold_value();
+            
+            // If meta-classifier predicts correct (numeric score >= threshold), return primary result
+            if (meta_result.first >= meta_threshold)
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return result;
+            }
+            
+            // Otherwise, meta-classifier predicts incorrect, so continue to next level
+        }
+        
+        // Should not reach here, but return last result just in case
+        ++_number_of_data_items;
+        _number_of_rules_used += number_of_rules;
+        return result;
+    }
+    CATCH;
+}
+
+std::tuple<double, double, std::size_t> ksi::three_way_decision_nfs_meta::answer_classification_with_cascade_depth(const ksi::datum& item) const
+{
+    try 
+    {
+        auto nan = std::numeric_limits<double>::signaling_NaN();
+        auto result = std::make_pair(nan, nan);
+        auto final_result = std::make_tuple(nan, nan, std::size_t{0});
+        std::size_t number_of_rules = 0;
+        
+        for (std::size_t i = 0; i < _cascade.size(); i++)
+        {
+            auto& pSystem = _cascade[i];
+            result = pSystem->answer_classification(item);
+            number_of_rules += pSystem->get_number_of_rules();
+            
+            // Update result tuple with current level
+            std::get<0>(final_result) = result.first;   // elaborated_numeric
+            std::get<1>(final_result) = result.second;  // elaborated_class
+            std::get<2>(final_result) = i + 1;          // cascade level (1-indexed)
+            
+            // If this is the last classifier, return its result
+            if (i == _cascade.size() - 1)
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return final_result;
+            }
+            
+            // Otherwise, check with meta-classifier
+            auto& pMetaSystem = _meta_classifiers[i];
+            auto meta_result = pMetaSystem->answer_classification(item);
+            number_of_rules += pMetaSystem->get_number_of_rules();
+            
+            // Get meta-classifier's threshold (calculated using Youden index during training)
+            auto meta_threshold = pMetaSystem->get_threshold_value();
+            
+            // If meta-classifier predicts correct (numeric score >= threshold), return primary result
+            if (meta_result.first >= meta_threshold)
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return final_result;
+            }
+            
+            // Otherwise, meta-classifier predicts incorrect, so continue to next level
+        }
+        
+        // Should not reach here, but return last result just in case
+        ++_number_of_data_items;
+        _number_of_rules_used += number_of_rules;
+        return final_result;
+    }
+    CATCH;
+}
+
+std::string ksi::three_way_decision_nfs_meta::get_nfs_name() const
+{
+    try 
+    {
+        return std::string{"three-way-decision-neuro-fuzzy-system-meta-classifier"};
+    }
+    CATCH;
+}
+
+std::string ksi::three_way_decision_nfs_meta::get_brief_nfs_name() const
+{
+    try 
+    {
+        return std::string{"3WDNFS-meta"};
+    }
+    CATCH;
+}
+
+std::string ksi::three_way_decision_nfs_meta::get_nfs_description() const
+{
+    try 
+    {
+        std::stringstream ss;
+        ss << "Three-way-decision neuro-fuzzy system with meta-classifiers" << std::endl;
+        ss << "Primary cascade size: " << _cascade.size() << std::endl;
+        ss << "Meta-classifier cascade size: " << _meta_classifiers.size() << std::endl;
+        ss << "Meta-classifiers use Youden index for threshold determination" << std::endl;
+        return ss.str();
+    }
+    CATCH;
+}
+
+void ksi::three_way_decision_nfs_meta::printRulebase(std::ostream& ss)
+{
+    try
+    {
+        ss << std::endl;
+        ss << "Rulebases of neuro-fuzzy systems in the meta-aware cascade" << std::endl;
+        ss << "============================================================" << std::endl;
+            
+        ss << std::endl;
+        ss << "number of primary classifiers: " << _cascade.size() << std::endl;
+        ss << "number of meta-classifiers:    " << _meta_classifiers.size() << std::endl;
+        ss << std::endl;
+        
+        for (std::size_t i = 0; i < _cascade.size(); i++)
+        {
+            auto & p = _cascade[i];
+            ss << std::endl;
+            ss << "===============================================" << std::endl;
+            ss << "PRIMARY CLASSIFIER " << i << std::endl;
+            ss << "===============================================" << std::endl;
+            ss << p->get_nfs_name() << std::endl;
+            ss << "number of rules:              " << p->get_number_of_rules() << std::endl;
+            ss << "threshold type:               " << ksi::to_string(p->get_threshold_type()) << std::endl;
+            double threshold = p->get_threshold_value();
+            ss << "threshold value:              " << threshold << std::endl;
+            ss << "size of train dataset:        " << p->get_train_dataset_size() << std::endl;
+            ss << "cardinality of train dataset: " << p->get_train_dataset_cardinality() << std::endl;
+            ss << "--------------------------------------" << std::endl;
+            ss << std::endl;       
+            ss << "fuzzy rule base" << std::endl;       
+            p->printRulebase(ss);
+            ss << std::endl;       
+            ss << "linguistic description of fuzzy rule base" << std::endl;       
+            p->printLinguisticDescriptionRulebase(ss);
+            
+            // Print meta-classifier for this level (if exists)
+            if (i < _meta_classifiers.size())
+            {
+                auto & pMeta = _meta_classifiers[i];
+                ss << std::endl;
+                ss << "-----------------------------------------------" << std::endl;
+                ss << "META-CLASSIFIER " << i << " (predicts correctness of primary classifier " << i << ")" << std::endl;
+                ss << "-----------------------------------------------" << std::endl;
+                ss << pMeta->get_nfs_name() << std::endl;
+                ss << "positive class (correct):     " << pMeta->get_positive_class() << std::endl;
+                ss << "negative class (incorrect):   " << pMeta->get_negative_class() << std::endl;
+                ss << "number of rules:              " << pMeta->get_number_of_rules() << std::endl;
+                ss << "threshold type:               " << ksi::to_string(pMeta->get_threshold_type()) << std::endl;
+                double meta_threshold = pMeta->get_threshold_value();
+                ss << "threshold value (Youden):     " << meta_threshold << std::endl;
+                ss << "size of train dataset:        " << pMeta->get_train_dataset_size() << std::endl;
+                ss << "cardinality of train dataset: " << pMeta->get_train_dataset_cardinality() << std::endl;
+                ss << "--------------------------------------" << std::endl;
+                ss << std::endl;       
+                ss << "meta-classifier fuzzy rule base" << std::endl;       
+                pMeta->printRulebase(ss);
+                ss << std::endl;       
+                ss << "meta-classifier linguistic description" << std::endl;       
+                pMeta->printLinguisticDescriptionRulebase(ss);
+            }
+        }
+        ss << std::endl;
+        ss << "============================================================" << std::endl;        
+    }
+    CATCH;
+}
+
+std::string ksi::three_way_decision_nfs_meta::get_cascade_names() const
+{
+    std::stringstream ss;
+    for (std::size_t i = 0; i < _cascade.size(); i++)
+    {
+        ss << "-" << _cascade[i]->get_nfs_name();
+        if (i < _meta_classifiers.size())
+        {
+            ss << "-meta-" << _meta_classifiers[i]->get_nfs_name();
+        }
+    }
+    return ss.str();
+}
+
+std::string ksi::three_way_decision_nfs_meta::get_brief_cascade_names() const
+{
+    std::stringstream ss;
+    for (std::size_t i = 0; i < _cascade.size(); i++)
+    {
+        ss << "-" << _cascade[i]->get_brief_nfs_name();
+        if (i < _meta_classifiers.size())
+        {
+            ss << "-M" << _meta_classifiers[i]->get_brief_nfs_name();
+        }
+    }
+    return ss.str();
 }
 
