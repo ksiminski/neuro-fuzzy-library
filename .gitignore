@@ -1,10 +1,8 @@
-data/
 source/dane/
 source/exec/
 source/results/
-source/_release
-results
-.vscode
+
+
 
 # Prerequisites
 *.d
@@ -42,5 +40,6 @@ results
 /results/exp-005
 /doxygen/html
 /.vs
+/.vscode
 # Temporary VS file
 *.pdb
