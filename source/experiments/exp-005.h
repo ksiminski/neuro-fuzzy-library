@@ -25,9 +25,7 @@ namespace ksi
     */
    class exp_005 : virtual public experiment
    {
-      virtual void classification(const std::string& dataset_name);
-      virtual void WP_classification(const std::string& dataset_name);
-      //virtual void WP_classification_CV(const std::string& dataset_name);
+      virtual void classification();
       virtual void regression ();
     
    public:
