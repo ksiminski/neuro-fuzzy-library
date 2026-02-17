@@ -51,7 +51,7 @@ void ksi::exp_lab::execute()
 		// [EN] neuro-fuzzy system
 		// Uncomment the commented line below. Now two neuro-fuzzy systems (MA and TSK) are run for the data set. Compare your results with the results elaborated by the neuro-fuzzy systems. Try to interpret fuzzy rule bases produced by the systems.
 
-		// neuro_fuzzy_system();
+		neuro_fuzzy_system();
 	}    
 	CATCH;
 }
@@ -70,8 +70,10 @@ void ksi::exp_lab::fuzzy_system()
 		// to wyjście systemu powinno być wysokie. 
 		// 		
 		// Proszę skonstruować bazę reguł rozmytych dla systemu MA, tak by 
-      // wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
+		// wartości błędu RMSE dla danych treningowych były jak najmniejsze. 
 		// W katalogu data/exp-lab zostanie utworzony plik results-fuzzy-MA. 
+
+
 
 		// [EN] DAACI
 		// 
@@ -96,9 +98,11 @@ void ksi::exp_lab::fuzzy_system()
 		
 		
 		// [PL] Jakimi przymiotnikami zostały opisane wartości zmiennych lingwistyczne występujące w regułach?
-		//      w przesłankach:  
-		//      w konluzjach:    
-		
+		//      w przesłankach: 
+		//      w konluzjach:   
+	
+
+
 		// [EN] What adjectives have you used to describe values of the linguistic variables in the rules?
 		//      in premises:     
 		//      in consequences:  
@@ -117,8 +121,6 @@ void ksi::exp_lab::fuzzy_system()
 		//         ksi::descriptor_arctan
 		//         ksi::descriptor_tanh
 
-
-
 		// [PL] T-normy (dostępne klasy)
 		// [EN] T-norms (available classes)
 		//          ksi::t_norm_lukasiewicz tnorm;
@@ -134,17 +136,18 @@ void ksi::exp_lab::fuzzy_system()
 		//          ksi::premise P1;
 		// [PL] dodanie deskryptora do przesłanki: 
 		// [EN] add descriptor to a premise
-		//          P1.addDescriptor(D11);
+		//          P1.addDescriptor(ksi::premise &);
 
 		// [PL] konkluzja
 		// [EN] consequence
-		//          ksi::consequence_MA C1 (support_min, core, support_max);
+		//          ksi::consequence_MA  (double support_min, double core, double support_max);
 
 		// [PL] utworzenie reguły z przesłanki, konkluzji i t-normy:
 		// [EN] compose the premise, consequence and t-norm into a rule
 		//          ksi::rule R1 (tnorm);
-		//          R1.setPremise(P1);
-		//          R1.setConsequence(C1);         
+		//          R1.setPremise(ksi::premise &);
+		//          R1.setConsequence(ksi::consequence_MA);         
+
 
 		// [PL] dodanie reguł do bazy reguł      
 		// [EN] add a rule to a fuzzy rule base
@@ -157,7 +160,7 @@ void ksi::exp_lab::fuzzy_system()
 
 		// [PL] ustawienie systemowi bazy reguł 
 		// [EN] set the composed fuzzy rule base
-		//          MA.set_rulebase(Rulebase);
+	   //         MA.set_rulebase(Rulebase);
 
 
 

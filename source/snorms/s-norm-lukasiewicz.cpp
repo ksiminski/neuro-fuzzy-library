@@ -5,7 +5,7 @@
 
 #include <iostream>
  
-double ksi::s_norm_lukasiewicz::snorm (double a, double b) const
+double ksi::s_norm_lukasiewicz::snorm (const double a, const double b) const
 {
    return std::min(a + b, 1.0);
 }

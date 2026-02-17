@@ -46,6 +46,9 @@ libasan=
 __ : $(release_folder) $(release_folder)/main
 	./$(release_folder)/main
 	
+9 :  $(release_folder) $(release_folder)/main
+	./$(release_folder)/main  9  
+		
 1 :  $(release_folder) $(release_folder)/main
 	./$(release_folder)/main  1  
 		
@@ -186,6 +189,14 @@ $(release_folder)/readers-reader-complete.o : readers/reader-complete.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader-complete.o : readers/reader-complete.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-train_test_model.o : readers/train_test_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-train_test_model.o : readers/train_test_model.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-cross_validation_model.o : readers/cross_validation_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-cross_validation_model.o : readers/cross_validation_model.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/readers-reader.o : readers/reader.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader.o : readers/reader.cpp
@@ -197,6 +208,10 @@ $(debug_folder)/readers-weighted_reader_complete.o : readers/weighted_reader_com
 $(release_folder)/readers-reader-incomplete.o : readers/reader-incomplete.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/readers-reader-incomplete.o : readers/reader-incomplete.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/readers-train_validation_test_model.o : readers/train_validation_test_model.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/readers-train_validation_test_model.o : readers/train_validation_test_model.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/implications-imp-kleene-dienes.o : implications/imp-kleene-dienes.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -233,6 +248,10 @@ $(debug_folder)/implications-imp-goedel.o : implications/imp-goedel.cpp
 $(release_folder)/implications-imp-fodor.o : implications/imp-fodor.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/implications-imp-fodor.o : implications/imp-fodor.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/auxiliary-frobenius_norm.o : auxiliary/frobenius_norm.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/auxiliary-frobenius_norm.o : auxiliary/frobenius_norm.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/auxiliary-mathematics.o : auxiliary/mathematics.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -566,6 +585,10 @@ $(release_folder)/common-data-modifier-marginaliser.o : common/data-modifier-mar
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-marginaliser.o : common/data-modifier-marginaliser.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter.o : common/data_modifier_incompleter.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter.o : common/data_modifier_incompleter.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-standardiser.o : common/data-modifier-standardiser.cpp
@@ -582,6 +605,10 @@ $(release_folder)/common-dataset.o : common/dataset.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-dataset.o : common/dataset.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_outlier_remove_granular.o : common/data_modifier_outlier_remove_granular.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_outlier_remove_granular.o : common/data_modifier_outlier_remove_granular.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-data-modifier-normaliser.o : common/data-modifier-normaliser.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-normaliser.o : common/data-modifier-normaliser.cpp
@@ -594,6 +621,10 @@ $(release_folder)/common-data-modifier-filter.o : common/data-modifier-filter.cp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-filter.o : common/data-modifier-filter.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter_random_without_last.o : common/data_modifier_incompleter_random_without_last.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter_random_without_last.o : common/data_modifier_incompleter_random_without_last.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-data-modifier-imputer-average.o : common/data-modifier-imputer-average.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-imputer-average.o : common/data-modifier-imputer-average.cpp
@@ -601,6 +632,10 @@ $(debug_folder)/common-data-modifier-imputer-average.o : common/data-modifier-im
 $(release_folder)/common-data-modifier-imputer-median.o : common/data-modifier-imputer-median.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/common-data-modifier-imputer-median.o : common/data-modifier-imputer-median.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/common-data_modifier_incompleter_random.o : common/data_modifier_incompleter_random.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/common-data_modifier_incompleter_random.o : common/data_modifier_incompleter_random.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/common-result.o : common/result.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -930,23 +965,23 @@ $(release_folder)/neuro-fuzzy-rulebase.o \
 $(release_folder)/snorms-s-norm-sum.o \
 $(release_folder)/neuro-fuzzy-neuro-fuzzy-system.o \
 $(release_folder)/metrics-metric-cosine.o \
-$(release_folder)/neuro-fuzzy-fac_prototype_mahalanobis_regression.o \
 $(release_folder)/auxiliary-numeric_function.o \
+$(release_folder)/neuro-fuzzy-fac_prototype_mahalanobis_regression.o \
 $(release_folder)/neuro-fuzzy-annbfis.o \
 $(release_folder)/experiments-experiment.o \
 $(release_folder)/partitions-grfcm.o \
 $(release_folder)/partitions-dbscan.o \
-$(release_folder)/neuro-fuzzy-tsk_prototype.o \
-$(release_folder)/dissimilarities-dis-log-linear.o \
 $(release_folder)/readers-reader-complete.o \
 $(release_folder)/implications-imp-rescher.o \
+$(release_folder)/neuro-fuzzy-tsk_prototype.o \
+$(release_folder)/dissimilarities-dis-log-linear.o \
 $(release_folder)/main.o \
 $(release_folder)/owas-sowa.o \
 $(release_folder)/experiments-exp-lab.o \
 $(release_folder)/heuristics-ridders.o \
 $(release_folder)/granules-set_of_cooperating_granules.o \
-$(release_folder)/neuro-fuzzy-prototype_minkowski_classification.o \
 $(release_folder)/dissimilarities-dis-huber.o \
+$(release_folder)/neuro-fuzzy-prototype_minkowski_classification.o \
 $(release_folder)/common-dataset.o \
 $(release_folder)/neuro-fuzzy-subspace-annbfis.o \
 $(release_folder)/auxiliary-error-calculator.o \
@@ -955,27 +990,30 @@ $(release_folder)/metrics-metric-chebyshev.o \
 $(release_folder)/common-data-modifier-imputer-knn-average.o \
 $(release_folder)/tnorms-t-norm-frank.o \
 $(release_folder)/partitions-cluster.o \
+$(release_folder)/readers-cross_validation_model.o \
 $(release_folder)/partitions-fcm-possibilistic.o \
 $(release_folder)/common-data-modifier-filter.o \
 $(release_folder)/auxiliary-tempus.o \
 $(release_folder)/metrics-metric-minkowski-weighted.o \
 $(release_folder)/descriptors-descriptor-sigmoidal.o \
 $(release_folder)/snorms-s-norm-fodor.o \
+$(release_folder)/common-data_modifier_incompleter_random.o \
 $(release_folder)/common-data-modifier-imputer-values-from-knn.o \
 $(release_folder)/partitions-fcm_generic.o \
+$(release_folder)/common-data_modifier_incompleter_random_without_last.o \
 $(release_folder)/common-data-modifier-outlier-remove-sigma.o \
 $(release_folder)/neuro-fuzzy-tsk.o \
-$(release_folder)/common-data-modifier-imputer-median.o \
 $(release_folder)/neuro-fuzzy-prototype_mahalanobis.o \
 $(release_folder)/auxiliary-colours.o \
+$(release_folder)/common-data-modifier-imputer-median.o \
 $(release_folder)/granules-granule.o \
 $(release_folder)/common-extensional-fuzzy-number-gaussian.o \
 $(release_folder)/metrics-metric-euclidean-incomplete.o \
 $(release_folder)/snorms-s-norm-max.o \
 $(release_folder)/neuro-fuzzy-granular_tsk_classification.o \
 $(release_folder)/service-debug.o \
-$(release_folder)/neuro-fuzzy-nfs_prototype.o \
 $(release_folder)/auxiliary-roc.o \
+$(release_folder)/neuro-fuzzy-nfs_prototype.o \
 $(release_folder)/owas-owa.o \
 $(release_folder)/tnorms-t-norm-yager.o \
 $(release_folder)/partitions-fcm-conditional.o \
@@ -984,8 +1022,8 @@ $(release_folder)/common-data-modifier.o \
 $(release_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(release_folder)/neuro-fuzzy-granular_tsk_regression.o \
 $(release_folder)/neuro-fuzzy-weighted_annbfis.o \
-$(release_folder)/neuro-fuzzy-abstract_fcom.o \
 $(release_folder)/auxiliary-to_string.o \
+$(release_folder)/neuro-fuzzy-abstract_fcom.o \
 $(release_folder)/tnorms-t-norm-dubois-prade.o \
 $(release_folder)/readers-reader-incomplete.o \
 $(release_folder)/partitions-rsfcm.o \
@@ -1001,14 +1039,14 @@ $(release_folder)/neuro-fuzzy-fac_prototype_minkowski.o \
 $(release_folder)/neuro-fuzzy-logicalrule.o \
 $(release_folder)/implications-imp-goedel.o \
 $(release_folder)/neuro-fuzzy-fac_prototype_mahalanobis.o \
-$(release_folder)/neuro-fuzzy-granular_nfs_regression.o \
 $(release_folder)/gan-gan.o \
+$(release_folder)/neuro-fuzzy-granular_nfs_regression.o \
 $(release_folder)/common-data-modifier-marginaliser.o \
-$(release_folder)/neuro-fuzzy-premise.o \
 $(release_folder)/readers-reader.o \
+$(release_folder)/neuro-fuzzy-premise.o \
 $(release_folder)/partitions-fcm-T-metrics.o \
-$(release_folder)/neuro-fuzzy-granular_nfs_classification.o \
 $(release_folder)/readers-multilabel_reader_complete.o \
+$(release_folder)/neuro-fuzzy-granular_nfs_classification.o \
 $(release_folder)/common-data-modifier-imputer-average.o \
 $(release_folder)/neuro-fuzzy-prototype_mahalanobis_regression.o \
 $(release_folder)/granules-set_of_standalone_granules.o \
@@ -1020,16 +1058,16 @@ $(release_folder)/neuro-fuzzy-granular_subspace_annbfis_regression.o \
 $(release_folder)/auxiliary-print.o \
 $(release_folder)/neuro-fuzzy-subspace-premise.o \
 $(release_folder)/partitions-fcm.o \
-$(release_folder)/neuro-fuzzy-ma.o \
 $(release_folder)/descriptors-descriptor-interval-gaussian-subspace.o \
+$(release_folder)/neuro-fuzzy-ma.o \
 $(release_folder)/descriptors-descriptor-triangular.o \
 $(release_folder)/readers-weighted_reader_complete.o \
 $(release_folder)/implications-imp-fodor.o \
 $(release_folder)/snorms-s-norm-lukasiewicz.o \
 $(release_folder)/tnorms-t-norm-lukasiewicz.o \
 $(release_folder)/common-data-modifier-imputer-knn-median.o \
-$(release_folder)/neuro-fuzzy-fac_prototype_minkowski_classification.o \
 $(release_folder)/implications-imp-kleene-dienes.o \
+$(release_folder)/neuro-fuzzy-fac_prototype_minkowski_classification.o \
 $(release_folder)/readers-cross_validation_reader.o \
 $(release_folder)/snorms-s-norm-einstein.o \
 $(release_folder)/implications-imp-reichenbach.o \
@@ -1037,15 +1075,15 @@ $(release_folder)/descriptors-descriptor-trapezoidal.o \
 $(release_folder)/partitions-partitioner-grid.o \
 $(release_folder)/neuro-fuzzy-abstract-annbfis.o \
 $(release_folder)/partitions-granular-dbscan.o \
-$(release_folder)/neuro-fuzzy-consequence-TSK.o \
 $(release_folder)/neuro-fuzzy-consequence-CL.o \
+$(release_folder)/neuro-fuzzy-consequence-TSK.o \
 $(release_folder)/implications-imp-lukasiewicz.o \
 $(release_folder)/snorms-s-norm.o \
 $(release_folder)/common-data-modifier-standardiser.o \
 $(release_folder)/neuro-fuzzy-prototype.o \
 $(release_folder)/neuro-fuzzy-prototype_minkowski.o \
-$(release_folder)/dissimilarities-dis-sigmoidal.o \
 $(release_folder)/auxiliary-directory.o \
+$(release_folder)/dissimilarities-dis-sigmoidal.o \
 $(release_folder)/partitions-rfcom.o \
 $(release_folder)/partitions-gk.o \
 $(release_folder)/auxiliary-error-MAE.o \
@@ -1059,8 +1097,8 @@ $(release_folder)/granules-data_item.o \
 $(release_folder)/common-DatasetStatistics.o \
 $(release_folder)/neuro-fuzzy-fcom-annbfis.o \
 $(release_folder)/experiments-exp-000.o \
-$(release_folder)/common-data-modifier-imputer-knn.o \
 $(release_folder)/neuro-fuzzy-rule.o \
+$(release_folder)/common-data-modifier-imputer-knn.o \
 $(release_folder)/experiments-exp-001.o \
 $(release_folder)/descriptors-descriptor-gaussian.o \
 $(release_folder)/experiments-exp-002.o \
@@ -1079,40 +1117,45 @@ $(release_folder)/tnorms-t-norm-product.o \
 $(release_folder)/partitions-fcm-T.o \
 $(release_folder)/neuro-fuzzy-granular_subspace_annbfis_classification.o \
 $(release_folder)/neuro-fuzzy-granular_nfs.o \
+$(release_folder)/readers-train_test_model.o \
 $(release_folder)/auxiliary-mathematics.o \
 $(release_folder)/tnorms-t-norm-fodor.o \
-$(release_folder)/neuro-fuzzy-consequence-MA.o \
 $(release_folder)/heuristics-ridders-test.o \
+$(release_folder)/neuro-fuzzy-consequence-MA.o \
 $(release_folder)/descriptors-descriptor-gaussian-subspace.o \
 $(release_folder)/descriptors-descriptor-singleton.o \
 $(release_folder)/common-datum.o \
 $(release_folder)/neuro-fuzzy-fac_prototype_minkowski_regression.o \
+$(release_folder)/readers-train_validation_test_model.o \
+$(release_folder)/auxiliary-frobenius_norm.o \
 $(release_folder)/metrics-metric-minkowski.o \
 $(release_folder)/tnorms-t-norm-sugeno-weber.o \
-$(release_folder)/common-data-modifier-normaliser.o \
 $(release_folder)/neuro-fuzzy-fcom-tsk.o \
 $(release_folder)/auxiliary-error-RMSE.o \
+$(release_folder)/common-data-modifier-normaliser.o \
 $(release_folder)/tnorms-t-norm-einstein.o \
-$(release_folder)/neuro-fuzzy-granular_annbfis_classification.o \
 $(release_folder)/implications-imp-goguen.o \
+$(release_folder)/neuro-fuzzy-granular_annbfis_classification.o \
 $(release_folder)/gan-discriminative_model.o \
 $(release_folder)/tnorms-t-norm.o \
 $(release_folder)/partitions-partitioner.o \
-$(release_folder)/neuro-fuzzy-fcom-ma.o \
 $(release_folder)/dissimilarities-dis-sigmoidal-linear.o \
+$(release_folder)/neuro-fuzzy-fcom-ma.o \
 $(release_folder)/snorms-s-norm-drastic.o \
-$(release_folder)/neuro-fuzzy-fubi-annbfis.o \
 $(release_folder)/descriptors-descriptor-interval-gaussian.o \
+$(release_folder)/neuro-fuzzy-fubi-annbfis.o \
 $(release_folder)/common-data-modifier-imputer.o \
 $(release_folder)/auxiliary-multiclass_confusion_matrix.o \
 $(release_folder)/tnorms-t-norm-hamacher.o \
 $(release_folder)/neuro-fuzzy-abstract-ma.o \
+$(release_folder)/common-data_modifier_outlier_remove_granular.o \
 $(release_folder)/metrics-metric_mahalanobis.o \
 $(release_folder)/neuro-fuzzy-annbfis_prototype.o \
 $(release_folder)/owas-uowa.o \
 $(release_folder)/heuristics-ridders-gaussian-m.o \
 $(release_folder)/neuro-fuzzy-granular_annbfis_regression.o \
 $(release_folder)/auxiliary-least-error-squares-regression.o \
+$(release_folder)/common-data_modifier_incompleter.o \
 $(release_folder)/neuro-fuzzy-prototype_minkowski_regression.o \
 $(release_folder)/owas-plowa.o \
 $(release_folder)/common-number.o \
@@ -1126,9 +1169,9 @@ $(release_folder)/descriptors-descriptor.o \
 $(release_folder)/heuristics-simulated-annealing-gaussian.o \
 $(release_folder)/metrics-metric-manhattan.o \
 $(release_folder)/tnorms-t-norm-parametrized.o \
-$(release_folder)/neuro-fuzzy-granular_ma_classification.o \
-$(release_folder)/neuro-fuzzy-fac_prototype_mahalanobis_classification.o \
 $(release_folder)/auxiliary-vector-operators.o \
+$(release_folder)/neuro-fuzzy-fac_prototype_mahalanobis_classification.o \
+$(release_folder)/neuro-fuzzy-granular_ma_classification.o \
 $(release_folder)/descriptors-descriptor-semitriangular.o \
 
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -o $@ $^
@@ -1141,23 +1184,23 @@ $(debug_folder)/neuro-fuzzy-rulebase.o \
 $(debug_folder)/snorms-s-norm-sum.o \
 $(debug_folder)/neuro-fuzzy-neuro-fuzzy-system.o \
 $(debug_folder)/metrics-metric-cosine.o \
-$(debug_folder)/neuro-fuzzy-fac_prototype_mahalanobis_regression.o \
 $(debug_folder)/auxiliary-numeric_function.o \
+$(debug_folder)/neuro-fuzzy-fac_prototype_mahalanobis_regression.o \
 $(debug_folder)/neuro-fuzzy-annbfis.o \
 $(debug_folder)/experiments-experiment.o \
 $(debug_folder)/partitions-grfcm.o \
 $(debug_folder)/partitions-dbscan.o \
-$(debug_folder)/neuro-fuzzy-tsk_prototype.o \
-$(debug_folder)/dissimilarities-dis-log-linear.o \
 $(debug_folder)/readers-reader-complete.o \
 $(debug_folder)/implications-imp-rescher.o \
+$(debug_folder)/neuro-fuzzy-tsk_prototype.o \
+$(debug_folder)/dissimilarities-dis-log-linear.o \
 $(debug_folder)/main.o \
 $(debug_folder)/owas-sowa.o \
 $(debug_folder)/experiments-exp-lab.o \
 $(debug_folder)/heuristics-ridders.o \
 $(debug_folder)/granules-set_of_cooperating_granules.o \
-$(debug_folder)/neuro-fuzzy-prototype_minkowski_classification.o \
 $(debug_folder)/dissimilarities-dis-huber.o \
+$(debug_folder)/neuro-fuzzy-prototype_minkowski_classification.o \
 $(debug_folder)/common-dataset.o \
 $(debug_folder)/neuro-fuzzy-subspace-annbfis.o \
 $(debug_folder)/auxiliary-error-calculator.o \
@@ -1166,27 +1209,30 @@ $(debug_folder)/metrics-metric-chebyshev.o \
 $(debug_folder)/common-data-modifier-imputer-knn-average.o \
 $(debug_folder)/tnorms-t-norm-frank.o \
 $(debug_folder)/partitions-cluster.o \
+$(debug_folder)/readers-cross_validation_model.o \
 $(debug_folder)/partitions-fcm-possibilistic.o \
 $(debug_folder)/common-data-modifier-filter.o \
 $(debug_folder)/auxiliary-tempus.o \
 $(debug_folder)/metrics-metric-minkowski-weighted.o \
 $(debug_folder)/descriptors-descriptor-sigmoidal.o \
 $(debug_folder)/snorms-s-norm-fodor.o \
+$(debug_folder)/common-data_modifier_incompleter_random.o \
 $(debug_folder)/common-data-modifier-imputer-values-from-knn.o \
 $(debug_folder)/partitions-fcm_generic.o \
+$(debug_folder)/common-data_modifier_incompleter_random_without_last.o \
 $(debug_folder)/common-data-modifier-outlier-remove-sigma.o \
 $(debug_folder)/neuro-fuzzy-tsk.o \
-$(debug_folder)/common-data-modifier-imputer-median.o \
 $(debug_folder)/neuro-fuzzy-prototype_mahalanobis.o \
 $(debug_folder)/auxiliary-colours.o \
+$(debug_folder)/common-data-modifier-imputer-median.o \
 $(debug_folder)/granules-granule.o \
 $(debug_folder)/common-extensional-fuzzy-number-gaussian.o \
 $(debug_folder)/metrics-metric-euclidean-incomplete.o \
 $(debug_folder)/snorms-s-norm-max.o \
 $(debug_folder)/neuro-fuzzy-granular_tsk_classification.o \
 $(debug_folder)/service-debug.o \
-$(debug_folder)/neuro-fuzzy-nfs_prototype.o \
 $(debug_folder)/auxiliary-roc.o \
+$(debug_folder)/neuro-fuzzy-nfs_prototype.o \
 $(debug_folder)/owas-owa.o \
 $(debug_folder)/tnorms-t-norm-yager.o \
 $(debug_folder)/partitions-fcm-conditional.o \
@@ -1195,8 +1241,8 @@ $(debug_folder)/common-data-modifier.o \
 $(debug_folder)/neuro-fuzzy-granular_ma_regression.o \
 $(debug_folder)/neuro-fuzzy-granular_tsk_regression.o \
 $(debug_folder)/neuro-fuzzy-weighted_annbfis.o \
-$(debug_folder)/neuro-fuzzy-abstract_fcom.o \
 $(debug_folder)/auxiliary-to_string.o \
+$(debug_folder)/neuro-fuzzy-abstract_fcom.o \
 $(debug_folder)/tnorms-t-norm-dubois-prade.o \
 $(debug_folder)/readers-reader-incomplete.o \
 $(debug_folder)/partitions-rsfcm.o \
@@ -1212,14 +1258,14 @@ $(debug_folder)/neuro-fuzzy-fac_prototype_minkowski.o \
 $(debug_folder)/neuro-fuzzy-logicalrule.o \
 $(debug_folder)/implications-imp-goedel.o \
 $(debug_folder)/neuro-fuzzy-fac_prototype_mahalanobis.o \
-$(debug_folder)/neuro-fuzzy-granular_nfs_regression.o \
 $(debug_folder)/gan-gan.o \
+$(debug_folder)/neuro-fuzzy-granular_nfs_regression.o \
 $(debug_folder)/common-data-modifier-marginaliser.o \
-$(debug_folder)/neuro-fuzzy-premise.o \
 $(debug_folder)/readers-reader.o \
+$(debug_folder)/neuro-fuzzy-premise.o \
 $(debug_folder)/partitions-fcm-T-metrics.o \
-$(debug_folder)/neuro-fuzzy-granular_nfs_classification.o \
 $(debug_folder)/readers-multilabel_reader_complete.o \
+$(debug_folder)/neuro-fuzzy-granular_nfs_classification.o \
 $(debug_folder)/common-data-modifier-imputer-average.o \
 $(debug_folder)/neuro-fuzzy-prototype_mahalanobis_regression.o \
 $(debug_folder)/granules-set_of_standalone_granules.o \
@@ -1231,16 +1277,16 @@ $(debug_folder)/neuro-fuzzy-granular_subspace_annbfis_regression.o \
 $(debug_folder)/auxiliary-print.o \
 $(debug_folder)/neuro-fuzzy-subspace-premise.o \
 $(debug_folder)/partitions-fcm.o \
-$(debug_folder)/neuro-fuzzy-ma.o \
 $(debug_folder)/descriptors-descriptor-interval-gaussian-subspace.o \
+$(debug_folder)/neuro-fuzzy-ma.o \
 $(debug_folder)/descriptors-descriptor-triangular.o \
 $(debug_folder)/readers-weighted_reader_complete.o \
 $(debug_folder)/implications-imp-fodor.o \
 $(debug_folder)/snorms-s-norm-lukasiewicz.o \
 $(debug_folder)/tnorms-t-norm-lukasiewicz.o \
 $(debug_folder)/common-data-modifier-imputer-knn-median.o \
-$(debug_folder)/neuro-fuzzy-fac_prototype_minkowski_classification.o \
 $(debug_folder)/implications-imp-kleene-dienes.o \
+$(debug_folder)/neuro-fuzzy-fac_prototype_minkowski_classification.o \
 $(debug_folder)/readers-cross_validation_reader.o \
 $(debug_folder)/snorms-s-norm-einstein.o \
 $(debug_folder)/implications-imp-reichenbach.o \
@@ -1248,15 +1294,15 @@ $(debug_folder)/descriptors-descriptor-trapezoidal.o \
 $(debug_folder)/partitions-partitioner-grid.o \
 $(debug_folder)/neuro-fuzzy-abstract-annbfis.o \
 $(debug_folder)/partitions-granular-dbscan.o \
-$(debug_folder)/neuro-fuzzy-consequence-TSK.o \
 $(debug_folder)/neuro-fuzzy-consequence-CL.o \
+$(debug_folder)/neuro-fuzzy-consequence-TSK.o \
 $(debug_folder)/implications-imp-lukasiewicz.o \
 $(debug_folder)/snorms-s-norm.o \
 $(debug_folder)/common-data-modifier-standardiser.o \
 $(debug_folder)/neuro-fuzzy-prototype.o \
 $(debug_folder)/neuro-fuzzy-prototype_minkowski.o \
-$(debug_folder)/dissimilarities-dis-sigmoidal.o \
 $(debug_folder)/auxiliary-directory.o \
+$(debug_folder)/dissimilarities-dis-sigmoidal.o \
 $(debug_folder)/partitions-rfcom.o \
 $(debug_folder)/partitions-gk.o \
 $(debug_folder)/auxiliary-error-MAE.o \
@@ -1270,8 +1316,8 @@ $(debug_folder)/granules-data_item.o \
 $(debug_folder)/common-DatasetStatistics.o \
 $(debug_folder)/neuro-fuzzy-fcom-annbfis.o \
 $(debug_folder)/experiments-exp-000.o \
-$(debug_folder)/common-data-modifier-imputer-knn.o \
 $(debug_folder)/neuro-fuzzy-rule.o \
+$(debug_folder)/common-data-modifier-imputer-knn.o \
 $(debug_folder)/experiments-exp-001.o \
 $(debug_folder)/descriptors-descriptor-gaussian.o \
 $(debug_folder)/experiments-exp-002.o \
@@ -1290,40 +1336,45 @@ $(debug_folder)/tnorms-t-norm-product.o \
 $(debug_folder)/partitions-fcm-T.o \
 $(debug_folder)/neuro-fuzzy-granular_subspace_annbfis_classification.o \
 $(debug_folder)/neuro-fuzzy-granular_nfs.o \
+$(debug_folder)/readers-train_test_model.o \
 $(debug_folder)/auxiliary-mathematics.o \
 $(debug_folder)/tnorms-t-norm-fodor.o \
-$(debug_folder)/neuro-fuzzy-consequence-MA.o \
 $(debug_folder)/heuristics-ridders-test.o \
+$(debug_folder)/neuro-fuzzy-consequence-MA.o \
 $(debug_folder)/descriptors-descriptor-gaussian-subspace.o \
 $(debug_folder)/descriptors-descriptor-singleton.o \
 $(debug_folder)/common-datum.o \
 $(debug_folder)/neuro-fuzzy-fac_prototype_minkowski_regression.o \
+$(debug_folder)/readers-train_validation_test_model.o \
+$(debug_folder)/auxiliary-frobenius_norm.o \
 $(debug_folder)/metrics-metric-minkowski.o \
 $(debug_folder)/tnorms-t-norm-sugeno-weber.o \
-$(debug_folder)/common-data-modifier-normaliser.o \
 $(debug_folder)/neuro-fuzzy-fcom-tsk.o \
 $(debug_folder)/auxiliary-error-RMSE.o \
+$(debug_folder)/common-data-modifier-normaliser.o \
 $(debug_folder)/tnorms-t-norm-einstein.o \
-$(debug_folder)/neuro-fuzzy-granular_annbfis_classification.o \
 $(debug_folder)/implications-imp-goguen.o \
+$(debug_folder)/neuro-fuzzy-granular_annbfis_classification.o \
 $(debug_folder)/gan-discriminative_model.o \
 $(debug_folder)/tnorms-t-norm.o \
 $(debug_folder)/partitions-partitioner.o \
-$(debug_folder)/neuro-fuzzy-fcom-ma.o \
 $(debug_folder)/dissimilarities-dis-sigmoidal-linear.o \
+$(debug_folder)/neuro-fuzzy-fcom-ma.o \
 $(debug_folder)/snorms-s-norm-drastic.o \
-$(debug_folder)/neuro-fuzzy-fubi-annbfis.o \
 $(debug_folder)/descriptors-descriptor-interval-gaussian.o \
+$(debug_folder)/neuro-fuzzy-fubi-annbfis.o \
 $(debug_folder)/common-data-modifier-imputer.o \
 $(debug_folder)/auxiliary-multiclass_confusion_matrix.o \
 $(debug_folder)/tnorms-t-norm-hamacher.o \
 $(debug_folder)/neuro-fuzzy-abstract-ma.o \
+$(debug_folder)/common-data_modifier_outlier_remove_granular.o \
 $(debug_folder)/metrics-metric_mahalanobis.o \
 $(debug_folder)/neuro-fuzzy-annbfis_prototype.o \
 $(debug_folder)/owas-uowa.o \
 $(debug_folder)/heuristics-ridders-gaussian-m.o \
 $(debug_folder)/neuro-fuzzy-granular_annbfis_regression.o \
 $(debug_folder)/auxiliary-least-error-squares-regression.o \
+$(debug_folder)/common-data_modifier_incompleter.o \
 $(debug_folder)/neuro-fuzzy-prototype_minkowski_regression.o \
 $(debug_folder)/owas-plowa.o \
 $(debug_folder)/common-number.o \
@@ -1337,9 +1388,9 @@ $(debug_folder)/descriptors-descriptor.o \
 $(debug_folder)/heuristics-simulated-annealing-gaussian.o \
 $(debug_folder)/metrics-metric-manhattan.o \
 $(debug_folder)/tnorms-t-norm-parametrized.o \
-$(debug_folder)/neuro-fuzzy-granular_ma_classification.o \
-$(debug_folder)/neuro-fuzzy-fac_prototype_mahalanobis_classification.o \
 $(debug_folder)/auxiliary-vector-operators.o \
+$(debug_folder)/neuro-fuzzy-fac_prototype_mahalanobis_classification.o \
+$(debug_folder)/neuro-fuzzy-granular_ma_classification.o \
 $(debug_folder)/descriptors-descriptor-semitriangular.o \
 
 	$(compiler) $(standard) $(debug) $(optDebug) $(parallel) $(errors) $(sanitizer) $(libasan) -o $@ $^

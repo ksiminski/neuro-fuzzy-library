@@ -3,7 +3,7 @@
 #include "t-norm-drastic.h"
 #include "t-norm.h"
  
-double ksi::t_norm_drastic::tnorm (double a, double b) const
+double ksi::t_norm_drastic::tnorm (const double a, const double b) const
 {
    if (a == 1 or b == 1)
       return std::min (a, b);

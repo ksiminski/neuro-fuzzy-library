@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-double ksi::s_norm_sum::snorm (double a, double b) const
+double ksi::s_norm_sum::snorm (const double a, const double b) const
 {
    return (a + b) - (a * b);
 }

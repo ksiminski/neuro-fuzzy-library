@@ -22,7 +22,7 @@ ksi::t_norm_dombi::t_norm_dombi(double s) : t_norm_parametrized (s)
 {
 }
 
-double ksi::t_norm_dombi::tnorm(double a, double b) const
+double ksi::t_norm_dombi::tnorm(const double a, const double b) const
 {
    if (a == 0 or b == 0)
       return 0;

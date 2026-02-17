@@ -34,7 +34,8 @@ This example presents modifiers of data:
 7. imputation of missing data with values from 3 nearest neighbours and then the imputed data set standardized
 8. a series of data modifiers: imputer with values from knn (k == 3) + standardiser, imputer with constant value, normaliser, standardiser, average imputer, imputer with constant value + normaliser, average imputer + standardiser
 9. imputer with constant value + normaliser + average imputer + standardiser
-
+10. split of a data set into _n_ chunks of train and test datasets for _n_-fold cross-validation
+11. split of a data set into _n_ chunks of train, validate, and test datasets for _n_-fold cross-validation
 
 ### make 2
 Run `make 2` for this example.

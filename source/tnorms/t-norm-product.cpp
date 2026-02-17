@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-double ksi::t_norm_product::tnorm (double a, double b) const
+double ksi::t_norm_product::tnorm (const double a, const double b) const
 {
    return a * b;
 }

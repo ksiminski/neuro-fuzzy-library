@@ -12,7 +12,7 @@ namespace ksi
    struct t_norm_einstein : public t_norm
    {
       /** value of T-norm: \f$ T(a, b) =  \frac{ab}{2 - (a + b - ab)}\f$ */
-      virtual double tnorm (double, double) const;
+      virtual double tnorm (const double, const double) const;
       virtual t_norm * clone() const ;
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
