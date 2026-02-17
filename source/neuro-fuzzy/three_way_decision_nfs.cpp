@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <sstream>
 #include <syncstream>
-#include <algorithm>
-#include <map>
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../gan/discriminative_model.h"
@@ -298,11 +296,7 @@ void ksi::three_way_decision_nfs::createFuzzyRulebase(const ksi::dataset& train,
                 }
             }   
         }
-        _cascade.erase(
-            std::remove_if(_cascade.begin(), _cascade.end(),
-                [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;}),
-            _cascade.end()
-        );
+        std::erase_if(_cascade, [](std::shared_ptr<ksi::neuro_fuzzy_system> p) {return not p;});
     }
     CATCH;
 }
@@ -888,5 +882,3 @@ void ksi::three_way_decision_nfs::run_extra_activities_for_the_model()
 {
    ksi::three_way_decision_nfs::elaborate_cascade_f1scores();
 }
-
-
