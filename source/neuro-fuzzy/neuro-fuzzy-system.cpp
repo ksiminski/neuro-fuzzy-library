@@ -84,11 +84,11 @@ void ksi::neuro_fuzzy_system::elaborate_answers_for_regression (
       ksi::reader_complete czytacz;
       auto zbiorTrain = czytacz.read(trainDataFile); 
       
-      if (bNormalisation)
-      {
-         ksi::data_modifier_normaliser normaliser;
-         normaliser.modify(zbiorTrain); 
-      }
+                if (bNormalisation) {
+                    std::cout << "[DEBUG] Normalising training dataset in elaborate_answers_for_regression." << std::endl;
+                    ksi::data_modifier_normaliser normaliser;
+                    normaliser.modify(zbiorTrain);
+                }
       
       auto XYtrain = zbiorTrain.splitDataSetVertically(zbiorTrain.getNumberOfAttributes() - 1);
       std::size_t nXtrain = zbiorTrain.getNumberOfData();
@@ -888,6 +888,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification(
         ksi::reader_complete czytacz;
         auto zbiorTrain = czytacz.read(trainDataFile);
         auto zbiorTest  = czytacz.read(testDataFile);
+        
         
         return experiment_classification_core(zbiorTrain, zbiorTrain, zbiorTest, trainDataFile, trainDataFile, testDataFile, outputFile, nNumberOfRules, nNumberOfClusteringIterations, nNumberofTuningIterations, dbLearningCoefficient, bNormalisation, dbPositiveClass, dbNegativeClass, threshold_type);
     }
