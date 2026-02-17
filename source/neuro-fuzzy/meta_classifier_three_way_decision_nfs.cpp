@@ -1,4 +1,3 @@
-
 #include <memory>
 #include <string>
 #include <vector>
@@ -234,7 +233,7 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                 {
                     auto& pMetaSystem = _meta_classifiers[i];
                     
-                    // Create meta-training data: label 1.0 if correct, -1.0 if incorrect
+                    // Create meta-training data: label 1.0 if correct, 0.0 if incorrect
                     auto meta_train_data = create_meta_training_data(zbior_treningowy, results_train);
                     
                     // Set positive and negative classes for meta-classifier
@@ -249,8 +248,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     pMetaSystem->set_test_data_file(this->_test_data_file);
                     pMetaSystem->set_output_file(this->_output_file + "-meta-" + std::to_string(i));
                     pMetaSystem->set_train_dataset(meta_train_data);
-                    pMetaSystem->set_validation_dataset(validation);
-                    pMetaSystem->set_test_dataset(test);
                     pMetaSystem->experiment_classification_core();
                     
                     // Get meta-classifier predictions on training data
@@ -260,7 +257,7 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     auto meta_threshold = pMetaSystem->get_threshold_value();
                     
                     // Extract items that meta-classifier predicts will be incorrectly classified
-                    // These are items where numeric score < threshold (predicting class -1.0)
+                    // These are items where numeric score < threshold (predicting class 0.0)
                     std::vector<std::size_t> indices_for_next_level;
                     for (std::size_t j = 0; j < meta_results.size(); j++)
                     {
