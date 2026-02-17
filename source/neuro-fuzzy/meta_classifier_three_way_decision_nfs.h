@@ -127,7 +127,7 @@ namespace ksi
          *  @return tuple of (elaborated_numeric, elaborated_class, cascade_level)
          *          where cascade_level indicates which level made the final decision
          */
-        virtual std::tuple<double, double, std::size_t> answer_classification_with_cascade_depth(const ksi::datum& item) const;
+        virtual std::tuple<double, double, std::size_t> answer_classification_with_cascade_depth(const ksi::datum& item) const override;
         
         /** @return name of the neuro-fuzzy system */
         virtual std::string get_nfs_name() const override;

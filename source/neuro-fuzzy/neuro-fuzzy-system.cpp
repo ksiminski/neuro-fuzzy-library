@@ -886,7 +886,7 @@ ksi::result ksi::neuro_fuzzy_system::experiment_classification(
     {
         ksi::reader_complete czytacz;
         auto zbiorTrain = czytacz.read(trainDataFile);
-        auto zbiorTest  = czytacz.read(testDataFile);        
+        auto zbiorTest  = czytacz.read(testDataFile);
         
         return experiment_classification_core(zbiorTrain, zbiorTrain, zbiorTest, trainDataFile, trainDataFile, testDataFile, outputFile, nNumberOfRules, nNumberOfClusteringIterations, nNumberofTuningIterations, dbLearningCoefficient, bNormalisation, dbPositiveClass, dbNegativeClass, threshold_type);
     }
