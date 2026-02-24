@@ -85,13 +85,11 @@ namespace ksi
         }
         std::map<double, std::tuple<int, int>> prefixes;
         std::array<int, 2> previous = {0, 0};
-        std::size_t i = 0;
         for (auto it = values_map.begin(); it != values_map.end(); it++)
         {
             previous[0] += it->second[0];
             previous[1] += it->second[1];
             prefixes[it->first] = {previous[0], previous[1]};
-            i++;
         }
         return prefixes;
     }
@@ -109,7 +107,7 @@ namespace ksi
 
     double f1_score(const std::map<double, std::tuple<int, int>>& prefixes, const double& beginning, const double& end)
     {
-        double tp = std::get<1>((prefixes.rbegin())->second) - std::get<1>(prefixes.at(end)); // @TODO ??
+        double tp = std::get<1>((prefixes.rbegin())->second) - std::get<1>(prefixes.at(end));
         double fp = std::get<0>((prefixes.rbegin())->second) - std::get<0>(prefixes.at(end));
         double fn = std::get<1>(prefixes.at(beginning));
         return 2*tp/(2*tp+fp+fn+std::numeric_limits<double>::epsilon());
@@ -172,9 +170,9 @@ namespace ksi
                 delta -= 0.01;
             }
         }
-        catch(std::exception& es)
+        catch(const std::exception& ex)
         {
-            std::cerr << es.what() << std::endl;
+            std::cerr << ex.what() << std::endl;
         }
         return {threshold-best_delta, threshold+best_delta};
     }
@@ -201,38 +199,11 @@ namespace ksi
                 delta -= 0.01;
             }
         }
-        catch(std::exception& es)
+        catch(const std::exception& ex)
         {
-            std::cerr << es.what() << std::endl;
+            std::cerr << ex.what() << std::endl;
         }
         return {threshold-best_delta, threshold+best_delta};
-    }
-    std::tuple<double,double> get_noncommitment(const std::vector<std::tuple<double, double, double>> & data, const double& threshold)
-    {
-        throw std::runtime_error("SHOULD NOT BE USED");
-        auto prefixes = create_prefixes(data);
-        auto [beginning, end] = retrieve_initial(prefixes);
-        auto best_score_so_far = 1000000.0;
-        auto best_end = end;
-        auto best_beginning = beginning;
-        for(auto i = beginning; i <= end; ++i)
-        {
-            for (auto j = i; j <= end; ++j)
-            {
-                auto beginning_value = std::next(prefixes.begin(),i)->first;
-                auto end_value = std::next(prefixes.begin(),j)->first;
-                auto f1 = f1_score(prefixes, beginning_value, end_value);
-                auto frac_between = get_no_points_between(prefixes, beginning_value, end_value)/data.size();
-                auto score = 1/(f1+0.00001) + pow(frac_between,2);
-                if (score < best_score_so_far)
-                {
-                    best_score_so_far = score;
-                    best_beginning = i;
-                    best_end = j;
-                }
-            }
-        }
-        return {std::next(prefixes.begin(),beginning)->first, std::next(prefixes.begin(),end)->first};
     }
 }
 

@@ -14,7 +14,6 @@
 namespace ksi
 {
     std::map<double, std::tuple<int,int>> create_prefixes(const std::vector<std::tuple<double, double, double>> & data);
-    std::tuple<double,double> get_noncommitment(const std::vector<std::tuple<double, double, double>> & data, const double& threshold);
     std::tuple<double,double> get_noncommitment_based_on_threshold(const std::vector<std::tuple<double, double, double>> & data, const double& threshold);
     std::tuple<double,double> get_noncommitment_based_on_threshold_hard_penalize(const std::vector<std::tuple<double, double, double>> & data, const double& threshold);
 
