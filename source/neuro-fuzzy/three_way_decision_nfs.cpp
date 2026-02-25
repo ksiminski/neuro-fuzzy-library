@@ -7,7 +7,8 @@
 #include <iomanip>
 #include <sstream>
 #include <syncstream>
-
+#include <algorithm>
+#include <map>
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../gan/discriminative_model.h"
@@ -460,8 +461,8 @@ std::vector<std::tuple<std::vector<double>, std::size_t, size_t>> ksi::three_way
     for (std::size_t i = 0; i < nXtest; i++)
     {
         const ksi::datum* d = XYtest.first.getDatum(i);
-        auto [ elaborated_numeric, elaborated_class, classifier_count ] = answer_classification_with_cascade_depth(*d);
-        answers_for_test[i] = std::make_tuple(d->getVector(), classifier_count, elaborated_class); 
+        auto [ elaborated_numeric, elaborated_class, classifier_number ] = answer_classification_with_cascade_depth(*d);
+        answers_for_test[i] = std::make_tuple(d->getVector(), classifier_number, elaborated_class); 
     }
     auto data_size = _TestDataset.size();
     _dbTestAverageNumerOfRulesUsed = 1.0 * _number_of_rules_used / _number_of_data_items;
@@ -571,6 +572,7 @@ std::tuple<double, double, std::size_t> ksi::three_way_decision_nfs::answer_clas
     }
     CATCH;
 }
+
 
 ksi::dataset ksi::three_way_decision_nfs::extract_poor_results(
     const ksi::dataset & data, 
@@ -879,3 +881,4 @@ void ksi::three_way_decision_nfs::run_extra_activities_for_the_model()
 {
    ksi::three_way_decision_nfs::elaborate_cascade_f1scores();
 }
+
