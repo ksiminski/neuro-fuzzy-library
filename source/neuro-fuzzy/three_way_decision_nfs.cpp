@@ -7,7 +7,8 @@
 #include <iomanip>
 #include <sstream>
 #include <syncstream>
-
+#include <algorithm>
+#include <map>
 #include "../neuro-fuzzy/three_way_decision_nfs.h"
 #include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../gan/discriminative_model.h"
@@ -445,6 +446,30 @@ std::vector<std::tuple<double, double, double> > ksi::three_way_decision_nfs::ge
     return _answers_for_test;
 }
 
+std::vector<std::tuple<std::vector<double>, std::size_t, size_t>> ksi::three_way_decision_nfs::get_answers_for_test_classification_depth(bool useTestDataset) const
+{
+    _number_of_rules_used = 0;
+    _number_of_data_items = 0;
+    
+    ksi::dataset dataset_to_use = useTestDataset ? _TestDataset : _TrainDataset;
+
+    auto XYtest  = dataset_to_use.splitDataSetVertically(dataset_to_use.getNumberOfAttributes() - 1);
+    std::size_t nXtest  = dataset_to_use.getNumberOfData();
+
+    std::vector<std::tuple<std::vector<double>, std::size_t, std::size_t>> answers_for_test(nXtest);
+    #pragma omp parallel for 
+    for (std::size_t i = 0; i < nXtest; i++)
+    {
+        const ksi::datum* d = XYtest.first.getDatum(i);
+        auto [ elaborated_numeric, elaborated_class, classifier_number ] = answer_classification_with_cascade_depth(*d);
+        answers_for_test[i] = std::make_tuple(d->getVector(), classifier_number, elaborated_class); 
+    }
+    auto data_size = _TestDataset.size();
+    _dbTestAverageNumerOfRulesUsed = 1.0 * _number_of_rules_used / _number_of_data_items;
+    return answers_for_test;
+}
+
+
 /*
 std::pair<double, double> ksi::three_way_decision_nfs::answer_classification(const ksi::datum& item) const
 {
@@ -511,6 +536,43 @@ std::pair<double, double> ksi::three_way_decision_nfs::answer_classification(con
     }
     CATCH;
 }
+
+std::tuple<double, double, std::size_t> ksi::three_way_decision_nfs::answer_classification_with_cascade_depth(const ksi::datum& item) const
+{
+    try 
+    {
+        auto nan = std::numeric_limits<double>::signaling_NaN();
+        auto result = std::make_pair (nan, nan);
+        auto _final_result = std::make_tuple (nan, nan, 0);
+
+        std::size_t number_of_rules = 0;
+        
+        auto depth = std::min(std::numeric_limits<std::size_t>::max(), _cascade.size() - 1);
+        for (std::size_t i = 0; i < depth + 1; i++)
+        {
+            auto & pSystem = _cascade[i];
+            result = pSystem->answer_classification(item);
+            std::get<2>(_final_result) = i + 1;
+
+            number_of_rules += pSystem->get_number_of_rules();
+            auto threshold_value = pSystem->get_threshold_value();
+            auto numeric = result.first;
+            std::get<0>(_final_result) = result.first;
+            std::get<1>(_final_result) = result.second;
+            if ((i == depth) or (std::fabs(numeric - threshold_value) > _noncommitment_widths[i]))
+            {
+                ++_number_of_data_items;
+                _number_of_rules_used += number_of_rules;
+                return _final_result;
+            }
+        }
+        ++_number_of_data_items;
+        _number_of_rules_used += number_of_rules;
+        return _final_result; 
+    }
+    CATCH;
+}
+
 
 ksi::dataset ksi::three_way_decision_nfs::extract_poor_results(
     const ksi::dataset & data, 
