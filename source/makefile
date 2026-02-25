@@ -452,6 +452,9 @@ $(debug_folder)/neuro-fuzzy-three_way_decision_nfs.o : neuro-fuzzy/three_way_dec
 $(release_folder)/neuro-fuzzy-meta_classifier_three_way_decision_nfs.o : neuro-fuzzy/meta_classifier_three_way_decision_nfs.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/neuro-fuzzy-meta_classifier_three_way_decision_nfs.o : neuro-fuzzy/meta_classifier_three_way_decision_nfs.cpp
+$(release_folder)/neuro-fuzzy-three_way_decision_nfs_with_automatic_noncommitment.o : neuro-fuzzy/three_way_decision_nfs_with_automatic_noncommitment.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/neuro-fuzzy-three_way_decision_nfs_with_automatic_noncommitment.o : neuro-fuzzy/three_way_decision_nfs_with_automatic_noncommitment.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/neuro-fuzzy-subspace-premise.o : neuro-fuzzy/subspace-premise.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
@@ -1040,6 +1043,7 @@ $(release_folder)/heuristics-simulated-annealing.o \
 $(release_folder)/tnorms-t-norm-min.o \
 $(release_folder)/neuro-fuzzy-three_way_decision_nfs.o \
 $(release_folder)/neuro-fuzzy-meta_classifier_three_way_decision_nfs.o \
+$(release_folder)/neuro-fuzzy-three_way_decision_nfs_with_automatic_noncommitment.o \
 $(release_folder)/neuro-fuzzy-fac_prototype_minkowski.o \
 $(release_folder)/neuro-fuzzy-logicalrule.o \
 $(release_folder)/implications-imp-goedel.o \
@@ -1260,6 +1264,7 @@ $(debug_folder)/heuristics-simulated-annealing.o \
 $(debug_folder)/tnorms-t-norm-min.o \
 $(debug_folder)/neuro-fuzzy-three_way_decision_nfs.o \
 $(debug_folder)/neuro-fuzzy-meta_classifier_three_way_decision_nfs.o \
+$(debug_folder)/neuro-fuzzy-three_way_decision_nfs_with_automatic_noncommitment.o \
 $(debug_folder)/neuro-fuzzy-fac_prototype_minkowski.o \
 $(debug_folder)/neuro-fuzzy-logicalrule.o \
 $(debug_folder)/implications-imp-goedel.o \
