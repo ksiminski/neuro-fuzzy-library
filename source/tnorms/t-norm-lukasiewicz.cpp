@@ -5,7 +5,7 @@
 
 #include <iostream>
  
-double ksi::t_norm_lukasiewicz::tnorm (double a, double b) const
+double ksi::t_norm_lukasiewicz::tnorm (const double a, const double b) const
 {
    return std::max(a + b - 1.0, 0.0);
 }

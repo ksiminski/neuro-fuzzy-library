@@ -39,7 +39,8 @@ namespace ksi
             const int nClusteringIterations, 
             const int nTuningIterations, 
             const double dbLearningCoefficient, 
-            const dataset & train);
+            const dataset & train, 
+            const dataset & validation);
       
     public:
       virtual ksi::neuro_fuzzy_system * clone() const;
@@ -48,13 +49,7 @@ namespace ksi
        @return rulebase's answer of a data item
        @param item data item to elaborate answer for
        */
-      virtual double answer (const datum & item) const;
-      
-      
-    
-        
-      
-
+      virtual double answer (const datum & item) const; 
         
    };
 }

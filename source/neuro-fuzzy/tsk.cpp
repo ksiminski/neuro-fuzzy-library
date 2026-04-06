@@ -1,55 +1,14 @@
 /** @file */
 
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <string>
-#include <numeric>
 
 #include "tsk.h"
-#include "rule.h"
-#include "premise.h"
-#include "consequence-TSK.h"
-#include "../tnorms/t-norm-product.h"
-#include "../partitions/cluster.h"
 #include "../partitions/fcm.h"
-#include "../partitions/partition.h"
-#include "../tnorms/t-norm-product.h"
-#include "../implications/imp-reichenbach.h"
-#include "../descriptors/descriptor-gaussian.h"
-#include "../auxiliary/least-error-squares-regression.h"
-#include "../auxiliary/tempus.h"
-#include "../auxiliary/clock.h"
-#include "../auxiliary/confusion-matrix.h"
 #include "../auxiliary/roc.h"
-#include "../service/debug.h"
-#include "../auxiliary/error-RMSE.h"
-#include "../auxiliary/error-MAE.h"
-#include "../common/number.h" 
-#include "../readers/reader-complete.h"
 #include "../common/data-modifier.h"
-#include "../common/data-modifier-normaliser.h"
-#include "../partitions/partition.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
-
-ksi::partition ksi::tsk::doPartition(const ksi::dataset& X)
-{
-    //ksi::fcm clusterer;
-    
-    //clusterer.setNumberOfClusters(_nRules);
-    //clusterer.setNumberOfIterations(_nClusteringIterations);
-    //return clusterer.doPartition(X);
-    try 
-    {
-        if (_pPartitioner)
-            return _pPartitioner->doPartition(X);
-        else 
-            throw ksi::exception ("no clustering method provided");
-    }
-    CATCH;
-}
+ 
 
 void ksi::tsk::set_name()
 {
@@ -71,7 +30,6 @@ abstract_tsk(nRules, nClusteringIterations)
     
     set_name();
 }
-
 
 ksi::tsk::tsk(int nRules, 
               int nClusteringIterations, 
@@ -105,14 +63,8 @@ ksi::tsk::tsk(int nRules,
                                       nTuningIterations, dbLearningCoefficient,
                                       bNormalisation, tnorm, ksi::fcm (nRules, nClusteringIterations)) 
 {
-    set_name(); 
-//     debug(_pPartitioner);
-//     debug(__FUNCTION__);
+    set_name();  
 }
-
- 
-
-
 
 ksi::tsk::tsk(const std::string& trainDataFile, 
               const std::string& testDataFile, 
@@ -125,8 +77,7 @@ ksi::tsk::tsk(const std::string& trainDataFile,
               const bool bNormalisation)
 :
    neuro_fuzzy_system (trainDataFile, testDataFile, resultsFile, 
-                 ksi::fcm(nRules, 
-                          nClusteringIterations)),
+                 ksi::fcm(nRules, nClusteringIterations)),
    abstract_tsk (nRules, nClusteringIterations, nTuningIterations,
                  dbLearningCoefficient, bNormalisation, tnorm)
 {
@@ -154,18 +105,15 @@ ksi::tsk::tsk(const std::string& trainDataFile,
    set_name(); 
 }
 
-
-
-
-ksi::tsk::tsk(int nRules, 
-              int nClusteringIterations, 
-              int nTuningIterations, 
-              double dbLearningCoefficient, 
-              bool bNormalisation, 
+ksi::tsk::tsk(const int nRules, 
+              const int nClusteringIterations, 
+              const int nTuningIterations, 
+              const double dbLearningCoefficient, 
+              const bool bNormalisation, 
               const ksi::t_norm & tnorm, 
-              double positive_class, 
-              double negative_class, 
-              ksi::roc_threshold threshold_type)
+              const double positive_class, 
+              const double negative_class, 
+              const ksi::roc_threshold threshold_type)
              :  neuro_fuzzy_system (ksi::fcm(nRules, nClusteringIterations))
                 ,
                 abstract_tsk (nRules, nClusteringIterations,
@@ -174,20 +122,39 @@ ksi::tsk::tsk(int nRules,
                              positive_class, negative_class, threshold_type)
 {
     set_name(); 
-//      debug(_pPartitioner);
+}
+
+ksi::tsk::tsk(const int nRules, 
+              const int nClusteringIterations, 
+              const int nTuningIterations, 
+              const double dbLearningCoefficient, 
+              const bool bNormalisation, 
+              const ksi::t_norm & tnorm, 
+              const double positive_class, 
+              const double negative_class, 
+              const double threshold_value)
+             :  neuro_fuzzy_system (ksi::fcm(nRules, nClusteringIterations))
+                ,
+                abstract_tsk (nRules, nClusteringIterations,
+                             nTuningIterations, dbLearningCoefficient,
+                             bNormalisation, tnorm, ksi::fcm (nRules, nClusteringIterations),
+                             positive_class, negative_class, threshold_value)
+{
+    set_name(); 
 }
 
 
-ksi::tsk::tsk(int nRules, 
-              int nClusteringIterations, 
-              int nTuningIterations, 
-              double dbLearningCoefficient, 
-              bool bNormalisation, 
+ksi::tsk::tsk(const int nRules, 
+              const int nClusteringIterations, 
+              const int nTuningIterations, 
+              const double dbLearningCoefficient, 
+              const bool bNormalisation, 
               const ksi::t_norm& tnorm, 
-              double positive_class, 
-              double negative_class, 
-              ksi::roc_threshold threshold_type, 
-              const ksi::data_modifier& modifier)
+              const double positive_class, 
+              const double negative_class, 
+              const ksi::roc_threshold threshold_type,
+              const ksi::data_modifier& modifier
+              )
             :  neuro_fuzzy_system (ksi::fcm(nRules, nClusteringIterations), modifier)
                 ,
                 abstract_tsk (nRules, nClusteringIterations,
@@ -200,10 +167,30 @@ ksi::tsk::tsk(int nRules,
 }
 
 
+ksi::tsk::tsk(const int nRules, 
+              const int nClusteringIterations, 
+              const int nTuningIterations, 
+              const double dbLearningCoefficient, 
+              const bool bNormalisation, 
+              const ksi::t_norm& tnorm, 
+              const double positive_class, 
+              const double negative_class, 
+              const ksi::data_modifier& modifier,
+              const double threshold_value
+              )
+            :  neuro_fuzzy_system (ksi::fcm(nRules, nClusteringIterations), modifier)
+                ,
+                abstract_tsk (nRules, nClusteringIterations,
+                             nTuningIterations, dbLearningCoefficient,
+                             bNormalisation, tnorm, ksi::fcm (nRules, nClusteringIterations),
+                             positive_class, negative_class, threshold_value)
+{
+    set_name(); 
+//      debug(_pPartitioner);
+}
 
 ksi::tsk::~tsk()
 {
- 
 }
 
 
@@ -232,6 +219,7 @@ ksi::tsk & ksi::tsk::operator= (ksi::tsk && right)
    if (this == & right)
       return *this;
 
+   ksi::neuro_fuzzy_system::operator=(right); 
    ksi::abstract_tsk::operator=(right);  
 
    return *this;

@@ -4,14 +4,18 @@
 #include <string>
 #include <sstream>
 #include <cmath>
+#include <iostream>
 
 #include "descriptor-interval-gaussian-subspace.h"
 #include "descriptor-gaussian-subspace.h"
 #include "descriptor-interval-gaussian.h"
-
 #include "../service/debug.h"
 
-#include <iostream>
+std::string ksi::descriptor_interval_gaussian_subspace::getName() const
+{
+   return std::string {"interval_gaussian_subspace"};
+}
+
 
 ksi::descriptor_interval_gaussian_subspace::~descriptor_interval_gaussian_subspace()
 {
@@ -42,7 +46,7 @@ ksi::descriptor_interval_gaussian_subspace::descriptor_interval_gaussian_subspac
 {
 }
 
-std::ostream& ksi::descriptor_interval_gaussian_subspace::Print(std::ostream& ss) const
+std::ostream& ksi::descriptor_interval_gaussian_subspace::print(std::ostream& ss) const
 {
    ss << "descriptor: interval gaussian subspace" << std::endl;
    ss << "   c       == " << _mean << std::endl;

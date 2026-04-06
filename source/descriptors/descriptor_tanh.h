@@ -19,8 +19,17 @@ namespace ksi
       
       double _previous_cross;
       double _previous_slope;
-      
+
+      /** linguistic labels */
+      const static std::array<std::string, 7> tanhLocationDescription;
+      /** linguistic labels */
+      const static std::array<std::string, 5> fuzzyDescription;
    public:
+      /** @param crosspoint argument for which the value of the function is 0.5
+       * @param slope positive values: increasing function, <BR>
+       *              negative values: decreasing function; <BR>
+       *              high absolute values: fast increase / descrease,<BR>
+       *              low absolute values: slow increase / descrease */
       descriptor_tanh (const double crosspoint, const double slope);
       
       descriptor_tanh (const descriptor_tanh & wzor);
@@ -35,32 +44,44 @@ namespace ksi
        *          vector[0] : d membership / d _cross     <BR>
        *          vector[1] : d membership / d _slope
        */
-      virtual std::vector<double> getDifferentials (double x);
+      virtual std::vector<double> getDifferentials (double x) override;
       
-      virtual descriptor * clone () const;
+      virtual descriptor * clone () const override;
       virtual ~descriptor_tanh ();
       
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
       */
-      virtual std::ostream & Print (std::ostream & ss) const ;
+      virtual std::ostream & print (std::ostream & ss) const override;
+      /** The method prints an object linguistic description into output stream
+       * @param ss the output stream to print into
+       * @param descStat the descriptor statistics to print
+       * @date 2023-12-04
+       * @author Konrad Wnuk
+      */
+      virtual std::ostream& printLinguisticDescription(std::ostream& ss, const DescriptorStatistics& descStat) const override;
 
       /** The method returns parameters for an MA triangular consequense.
        * @return a vector of three values: minimal_support, core, and maximal_support
        * evaluated as  _cross, _cross + _slope, _cross + 2 * _slope
        * @date 2023-07-29
        */
-      virtual std::vector<double> getMAconsequenceParameters () const;
+      virtual std::vector<double> getMAconsequenceParameters () const override;
       
       /**
       @return the mean value of descriptor's core, for this descriptor it returns not a number (NaN)
       */
-      virtual double getCoreMean() const;
+      virtual double getCoreMean() const override;
       
-      void reset_parameters();
+      void reset_parameters() override;
       
       /** @warning not implemented yet */
-      virtual double getRandomValue(std::default_random_engine & engine);
+      virtual double getRandomValue(std::default_random_engine & engine) override;
+      
+      /** @return The method returs the name of the descriptor.
+       *       @ date 2024-02-21 */                
+      virtual std::string getName() const override;
+      
     
    };
 }

@@ -115,7 +115,7 @@ std::ostream & ksi::logicalrule::Print (std::ostream & ss) const
    pImplication->Print(ss);
    ss << std::endl;
    ss << "premise: " << std::endl;
-   pPremise->Print(ss);
+   pPremise->print(ss);
    ss << std::endl;
    ss << "consequence: " << std::endl;
    pConsequence->Print(ss);

@@ -131,7 +131,7 @@ namespace ksi
                          const implication & imp,
                          const ksi::fac_prototype & factory);
                      
-      virtual void createFuzzyRulebase(int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train) override;
+      virtual void createFuzzyRulebase(int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, const ksi::dataset & train, const ksi::dataset & validation) override;
       
     public:
       ksi::neuro_fuzzy_system * clone() const override;

@@ -70,6 +70,25 @@ namespace ksi
           double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
           const implication & imp, const dissimilarity & Dissimilarity, const ksi::owa & Owa, double positive_class, double negative_class, const ksi::roc_threshold threshold_type, const double dbMinimalTypicality);
       
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param imp implication
+       * @param Dissimilarity object for dissimilarity
+       * @param Owa owa object 
+       * @param dbPositiveClass label of a positive class
+       * @param dbNegativeClass label of a negative class
+       * @param threshold_value classification threshold value 
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-10
+       */
+      fcom_annbfis (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
+                    double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm,
+                    const implication & imp, const dissimilarity & Dissimilarity, const ksi::owa & Owa, double positive_class, double negative_class, const double threshold_value, const double dbMinimalTypicality);
+      
       fcom_annbfis(const fcom_annbfis & a);
       fcom_annbfis(fcom_annbfis && a);
       fcom_annbfis & operator = (const fcom_annbfis & a);
@@ -91,7 +110,7 @@ namespace ksi
       
             /** Prints extra report from abstract fcom plus add information on
           minimal typicality */
-      virtual std::string extra_report();
+      virtual std::string extra_report() const;
       
    };
 }

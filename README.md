@@ -9,13 +9,13 @@ Neuro-fuzzy is an implementation of fuzzy tools for data analysis:
 
 The project is implemented in the C++ language.
  
-There are 5 examples of usage of the library.
+There are 5 examples of the usage of the library.
 
 Run `make 1` to run the 1st example, `make 2` – the 2nd example, and finally `make 5` to run the 5th example.
 
 Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for the project.
 
-__Citation request__ If you use this library please cite [^nfl]
+__Citation request__ If you use this library, please cite [^nfl]
 
 ## Examples
 
@@ -34,13 +34,19 @@ This example presents modifiers of data:
 7. imputation of missing data with values from 3 nearest neighbours and then the imputed data set standardized
 8. a series of data modifiers: imputer with values from knn (k == 3) + standardiser, imputer with constant value, normaliser, standardiser, average imputer, imputer with constant value + normaliser, average imputer + standardiser
 9. imputer with constant value + normaliser + average imputer + standardiser
-
+10. split of a data set into _n_ chunks of train and test datasets for _n_-fold cross-validation
+11. split of a data set into _n_ chunks of train, validate, and test datasets for _n_-fold cross-validation
 
 ### make 2
 Run `make 2` for this example.
  
 This example presents clustering algorithms:
-1. fcm
+1. FCM (fuzzy c-means)
+1. FCM with Euclidean metric 
+1. FCM with cosine metric 
+1. FCM with Chebyshev metric 
+1. FCM with Minkowski metric 
+1. FCM with Manhattan metric 
 1. possibilistic fcm
 1. conditional fcm
 1. Gustafson-Kessel
@@ -90,7 +96,8 @@ This example presents neuro-fuzzy systems for
 	8. Mahalanobis prototype TSK
 	9. Mahalanobis prototype ANNBFIS
 	
- 
+Models for the MA, TSK, and ANNBFIS systems are saved into files in numeric and liguistic description [^lin].
+
 ------------
 
 [^nfl]: Krzysztof Siminski, NFL -- Free Library for Fuzzy and Neuro-Fuzzy Systems, [in] Beyond Databases, Architectures and Structures. Paving the Road to Smart Data Processing and Analysis (Stanisław Kozielski, Dariusz Mrozek, Paweł Kasprowski, Bożena Małysiak-Mrozek, Daniel Kostrzewa, eds.), Springer International Publishing, 2019, pp. 139-150. 
@@ -222,4 +229,14 @@ This example presents neuro-fuzzy systems for
 	}
 	```
 	
-
+[^lin]: Krzysztof Siminski, Konrad Wnuk, Automatic Extraction of Linguistic Description from Fuzzy Rule Base, 2024	
+	```
+	@misc{id:Siminski2024Automatic,
+      title={Automatic Extraction of Linguistic Description from Fuzzy Rule Base}, 
+      author={Krzysztof Siminski and Konrad Wnuk},
+      year={2024},
+      eprint={2404.03058},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+    }
+	```

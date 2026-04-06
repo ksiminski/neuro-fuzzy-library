@@ -39,7 +39,8 @@ namespace ksi
           int nClusteringIterations, 
           int nTuningIterations, 
           double dbLearningCoefficient, 
-          const ksi::set_of_granules & train_granules);
+          const ksi::set_of_granules & train_granules,
+          const ksi::set_of_granules & validation_granules);
       
 
       

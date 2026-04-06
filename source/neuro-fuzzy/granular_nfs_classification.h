@@ -44,7 +44,8 @@ namespace ksi
           int nClusteringIterations, 
           int nTuningIterations, 
           double dbLearningCoefficient, 
-          const ksi::set_of_granules & train_granules) override;        
+          const ksi::set_of_granules & train_granules,
+          const ksi::set_of_granules & validation_granules) override;        
           
       
       /** This function is not implemented in this class and will not be implemented, because the class is responsible for classification and not for regression.

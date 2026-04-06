@@ -75,11 +75,12 @@ void ksi::granular_subspace_annbfis_regression::createFuzzyNonGranularRulebase(
     const int nClusteringIterations, 
     const int nTuningIterations, 
     const double dbLearningCoefficient, 
-    const ksi::dataset& train)
+    const ksi::dataset& train, 
+    const ksi::dataset & validation)
 {
     try 
     {
-        ksi::subspace_annbfis::createFuzzyRulebase( nClusteringIterations, nTuningIterations, dbLearningCoefficient, train);
+        ksi::subspace_annbfis::createFuzzyRulebase( nClusteringIterations, nTuningIterations, dbLearningCoefficient, train, validation);
     }
     CATCH;
 }

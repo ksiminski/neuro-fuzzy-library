@@ -8,7 +8,9 @@
 #include <numeric>
 #include <cmath>
 #include <map>
+#include <deque>
 
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../neuro-fuzzy/annbfis.h"
 #include "../neuro-fuzzy/abstract-annbfis.h"
 #include "../neuro-fuzzy/logicalrule.h"
@@ -58,7 +60,9 @@ void ksi::abstract_annbfis::createFuzzyRulebase
    int nClusteringIterations, 
    int nTuningIterations, 
    double eta,
-   const ksi::dataset& train )
+   const ksi::dataset& train,
+   const ksi::dataset& validation
+   )
 {
    try 
    {
@@ -67,6 +71,7 @@ void ksi::abstract_annbfis::createFuzzyRulebase
 //       if (not _pPartitioner)
 //           throw ksi::exception("no partition object provided");
  
+      // std::deque<double> errors; 
       const double INITIAL_W = 2.0;
       
       _nClusteringIterations = nClusteringIterations;
@@ -80,7 +85,12 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       if (_pRulebase)
          delete _pRulebase;
       _pRulebase = new rulebase();
-      
+
+      // remember the best rulebase:
+      // std::unique_ptr<ksi::rulebase> pTheBest (_pRulebase->clone());
+      // double dbTheBestRMSE = std::numeric_limits<double>::max();
+      ////////
+
       std::size_t nAttr = train.getNumberOfAttributes();
       std::size_t nAttr_1 = nAttr - 1;
          
@@ -88,25 +98,33 @@ void ksi::abstract_annbfis::createFuzzyRulebase
       auto trainX = XY.first;
       auto trainY = XY.second;
       
-//       fcm clusterer;
-//       clusterer.setNumberOfClusters(_nRules);
-//       clusterer.setNumberOfIterations(_nClusteringIterations);
+      auto XYval = validation.splitDataSetVertically(nAttr - 1);
+      auto validateX = XYval.first;
+      auto validateY = XYval.second;
+      
+      auto mvalidateY = validateY.getMatrix();
+      auto nValY = validateY.getNumberOfData();
+      std::vector<double> wvalidateY (nValY);
+      for (std::size_t x = 0; x < nValY; x++)
+         wvalidateY[x] = mvalidateY[x][0];      
+      ////////////////////////
+
+      _original_size_of_training_dataset = trainX.getNumberOfData();
       
       auto podzial = doPartition(trainX);
       _nRules = podzial.getNumberOfClusters();
-      _original_size_of_training_dataset = trainX.getNumberOfData();
-
+      
       auto typical_items = trainX.get_if_data_typical(_minimal_typicality);
       trainX.remove_untypical_data(typical_items);
       trainY.remove_untypical_data(typical_items);
-       _reduced_size_of_training_dataset = trainX.getNumberOfData();
       
       std::size_t nX = trainX.getNumberOfData();
+      _reduced_size_of_training_dataset = nX;
       
       // pobranie danych w postaci macierzy:
       auto wTrainX = trainX.getMatrix();  
       auto wTrainY = trainY.getMatrix();
-      
+
       std::vector<double> wY(nX);
       for (std::size_t x = 0; x < nX; x++)
          wY[x] = wTrainY[x][0];
@@ -118,7 +136,9 @@ void ksi::abstract_annbfis::createFuzzyRulebase
          auto klaster = podzial.getCluster(c);
          
          for (std::size_t a = 0; a < nAttr_1; a++)
+         {
             przeslanka.addDescriptor(klaster->getDescriptor(a));
+         }
          
          logicalrule regula (*_pTnorm, *_pImplication);
          regula.setPremise(przeslanka);
@@ -194,18 +214,31 @@ void ksi::abstract_annbfis::createFuzzyRulebase
             }
          }
          
+         //////////////////////////////////
          // test: wyznaczam blad systemu
-         std::vector<double> wYelaborated (nX);
-         for (std::size_t x = 0; x < nX; x++)
-            wYelaborated[x] = answer( *(trainX.getDatum(x)));
          
-         //ksi::error_RMSE rmse;
-         //double blad = rmse.getError(wY, wYelaborated);
-         //debug(blad);
+         // std::vector<double> wYelaborated (nValY);
+         // for (std::size_t x = 0; x < nX; x++)
+             // wYelaborated[x] = answer( *(validateX.getDatum(x)));
          
+         ///////////////////////////
+         // ksi::error_RMSE rmse;
+         // double blad = rmse.getError(wvalidateY, wYelaborated);
+         // errors.push_front(blad);
          
+         // eta = modify_learning_coefficient(eta, errors); // modify learning coefficient
+         // remember the best rulebase:
+         // if (dbTheBestRMSE > blad)
+         // {
+         //    dbTheBestRMSE = blad;
+         //    pTheBest = std::unique_ptr<ksi::rulebase>(_pRulebase->clone());
+         // }
+         ///////////////////////////
       }
       // system nastrojony :-)
+      // update the rulebase with the best one:
+      // delete _pRulebase;
+      // _pRulebase = pTheBest->clone();
    }
    CATCH;
 }
@@ -283,8 +316,6 @@ ksi::abstract_annbfis& ksi::abstract_annbfis::operator= (ksi::abstract_annbfis &
    return *this;
 }
  
- 
-
 double ksi::abstract_annbfis::discriminate(const ksi::datum& d)
 {
     return answer(d);
@@ -407,6 +438,45 @@ ksi::abstract_annbfis::abstract_annbfis(int nRules,
     _minimal_typicality = dbMinimalTypicality;
 }
 
+ksi::abstract_annbfis::abstract_annbfis(int nRules, double dbFrobeniusEpsilon, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, const partitioner& Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality) : neuro_fuzzy_system() 
+{
+   _nRules = nRules;
+   _dbFrobeniusEpsilon = dbFrobeniusEpsilon;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   if (not _pImplication)
+      _pImplication = imp.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   _minimal_typicality = dbMinimalTypicality;
+}
+
+ksi::abstract_annbfis::abstract_annbfis(int nRules, int nClusteringIterations, int nTuningIterations, double dbLearningCoefficient, bool bNormalisation, const t_norm& tnorm, const implication& imp, const partitioner& Partitioner, double positive_class, double negative_class, double threshold_value, const double dbMinimalTypicality): neuro_fuzzy_system() 
+{
+   _nRules = nRules;
+   _nClusteringIterations = nClusteringIterations;
+   _nTuningIterations = nTuningIterations;
+   _dbLearningCoefficient = dbLearningCoefficient;
+   _bNormalisation = bNormalisation;
+   if (not _pTnorm)
+      _pTnorm = tnorm.clone();
+   if (not _pPartitioner)
+      _pPartitioner = Partitioner.clone();
+   if (not _pImplication)
+      _pImplication = imp.clone();
+   _positive_class = positive_class;
+   _negative_class = negative_class;
+   _threshold_type = ksi::roc_threshold::manual;
+   _threshold_value = threshold_value;
+   _minimal_typicality = dbMinimalTypicality;
+}
 
 ksi::partition ksi::abstract_annbfis::doPartition(const ksi::dataset& X)
 {

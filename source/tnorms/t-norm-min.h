@@ -11,7 +11,7 @@ namespace ksi
    struct t_norm_min : public t_norm
    {
       /** value of T-norm: \f$ T(a, b) = \min(a, b) \f$ */
-      virtual double tnorm (double, double) const;
+      virtual double tnorm (const double, const double) const;
       virtual t_norm * clone() const ;
       
       /** The method prints an object into output stream.

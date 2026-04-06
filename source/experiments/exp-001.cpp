@@ -39,8 +39,7 @@ void ksi::exp_001::execute()
    try
    {
       std::string dataDir ("../data/exp-001");
-      
-      
+
       // complete data
       {
          std::cout << std::endl;
@@ -72,12 +71,12 @@ void ksi::exp_001::execute()
             std::cout << data << std::endl;
             std::cout << std::endl;
          }
-         
+
          {
             auto data = dane;
             auto filtering_function = [] (double value) -> bool 
             {
-                return value > 5;
+               return value > 5;
             };
             std::size_t attribute {4};  
             ksi::data_modifier_filter filter (attribute, filtering_function);
@@ -107,7 +106,7 @@ void ksi::exp_001::execute()
             std::cout << std::endl;
          }
       }
-      
+
       // outliers
       {
          std::cout << std::endl;

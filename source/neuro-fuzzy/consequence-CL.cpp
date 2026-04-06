@@ -6,7 +6,6 @@
 #include "consequence-CL.h"
 #include "../service/debug.h"
 
-
 ksi::consequence_CL::consequence_CL(const std::vector<double> & params, double w) : consequence_TSK(params)
 {
    _w = w;
@@ -64,4 +63,3 @@ std::ostream& ksi::consequence_CL::Print(std::ostream& ss)
       
    return ss;
 }
-

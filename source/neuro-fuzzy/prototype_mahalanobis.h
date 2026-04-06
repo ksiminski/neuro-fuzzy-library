@@ -53,7 +53,7 @@ namespace ksi
       * @param ss an output stream to print to
       * @return the stream (ss -- parameter) the methods has printed into
       */
-     virtual std::ostream & Print (std::ostream & ss) const override;
+     virtual std::ostream & print (std::ostream & ss) const override;
      
      /** The method actualises values of parameters of the fuzzy premise
        * @param eta learning coefficient

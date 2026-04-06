@@ -59,7 +59,7 @@ double ksi::prototype::getFiringStrength(const std::vector<double>& X)
    return last_firingStrength = get_similarity(X);
 }
 
-std::ostream & ksi::prototype::Print(std::ostream& ss) const
+std::ostream & ksi::prototype::print(std::ostream& ss) const
 {
     ss << "(default prototype)";
     return ss;

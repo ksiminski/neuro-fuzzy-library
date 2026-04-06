@@ -10,7 +10,7 @@
 
 std::string ksi::metric_minkowski::getAbbreviation() const
 {
-    return {"minkowski"};
+    return {"Minkowski"};
 }
 
 std::string ksi::metric_minkowski::get_info() const

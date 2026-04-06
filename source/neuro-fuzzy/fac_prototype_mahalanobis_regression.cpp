@@ -1,11 +1,9 @@
 
 #include <memory> 
 
-
 #include "../neuro-fuzzy/prototype.h"
 #include "../neuro-fuzzy/prototype_mahalanobis.h"
 #include "../neuro-fuzzy/prototype_mahalanobis_regression.h"
-
 
 #include "../neuro-fuzzy/fac_prototype.h"
 #include "../neuro-fuzzy/fac_prototype_mahalanobis.h"
@@ -22,7 +20,6 @@ ksi::fac_prototype_mahalanobis_regression::fac_prototype_mahalanobis_regression 
 ksi::fac_prototype_mahalanobis_regression::~fac_prototype_mahalanobis_regression ()
 {
    // delete what is to delete
-
 }
 /*
 ksi::fac_prototype_mahalanobis_regression::fac_prototype_mahalanobis_regression (const ksi::fac_prototype_mahalanobis_regression & wzor) : ksi::fac_prototype_mahalanobis(wzor)
@@ -81,8 +78,6 @@ std::shared_ptr<ksi::prototype> ksi::fac_prototype_mahalanobis_regression::get_p
 {
     return std::shared_ptr<ksi::prototype> (new ksi::prototype_mahalanobis_regression (cl));
 }
-
-
 
 std::shared_ptr<ksi::fac_prototype> ksi::fac_prototype_mahalanobis_regression::clone() const
 {

@@ -8,14 +8,15 @@
 
 #include "../common/dataset.h"
 #include "../common/number.h"
-#include "rulebase.h"
-#include "neuro-fuzzy-system.h"
+#include "../neuro-fuzzy/rulebase.h"
+#include "../neuro-fuzzy/neuro-fuzzy-system.h"
 #include "../implications/implication.h"
 #include "../tnorms/t-norm.h"
 #include "../auxiliary/roc.h"
+#include "../partitions/partition.h"
+#include "../partitions/partitioner.h"
 #include "../gan/discriminative_model.h"
 #include "../gan/generative_model.h"
-#include "../partitions/partitioner.h"
 
 namespace ksi
 {
@@ -24,7 +25,6 @@ namespace ksi
     */
    class abstract_ma : virtual public neuro_fuzzy_system
    {
-   
    public:
       
       abstract_ma();   
@@ -54,6 +54,21 @@ namespace ksi
        */
       abstract_ma (int nRules, int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner, double positive_class, double negative_class, ksi::roc_threshold threshold_type, const double dbMinimalTypicality = -1);
+
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_value threshold value for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       */
+      abstract_ma (int nRules, int nClusteringIterations, int nTuningIterations,
+                   double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner, double positive_class, double negative_class, const double threshold_value, const double dbMinimalTypicality = -1);
+      
       
  
       /** constructor
@@ -74,6 +89,24 @@ namespace ksi
                     double positive_class, double negative_class, ksi::roc_threshold threshold_type, const double dbMinimalTypicality = -1
     );
 
+      /** constructor
+       * @param nRules number of rules
+       * @param dbFrobeniusEpsilon epsilon for Frobeniu norm for the clustering algorithm
+       * @param nTuningIterations number of tuning iterations
+       * @param dbLearningCoefficient learning coefficient for gradient method
+       * @param tnorm a t-norm
+       * @param Partitioner clustering object
+       * @param positive_class label for positive_class
+       * @param negative_class label for negative_class
+       * @param threshold_value threshold value for classification
+       * @param dbMinimalTypicality minimal typicality for outliers 
+       * @date  2024-05-09
+       */
+      abstract_ma (int nRules, double dbFrobeniusEpsilon, int nTuningIterations,
+                   double dbLearningCoefficient, bool bNormalisation, const t_norm & tnorm, const partitioner & Partitioner,
+                   double positive_class, double negative_class, const double threshold_value, const double dbMinimalTypicality = -1
+      );
+      
       
       /** constructor
        * @param nRules number of rules
@@ -97,24 +130,31 @@ namespace ksi
      
       
       
-   protected:   
+      /** A constructor with partitioner   
+       *  @date 2024-02-27 */
+      abstract_ma (const partitioner & Partitioner);
+      
+   protected: 
       /** The method creates a fuzzy rulebase from the dataset.
        * @param nClusteringIterations number of clustering iterations
        * @param nTuningIterations number of tuning iterations
        * @param dbLearningCoefficient learning coefficient for gradient method
        * @param train train dataset  
+       * @param validation validation dataset  
        * @date  2018-02-16
        * @author Krzysztof Siminski 
        */
       virtual void createFuzzyRulebase ( 
          int nClusteringIterations, int nTuningIterations,
          double dbLearningCoefficient,
-         const dataset & train); 
+         const dataset & train,
+         const dataset & validation
+         ); 
         
       /** Function that partitions the data set.
        @param X dataset to partition
        @date 2019-12-24 */
-      virtual partition doPartition (const dataset & X) = 0;
+      virtual partition doPartition (const dataset & X);
  
    public:  
      

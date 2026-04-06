@@ -11,6 +11,7 @@
 #include "../neuro-fuzzy/rule.h"
 #include "../granules/granule.h"
 #include "../granules/set_of_cooperating_granules.h"
+#include "../common/DatasetStatistics.h"
 
 namespace ksi
 {
@@ -91,7 +92,15 @@ namespace ksi
        * @param ss the output stream to print into
        */
       void print(std::ostream & ss) const;
-      
+
+      /** The method prints the rulebase linguistic description to the output stream ss.
+       * @param ss the output stream to print into
+       * @param datasetStat the dataset statistics to print
+       * @date 2023-10-09
+       * @author Konrad Wnuk
+       */
+      void printLinguisticDescription(std::ostream& ss, const DatasetStatistics& datasetStat) const;
+
       /** The method validates the rule base. It checks if all rules are valid. 
        @return true if all rules valid, otherwise false. */
       virtual bool validate () const;

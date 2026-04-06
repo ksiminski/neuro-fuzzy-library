@@ -102,7 +102,7 @@ void ksi::prototype_minkowski::reset_differentials()
     _d_weights = std::vector<double> (size, 0.0);
 }
 
-std::ostream & ksi::prototype_minkowski::Print(std::ostream& ss) const
+std::ostream & ksi::prototype_minkowski::print(std::ostream& ss) const
 {
     ss << "prototype with Minkowski metric" << std::endl;
     ss << "exponent: m = " << _m << std::endl;

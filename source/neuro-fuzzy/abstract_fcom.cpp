@@ -1,5 +1,4 @@
 
-
 #include <sstream>
 #include <string>
 
@@ -9,7 +8,7 @@
 #include "../dissimilarities/dissimilarity.h"
 
 
-std::string ksi::abstract_fcom::extra_report()
+std::string ksi::abstract_fcom::extra_report() const
 {
     std::stringstream ss;
     ss << "epsilon for Frobenius norm in clustering:    " << _dbFrobeniusEpsilon << std::endl;

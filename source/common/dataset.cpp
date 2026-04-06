@@ -9,6 +9,7 @@
 #include "dataset.h"
 #include "../service/debug.h"
 #include "../common/extensional-fuzzy-number-gaussian.h"
+#include "../auxiliary/utility-math.h"
 
 void ksi::dataset::remove_untypical_data(const double minimal_typicality)
 {
@@ -201,6 +202,18 @@ std::size_t ksi::dataset::size() const
 {
     return data.size();
 }
+
+double ksi::dataset::get_cardinality() const
+{
+   double cardinality {0.0};
+   
+   for (const auto & p : data)
+   {
+      cardinality += p->getWeight();
+   }
+   return cardinality;
+}
+
 
 
 std::size_t ksi::dataset::getNumberOfAttributes() const
@@ -417,6 +430,21 @@ std::string ksi::dataset::to_string() const
    for (const auto row : this->data)
       ss << row->to_string() << std::endl;      
    return ss.str();
+}
+
+ksi::DatasetStatistics ksi::dataset::calculateDatasetStatistics()
+{
+    utility_math utility;
+    auto datasetTransposed = utility.transpose(this->getMatrix());
+
+    DatasetStatistics statistics;
+    for(const auto& element: datasetTransposed)
+    {
+        auto stat = utility.getMedianAndStandardDeviation(element.cbegin(), element.cend());
+        statistics.addDescriptor(DescriptorStatistics(stat.first, stat.second));
+    }
+
+    return statistics;
 }
 
 

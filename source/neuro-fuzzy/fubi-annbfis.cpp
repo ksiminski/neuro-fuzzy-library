@@ -90,6 +90,26 @@ ksi::fubi_annbfis::fubi_annbfis(int nRules,
    init_name();  
 }
 
+
+ksi::fubi_annbfis::fubi_annbfis(int nRules, 
+                                int nClusteringIterations, 
+                                int nTuningIterations, 
+                                double dbLearningCoefficient,
+                                bool bNormalisation,
+                                const t_norm & tnorm,
+                                const implication & imp,
+                                double positive_class, 
+                                double negative_class, 
+                                double threshold_value
+) : 
+neuro_fuzzy_system(), 
+abstract_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, ksi::fubi (nRules, nClusteringIterations), positive_class, negative_class, threshold_value),
+annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, positive_class, negative_class, threshold_value),
+subspace_annbfis (nRules, nClusteringIterations, nTuningIterations, dbLearningCoefficient, bNormalisation, tnorm, imp, positive_class, negative_class, threshold_value)
+{
+    init_name();  
+}
+
 ksi::fubi_annbfis::fubi_annbfis (const ksi::implication & imp) : neuro_fuzzy_system(), ksi::abstract_annbfis(), ksi::annbfis(), ksi::subspace_annbfis()
 {
    init_name();

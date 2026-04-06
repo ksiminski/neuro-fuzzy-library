@@ -12,6 +12,7 @@
 #include "../common/dataset.h" 
 #include "../partitions/partitioner.h" 
 #include "../partitions/fcm.h"
+#include "../partitions/fcm-T-metrics.h"
 #include "../partitions/fcom.h"
 #include "../partitions/fcm-conditional.h"
 #include "../partitions/fcm-possibilistic.h"
@@ -20,8 +21,13 @@
 #include "../partitions/gk.h"
 #include "../partitions/dbscan.h"
 #include "../partitions/granular-dbscan.h"
+#include "../metrics/metric.h"
 #include "../metrics/metric-minkowski.h"
 #include "../metrics/metric-euclidean.h"
+#include "../metrics/metric_mahalanobis.h"
+#include "../metrics/metric-chebyshev.h"
+#include "../metrics/metric-cosine.h"
+#include "../metrics/metric-manhattan.h"
 #include "../dissimilarities/dis-log.h"
 #include "../dissimilarities/dis-log-linear.h"
 #include "../dissimilarities/dis-huber.h"
@@ -31,7 +37,6 @@
 #include "../owas/plowa.h"
 #include "../owas/uowa.h"
 #include "../service/debug.h"
-#include "../metrics/metric-euclidean.h"
 #include "../tnorms/t-norm-product.h"
 #include "../snorms/s-norm-sum.h"
 
@@ -41,8 +46,8 @@
 void ksi::exp_002::execute()
 {
    try
-   {  
-      {  // FCM
+   { 
+      {  // FCM 
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;
          const int NUMBER_OF_CLUSTERS = 2;
@@ -50,11 +55,10 @@ void ksi::exp_002::execute()
          // std::string data (dataDir + "/" + "two-spherical.data");
          // std::string data (dataDir + "/" + "two-crossed.data");
          // std::string data (dataDir + "/" + "two-parallel.data");
-         
          ksi::reader_complete input;
          auto DataSet = input.read(data);
          
-         ksi::fcm algorithm;
+         ksi::fcm algorithm; 
          algorithm.setEpsilonForFrobeniusNorm(EPSILON);
          algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
 
@@ -68,6 +72,122 @@ void ksi::exp_002::execute()
          std::cout << std::endl;
       }
 
+      {  // FCM + Euclidean metric
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_euclidean m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
+      {  // FCM + cosine
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_cosine m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
+      {  // FCM + Chebyshev
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_chebyshev m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
+      {  // FCM + Minkowski
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         const double exponent {5.0};
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_minkowski m(exponent);
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+
+      {  // FCM + Manhattan
+         std::string dataDir ("../data/exp-002");
+         const double EPSILON = 1e-8;
+         const int NUMBER_OF_CLUSTERS = 2;
+         std::string data (dataDir + "/" + "possibilistic.data");
+         ksi::reader_complete input;
+         auto DataSet = input.read(data);
+         
+         ksi::metric_manhattan m;
+         ksi::fcm_T_metrics<double> algorithm(m); 
+         algorithm.setEpsilonForFrobeniusNorm(EPSILON);
+         algorithm.setNumberOfClusters(NUMBER_OF_CLUSTERS);
+
+         auto Partition = algorithm.doPartition(DataSet);
+         
+         std::cout << "FCM + " << m.getAbbreviation() << " metric" << std::endl;
+         std::cout << "======================" << std::endl;
+         std::cout << "data file: " << data << std::endl;
+         std::cout << std::endl;
+         std::cout << Partition << std::endl;
+         std::cout << std::endl;
+      }
+      
       {  // possibilistic FCM
          std::string dataDir ("../data/exp-002");
          const double EPSILON = 1e-8;

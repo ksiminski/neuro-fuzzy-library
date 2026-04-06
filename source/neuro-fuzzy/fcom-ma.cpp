@@ -116,10 +116,32 @@ ksi::fcom_ma::fcom_ma(int nRules,
 }
 
 
+ksi::fcom_ma::fcom_ma(int nRules, 
+                      double dbFrobeniusEpsilon, 
+                      int nTuningIterations, 
+                      double dbLearningCoefficient, 
+                      bool bNormalisation, 
+                      const ksi::t_norm& tnorm,  
+                      const ksi::dissimilarity & Dissimilarity, 
+                      const ksi::owa & Owa, 
+                      double positive_class, 
+                      double negative_class, 
+                      const double threshold_value, 
+                      const double dbMinimalTypicality)
+: abstract_ma(nRules, dbFrobeniusEpsilon,
+              nTuningIterations, dbLearningCoefficient,
+              bNormalisation, tnorm, ksi::fcom(nRules, dbFrobeniusEpsilon, Dissimilarity, Owa), 
+              positive_class, negative_class, threshold_value, dbMinimalTypicality
+) 
+{
+    set_name();
+    _pDissimilarity = Dissimilarity.clone();
+    _pOwa = Owa.clone(); 
+}
+
 ksi::fcom_ma::~fcom_ma()
 { 
 }
-
 
 ksi::fcom_ma::fcom_ma(const ksi::fcom_ma & right) : neuro_fuzzy_system(right), abstract_ma(right), abstract_fcom(right)
 { 
@@ -170,7 +192,7 @@ ksi::generative_model * ksi::fcom_ma::clone_generator() const
     return new ksi::fcom_ma (*this);
 }
 
-std::string ksi::fcom_ma::extra_report()
+std::string ksi::fcom_ma::extra_report() const
 {
     std::stringstream ss;
     ss << ksi::abstract_fcom::extra_report();

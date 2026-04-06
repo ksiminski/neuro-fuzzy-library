@@ -71,7 +71,7 @@ ksi::premise * ksi::prototype_minkowski_regression::clone() const
 
  
 
-std::ostream & ksi::prototype_minkowski_regression::Print(std::ostream& ss) const
+std::ostream & ksi::prototype_minkowski_regression::print(std::ostream& ss) const
 {
     ss << "prototype for regression with Minkowski metric" << std::endl;
     ss << "exponent: m = " << _m << std::endl;

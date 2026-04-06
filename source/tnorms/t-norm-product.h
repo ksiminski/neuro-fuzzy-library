@@ -11,7 +11,7 @@ namespace ksi
    struct t_norm_product : public t_norm
    {
       /** value of T-norm: \f$ T(a, b) = ab \f$ */
-      virtual double tnorm (double, double) const;
+      virtual double tnorm (const double, const double) const;
       virtual t_norm * clone() const ;
       
       /** The method prints an object into output stream.

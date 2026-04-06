@@ -32,7 +32,7 @@ ksi::premise * ksi::prototype_minkowski_classification::clone() const
     return new ksi::prototype_minkowski_classification(*this);
 }
 
-std::ostream & ksi::prototype_minkowski_classification::Print(std::ostream& ss) const
+std::ostream & ksi::prototype_minkowski_classification::print(std::ostream& ss) const
 {
     ss << "prototype for classification with Minkowski metric" << std::endl;
     ss << "exponent: m = " << _m << std::endl;

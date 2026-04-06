@@ -17,7 +17,7 @@ namespace ksi
        @param s parameter to set */
       t_norm_dombi (double s);
       /** value of T-norm: \f$ T(a, b) = \frac{1}{1 + \left[ \left( \frac{1}{a} - 1 \right)^s + \left( \frac{1}{b} - 1 \right)^s \right]^\frac{1}{s}} \f$<br/>where\f$s\f$ is a parameter of the t-norm */
-      virtual double tnorm(double, double) const;
+      virtual double tnorm(const double, const double) const;
       virtual t_norm * clone() const ;
       /** The method prints an object into output stream.
       * @param ss an output stream to print to
