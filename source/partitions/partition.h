@@ -58,7 +58,7 @@ namespace ksi
        *  @date 2018-01-21
        *  @author Krzysztof Siminski
        */
-      cluster * getCluster (std::size_t index);
+      cluster * getCluster (std::size_t index) const;
       
       /** @return number of clusters in partition 
        *  @date 2018-12-16

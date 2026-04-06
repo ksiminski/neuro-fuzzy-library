@@ -32,6 +32,26 @@ namespace ksi
 
        
    public:
+
+
+       /** A method returns a transposed matrix. Input matrix is not modified.
+        * @param matrix matrix to transpose
+        * @return a transposed matrix, input matrix is not modified
+        * @date 2023-11-22
+        * @author Konrad Wnuk
+        */
+       template <typename T = double>
+           std::vector<std::vector<T>> transpose(const std::vector<std::vector<T>>& matrix)
+       {
+           std::vector<std::vector<T>> result(matrix[0].size(), std::vector<T>(matrix.size()));
+
+           for (std::size_t w = 0; w < matrix.size(); w++)
+               for (size_t k = 0; k < matrix[w].size(); k++)
+                   result[k][w] = matrix[w][k];
+           return result;
+       }
+
+
       /** @return The function returns k-th smallest element in an unsorted vector. 
        *  The function has average complexity O(n).
         * @param first iterator to the first element 

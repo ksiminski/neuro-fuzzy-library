@@ -33,6 +33,12 @@ bool ksi::number::exists() const
    return _exists;
 }
 
+void ksi::number::make_non_existing()
+{
+   _exists = false;
+}
+
+
 double ksi::number::getUpperValue() const
 {
    return upper_value;

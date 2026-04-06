@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <format>
 
 #include "../common/datum.h"
 #include "../common/number.h"
@@ -289,7 +290,8 @@ namespace ksi
       if (d.pDecision)
           ss <<" (decision == " << *d.pDecision << ")"; 
       
-      ss << " (weight == " << d._weight << ")";
+      if (d._weight < 1.0)
+          ss << " (weight == " << d._weight << ")";
       
       //ss << " id == " << d.getID() << ", id_incomplete == " << d.getIDincomplete();
       if (not d._labels.empty())
@@ -384,4 +386,45 @@ void ksi::datum::setLabels(const std::vector<std::string>& labels)
 std::size_t ksi::datum::getNumberOfLabels() const
 {
     return _labels.size();
+}
+
+void ksi::datum::save_print(std::ostream& os) const
+{
+    for (std::size_t i = 0; i < attributes.size(); ++i)
+    {
+        os << attributes[i]->getValue();
+        if (i < attributes.size() - 1)
+        {
+            os << " ";
+        }
+    }
+    
+    if (!_labels.empty())
+    {
+        os << " | ";
+        for (std::size_t i = 0; i < _labels.size(); ++i)
+        {
+            os << _labels[i];
+            if (i < _labels.size() - 1)
+            {
+                os << " ";
+            }
+        }
+    }
+
+    os << std::endl;
+}
+
+void ksi::datum::make_attribute_incomplete(std::size_t attribute)
+{
+    try 
+    {
+        if (attribute > attributes.size() - 1)
+        {
+            throw std::format ("The attribute index ({}) is incorrect. Legal values are [{}, {}].", attribute, 0, attributes.size() - 1);
+        }
+        
+        attributes[attribute]->make_non_existing();
+    }
+    CATCH;
 }
