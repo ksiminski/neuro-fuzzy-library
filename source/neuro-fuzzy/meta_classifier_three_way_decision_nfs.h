@@ -120,7 +120,7 @@ namespace ksi
          */
         virtual void createFuzzyRulebase(
             const ksi::dataset& train, 
-            const ksi::dataset& test, 
+            const ksi::dataset& test,
             const ksi::dataset& validation
         ) override;
         

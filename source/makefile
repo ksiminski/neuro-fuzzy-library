@@ -64,6 +64,9 @@ __ : $(release_folder) $(release_folder)/main
 5 :  $(release_folder) $(release_folder)/main
 	./$(release_folder)/main  5
 
+6 :  $(release_folder) $(release_folder)/main
+	./$(release_folder)/main  6
+
 lab : $(release_folder) $(release_folder)/main
 	./$(release_folder)/main  0
 
@@ -665,6 +668,10 @@ $(release_folder)/experiments-exp-005.o : experiments/exp-005.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/experiments-exp-005.o : experiments/exp-005.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
+$(release_folder)/experiments-exp-006.o : experiments/exp-006.cpp
+	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
+$(debug_folder)/experiments-exp-006.o : experiments/exp-006.cpp
+	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/descriptors-descriptor-interval-gaussian.o : descriptors/descriptor-interval-gaussian.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/descriptors-descriptor-interval-gaussian.o : descriptors/descriptor-interval-gaussian.cpp
@@ -1118,6 +1125,7 @@ $(release_folder)/granules-set_of_granules.o \
 $(release_folder)/tnorms-t-norm-schweizer-sklar.o \
 $(release_folder)/descriptors-DescriptorStatistics.o \
 $(release_folder)/experiments-exp-005.o \
+$(release_folder)/experiments-exp-006.o \
 $(release_folder)/partitions-fubi.o \
 $(release_folder)/dissimilarities-dis-log.o \
 $(release_folder)/neuro-fuzzy-consequence.o \
@@ -1339,6 +1347,7 @@ $(debug_folder)/granules-set_of_granules.o \
 $(debug_folder)/tnorms-t-norm-schweizer-sklar.o \
 $(debug_folder)/descriptors-DescriptorStatistics.o \
 $(debug_folder)/experiments-exp-005.o \
+$(debug_folder)/experiments-exp-006.o \
 $(debug_folder)/partitions-fubi.o \
 $(debug_folder)/dissimilarities-dis-log.o \
 $(debug_folder)/neuro-fuzzy-consequence.o \

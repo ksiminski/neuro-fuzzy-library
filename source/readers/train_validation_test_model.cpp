@@ -260,31 +260,25 @@ void ksi::train_validation_test_model::iterator::initialize_train_and_validation
     train_dataset = ksi::dataset();
     validation_dataset = ksi::dataset();
 
-    auto total_datasets = pTVT->datasets.size();
-    auto validation_start_index = std::distance(pTVT->datasets.begin(), test_iterator) + 1;
-    auto current_validation_count = 0;
-    
-    auto current_iterator = pTVT->datasets.begin();
-    std::advance(current_iterator, validation_start_index % total_datasets);
+    const auto total_datasets = pTVT->datasets.size();
+    const auto test_index = static_cast<std::size_t>(std::distance(pTVT->datasets.begin(), test_iterator));
 
-    for (auto it = pTVT->datasets.begin(); it != pTVT->datasets.end(); ++it) {
-        if (it == test_iterator) {
+    for (std::size_t index = 0; index < total_datasets; ++index) {
+        const auto& current_dataset = pTVT->datasets[index];
+
+        if (index == test_index) {
             continue;
         }
 
-        if (current_validation_count < pTVT->validation_size && it == current_iterator) {
-            for (std::size_t j = 0; j < it->size(); ++j) {
-                validation_dataset.addDatum(*it->getDatum(j));
+        const auto relative_index = (index + total_datasets - test_index) % total_datasets;
+        const bool is_validation = relative_index > 0 && relative_index <= static_cast<std::size_t>(pTVT->validation_size);
+
+        for (std::size_t j = 0; j < current_dataset.size(); ++j) {
+            if (is_validation) {
+                validation_dataset.addDatum(*current_dataset.getDatum(j));
             }
-            ++current_validation_count;
-            ++current_iterator;
-            if (current_iterator == pTVT->datasets.end()) {
-                current_iterator = pTVT->datasets.begin();
-            }
-        }
-        else {
-            for (std::size_t j = 0; j < it->size(); ++j) {
-                train_dataset.addDatum(*it->getDatum(j));
+            else {
+                train_dataset.addDatum(*current_dataset.getDatum(j));
             }
         }
     }
@@ -360,31 +354,25 @@ void ksi::train_validation_test_model::const_iterator::initialize_train_and_vali
     train_dataset = ksi::dataset();
     validation_dataset = ksi::dataset();
     
-    auto total_datasets = pTVT->datasets.size();
-    auto validation_start_index = std::distance(pTVT->datasets.cbegin(), test_iterator) + 1;
-    auto current_validation_count = 0;
-    
-    auto current_iterator = pTVT->datasets.cbegin();
-    std::advance(current_iterator, validation_start_index % total_datasets);
+    const auto total_datasets = pTVT->datasets.size();
+    const auto test_index = static_cast<std::size_t>(std::distance(pTVT->datasets.cbegin(), test_iterator));
 
-    for (auto it = pTVT->datasets.cbegin(); it != pTVT->datasets.cend(); ++it) {
-        if (it == test_iterator) {
+    for (std::size_t index = 0; index < total_datasets; ++index) {
+        const auto& current_dataset = pTVT->datasets[index];
+
+        if (index == test_index) {
             continue;
         }
 
-        if (current_validation_count < pTVT->validation_size && it == current_iterator) {
-            for (std::size_t j = 0; j < it->size(); ++j) {
-                validation_dataset.addDatum(*it->getDatum(j));
+        const auto relative_index = (index + total_datasets - test_index) % total_datasets;
+        const bool is_validation = relative_index > 0 && relative_index <= static_cast<std::size_t>(pTVT->validation_size);
+
+        for (std::size_t j = 0; j < current_dataset.size(); ++j) {
+            if (is_validation) {
+                validation_dataset.addDatum(*current_dataset.getDatum(j));
             }
-            ++current_validation_count;
-            ++current_iterator;
-            if (current_iterator == pTVT->datasets.cend()) {
-                current_iterator = pTVT->datasets.cbegin();
-            }
-        }
-        else {
-            for (std::size_t j = 0; j < it->size(); ++j) {
-                train_dataset.addDatum(*it->getDatum(j));
+            else {
+                train_dataset.addDatum(*current_dataset.getDatum(j));
             }
         }
     }

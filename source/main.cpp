@@ -11,6 +11,7 @@
 #include "./experiments/exp-003.h"
 #include "./experiments/exp-004.h"
 #include "./experiments/exp-005.h"
+#include "./experiments/exp-006.h"
 #include "./experiments/exp-lab.h"
 
  
@@ -30,6 +31,11 @@ int main (int argc, char ** params)
         {
             switch(number)
             {
+                case 0: { 
+                    ksi::exp_lab experiment;
+                    experiment.execute();
+                    break;
+                }
                 case 1: { 
                     ksi::exp_001 experiment;
                     experiment.execute();
@@ -55,8 +61,8 @@ int main (int argc, char ** params)
                     experiment.execute();
                     break;
                 }
-                case 0: { 
-                    ksi::exp_lab experiment;
+                case 6: { 
+                    ksi::exp_006 experiment;
                     experiment.execute();
                     break;
                 }
