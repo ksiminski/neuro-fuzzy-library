@@ -276,7 +276,7 @@ experiment_result run_cross_validation_for_dataset(const std::string& dataset_na
    std::string RESULT_EXTENSION {".txt"};
 
    const std::string DATA_DIRECTORY       ("../merged-data/");
-   const std::string RESULTS_DIRECTORY    ("../results_preeliminary/");
+   const std::string RESULTS_DIRECTORY    ("../results_preeliminary_one_width/");
 
    std::cout << "data set: " << dataset_name << std::endl;
    std::string dataset {DATA_DIRECTORY + "/" + dataset_name};
@@ -366,97 +366,86 @@ experiment_result run_cross_validation_for_dataset(const std::string& dataset_na
 //   save_to_file(RESULTS + RESULT_EXTENSION, f1_scores, avg_num_of_samples);
 //   std::cout << "Main results saved to file " << RESULTS + RESULT_EXTENSION << std::endl;
 //}
-
 void ksi::exp_006::execute()
 {
-   // Tune for each dataset one-noncommitment three way classifier 
-   // [0.05, 0.4, 0.05]
-   // n = 9
-
    std::vector<double> stop_criterion_percentages {0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05};
+   const std::vector<double> non_commitment_widths{0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5};
+   const std::string dataset_name{"bupa"};
+   const int number_of_rules = datasets_rules.at(dataset_name);
 
+   double best_f1_annbfis_increasing = 0.0;
+   double best_stop_annbfis_increasing = 0.0;
+   double best_width_annbfis_increasing = 0.0;
+
+   double best_f1_annbfis_steady = 0.0;
+   double best_stop_annbfis_steady = 0.0;
+   double best_width_annbfis_steady = 0.0;
+
+   double best_f1_tsk_increasing = 0.0;
+   double best_stop_tsk_increasing = 0.0;
+   double best_width_tsk_increasing = 0.0;
+
+   double best_f1_tsk_steady = 0.0;
+   double best_stop_tsk_steady = 0.0;
+   double best_width_tsk_steady = 0.0;
+
+   for (const auto & percentage : stop_criterion_percentages)
    {
-      const std::string dataset_name{"bupa"};
-      const int number_of_rules = datasets_rules.at(dataset_name);
-      
-
-
-      double best_f1_annbfis_increasing = 0.0;
-      double best_percentage_annbfis_increasing = 0.0;
-      double best_f1_annbfis_steady = 0.0;
-      double best_percentage_annbfis_steady = 0.0;
-      double best_f1_tsk_increasing = 0.0;
-      double best_percentage_tsk_increasing = 0.0;
-      double best_f1_tsk_steady = 0.0;
-      double best_percentage_tsk_steady = 0.0;
-      for(const auto& percentage : stop_criterion_percentages)
+      for (const auto & width : non_commitment_widths)
       {
-         std::cout << "dataset: " << dataset_name << ", percentage: " << percentage << std::endl;
-         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
-            {
-               (void)validate;
-               ksi::dataset combined_train_validate = train;
-               for (std::size_t i = 0; i < validate.size(); ++i)
-               {
-                  combined_train_validate.addDatum(*validate.getDatum(i));
-               }
-               std::vector<double> non_commitment_widths(10);
-               double first_width = 0.1;
-               for(auto& width : non_commitment_widths)
-               {
-                  width = first_width;
-                  first_width += 0.05;
-               }
-               return std::make_shared<ksi::three_way_decision_nfs>(c(), train, test, result_file, non_commitment_widths, percentage);
-            };
+         std::cout << "dataset: " << dataset_name
+                   << ", stop percentage: " << percentage
+                   << ", noncommitment width: " << width << std::endl;
+
+         auto system_factory = [percentage, width](const std::function<cascade()> c,
+                                                   const ksi::dataset& train,
+                                                   const ksi::dataset& test,
+                                                   const ksi::dataset& validate,
+                                                   const std::string& result_file)
+         {
+            (void) validate;
+            return std::make_shared<ksi::three_way_decision_nfs>(c(), train, test, result_file, width, percentage);
+         };
 
          experiment_result annbfis_increasing_result {};
          experiment_result annbfis_steady_result {};
          experiment_result tsk_increasing_result {};
          experiment_result tsk_steady_result {};
-         bool annbfis_increasing_ok {false};
-         bool annbfis_steady_ok {false};
-         bool tsk_increasing_ok {false};
-         bool tsk_steady_ok {false};
 
          std::thread annbfis_increasing_thread([&]() {
             annbfis_increasing_result = run_cross_validation_for_dataset(
                dataset_name,
-               [=](){return create_anbfis_increasing_no_rules(number_of_rules);},
+               [=](){ return create_anbfis_increasing_no_rules(number_of_rules); },
                system_factory,
-               "ANNBFIS-INCREASING-STEADY-CLASSIFIER-" + std::to_string(percentage)
+               "ANNBFIS-INCREASING-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
             );
-            annbfis_increasing_ok = true;
          });
 
          std::thread annbfis_steady_thread([&]() {
             annbfis_steady_result = run_cross_validation_for_dataset(
                dataset_name,
-               [=](){return create_anbfis_constant_number_of_rules(number_of_rules);},
+               [=](){ return create_anbfis_constant_number_of_rules(number_of_rules); },
                system_factory,
-               "ANNBFIS-STEADY-STEADY-CLASSIFIER-" + std::to_string(percentage)
+               "ANNBFIS-STEADY-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
             );
-            annbfis_steady_ok = true;
          });
 
          std::thread tsk_increasing_thread([&]() {
             tsk_increasing_result = run_cross_validation_for_dataset(
                dataset_name,
-               [=](){return create_tsk_increasing_no_rules(number_of_rules);},
+               [=](){ return create_tsk_increasing_no_rules(number_of_rules); },
                system_factory,
-               "TSK-INCREASING-STEADY-CLASSIFIER-" + std::to_string(percentage)
+               "TSK-INCREASING-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
             );
-            tsk_increasing_ok = true;
          });
 
          std::thread tsk_steady_thread([&]() {
             tsk_steady_result = run_cross_validation_for_dataset(
                dataset_name,
-               [=](){return create_tsk_constant_number_of_rules(number_of_rules);},
+               [=](){ return create_tsk_constant_number_of_rules(number_of_rules); },
                system_factory,
-               "TSK-STEADY-STEADY-CLASSIFIER-" + std::to_string(percentage)
+               "TSK-STEADY-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
             );
-            tsk_steady_ok = true;
          });
 
          annbfis_increasing_thread.join();
@@ -464,51 +453,51 @@ void ksi::exp_006::execute()
          tsk_increasing_thread.join();
          tsk_steady_thread.join();
 
-         if (annbfis_increasing_ok)
+         std::cout << "average f1 score (annbfis increasing): " << annbfis_increasing_result.f1_score << std::endl;
+         std::cout << "average f1 score (annbfis steady): " << annbfis_steady_result.f1_score << std::endl;
+         std::cout << "average f1 score (tsk increasing): " << tsk_increasing_result.f1_score << std::endl;
+         std::cout << "average f1 score (tsk steady): " << tsk_steady_result.f1_score << std::endl;
+
+         if (annbfis_increasing_result.f1_score > best_f1_annbfis_increasing)
          {
-            std::cout << "average f1 score (annbfis increasing): " << annbfis_increasing_result.f1_score << std::endl;
-            if (annbfis_increasing_result.f1_score > best_f1_annbfis_increasing)
-            {
-               best_f1_annbfis_increasing = annbfis_increasing_result.f1_score;
-               best_percentage_annbfis_increasing = percentage;
-            }
+            best_f1_annbfis_increasing = annbfis_increasing_result.f1_score;
+            best_stop_annbfis_increasing = percentage;
+            best_width_annbfis_increasing = width;
          }
 
-         if (annbfis_steady_ok)
+         if (annbfis_steady_result.f1_score > best_f1_annbfis_steady)
          {
-            std::cout << "average f1 score (annbfis steady): " << annbfis_steady_result.f1_score << std::endl;
-            if (annbfis_steady_result.f1_score > best_f1_annbfis_steady)
-            {
-               best_f1_annbfis_steady = annbfis_steady_result.f1_score;
-               best_percentage_annbfis_steady = percentage;
-            }
+            best_f1_annbfis_steady = annbfis_steady_result.f1_score;
+            best_stop_annbfis_steady = percentage;
+            best_width_annbfis_steady = width;
          }
 
-         if (tsk_increasing_ok)
+         if (tsk_increasing_result.f1_score > best_f1_tsk_increasing)
          {
-            std::cout << "average f1 score (tsk increasing): " << tsk_increasing_result.f1_score << std::endl;
-            if (tsk_increasing_result.f1_score > best_f1_tsk_increasing)
-            {
-               best_f1_tsk_increasing = tsk_increasing_result.f1_score;
-               best_percentage_tsk_increasing = percentage;
-            }
+            best_f1_tsk_increasing = tsk_increasing_result.f1_score;
+            best_stop_tsk_increasing = percentage;
+            best_width_tsk_increasing = width;
          }
 
-         if (tsk_steady_ok)
+         if (tsk_steady_result.f1_score > best_f1_tsk_steady)
          {
-            std::cout << "average f1 score (tsk steady): " << tsk_steady_result.f1_score << std::endl;
-            if (tsk_steady_result.f1_score > best_f1_tsk_steady)
-            {
-               best_f1_tsk_steady = tsk_steady_result.f1_score;
-               best_percentage_tsk_steady = percentage;
-            }
+            best_f1_tsk_steady = tsk_steady_result.f1_score;
+            best_stop_tsk_steady = percentage;
+            best_width_tsk_steady = width;
          }
       }
-      std::cout << "Best ANNBFIS increasing percentage: " << best_percentage_annbfis_increasing << " with f1 score: " << best_f1_annbfis_increasing << std::endl;
-      std::cout << "Best ANNBFIS steady percentage: " << best_percentage_annbfis_steady << " with f1 score: " << best_f1_annbfis_steady << std::endl;
-      std::cout << "Best TSK increasing percentage: " << best_percentage_tsk_increasing << " with f1 score: " << best_f1_tsk_increasing << std::endl;
-      std::cout << "Best TSK steady percentage: " << best_percentage_tsk_steady << " with f1 score: " << best_f1_tsk_steady << std::endl;
-
    }
-   return;
+
+   std::cout << "Best ANNBFIS increasing: stop=" << best_stop_annbfis_increasing
+             << ", width=" << best_width_annbfis_increasing
+             << ", f1=" << best_f1_annbfis_increasing << std::endl;
+   std::cout << "Best ANNBFIS steady: stop=" << best_stop_annbfis_steady
+             << ", width=" << best_width_annbfis_steady
+             << ", f1=" << best_f1_annbfis_steady << std::endl;
+   std::cout << "Best TSK increasing: stop=" << best_stop_tsk_increasing
+             << ", width=" << best_width_tsk_increasing
+             << ", f1=" << best_f1_tsk_increasing << std::endl;
+   std::cout << "Best TSK steady: stop=" << best_stop_tsk_steady
+             << ", width=" << best_width_tsk_steady
+             << ", f1=" << best_f1_tsk_steady << std::endl;
 }
