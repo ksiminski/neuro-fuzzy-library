@@ -22,7 +22,7 @@ ksi::three_way_decision_nfs::three_way_decision_nfs ()
     _threshold_type = ksi::roc_threshold::none;
 }
 
-ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system> >& cascade) : _cascade(cascade)
+ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system> >& cascade, const double stop_criterion_percentage) : _cascade(cascade), _stop_criterion_percentage(stop_criterion_percentage)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
@@ -34,13 +34,15 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const std::string                                            & train, 
     const std::string                                            & test,
     const std::string                                            & result,
-    const double                                                   maximal_deviation
+        const double                                                   maximal_deviation,
+        const double                                                   stop_criterion_percentage
   ) : ksi::neuro_fuzzy_system(train, test, result), _cascade(cascade)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none;
     _noncommitment_widths = std::vector<double> (cascade.size(), maximal_deviation);
+        _stop_criterion_percentage = stop_criterion_percentage;
 }
 
 ksi::three_way_decision_nfs::three_way_decision_nfs(
@@ -48,12 +50,14 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const std::string                                            & train, 
     const std::string                                            & test,
     const std::string                                            & result,
-    const std::vector<double>                                    & maximal_deviations
+        const std::vector<double>                                    & maximal_deviations,
+        const double                                                   stop_criterion_percentage
   ) : ksi::neuro_fuzzy_system(train, test, result), _cascade(cascade), _noncommitment_widths(maximal_deviations)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none;
+        _stop_criterion_percentage = stop_criterion_percentage;
     
     try 
     {
@@ -73,17 +77,19 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const std::string                                            & validation,
     const std::string                                            & test,
     const std::string                                            & result,
-    const double                                                   maximal_deviation
+    const double                                                   maximal_deviation,
+    const double                                                   stop_criterion_percentage
   ) : ksi::neuro_fuzzy_system(train, validation, test, result), _cascade(cascade)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none;
     _noncommitment_widths = std::vector<double> (cascade.size(), maximal_deviation);
+    _stop_criterion_percentage = stop_criterion_percentage;
 }
 
-ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade, const double maximal_deviation)
-: _cascade(cascade)
+ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade, const double maximal_deviation, const double stop_criterion_percentage)
+: _cascade(cascade), _stop_criterion_percentage(stop_criterion_percentage)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
@@ -91,8 +97,8 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::share
     _noncommitment_widths = std::vector<double> (cascade.size(), maximal_deviation);
 }
 
-ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade, const std::vector<double> & maximal_deviations)
-: _cascade(cascade), _noncommitment_widths(maximal_deviations)
+ksi::three_way_decision_nfs::three_way_decision_nfs(const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade, const std::vector<double> & maximal_deviations, const double stop_criterion_percentage)
+: _cascade(cascade), _noncommitment_widths(maximal_deviations), _stop_criterion_percentage(stop_criterion_percentage)
 {
     try 
     {
@@ -113,13 +119,15 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const ksi::dataset& train, 
     const ksi::dataset& test, 
     const std::string& result, 
-    const double maximal_deviation
+    const double maximal_deviation,
+    const double stop_criterion_percentage
 ) : ksi::neuro_fuzzy_system(train, test, result), _cascade(cascade)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none;
     _noncommitment_widths = std::vector<double> (cascade.size(), maximal_deviation);
+    _stop_criterion_percentage = stop_criterion_percentage;
 }
 
 ksi::three_way_decision_nfs::three_way_decision_nfs(
@@ -127,12 +135,14 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const ksi::dataset& train, 
     const ksi::dataset& test, 
     const std::string& result, 
-    const std::vector<double> & maximal_deviations
+    const std::vector<double> & maximal_deviations,
+    const double stop_criterion_percentage
 ) : ksi::neuro_fuzzy_system(train, test, result), _cascade(cascade), _noncommitment_widths(maximal_deviations)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none; 
+    _stop_criterion_percentage = stop_criterion_percentage;
     
     try 
     {
@@ -152,13 +162,15 @@ ksi::three_way_decision_nfs::three_way_decision_nfs(
     const ksi::dataset & validation,
     const ksi::dataset & test, 
     const std::string  & result, 
-    const double maximal_deviation
+    const double maximal_deviation,
+    const double stop_criterion_percentage
 ) : ksi::neuro_fuzzy_system(train, validation, test, result), _cascade(cascade)
 {
     set_positive_class(cascade[0]->get_positive_class());
     set_negative_class(cascade[0]->get_negative_class()); 
     _threshold_type = ksi::roc_threshold::none;
     _noncommitment_widths = std::vector<double> (cascade.size(), maximal_deviation);
+    _stop_criterion_percentage = stop_criterion_percentage;
 }
 
 void ksi::three_way_decision_nfs::three_copy_fields(const ksi::three_way_decision_nfs& _3wnfs)
@@ -167,6 +179,7 @@ void ksi::three_way_decision_nfs::three_copy_fields(const ksi::three_way_decisio
     _negative_class = _3wnfs._negative_class;
     _threshold_type = _3wnfs._threshold_type;
     _noncommitment_widths = _3wnfs._noncommitment_widths;
+    _stop_criterion_percentage = _3wnfs._stop_criterion_percentage;
     
     _dbTestAverageNumerOfRulesUsed = _3wnfs._dbTestAverageNumerOfRulesUsed;
     _dbTrainAverageNumerOfRulesUsed = _3wnfs._dbTrainAverageNumerOfRulesUsed;
@@ -264,7 +277,7 @@ void ksi::three_way_decision_nfs::createFuzzyRulebase(const ksi::dataset& train,
     try 
     {
         auto zbior_treningowy = train;
-        auto nAttributes = zbior_treningowy.getNumberOfAttributes(); 
+        auto nSize = zbior_treningowy.size(); 
         bool remove_system = false;
         for (std::size_t i = 0; i < _cascade.size(); i++)
         {
@@ -291,7 +304,7 @@ void ksi::three_way_decision_nfs::createFuzzyRulebase(const ksi::dataset& train,
                 // zapisanie do zbioru_treningowego danych bliskich progowi
                 zbior_treningowy = extract_poor_results(zbior_treningowy, results_train, threshold_value, _noncommitment_widths[i]); 
                   
-                if (zbior_treningowy.size() < nAttributes)
+                if (zbior_treningowy.size() < nSize * _stop_criterion_percentage)
                 {
                     // wszystkie nastepne systemy trzeba skasowac
                     remove_system = true;  
@@ -880,5 +893,15 @@ void ksi::three_way_decision_nfs::elaborate_cascade_f1scores()
 void ksi::three_way_decision_nfs::run_extra_activities_for_the_model()
 {
    ksi::three_way_decision_nfs::elaborate_cascade_f1scores();
+}
+
+double ksi::three_way_decision_nfs::get_stop_criterion_percentage () const
+{
+    return _stop_criterion_percentage;
+}
+
+void ksi::three_way_decision_nfs::set_stop_criterion_percentage (const double stop_criterion_percentage)
+{
+    _stop_criterion_percentage = stop_criterion_percentage;
 }
 

@@ -50,10 +50,15 @@ namespace ksi
    protected:
        /*** halfs of width of concommitment intervals for each NFS in the cascade */
        std::vector<double> _noncommitment_widths;  
+
+       /** Percentage that determines when the cascade should stop early.
+        *  @date 2026-04-11 */
+       double _stop_criterion_percentage {0.15};
        
    public:
       three_way_decision_nfs ();
-      three_way_decision_nfs (const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> & cascade);
+    three_way_decision_nfs (const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> & cascade,
+                    const double stop_criterion_percentage = 0.15);
       
       /** @param cascade cascade of neuro-fuzzy systems
           @param train   name of train dataset file 
@@ -67,7 +72,8 @@ namespace ksi
                               const std::string & train, 
                               const std::string & test, 
                               const std::string & result,
-                              const double maximal_deviation
+                              const double maximal_deviation,
+                              const double stop_criterion_percentage = 0.15
                              );
       
       /** @param cascade cascade of neuro-fuzzy systems
@@ -81,7 +87,8 @@ namespace ksi
                               const std::string & train, 
                               const std::string & test, 
                               const std::string & result,
-                              const std::vector<double> & maximal_deviations
+                              const std::vector<double> & maximal_deviations,
+                              const double stop_criterion_percentage = 0.15
       );
       
       
@@ -91,7 +98,8 @@ namespace ksi
        @date 2024-03-16
        */
       three_way_decision_nfs (const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> & cascade, 
-                              const double maximal_deviation
+                              const double maximal_deviation,
+                              const double stop_criterion_percentage = 0.15
       );
 
       /** @param cascade cascade of neuro-fuzzy systems
@@ -99,7 +107,8 @@ namespace ksi
        *  @date 2024-03-17
        */
       three_way_decision_nfs (const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>> & cascade, 
-                              const std::vector<double> & maximal_deviations);
+                              const std::vector<double> & maximal_deviations,
+                              const double stop_criterion_percentage = 0.15);
             
  
       /** @param cascade cascade of neuro-fuzzy systems
@@ -115,7 +124,8 @@ namespace ksi
                               const std::string & validation,
                               const std::string & test, 
                               const std::string & result,
-                              const double maximal_deviation
+                              const double maximal_deviation,
+                              const double stop_criterion_percentage = 0.15
                              );
 
       /** @param cascade cascade of neuro-fuzzy systems
@@ -129,7 +139,8 @@ namespace ksi
                               const ksi::dataset & train, 
                               const ksi::dataset & test, 
                               const std::string & result,
-                              const double maximal_deviation
+                              const double maximal_deviation,
+                              const double stop_criterion_percentage = 0.15
                              );
 
       /** @param cascade cascade of neuro-fuzzy systems
@@ -143,7 +154,8 @@ namespace ksi
                               const ksi::dataset & train, 
                               const ksi::dataset & test, 
                               const std::string & result,
-                              const std::vector<double> & maximal_deviations
+                              const std::vector<double> & maximal_deviations,
+                              const double stop_criterion_percentage = 0.15
                              );
 
      /** @param cascade cascade of neuro-fuzzy systems
@@ -159,7 +171,8 @@ namespace ksi
                               const ksi::dataset & validation,
                               const ksi::dataset & test, 
                               const std::string & result,
-                              const double maximal_deviation
+                              const double maximal_deviation,
+                              const double stop_criterion_percentage = 0.15
                              );
       
       
@@ -201,6 +214,9 @@ namespace ksi
        virtual number elaborate_answer (const datum & d) const override;
        
        virtual double answer (const datum & item) const override;
+
+       double get_stop_criterion_percentage () const;
+       void set_stop_criterion_percentage (const double stop_criterion_percentage);
        
        /** The method elaborates answer for classification.
        @return a pair: elaborated numeric, class

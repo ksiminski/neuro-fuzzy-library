@@ -36,7 +36,8 @@ namespace ksi
          */
         three_way_decision_nfs_meta(
             const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
-            const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade
+            const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+            const double stop_criterion_percentage = 0.15
         );
         
         /** @param cascade cascade of neuro-fuzzy systems (primary classifiers)
@@ -50,7 +51,8 @@ namespace ksi
             const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
             const std::string& train, 
             const std::string& test, 
-            const std::string& result
+            const std::string& result,
+            const double stop_criterion_percentage = 0.15
         );
         
         /** @param cascade cascade of neuro-fuzzy systems (primary classifiers)
@@ -66,7 +68,8 @@ namespace ksi
             const std::string& train,
             const std::string& validation, 
             const std::string& test, 
-            const std::string& result
+            const std::string& result,
+            const double stop_criterion_percentage = 0.15
         );
         
         /** @param cascade cascade of neuro-fuzzy systems (primary classifiers)
@@ -80,7 +83,8 @@ namespace ksi
             const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
             const ksi::dataset& train, 
             const ksi::dataset& test, 
-            const std::string& result
+            const std::string& result,
+            const double stop_criterion_percentage = 0.15
         );
         
         /** @param cascade cascade of neuro-fuzzy systems (primary classifiers)
@@ -96,7 +100,8 @@ namespace ksi
             const ksi::dataset& train,
             const ksi::dataset& validation, 
             const ksi::dataset& test, 
-            const std::string& result
+            const std::string& result,
+            const double stop_criterion_percentage = 0.15
         );
         
         three_way_decision_nfs_meta(const three_way_decision_nfs_meta& wzor);
