@@ -46,7 +46,7 @@ const std::map<std::string, int> datasets_rules =
       {"banana", 7},
       {"banknote", 7},
       {"blood", 10},
-      {"bupa", 2},
+      //{"bupa", 2},
       {"fire", 2},
       {"haberman", 5},
       {"heart", 2},
@@ -55,9 +55,9 @@ const std::map<std::string, int> datasets_rules =
       {"ionosphere", 2},
       {"magic", 2},
       {"phoneme", 5},
-      {"ring", 7},
+      //{"ring", 7},
       {"vertebral", 2},
-      {"wisconsin", 2}
+      {"parkinsons", 2}
    };
 
 
@@ -74,15 +74,16 @@ double accuracy(const ksi::result& result)
 
 void test_algorithm_simple(const std::string& dataset_name, const int repetitions, cascade cascade_of_nfs, std::function<std::unique_ptr<ksi::three_way_decision_nfs> (const cascade&, const std::string&, const std::string&, const std::string&)> func, std::string name = "");
 
-void save_to_file(const std::string& file_path, const std::vector<double>& f1_scores, const std::vector<double>& avg_num_samples)
+void save_to_file(const std::string& file_path, const std::vector<double>& f1_scores, const std::vector<double>& avg_num_samples, const std::vector<double>& accuracies)
 {
    using namespace std::string_literals;
    assert(f1_scores.size() == avg_num_samples.size());
+   assert(f1_scores.size() == accuracies.size());
    std::ofstream file(file_path);
    if (!file) throw std::runtime_error("Cannot open file: "s + file_path);
    for(auto i = 0; i < f1_scores.size(); ++i)
    {
-      file << i << " " << f1_scores.at(i) << " " << avg_num_samples.at(i) << std::endl;
+      file << i << " " << f1_scores.at(i) << " " << avg_num_samples.at(i) << " " << accuracies.at(i) << std::endl;
    }
 }
 std::unique_ptr<ksi::three_way_decision_nfs> create_3WDNFS_one_noncommitment(const cascade& cascade_of_nfs, const std::string& TRAIN, const std::string& TEST, const std::string& result_file)
@@ -252,18 +253,28 @@ void ksi::exp_006::regression()
 }
 
 
-void save_depth_to_file(const std::string& file_path, const std::vector<std::tuple<std::vector<double>, std::size_t, std::size_t>>& answers)
+void save_depth_to_file(const std::string& file_path, const std::vector<std::tuple<std::vector<double>, std::size_t, std::size_t>>& answers, const ksi::dataset& original_dataset)
 {
    using namespace std::string_literals;
    std::ofstream file(file_path);
    if (!file) throw std::runtime_error("Cannot open file: "s + file_path);
-   for(const auto& answer : answers)
+   const auto label_column = original_dataset.getNumberOfAttributes() - 1;
+   if (answers.size() != original_dataset.getNumberOfData())
    {
+      throw std::runtime_error("Size of answers does not match number of data items in original dataset for file: "s + file_path);
+   }
+   for(std::size_t i = 0; i < answers.size(); ++i)
+   {
+      const auto& answer = answers.at(i);
       for(const auto& val : std::get<0>(answer))
       {
          file << val << ",";
       }
-      file << std::get<1>(answer) << "," << std::get<2>(answer) << std::endl;
+      const auto cascade_level = std::get<1>(answer);
+      const auto predicted_class = std::get<2>(answer);
+      const auto expected_class = original_dataset.get(i, label_column);
+      const auto is_correct = std::fabs(predicted_class - expected_class) < 1e-9;
+      file << cascade_level << "," << predicted_class << "," << is_correct << std::endl;
    }
 }
 struct experiment_result{
@@ -276,9 +287,9 @@ experiment_result run_cross_validation_for_dataset(const std::string& dataset_na
    std::string RESULT_EXTENSION {".txt"};
 
    const std::string DATA_DIRECTORY       ("../merged-data/");
-   const std::string RESULTS_DIRECTORY    ("../results_preeliminary_one_width/");
+   const std::string RESULTS_DIRECTORY    ("../results/");
 
-   std::cout << "data set: " << dataset_name << std::endl;
+   //std::cout << "data set: " << dataset_name << std::endl;
    std::string dataset {DATA_DIRECTORY + "/" + dataset_name};
 
    std::string results_dir {RESULTS_DIRECTORY + "/" + dataset_name};
@@ -304,15 +315,14 @@ experiment_result run_cross_validation_for_dataset(const std::string& dataset_na
       auto result = system->experiment_classification_core();
       auto second_result = system->get_answers_for_test_classification_depth();
       auto train_data_set_result = system->get_answers_for_test_classification_depth(false);
-      save_depth_to_file(RESULTS + "/" + std::to_string(counter) +"/depth-" + dataset_name + cascade_name + RESULT_EXTENSION, second_result);
-      save_depth_to_file(RESULTS + "/" + std::to_string(counter) +"/depth-train-" + dataset_name + cascade_name + RESULT_EXTENSION, train_data_set_result);
+      save_depth_to_file(RESULTS + "/" + std::to_string(counter) +"/depth-test-" + dataset_name + cascade_name + RESULT_EXTENSION, second_result, test);
       f1_scores.at(counter) = f1_score(result);
       avg_num_of_samples.at(counter) = system->get_number_of_rules();
       accuracies.at(counter) = accuracy(result);
 
       counter++;
    }
-   save_to_file(RESULTS + RESULT_EXTENSION, f1_scores, avg_num_of_samples);
+   save_to_file(RESULTS + RESULT_EXTENSION, f1_scores, avg_num_of_samples, accuracies);
    std::cout << "Main results saved to file " << RESULTS + RESULT_EXTENSION << std::endl;
 
    experiment_result to_return;
@@ -368,136 +378,197 @@ experiment_result run_cross_validation_for_dataset(const std::string& dataset_na
 //}
 void ksi::exp_006::execute()
 {
-   std::vector<double> stop_criterion_percentages {0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05};
-   const std::vector<double> non_commitment_widths{0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5};
-   const std::string dataset_name{"bupa"};
-   const int number_of_rules = datasets_rules.at(dataset_name);
-
-   double best_f1_annbfis_increasing = 0.0;
-   double best_stop_annbfis_increasing = 0.0;
-   double best_width_annbfis_increasing = 0.0;
-
-   double best_f1_annbfis_steady = 0.0;
-   double best_stop_annbfis_steady = 0.0;
-   double best_width_annbfis_steady = 0.0;
-
-   double best_f1_tsk_increasing = 0.0;
-   double best_stop_tsk_increasing = 0.0;
-   double best_width_tsk_increasing = 0.0;
-
-   double best_f1_tsk_steady = 0.0;
-   double best_stop_tsk_steady = 0.0;
-   double best_width_tsk_steady = 0.0;
-
-   for (const auto & percentage : stop_criterion_percentages)
+   struct stop_criteria_per_architecture
    {
-      for (const auto & width : non_commitment_widths)
-      {
-         std::cout << "dataset: " << dataset_name
-                   << ", stop percentage: " << percentage
-                   << ", noncommitment width: " << width << std::endl;
+      double annbfis_increasing;
+      double annbfis_steady;
+      double tsk_increasing;
+      double tsk_steady;
+   };
 
-         auto system_factory = [percentage, width](const std::function<cascade()> c,
-                                                   const ksi::dataset& train,
-                                                   const ksi::dataset& test,
-                                                   const ksi::dataset& validate,
-                                                   const std::string& result_file)
+   // Set manually.
+   const stop_criteria_per_architecture meta_stop
+   {
+      0.35, // annbfis increasing
+      0.2, // annbfis steady
+      0.25, // tsk increasing
+      0.35  // tsk steady
+   };
+
+   // Set manually.
+   const stop_criteria_per_architecture widening_stop
+   {
+      0.2, // annbfis increasing
+      0.4, // annbfis steady
+      0.3, // tsk increasing
+      0.3  // tsk steady
+   };
+
+   const std::vector<double> non_commitment_widths {0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50};
+
+   for (const auto & [dataset_name, number_of_rules] : datasets_rules)
+   {
+      std::cout << "dataset: " << dataset_name << std::endl;
+
+      experiment_result meta_annbfis_increasing_result {};
+      experiment_result meta_annbfis_steady_result {};
+      experiment_result meta_tsk_increasing_result {};
+      experiment_result meta_tsk_steady_result {};
+
+      experiment_result widening_annbfis_increasing_result {};
+      experiment_result widening_annbfis_steady_result {};
+      experiment_result widening_tsk_increasing_result {};
+      experiment_result widening_tsk_steady_result {};
+
+      std::thread meta_annbfis_increasing_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
          {
-            (void) validate;
-            return std::make_shared<ksi::three_way_decision_nfs>(c(), train, test, result_file, width, percentage);
+            auto primary = c();
+            auto meta = primary;
+            meta.pop_back();
+            return std::make_shared<ksi::three_way_decision_nfs_meta>(primary, meta, train, validate, test, result_file, meta_stop.annbfis_increasing);
          };
 
-         experiment_result annbfis_increasing_result {};
-         experiment_result annbfis_steady_result {};
-         experiment_result tsk_increasing_result {};
-         experiment_result tsk_steady_result {};
+         meta_annbfis_increasing_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_anbfis_increasing_no_rules(number_of_rules); },
+            system_factory,
+            "ANNBFIS-INCREASING-META-stop-" + std::to_string(meta_stop.annbfis_increasing)
+         );
+      });
 
-         std::thread annbfis_increasing_thread([&]() {
-            annbfis_increasing_result = run_cross_validation_for_dataset(
-               dataset_name,
-               [=](){ return create_anbfis_increasing_no_rules(number_of_rules); },
-               system_factory,
-               "ANNBFIS-INCREASING-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
-            );
-         });
-
-         std::thread annbfis_steady_thread([&]() {
-            annbfis_steady_result = run_cross_validation_for_dataset(
-               dataset_name,
-               [=](){ return create_anbfis_constant_number_of_rules(number_of_rules); },
-               system_factory,
-               "ANNBFIS-STEADY-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
-            );
-         });
-
-         std::thread tsk_increasing_thread([&]() {
-            tsk_increasing_result = run_cross_validation_for_dataset(
-               dataset_name,
-               [=](){ return create_tsk_increasing_no_rules(number_of_rules); },
-               system_factory,
-               "TSK-INCREASING-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
-            );
-         });
-
-         std::thread tsk_steady_thread([&]() {
-            tsk_steady_result = run_cross_validation_for_dataset(
-               dataset_name,
-               [=](){ return create_tsk_constant_number_of_rules(number_of_rules); },
-               system_factory,
-               "TSK-STEADY-SINGLE-WIDTH-stop-" + std::to_string(percentage) + "-width-" + std::to_string(width)
-            );
-         });
-
-         annbfis_increasing_thread.join();
-         annbfis_steady_thread.join();
-         tsk_increasing_thread.join();
-         tsk_steady_thread.join();
-
-         std::cout << "average f1 score (annbfis increasing): " << annbfis_increasing_result.f1_score << std::endl;
-         std::cout << "average f1 score (annbfis steady): " << annbfis_steady_result.f1_score << std::endl;
-         std::cout << "average f1 score (tsk increasing): " << tsk_increasing_result.f1_score << std::endl;
-         std::cout << "average f1 score (tsk steady): " << tsk_steady_result.f1_score << std::endl;
-
-         if (annbfis_increasing_result.f1_score > best_f1_annbfis_increasing)
+      std::thread meta_annbfis_steady_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
          {
-            best_f1_annbfis_increasing = annbfis_increasing_result.f1_score;
-            best_stop_annbfis_increasing = percentage;
-            best_width_annbfis_increasing = width;
-         }
+            auto primary = c();
+            auto meta = primary;
+            meta.pop_back();
+            return std::make_shared<ksi::three_way_decision_nfs_meta>(primary, meta, train, validate, test, result_file, meta_stop.annbfis_steady);
+         };
 
-         if (annbfis_steady_result.f1_score > best_f1_annbfis_steady)
-         {
-            best_f1_annbfis_steady = annbfis_steady_result.f1_score;
-            best_stop_annbfis_steady = percentage;
-            best_width_annbfis_steady = width;
-         }
+         meta_annbfis_steady_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_anbfis_constant_number_of_rules(number_of_rules); },
+            system_factory,
+            "ANNBFIS-STEADY-META-stop-" + std::to_string(meta_stop.annbfis_steady)
+         );
+      });
 
-         if (tsk_increasing_result.f1_score > best_f1_tsk_increasing)
+      std::thread meta_tsk_increasing_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
          {
-            best_f1_tsk_increasing = tsk_increasing_result.f1_score;
-            best_stop_tsk_increasing = percentage;
-            best_width_tsk_increasing = width;
-         }
+            auto primary = c();
+            auto meta = primary;
+            meta.pop_back();
+            return std::make_shared<ksi::three_way_decision_nfs_meta>(primary, meta, train, validate, test, result_file, meta_stop.tsk_increasing);
+         };
 
-         if (tsk_steady_result.f1_score > best_f1_tsk_steady)
+         meta_tsk_increasing_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_tsk_increasing_no_rules(number_of_rules); },
+            system_factory,
+            "TSK-INCREASING-META-stop-" + std::to_string(meta_stop.tsk_increasing)
+         );
+      });
+
+      std::thread meta_tsk_steady_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
          {
-            best_f1_tsk_steady = tsk_steady_result.f1_score;
-            best_stop_tsk_steady = percentage;
-            best_width_tsk_steady = width;
-         }
-      }
+            auto primary = c();
+            auto meta = primary;
+            meta.pop_back();
+            return std::make_shared<ksi::three_way_decision_nfs_meta>(primary, meta, train, validate, test, result_file, meta_stop.tsk_steady);
+         };
+
+         meta_tsk_steady_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_tsk_constant_number_of_rules(number_of_rules); },
+            system_factory,
+            "TSK-STEADY-META-stop-" + std::to_string(meta_stop.tsk_steady)
+         );
+      });
+
+      std::thread widening_annbfis_increasing_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
+         {
+            auto merged_train = train;
+            merged_train += validate;
+            return std::make_shared<ksi::three_way_decision_nfs>(c(), merged_train, test, result_file, non_commitment_widths, widening_stop.annbfis_increasing);
+         };
+
+         widening_annbfis_increasing_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_anbfis_increasing_no_rules(number_of_rules); },
+            system_factory,
+            "ANNBFIS-INCREASING-WIDENING-stop-" + std::to_string(widening_stop.annbfis_increasing)
+         );
+      });
+
+      std::thread widening_annbfis_steady_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
+         {
+            auto merged_train = train;
+            merged_train += validate;
+            return std::make_shared<ksi::three_way_decision_nfs>(c(), merged_train, test, result_file, non_commitment_widths, widening_stop.annbfis_steady);
+         };
+
+         widening_annbfis_steady_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_anbfis_constant_number_of_rules(number_of_rules); },
+            system_factory,
+            "ANNBFIS-STEADY-WIDENING-stop-" + std::to_string(widening_stop.annbfis_steady)
+         );
+      });
+
+      std::thread widening_tsk_increasing_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
+         {
+            auto merged_train = train;
+            merged_train += validate;
+            return std::make_shared<ksi::three_way_decision_nfs>(c(), merged_train, test, result_file, non_commitment_widths, widening_stop.tsk_increasing);
+         };
+
+         widening_tsk_increasing_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_tsk_increasing_no_rules(number_of_rules); },
+            system_factory,
+            "TSK-INCREASING-WIDENING-stop-" + std::to_string(widening_stop.tsk_increasing)
+         );
+      });
+
+      std::thread widening_tsk_steady_thread([&]() {
+         auto system_factory = [&](const std::function<cascade()> c, const ksi::dataset& train, const ksi::dataset& test, const ksi::dataset& validate, const std::string& result_file)
+         {
+            auto merged_train = train;
+            merged_train += validate;
+            return std::make_shared<ksi::three_way_decision_nfs>(c(), merged_train, test, result_file, non_commitment_widths, widening_stop.tsk_steady);
+         };
+
+         widening_tsk_steady_result = run_cross_validation_for_dataset(
+            dataset_name,
+            [=](){ return create_tsk_constant_number_of_rules(number_of_rules); },
+            system_factory,
+            "TSK-STEADY-WIDENING-stop-" + std::to_string(widening_stop.tsk_steady)
+         );
+      });
+
+      meta_annbfis_increasing_thread.join();
+      meta_annbfis_steady_thread.join();
+      meta_tsk_increasing_thread.join();
+      meta_tsk_steady_thread.join();
+      widening_annbfis_increasing_thread.join();
+      widening_annbfis_steady_thread.join();
+      widening_tsk_increasing_thread.join();
+      widening_tsk_steady_thread.join();
+
+      std::cout << "summary for " << dataset_name << std::endl;
+      std::cout << "meta annbfis increasing f1: " << meta_annbfis_increasing_result.f1_score << std::endl;
+      std::cout << "meta annbfis steady f1: " << meta_annbfis_steady_result.f1_score << std::endl;
+      std::cout << "meta tsk increasing f1: " << meta_tsk_increasing_result.f1_score << std::endl;
+      std::cout << "meta tsk steady f1: " << meta_tsk_steady_result.f1_score << std::endl;
+      std::cout << "widening annbfis increasing f1: " << widening_annbfis_increasing_result.f1_score << std::endl;
+      std::cout << "widening annbfis steady f1: " << widening_annbfis_steady_result.f1_score << std::endl;
+      std::cout << "widening tsk increasing f1: " << widening_tsk_increasing_result.f1_score << std::endl;
+      std::cout << "widening tsk steady f1: " << widening_tsk_steady_result.f1_score << std::endl;
    }
-
-   std::cout << "Best ANNBFIS increasing: stop=" << best_stop_annbfis_increasing
-             << ", width=" << best_width_annbfis_increasing
-             << ", f1=" << best_f1_annbfis_increasing << std::endl;
-   std::cout << "Best ANNBFIS steady: stop=" << best_stop_annbfis_steady
-             << ", width=" << best_width_annbfis_steady
-             << ", f1=" << best_f1_annbfis_steady << std::endl;
-   std::cout << "Best TSK increasing: stop=" << best_stop_tsk_increasing
-             << ", width=" << best_width_tsk_increasing
-             << ", f1=" << best_f1_tsk_increasing << std::endl;
-   std::cout << "Best TSK steady: stop=" << best_stop_tsk_steady
-             << ", width=" << best_width_tsk_steady
-             << ", f1=" << best_f1_tsk_steady << std::endl;
 }
