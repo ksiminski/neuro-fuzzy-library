@@ -220,7 +220,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
             }
             else 
             {
-                std::cout << "Training primary classifier " << i + 1 << "/" << _cascade.size() << " with " << train_.size() << " samples." << std::endl;
                 // Train primary classifier
                 auto& pSystem = _cascade[i];
                 pSystem->set_train_data_file(this->_train_data_file);
@@ -228,7 +227,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                 pSystem->set_train_dataset(train_);
                 pSystem->set_output_file(this->_output_file + "-primary-" + std::to_string(i));
                 pSystem->experiment_classification_core(); 
-                std::cout << "Finished training primary classifier " << i + 1 << "/" << _cascade.size() << "." << std::endl;
                 // Get results from primary classifier
                 
                 // Train meta-classifier for this level (except for the last level)
@@ -252,7 +250,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                         return results_validation;
                     };
                     auto validation_results = answer_function(validation_, _cascade[i]);
-                    std::cout << "Finished evaluating primary classifier " << i + 1 << "/" << _cascade.size() << " on validation set." << std::endl;
                     auto create_train_for_meta = [&]() {
                         ksi::dataset meta_train_data;
                         for (std::size_t i = 0; i < validation_.size(); i++)
@@ -270,8 +267,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                         return meta_train_data;
                     };
                     auto meta_train_data = create_train_for_meta();
-                    std::cout << "Created meta-training datafor meta-classifier " << i + 1 << "/" << _meta_classifiers.size() << "." << std::endl;
-                    std::cout << "Size of meta-training data: " << meta_train_data.size() << " samples." << std::endl;
                     // Set positive and negative classes for meta-classifier
                     pMetaSystem->set_positive_class(1.0);   // correct predictions
                     pMetaSystem->set_negative_class(0.0);  // incorrect predictions
@@ -283,7 +278,6 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     pMetaSystem->set_output_file(this->_output_file + "-meta-" + std::to_string(i));
                     pMetaSystem->experiment_classification_core();
 
-                    std::cout << "Finished training meta-classifier " << i + 1 << "/" << _meta_classifiers.size() << "." << std::endl;
 
                     // Get meta-classifier predictions on training data
                     auto meta_results_train = answer_function(train_, pMetaSystem);
@@ -311,18 +305,12 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     };
 
                     train_ = getDataForNextLevel(meta_results_train, train_);
-                    std::cout << "Size of training data for next level after meta-classifier " << i + 1 << ": " << train_.size() << " samples." << std::endl;
                     validation_ = getDataForNextLevel(meta_results_validation, validation_);
-                    std::cout << "Size of validation data for next level after meta-classifier " << i + 1 << ": " << validation_.size() << " samples." << std::endl;
                 }
                 
                 // Check if we have enough data to continue
                 if (train_.size() < nSize * get_stop_criterion_percentage())
                 {
-                    std::cout << "Stopping cascade early after level " << i + 1 << " due to insufficient data for next level (" << train_.size() << " samples remaining)." << std::endl;
-                    std::cout << "Which is " << std::fixed << std::setprecision(2) << (100.0 * train_.size() / nSize) << "% of original training data." << std::endl;
-                    std:: cout << "nSize: " << nSize << std::endl;
-                    std::cout << "get_stop_criterion_percentage(): " << get_stop_criterion_percentage() << std::endl;
                     remove_system = true;  
                 }
             }   

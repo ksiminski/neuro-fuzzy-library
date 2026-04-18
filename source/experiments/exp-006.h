@@ -25,11 +25,10 @@ namespace ksi
     */
    class exp_006 : virtual public experiment
    {
-      virtual void classification();
-      virtual void regression ();
-    
    public:
       virtual void execute () override;
+      virtual void execute_nested_cv_for_width_selection();
+      virtual void execute_single_system_cv();
    };
 }
 
