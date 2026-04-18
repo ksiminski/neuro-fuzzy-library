@@ -9,9 +9,9 @@ Neuro-fuzzy is an implementation of fuzzy tools for data analysis:
 
 The project is implemented in the C++ language.
  
-There are 5 examples of the usage of the library.
+There are 6 examples of the usage of the library.
 
-Run `make 1` to run the 1st example, `make 2` – the 2nd example, and finally `make 5` to run the 5th example.
+Run `make 1` to run the 1st example, `make 2` – the 2nd example, and `make 6` to run the 6th example.
 
 Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for the project.
 
@@ -97,6 +97,12 @@ This example presents neuro-fuzzy systems for
 	9. Mahalanobis prototype ANNBFIS
 	
 Models for the MA, TSK, and ANNBFIS systems are saved into files in numeric and liguistic description [^lin].
+
+### make 6
+Run `make 6` for this example.
+
+This example presents experiments for three way decision neuro-fuzzy system with meta-classifiers.
+Three way decision neuro-fuzzy systems are built with TSK and ANNBFIS neuro-fuzzy systems.
 
 ------------
 
