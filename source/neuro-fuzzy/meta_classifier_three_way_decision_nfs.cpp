@@ -22,8 +22,9 @@ ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta() : three_way_deci
 
 ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
     const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& cascade,
-    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade
-) : three_way_decision_nfs(cascade), _meta_classifiers(meta_cascade)
+    const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
+    const double stop_criterion_percentage
+) : three_way_decision_nfs(cascade, 0.0, stop_criterion_percentage), _meta_classifiers(meta_cascade)
 {
 }
 
@@ -32,8 +33,9 @@ ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
     const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
     const std::string& train, 
     const std::string& test, 
-    const std::string& result
-) : three_way_decision_nfs(cascade, train, test, result, 0.0), _meta_classifiers(meta_cascade)
+    const std::string& result,
+    const double stop_criterion_percentage
+) : three_way_decision_nfs(cascade, train, test, result, 0.0, stop_criterion_percentage), _meta_classifiers(meta_cascade)
 {
 }
 
@@ -43,8 +45,9 @@ ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
     const std::string& train,
     const std::string& validation, 
     const std::string& test, 
-    const std::string& result
-) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0), _meta_classifiers(meta_cascade)
+    const std::string& result,
+    const double stop_criterion_percentage
+) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0, stop_criterion_percentage), _meta_classifiers(meta_cascade)
 {
 }
 
@@ -53,8 +56,9 @@ ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
     const std::vector<std::shared_ptr<ksi::neuro_fuzzy_system>>& meta_cascade,
     const ksi::dataset& train, 
     const ksi::dataset& test, 
-    const std::string& result
-) : three_way_decision_nfs(cascade, train, test, result, 0.0), _meta_classifiers(meta_cascade)
+    const std::string& result,
+    const double stop_criterion_percentage
+) : three_way_decision_nfs(cascade, train, test, result, 0.0, stop_criterion_percentage), _meta_classifiers(meta_cascade)
 {
 }
 
@@ -64,8 +68,9 @@ ksi::three_way_decision_nfs_meta::three_way_decision_nfs_meta(
     const ksi::dataset& train,
     const ksi::dataset& validation, 
     const ksi::dataset& test, 
-    const std::string& result
-) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0), _meta_classifiers(meta_cascade)
+    const std::string& result,
+    const double stop_criterion_percentage
+) : three_way_decision_nfs(cascade, train, validation, test, result, 0.0, stop_criterion_percentage), _meta_classifiers(meta_cascade)
 {
 }
 
@@ -187,15 +192,16 @@ ksi::dataset ksi::three_way_decision_nfs_meta::create_meta_training_data(
 }
 
 void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
-    const ksi::dataset& train, 
-    const ksi::dataset& test, 
+    const ksi::dataset& train_ds, 
+    const ksi::dataset& test,
     const ksi::dataset& validation
 )
 {
     try 
     {
-        auto zbior_treningowy = train;
-        auto nAttributes = zbior_treningowy.getNumberOfAttributes(); 
+        auto train_ = train_ds;
+        auto validation_ = validation; 
+        auto nSize = train_.size(); 
         bool remove_system = false;
         
         // Ensure we have the right number of meta-classifiers (one less than primary classifiers)
@@ -217,16 +223,11 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                 // Train primary classifier
                 auto& pSystem = _cascade[i];
                 pSystem->set_train_data_file(this->_train_data_file);
-                pSystem->set_validation_data_file(this->_validation_data_file);
-                pSystem->set_test_data_file(this->_test_data_file);
+                pSystem->set_threshold_type(ksi::roc_threshold::youden);
+                pSystem->set_train_dataset(train_);
                 pSystem->set_output_file(this->_output_file + "-primary-" + std::to_string(i));
-                pSystem->set_train_dataset(zbior_treningowy);
-                pSystem->set_validation_dataset(validation);
-                pSystem->set_test_dataset(test);
                 pSystem->experiment_classification_core(); 
-                
                 // Get results from primary classifier
-                auto results_train = pSystem->get_answers_for_train_classification();
                 
                 // Train meta-classifier for this level (except for the last level)
                 if (i < _meta_classifiers.size())
@@ -234,8 +235,38 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     auto& pMetaSystem = _meta_classifiers[i];
                     
                     // Create meta-training data: label 1.0 if correct, 0.0 if incorrect
-                    auto meta_train_data = create_meta_training_data(zbior_treningowy, results_train);
+                    auto answer_function =[](const ksi::dataset& dataset, std::shared_ptr<ksi::neuro_fuzzy_system> pSystem) {
+                        std::vector<std::tuple<double, double>> results_validation(dataset.size());
+                        auto XYvalidate  = dataset.splitDataSetVertically(dataset.getNumberOfAttributes() - 1);
+                        std::size_t nXvalidate  = dataset.getNumberOfData();
+                        for (std::size_t i = 0; i < nXvalidate; i++)
+                        {
+                            auto [ elaborated_numeric, elaborated_class ] = pSystem->answer_classification(*(XYvalidate.first.getDatum(i)));
+                            auto expected = XYvalidate.second.get(i, 0);
                     
+                            results_validation[i] = {expected, elaborated_class}; 
+                        }
+                    
+                        return results_validation;
+                    };
+                    auto validation_results = answer_function(validation_, _cascade[i]);
+                    auto create_train_for_meta = [&]() {
+                        ksi::dataset meta_train_data;
+                        for (std::size_t i = 0; i < validation_.size(); i++)
+                        {
+                            auto datum_copy = *validation_.getDatum(i);
+                            double expected, elaborated_class;
+                            std::tie(expected, elaborated_class) = validation_results[i];
+                            
+                            // Set label: 1.0 if correct, 0.0 if incorrect
+                            double label = (std::fabs(expected - elaborated_class) < 0.001) ? 1.0 : 0.0;
+                            datum_copy.setDecision(label);
+                            
+                            meta_train_data.addDatum(datum_copy);
+                        }
+                        return meta_train_data;
+                    };
+                    auto meta_train_data = create_train_for_meta();
                     // Set positive and negative classes for meta-classifier
                     pMetaSystem->set_positive_class(1.0);   // correct predictions
                     pMetaSystem->set_negative_class(0.0);  // incorrect predictions
@@ -243,44 +274,42 @@ void ksi::three_way_decision_nfs_meta::createFuzzyRulebase(
                     // Use Youden index for meta-classifier threshold
                     pMetaSystem->set_threshold_type(ksi::roc_threshold::youden);
                     
-                    pMetaSystem->set_train_data_file(this->_train_data_file);
-                    pMetaSystem->set_validation_data_file(this->_validation_data_file);
-                    pMetaSystem->set_test_data_file(this->_test_data_file);
-                    pMetaSystem->set_output_file(this->_output_file + "-meta-" + std::to_string(i));
                     pMetaSystem->set_train_dataset(meta_train_data);
+                    pMetaSystem->set_output_file(this->_output_file + "-meta-" + std::to_string(i));
                     pMetaSystem->experiment_classification_core();
-                    
+
+
                     // Get meta-classifier predictions on training data
-                    auto meta_results = pMetaSystem->get_answers_for_train_classification();
+                    auto meta_results_train = answer_function(train_, pMetaSystem);
+                    auto meta_results_validation = answer_function(validation_, pMetaSystem);
                     
-                    // Get meta-classifier's Youden threshold
-                    auto meta_threshold = pMetaSystem->get_threshold_value();
-                    
-                    // Extract items that meta-classifier predicts will be incorrectly classified
-                    // These are items where numeric score < threshold (predicting class 0.0)
-                    std::vector<std::size_t> indices_for_next_level;
-                    for (std::size_t j = 0; j < meta_results.size(); j++)
-                    {
-                        double meta_elaborated_numeric;
-                        std::tie(std::ignore, meta_elaborated_numeric, std::ignore) = meta_results[j];
-                        
-                        // If meta-classifier predicts incorrect (numeric < threshold), pass to next level
-                        if (meta_elaborated_numeric < meta_threshold)
-                            indices_for_next_level.push_back(j);
-                    }
-                    
-                    // Create dataset for next level
-                    ksi::dataset next_level_data;
-                    for (const auto j : indices_for_next_level)
-                    {
-                        next_level_data.addDatum(*zbior_treningowy.getDatum(j));
-                    }
-                    
-                    zbior_treningowy = next_level_data;
+                    auto getDataForNextLevel = [](std::vector<std::tuple<double, double>> results, const ksi::dataset& dataset) {
+                        std::vector<std::size_t> indices_for_next_level;
+                        for (std::size_t j = 0; j < results.size(); j++)
+                        {
+                            double meta_elaborated_class;
+                            std::tie(std::ignore, meta_elaborated_class) = results[j];
+
+                            // If meta-classifier predicts incorrect (numeric < threshold), pass to next level
+                            if (std::fabs(meta_elaborated_class) < 0.01)
+                                indices_for_next_level.push_back(j);
+                        }
+
+                        // Create dataset for next level
+                        ksi::dataset next_level_data;
+                        for (const auto j : indices_for_next_level)
+                        {
+                            next_level_data.addDatum(*dataset.getDatum(j));
+                        }
+                        return next_level_data;
+                    };
+
+                    train_ = getDataForNextLevel(meta_results_train, train_);
+                    validation_ = getDataForNextLevel(meta_results_validation, validation_);
                 }
                 
                 // Check if we have enough data to continue
-                if (zbior_treningowy.size() < nAttributes)
+                if (train_.size() < nSize * get_stop_criterion_percentage())
                 {
                     remove_system = true;  
                 }
