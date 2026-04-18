@@ -101,17 +101,8 @@ Models for the MA, TSK, and ANNBFIS systems are saved into files in numeric and 
 ### make 6
 Run `make 6` for this example.
 
-This example presents three-way decision neuro-fuzzy experiments for classification:
-1. meta-classifier cascade variants,
-2. widening noncommitment variants,
-3. single-system ANNBFIS and TSK baselines,
-4. nested cross-validation for width selection.
-
-The dataset used by this experiment is built by merging
-`data/exp-005/classification/<dataset>/<dataset>.train`
-and
-`data/exp-005/classification/<dataset>/<dataset>.test`
-for each dataset listed in the experiment configuration.
+This example presents experiments for three way decision neuro-fuzzy system with meta-classifiers.
+Three way decision neuro-fuzzy systems are built with TSK and ANNBFIS neuro-fuzzy systems.
 
 ------------
 
