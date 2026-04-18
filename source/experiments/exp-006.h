@@ -8,20 +8,12 @@
 
 namespace ksi
 {
-   /** EXPERIMENT 006  <br/>
-    An experiment with a neuro-fuzzy systems:
-    1. Mamdani-Assilan                                    (classification and regression tasks)
-    2. Takagi-Sugeno-Kang                                 (classification and regression tasks)
-    3. ANNBFIS                                            (classification and regression tasks)
-    4. subspace ANNBFIS                                   (classification and regression tasks)
-    5. FuBiNFS: fuzzy biclustering subspace annbfis       (classification and regression tasks)
-    6. Proto-NFS: prototype based neuro-fuzzy systems     (regression task)
-    7. Proto-NFS: prototype based neuro-fuzzy systems     (classification task)
-    7. Three way decision neuro-fuzzy system              (classification task)
-    
-    
-    @date 2023-04-22
-    
+   /** Experiment 006: three-way decision experiments for classification.
+    *  The experiment includes:
+    *  1. Meta-classifier cascade variants.
+    *  2. Widening noncommitment variants.
+    *  3. Single-system ANNBFIS and TSK baselines.
+    *  4. Nested cross-validation for width selection.
     */
    class exp_006 : virtual public experiment
    {
