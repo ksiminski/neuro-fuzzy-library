@@ -20,7 +20,7 @@
 #include "../partitions/fubi.h"
 #include "../partitions/gk.h"
 #include "../partitions/dbscan.h"
-#include "../partitions/granular-dbscan.h"
+#include "../partitions/grdbscan/granular-dbscan.h"
 #include "../metrics/metric.h"
 #include "../metrics/metric-minkowski.h"
 #include "../metrics/metric-euclidean.h"

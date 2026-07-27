@@ -6,18 +6,51 @@
 #include <memory>
 #include <vector>
 
-#include "../partitions/partitioner.h"
-#include "../tnorms/t-norm.h"
-#include "../snorms/s-norm.h"
-#include "../descriptors/descriptor.h"
-#include "../descriptors/descriptor-triangular.h"
+#include "../../partitions/partitioner.h"
+#include "../../tnorms/t-norm.h"
+#include "../../snorms/s-norm.h"
+#include "../../descriptors/descriptor.h"
+#include "../../descriptors/descriptor-triangular.h"
 
 namespace ksi
 {
 
-    /** The class implements GrDBSCAN clustering algorithm.
-        @author Dawid Suchy
-        @date 2022-03-11*/
+    /**
+    * Partitioner implementing the GrDBSCAN clustering algorithm.
+    *
+    * GrDBSCAN is a density-based clustering algorithm with linear complexity
+    * under a granular formulation, supporting hyperellipsoidal neighbourhoods
+    * and remaining efficient in higher-dimensional spaces. The algorithm is
+    * proposed as an alternative to the classic quadratic-time DBSCAN approach.
+    *
+    * This implementation accompanies the algorithm published in:
+    *
+    * D. Suchy, K. Simiński,
+    * "GrDBSCAN: A Granular Density–Based Clustering Algorithm",
+    * International Journal of Applied Mathematics and Computer Science,
+    * 2023.
+    *
+    * CITATION REQUEST
+    * If you use this algorithm, please cite the paper:
+    *
+    * <pre>
+    * @ARTICLE{Suchy2023GrDBSCAN,
+    *   title   = {GrDBSCAN: A Granular Density–Based Clustering Algorithm},
+    *   author  = {Suchy, Dawid and Siminski, Krzysztof},
+    *   journal = {International Journal of Applied Mathematics and Computer Science},
+    *   volume  = {33},
+    *   number  = {2},
+    *   pages   = {297--312},
+    *   year    = {2023},
+    *   doi     = {10.34768/amcs-2023-0022}
+    * }   
+    * </pre>
+    *
+    * DOI: https://doi.org/10.34768/amcs-2023-0022
+    *
+    * @author Dawid Suchy
+    * @date 2022-03-11
+    */
     class granular_dbscan : virtual public partitioner
     {
     protected:
@@ -63,7 +96,7 @@ namespace ksi
         /** @return The method clones the object and returns the address of the copy. */
         virtual partitioner *clone() const override;
 
-        virtual ~granular_dbscan();
+        virtual ~granular_dbscan() override;
 
         /** @return an abbreviation of a method */
         virtual std::string getAbbreviation() const override;
@@ -74,7 +107,7 @@ namespace ksi
          *  @param pAlgorithm fuzzy clustering algorithm
          *  @author Dawid Suchy
          */
-        std::vector<std::vector<std::shared_ptr<descriptor>>> prepareGranularData(const dataset &ds, std::shared_ptr<partitioner> pAlgorithm);
+        std::vector<std::vector<std::shared_ptr<descriptor>>> prepareGranularData(const dataset &ds, const std::shared_ptr<partitioner> &pAlgorithm);
 
         /** @return The method finds the index of the best (maximum membership) neighbour within passed memberships vector.
          *  @param datasetSize number of granules
@@ -85,9 +118,9 @@ namespace ksi
          */
         std::size_t findMaxMembIndex(const std::size_t datasetSize, const std::vector<double> &memberships, const double psi, const std::vector<bool> &processed);
 
-        /** @return The method calculates non-expanded neighbourhoodness value for every granule (neighbourhoods memberships vector) relative to the passed one.
+        /** @return The method calculates non-expanded neighbourhoodness value for every granule (neighbours memberships vector) relative to the passed one.
          *  @param granularDs granules: granulated dataset
-         *  @param granule set of descriptors: granule for which to find non-expanded neighbourhoods memberships vector.
+         *  @param granule set of descriptors: granule for which to find non-expanded neighbours memberships vector.
          *  @return vector of memberships values
          *  @author Dawid Suchy
          */
@@ -98,7 +131,7 @@ namespace ksi
          *  @param secondDescriptor second descriptor
          *  @author Dawid Suchy
          */
-        const descriptor_triangular calculateDistance(
+        descriptor_triangular calculateDistance(
             const std::shared_ptr<descriptor> &firstDescriptor,
             const std::shared_ptr<descriptor> &secondDescriptor);
 
@@ -107,7 +140,7 @@ namespace ksi
          *  @param triangle triangular descriptor describing one-dimensional fuzzy distance between granules
          *  @author Dawid Suchy
          */
-        const double calculateAreaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle);
+        double calculateAreaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle);
 
         /** @return The method returns the membership of data item d to granule granule.
          *  @param d data item
@@ -116,7 +149,7 @@ namespace ksi
          *  @date   2022-09-23
          *  @author Krzysztof Siminski
          */
-        double getMembershipToGranule(const datum &d, const std::vector<std::shared_ptr<descriptor>> &granule, const std::shared_ptr<t_norm> pTnorm);
+        double getMembershipToGranule(const datum &d, const std::vector<std::shared_ptr<descriptor>> &granule, const std::shared_ptr<t_norm> &pTnorm);
 
         /** @return The method returns the membership matrix. Each row represents a cluster. Each column represents input data item. The i-th cell in the j-th column in the matrix holds membership value of the j-th input data item to the i-th cluster.
          *  @param ds dataset: a set of input data items
