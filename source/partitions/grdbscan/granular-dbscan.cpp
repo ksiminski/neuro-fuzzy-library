@@ -5,7 +5,7 @@
  * Accompanies the publication:
  *
  * D. Suchy, K. Siminski,
- * "GrDBSCAN – Granular Density-Based Spatial Clustering of Applications with Noise"
+ * "GrDBSCAN: A Granular Density–Based Clustering Algorithm"
  * International Journal of Applied Mathematics and Computer Science, 2023.
  *
  * DOI: https://doi.org/10.34768/amcs-2023-0022
