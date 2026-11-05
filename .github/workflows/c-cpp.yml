@@ -18,6 +18,12 @@ jobs:
     - name: make
       run: make
       working-directory: source
+    - name: GrIMP regression tests
+      run: make test-grimp
+      working-directory: source
+    - name: GrIMP example
+      run: make example-grimp
+      working-directory: source
     - name: make 1
       run: make 1
       working-directory: source

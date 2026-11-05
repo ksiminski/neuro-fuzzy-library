@@ -17,6 +17,15 @@ Run `make doxygen` to produce a Doxygen documentation and UML class diagrams for
 
 __Citation request__ If you use this library, please cite [^nfl]
 
+## GrIMP imputation
+
+GrIMP fills missing numerical attributes using Gaussian granules learned from
+complete rows. It is available as `ksi::data_modifier_imputer_granular` and
+supports the library's modifier chains. See [the GrIMP guide](docs/grimp.md)
+for the algorithm, assumptions, and build instructions. Run
+`make -C source example-grimp` for a self-contained example and
+`make -C source test-grimp` for its regression tests.
+
 ## Examples
 
 ### make 1  
