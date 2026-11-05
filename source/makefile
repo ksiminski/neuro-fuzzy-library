@@ -380,9 +380,9 @@ $(release_folder)/partitions-gk.o : partitions/gk.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
 $(debug_folder)/partitions-gk.o : partitions/gk.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
-$(release_folder)/partitions-granular-dbscan.o : partitions/granular-dbscan.cpp
+$(release_folder)/partitions-granular-dbscan.o : partitions/grdbscan/granular-dbscan.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^
-$(debug_folder)/partitions-granular-dbscan.o : partitions/granular-dbscan.cpp
+$(debug_folder)/partitions-granular-dbscan.o : partitions/grdbscan/granular-dbscan.cpp
 	$(compiler) $(standard) $(debug) $(optyDebug) $(parallel) $(errors) $(sanitizer) -c -o $@ $^
 $(release_folder)/partitions-partition.o : partitions/partition.cpp
 	$(compiler) $(standard) $(release) $(optRelease) $(parallel) $(errors) -c -o $@ $^

@@ -1,17 +1,27 @@
-/** @file */
-
+/**
+ * @file granular-dbscan.cpp
+ * @brief Reference implementation of the GrDBSCAN algorithm.
+ *
+ * Accompanies the publication:
+ *
+ * D. Suchy, K. Siminski,
+ * "GrDBSCAN: A Granular Density–Based Clustering Algorithm"
+ * International Journal of Applied Mathematics and Computer Science, 2023.
+ *
+ * DOI: https://doi.org/10.34768/amcs-2023-0022
+ */
 #include <memory>
 #include <vector>
 
-#include "../partitions/granular-dbscan.h"
-#include "../partitions/partitioner.h"
-#include "../partitions/fcm.h"
-#include "../descriptors/descriptor.h"
-#include "../descriptors/descriptor-triangular.h"
-#include "../tnorms/t-norm.h"
-#include "../snorms/s-norm.h"
-#include "../tnorms/t-norm-lukasiewicz.h"
-#include "../snorms/s-norm-lukasiewicz.h"
+#include "../../partitions/grdbscan/granular-dbscan.h"
+#include "../../partitions/partitioner.h"
+#include "../../partitions/fcm.h"
+#include "../../descriptors/descriptor.h"
+#include "../../descriptors/descriptor-triangular.h"
+#include "../../tnorms/t-norm.h"
+#include "../../snorms/s-norm.h"
+#include "../../tnorms/t-norm-lukasiewicz.h"
+#include "../../snorms/s-norm-lukasiewicz.h"
 
 ksi::granular_dbscan::granular_dbscan(
     const double epsilon,
@@ -48,7 +58,7 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    if (this == &obj)
       return *this;
 
-   this->_pGranulationAlgorithm = obj._pGranulationAlgorithm;
+   this->_pGranulationAlgorithm = std::shared_ptr<partitioner>(obj._pGranulationAlgorithm->clone());
    this->_pTnorm = std::shared_ptr<t_norm>(obj._pTnorm->clone());
    this->_pSnorm = std::shared_ptr<s_norm>(obj._pSnorm->clone());
 
@@ -60,7 +70,7 @@ ksi::granular_dbscan &ksi::granular_dbscan::operator=(const ksi::granular_dbscan
    return *this;
 }
 
-std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareGranularData(const ksi::dataset &ds, std::shared_ptr<partitioner> pAlgorithm)
+std::vector<std::vector<std::shared_ptr<ksi::descriptor>>> ksi::granular_dbscan::prepareGranularData(const ksi::dataset &ds, const std::shared_ptr<partitioner> &pAlgorithm)
 {
    try
    {
@@ -215,7 +225,7 @@ ksi::partition ksi::granular_dbscan::doPartition(const ksi::dataset &ds)
    CATCH
 }
 
-std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(const ksi::dataset& ds, const std::vector<std::vector<std::shared_ptr<descriptor>>>& granularDs, const std::vector<std::vector<double>>& mU)
+std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(const ksi::dataset &ds, const std::vector<std::vector<std::shared_ptr<descriptor>>> &granularDs, const std::vector<std::vector<double>> &mU)
 {
    try 
    {
@@ -228,10 +238,10 @@ std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(con
       
       for (std::size_t i = 0; i < ds_size; i++)
       {
-         auto d = ds.getDatum(i);
+         const auto d = ds.getDatum(i);
          for (std::size_t g = 0; g < gr_size; g++)
          {
-             auto memb = getMembershipToGranule(*d, granularDs[g], _pTnorm);
+             const double memb = getMembershipToGranule(*d, granularDs[g], _pTnorm);
              mGranuleDatum[g][i] = memb;
          }
       }
@@ -260,7 +270,7 @@ std::vector<std::vector<double>> ksi::granular_dbscan::getClusterDatumMatrix(con
 }
 
 
-double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum& d, const std::vector<std::shared_ptr<ksi::descriptor>>& granule, const std::shared_ptr<t_norm> pTnorm)
+double ksi::granular_dbscan::getMembershipToGranule(const ksi::datum &d, const std::vector<std::shared_ptr<ksi::descriptor>> &granule, const std::shared_ptr<t_norm> &pTnorm)
 {
    try 
    {
@@ -295,7 +305,7 @@ std::size_t ksi::granular_dbscan::findMaxMembIndex(const std::size_t datasetSize
 
    for (std::size_t i = 0; i < datasetSize; ++i)
    {
-      auto mi = memberships[i];
+      const double mi = memberships[i];
       if (mi > maxValue && mi > psi && processed[i] == false)
       {
          maxValue = mi;
@@ -317,14 +327,14 @@ std::vector<double> ksi::granular_dbscan::findNeighboursMemberships(
 
    for (std::size_t i = 0; i < dsSize; ++i)
    {
-      auto neighbourGranule = granularDs[i];
+      const auto& neighbourGranule = granularDs[i];
 
       double membershipResult = 1;
 
       for (std::size_t j = 0; j < numberOfDescriptors; ++j)
       {
          const descriptor_triangular distance = calculateDistance(granule[j], neighbourGranule[j]);
-         double membership = calculateAreaPercentageInSpace(this->_epsilon, distance);
+         const double membership = calculateAreaPercentageInSpace(this->_epsilon, distance);
 
          membershipResult = this->_pTnorm->tnorm(membershipResult, membership);
       }
@@ -334,7 +344,7 @@ std::vector<double> ksi::granular_dbscan::findNeighboursMemberships(
    return memberships;
 }
 
-const ksi::descriptor_triangular ksi::granular_dbscan::calculateDistance(
+ksi::descriptor_triangular ksi::granular_dbscan::calculateDistance(
     const std::shared_ptr<ksi::descriptor> &firstDescriptor,
     const std::shared_ptr<ksi::descriptor> &secondDescriptor)
 {
@@ -345,7 +355,7 @@ const ksi::descriptor_triangular ksi::granular_dbscan::calculateDistance(
    return descriptor_triangular(supp_min, core, supp_max);
 }
 
-const double ksi::granular_dbscan::calculateAreaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle)
+double ksi::granular_dbscan::calculateAreaPercentageInSpace(const double epsilon, const descriptor_triangular &triangle)
 {
    if (epsilon < triangle.getSupportMin())
       return 0.0;
